@@ -69,7 +69,7 @@ window_show_splash(Bygfoot *bygfoot)
     treeview_show_contributors(
 	GTK_TREE_VIEW(lookup_widget(window.splash, "treeview_splash_contributors")));
     
-    window_load_hint_number();
+    window_load_hint_number(bygfoot);
     window_splash_show_hint();
 }
 
@@ -97,67 +97,18 @@ window_splash_show_hint(void)
 
 /** Load the index of the hint to show in the splash screen. */
 void
-window_load_hint_number(void)
+window_load_hint_number(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("window_load_hint_number\n");
 #endif
 
-    gchar filename[SMALL];
-    gchar dir[SMALL];
-    FILE *fil;
-    
-    file_get_bygfoot_dir(dir);
-
-    sprintf(filename, "%s%shint_num",
-	    dir, G_DIR_SEPARATOR_S);
-
-    fil = fopen(filename, "r");
-
-    if(fil == NULL)
-    {
-	counters[COUNT_HINT_NUMBER] = 0;
-	return;
-    }
-
-    fscanf(fil, "%d", &counters[COUNT_HINT_NUMBER]);
-
-    fclose(fil);
-
-    if(counters[COUNT_HINT_NUMBER] < 0 ||
-       counters[COUNT_HINT_NUMBER] >= hints.list->len)
-    {
-	debug_print_message("Hint counter out of bounds: %d (bounds 0 and %d).\n",
-		  counters[COUNT_HINT_NUMBER], hints.list->len - 1);
-	counters[COUNT_HINT_NUMBER] = 0;
-    }
-}
-
-/** Save the index of the current hint. */
-void
-window_save_hint_number(void)
-{
-#ifdef DEBUG
-    printf("window_save_hint_number\n");
-#endif
-
-    gchar filename[SMALL];
-    gchar dir[SMALL];
-    FILE *fil;
-
-    file_get_bygfoot_dir(dir);
-
-    sprintf(filename, "%s%shint_num",
-	    dir, G_DIR_SEPARATOR_S);
-
-    fil = fopen(filename, "w");
-
-    if(fil == NULL)
-	return;
-
-    fprintf(fil, "%d", counters[COUNT_HINT_NUMBER]);
-
-    fclose(fil);
+    /* Don't use the global random number generator, because that would
+     * affect the game play. */
+    GRand *rand = g_rand_new();
+    counters[COUNT_HINT_NUMBER] =
+        g_rand_int_range(rand, 0, hints.list->len);
+    g_rand_free(rand);
 }
 
 /** Show the window with the progress bar,
@@ -1052,8 +1003,6 @@ window_destroy(GtkWidget **wind)
     {
 	counters[COUNT_HINT_NUMBER] = 
 	    (counters[COUNT_HINT_NUMBER] + 1) % hints.list->len;
-
-	window_save_hint_number();
     }
 
     gtk_widget_destroy(*wind);

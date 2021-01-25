@@ -123,10 +123,7 @@ void
 window_show_splash(Bygfoot *bygfoot);
 
 void
-window_load_hint_number(void);
-
-void
-window_save_hint_number(void);
+window_load_hint_number(Bygfoot *bygfoot);
 
 void
 window_splash_show_hint(void);
