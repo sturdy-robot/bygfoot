@@ -69,6 +69,13 @@
 #define ID_LEAGUE_START 1000
 #define ID_CUP_START 7000
 
+/** Whether we are using a Unix system or Windows. */
+#ifdef G_OS_WIN32
+#define os_is_unix FALSE
+#else
+#define os_is_unix TRUE
+#endif
+
 #define player_id_new (counters[COUNT_PLAYER_ID]++)
 #define team_id_new (counters[COUNT_TEAM_ID]++)
 #define cup_id_new (counters[COUNT_CUP_ID]++)

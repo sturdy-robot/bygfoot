@@ -402,12 +402,6 @@ main_init(gint *argc, gchar ***argv, Bygfoot *bygfoot)
     rand_generator = g_rand_new();
     main_parse_debug_cl_arguments(argc, argv);
 
-#ifdef G_OS_WIN32
-    os_is_unix = FALSE;
-#else
-    os_is_unix = TRUE;
-#endif
-
 #if defined(G_OS_UNIX) && !defined(MAC_BUILD)
     file_add_support_directory_recursive(bygfoot, PACKAGE_DATA_DIR "/" PACKAGE "/support_files");
     sprintf(buf, "%s%s%s", g_get_home_dir(), G_DIR_SEPARATOR_S, HOMEDIRNAME);
