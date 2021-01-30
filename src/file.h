@@ -108,8 +108,11 @@ file_remove_files(const GPtrArray *files);
 void
 file_copy_file(const gchar *source_file, const gchar *dest_file);
 
-void
-file_get_bygfoot_dir(gchar *dir);
+gboolean
+file_get_bygfoot_dir(gchar *dir, size_t dir_size);
+
+gboolean
+file_get_saves_dir(gchar *dir, size_t dir_size);
 
 void
 file_load_hints_file(void);

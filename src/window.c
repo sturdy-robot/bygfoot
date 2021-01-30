@@ -304,8 +304,7 @@ window_show_file_sel(Bygfoot *bygfoot)
     printf("window_show_file_sel\n");
 #endif
 
-    gchar buf[SMALL];
-    const gchar *home = g_get_home_dir();
+    gchar saves_dir[SMALL];
     gchar *filename = NULL;
     GtkFileFilter *filter;
     gboolean mm_file_exists = FALSE;
@@ -352,18 +351,11 @@ window_show_file_sel(Bygfoot *bygfoot)
 				      current_user.mmatches_file);
     else
     {
-        if(os_is_unix)
-            sprintf(buf, "%s%s%s%ssaves", home, G_DIR_SEPARATOR_S, 
-		    HOMEDIRNAME, G_DIR_SEPARATOR_S);
-        else
-        {
-            gchar *pwd = g_get_current_dir();
-            sprintf(buf, "%s%ssaves", pwd, G_DIR_SEPARATOR_S);
-            g_free(pwd);
-	}
+	if (!file_get_saves_dir(saves_dir, SMALL))
+	    return;
 
 	gtk_file_chooser_set_current_folder(
-	    GTK_FILE_CHOOSER(window.file_chooser), buf);
+	    GTK_FILE_CHOOSER(window.file_chooser), saves_dir);
     }
 
     if(gtk_dialog_run(GTK_DIALOG(window.file_chooser)) == GTK_RESPONSE_OK)
@@ -686,7 +678,8 @@ window_main_save_geometry(void)
     FILE *fil = NULL;
     gint width, height, pos_x, pos_y, paned_pos;
     
-    file_get_bygfoot_dir(dir);
+    if (!file_get_bygfoot_dir(dir, SMALL))
+        return;
 
     sprintf(filename, "%s%swindow_settings",
 	    dir, G_DIR_SEPARATOR_S);
@@ -721,7 +714,8 @@ window_main_load_geometry(void)
     gchar dir[SMALL];
     OptionList optionlist;
     
-    file_get_bygfoot_dir(dir);
+    if (!file_get_bygfoot_dir(dir, SMALL))
+        return;
 
     sprintf(filename, "%s%swindow_settings",
 	    dir, G_DIR_SEPARATOR_S);

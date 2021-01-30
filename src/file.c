@@ -998,24 +998,53 @@ file_copy_file(const gchar *source_file, const gchar *dest_file)
 }
 
 /** Find out where the Bygfoot directory we can write to resides
-  and write the location into the string. */
-  void
-file_get_bygfoot_dir(gchar *dir)
+ * and write the location into the string.
+ * @returns TRUE if the full directory path was written to dir, FALSE otherise.
+ */
+  gboolean
+file_get_bygfoot_dir(gchar *dir, size_t dir_size)
 {
 #ifdef DEBUG
   printf("file_get_bygfoot_dir\n");
 #endif
 
   const gchar *home = g_get_home_dir();
+  size_t bytes;
   gchar *pwd = g_get_current_dir();
 
   if(os_is_unix)
-    sprintf(dir, "%s%s%s", home, G_DIR_SEPARATOR_S, HOMEDIRNAME);
+    bytes = snprintf(dir, dir_size, "%s%s%s", home, G_DIR_SEPARATOR_S, HOMEDIRNAME);
   else
-    sprintf(dir, "%s%s", pwd, G_DIR_SEPARATOR_S);
+    bytes = snprintf(dir, dir_size, "%s%s", pwd, G_DIR_SEPARATOR_S);
 
+  if (bytes >= dir_size) {
+    debug_print_message("file_get_bygfoot_dir: path too long: %s\n", dir);
+    return FALSE;
+  }
   g_free(pwd);
+  return TRUE;
 }
+
+/** Get the saves directory, this is where saved games are stored.
+ * @returns TRUE if the full directory path was written to dir, FALSE otherise.
+ */
+gboolean
+file_get_saves_dir(char *dir, size_t dir_size)
+{
+  gchar bygfoot_dir[SMALL];
+  size_t bytes;
+
+  if (!file_get_bygfoot_dir(bygfoot_dir, SMALL))
+    return FALSE;
+  bytes = snprintf(dir, dir_size, "%s%ssaves%s", bygfoot_dir, G_DIR_SEPARATOR_S,
+                                                 G_DIR_SEPARATOR_S);
+  if (bytes >= dir_size) {
+    debug_print_message("file_get_bygfoot_dir: path too long: %s\n", dir);
+    return FALSE;
+  }
+ return TRUE;
+}
+
 
 /** Store text information in a text file in the saves directory.
  */
@@ -1027,22 +1056,16 @@ file_store_text_in_saves(const gchar *filename, const gchar *text)
 #endif
 
   gchar buf[SMALL];
-  const gchar *home = g_get_home_dir();
+  gchar saves_dir[SMALL];
+  gboolean success;
+  size_t bytes;
   FILE *fil = NULL;
 
-  if(os_is_unix)
-    sprintf(buf, "%s%s%s%ssaves%s%s", home, G_DIR_SEPARATOR_S,
-        HOMEDIRNAME, G_DIR_SEPARATOR_S, G_DIR_SEPARATOR_S, 
-        filename);
-  else
-  {
-    gchar *pwd = g_get_current_dir();
-    sprintf(buf, "%s%ssaves%s%s", pwd, G_DIR_SEPARATOR_S,
-        G_DIR_SEPARATOR_S, filename);
-    g_free(pwd);
-  }
+  success = file_get_saves_dir(saves_dir, SMALL);
+  bytes = snprintf(buf, SMALL, "%s%s%s", saves_dir, G_DIR_SEPARATOR_S,
+                   filename);
 
-  if(!file_my_fopen(buf, "w", &fil, FALSE))
+  if(!success || bytes >= SMALL || !file_my_fopen(buf, "w", &fil, FALSE))
   {
     debug_print_message("file_store_text_in_saves: failed to store '%s' in file '%s'\n", text, buf);
     return;
@@ -1062,21 +1085,19 @@ file_load_text_from_saves(const gchar *filename)
 #endif
 
   gchar buf[SMALL];
-  const gchar *home = g_get_home_dir();
+  gchar saves_dir[SMALL];
+  gboolean success;
+  size_t bytes;
   FILE *fil = NULL;
   gint i = 0, c;
 
-  if(os_is_unix)
-    sprintf(buf, "%s%s%s%ssaves%s%s", home, G_DIR_SEPARATOR_S,
-        HOMEDIRNAME, G_DIR_SEPARATOR_S,  G_DIR_SEPARATOR_S,
-        filename);
-  else
-  {
-    gchar *pwd = g_get_current_dir();
-    sprintf(buf, "%s%ssaves%s%s", pwd, G_DIR_SEPARATOR_S,
-        G_DIR_SEPARATOR_S, filename);
-    g_free(pwd);
-  }
+  success = file_get_saves_dir(saves_dir, SMALL);
+  if (!success)
+    return NULL;
+  bytes = snprintf(buf, SMALL, "%s%s%s", saves_dir, G_DIR_SEPARATOR_S,
+                   filename);
+  if (bytes >= SMALL)
+    return NULL;
 
   fil = fopen(buf, "r");
   if(fil == NULL)

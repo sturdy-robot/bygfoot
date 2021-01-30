@@ -25,6 +25,7 @@
 
 #include "callbacks.h"
 #include "debug.h"
+#include "file.h"
 #include "game_gui.h"
 #include "league.h"
 #include "live_game.h"
@@ -41,7 +42,8 @@ debug_print_message(gchar *format, ...)
     gchar text[SMALL];
     va_list args;
     gchar buf[SMALL];
-    const gchar *home;
+    gchar bygfoot_dir[SMALL];
+    size_t bytes;
     FILE *fil = NULL;
 #ifdef GLIB_VERSION_2_62
     GDateTime *logtime;
@@ -76,17 +78,12 @@ debug_print_message(gchar *format, ...)
         sprintf(text, "%s %s\n", logtime_string, buf);
         g_free(logtime_string);
 
-        home = g_get_home_dir();
+        if (!file_get_bygfoot_dir(bygfoot_dir, SMALL))
+	    return;
 
-        if(os_is_unix)
-            sprintf(buf, "%s%s%s%sbygfoot.log", home, G_DIR_SEPARATOR_S,
-                    HOMEDIRNAME, G_DIR_SEPARATOR_S);
-        else
-        {
-            gchar *pwd = g_get_current_dir();
-            sprintf(buf, "%s%sbygfoot.log", pwd, G_DIR_SEPARATOR_S);
-            g_free(pwd);
-        }
+        bytes = snprintf(buf, SMALL, "%s%sbygfoot.log", bygfoot_dir, G_DIR_SEPARATOR_S);
+	if (bytes >= SMALL)
+	    return;
         
         fil = fopen(buf, "a");
         if(fil == NULL)

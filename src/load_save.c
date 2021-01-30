@@ -397,13 +397,9 @@ load_save_autosave(Bygfoot *bygfoot)
 
     load_save_write_autosave_name(name);
 
-    if(os_is_unix)
-        sprintf(directory, "%s%s%s%ssaves", home, G_DIR_SEPARATOR_S, HOMEDIRNAME, G_DIR_SEPARATOR_S);
-    else
-    {
-        sprintf(directory, "%s%ssaves", pwd, G_DIR_SEPARATOR_S);
-        g_free(pwd);
-    }
+    if (!file_get_saves_dir(directory, SMALL))
+        return;
+
     sprintf(name, "%s.zip", name);
     sprintf(buf, "%s%s%s", directory, G_DIR_SEPARATOR_S, name);
 
