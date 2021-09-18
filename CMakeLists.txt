@@ -51,6 +51,13 @@ if (JSON-C_FOUND)
     if (HAVE_JSON_OBJECT_NEW_ARRAY_EXT)
         add_definitions("-DHAVE_JSON_OBJECT_NEW_ARRAY_EXT")
     endif()
+    check_symbol_exists(json_object_object_add_ex "json-c/json.h"
+                        HAVE_JSON_OBJECT_OBJECT_ADD_EX)
+    if (HAVE_JSON_OBJECT_OBJECT_ADD_EX)
+       add_definitions("-DHAVE_JSON_OBJECT_OBJECT_ADD_EX")
+    endif()
+
+
 
 
 endif()

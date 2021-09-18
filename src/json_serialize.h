@@ -9,299 +9,561 @@
 #include "transfer_struct.h"
 #include "json_compat.h"
 
-json_object *
-bygfoot_json_serialize_bygfoot(const Bygfoot *bygfoot);
+struct bygfoot_json_serialize_buffer {
+    char *data;
+    gint len;
+    gint alloc_size;
+};
 
-json_object *
-bygfoot_json_serialize_country_list(GPtrArray *country_list);
+void
+bygfoot_json_serialize_write_stdout(const char *s, gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_countries(const GPtrArray *countries);
+void
+bygfoot_json_serialize_write_buffer(const char *s, gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_country(const Country *country);
+void
+bygfoot_json_serialize_bygfoot(const Bygfoot *bygfoot,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
+void
+bygfoot_json_serialize_country_list(GPtrArray *country_list,
+                                    const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
+
+void
+bygfoot_json_serialize_countries(const GPtrArray *countries,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
+
+void
+bygfoot_json_serialize_country(const Country *country,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 /** @name League */
 /* @{ */
-json_object *
-bygfoot_json_serialize_leagues(const GPtrArray *leagues);
+void
+bygfoot_json_serialize_leagues(const GPtrArray *leagues,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_league(const League *league);
+void
+bygfoot_json_serialize_league(const League *league,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_prom_rel(PromRel prom_rel);
+void
+bygfoot_json_serialize_prom_rel(PromRel prom_rel,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_prom_rel_elements(const GArray *garry);
+void
+bygfoot_json_serialize_prom_rel_elements(const GArray *garry,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_prom_rel_element(const PromRelElement *element);
+void
+bygfoot_json_serialize_prom_rel_element(const PromRelElement *element,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object*
-bygfoot_json_serialize_prom_games_array(const GArray *garry);
+void
+bygfoot_json_serialize_prom_games_array(const GArray *garry,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object*
-bygfoot_json_serialize_prom_games(const PromGames *prom_games);
+void
+bygfoot_json_serialize_prom_games(const PromGames *prom_games,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_two_match_weeks(GArray * const *two_match_weeks);
+void
+bygfoot_json_serialize_two_match_weeks(GArray * const *two_match_weeks,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_joined_leagues(const GArray *garray);
+void
+bygfoot_json_serialize_joined_leagues(const GArray *garray,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_joined_league(const JoinedLeague *league);
+void
+bygfoot_json_serialize_joined_league(const JoinedLeague *league,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_new_tables(const GArray *garray);
+void
+bygfoot_json_serialize_new_tables(const GArray *garray,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_new_table(const NewTable *table);
+void
+bygfoot_json_serialize_new_table(const NewTable *table,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_week_breaks(const GArray *garry);
+void
+bygfoot_json_serialize_week_breaks(const GArray *garry,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_week_break(const WeekBreak *week_break);
+void
+bygfoot_json_serialize_week_break(const WeekBreak *week_break,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 /* @} */
 
 /** @name User */
 /* @{ */
-json_object *
-bygfoot_json_serialize_users(const GArray *users);
+void
+bygfoot_json_serialize_users(const GArray *users,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_user(const User *user);
+void
+bygfoot_json_serialize_user(const User *user,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_user_bets(GArray * const *bets);
+void
+bygfoot_json_serialize_user_bets(GArray * const *bets,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_user_sponsor(UserSponsor sponsor);
+void
+bygfoot_json_serialize_user_sponsor(UserSponsor sponsor,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_user_histories(const GArray *histories);
+void
+bygfoot_json_serialize_user_histories(const GArray *histories,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_user_history(const UserHistory *history);
+void
+bygfoot_json_serialize_user_history(const UserHistory *history,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_user_money_in(const gint (*money_in)[5]);
+void
+bygfoot_json_serialize_user_money_in(const gint (*money_in)[5],
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_user_money_out(const gint (*money_out)[13]);
+void
+bygfoot_json_serialize_user_money_out(const gint (*money_out)[13],
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 /* @} */
 
 /** @name Bet */
 /* @{ */
-json_object *
-bygfoot_json_serialize_bet_user(const BetUser *bet_user);
+void
+bygfoot_json_serialize_bet_user(const BetUser *bet_user,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_bets(GArray **bets);
+void
+bygfoot_json_serialize_bets(GArray **bets,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_bet_match(const BetMatch *bet_match);
+void
+bygfoot_json_serialize_bet_match(const BetMatch *bet_match,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
 /* @} */
 
 /** @name Team */
 /* @{ */
-json_object *
-bygfoot_json_serialize_teams(const GPtrArray *teams);
+void
+bygfoot_json_serialize_teams(const GPtrArray *teams,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
+void
 bygfoot_json_serialize_team_ptrs(GPtrArray *team_ptrs,
-                                 GHashTable *fields);
-json_object *
-bygfoot_json_serialize_team_ptr(const Team *team);
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
+void
+bygfoot_json_serialize_team_ptr(const Team *team,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_team(const Team *team, GHashTable *fields);
+void
+bygfoot_json_serialize_team(const Team *team,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_youth_academy(YouthAcademy youth_academy);
+void
+bygfoot_json_serialize_youth_academy(YouthAcademy youth_academy,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 /* @} */
 
 
 /** @name Player */
 /* @{ */
-json_object *
-bygfoot_json_serialize_players(const GArray *player);
+void
+bygfoot_json_serialize_players(const GArray *player,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_player(const Player *player);
+void
+bygfoot_json_serialize_player(const Player *player,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_player_ptr(const Player *player);
+void
+bygfoot_json_serialize_player_ptr(const Player *player,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_cards(const GArray *cards);
+void
+bygfoot_json_serialize_cards(const GArray *cards,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_player_card(const PlayerCard *card);
+void
+bygfoot_json_serialize_player_card(const PlayerCard *card,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_games_goals_array(const GArray *games_goals);
+void
+bygfoot_json_serialize_games_goals_array(const GArray *games_goals,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_games_goals(const PlayerGamesGoals *games_goals);
+void
+bygfoot_json_serialize_games_goals(const PlayerGamesGoals *games_goals,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
 /* @} */
 
 /** @name Cup */
 /* @{ */
-json_object *
-bygfoot_json_serialize_cups(const GPtrArray *cups);
+void
+bygfoot_json_serialize_cups(const GPtrArray *garry,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_cup(const Cup *cup);
+void
+bygfoot_json_serialize_cup(const Cup *cup,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_cup_ptrs(GPtrArray *cups);
+void
+bygfoot_json_serialize_cup_ptrs(GPtrArray *cups,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_cup_ptr(const Cup *cup);
+void
+bygfoot_json_serialize_cup_ptr(const Cup *cup,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_cup_choose_teams(const GArray *garray);
+void
+bygfoot_json_serialize_cup_choose_teams(const GArray *garray,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_cup_choose_team(const CupChooseTeam *choose_team);
+void
+bygfoot_json_serialize_cup_choose_team(const CupChooseTeam *choose_team,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_cup_round_waits(const GArray *garray);
+void
+bygfoot_json_serialize_cup_round_waits(const GArray *garray,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_cup_round_wait(const CupRoundWait *wait);
+void
+bygfoot_json_serialize_cup_round_wait(const CupRoundWait *wait,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_cup_history(const GPtrArray *garray);
+void
+bygfoot_json_serialize_cup_history(const GPtrArray *garray,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
 /* @} */
 
 /** @name Transfers */
 /* @{ */
 
-json_object *
-bygfoot_json_serialize_transfers(const GArray *transfers);
+void
+bygfoot_json_serialize_transfers(const GArray *transfers,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_transfer(const Transfer *transfer);
+void
+bygfoot_json_serialize_transfer(const Transfer *transfer,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_transfer_offers(const GArray *offers);
+void
+bygfoot_json_serialize_transfer_offers(const GArray *offers,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_transfer_offer(const TransferOffer *offer);
+void
+bygfoot_json_serialize_transfer_offer(const TransferOffer *offer,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 /* @} */
 
 /** @name Fixtures */
 /* @{ */
-json_object*
-bygfoot_json_serialize_fixture_ptr(const Fixture *fixture);
+void
+bygfoot_json_serialize_fixture_ptr(const Fixture *fixture,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 /* @} */
 
 /** @name Live Game */
 /* @{ */
-json_object *
-bygfoot_json_serialize_live_game(LiveGame live_game);
+void
+bygfoot_json_serialize_live_game(LiveGame live_game,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_live_game_team_values(const gfloat (*team_values)[4]);
+void
+bygfoot_json_serialize_live_game_team_values(const gfloat (*team_values)[4],
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_live_game_units(const GArray *units);
+void
+bygfoot_json_serialize_live_game_units(const GArray *units,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_live_game_unit(const LiveGameUnit *unit);
+void
+bygfoot_json_serialize_live_game_unit(const LiveGameUnit *unit,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_live_game_event(LiveGameEvent event);
+void
+bygfoot_json_serialize_live_game_event(LiveGameEvent event,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_live_game_stats(LiveGameStats stats);
+void
+bygfoot_json_serialize_live_game_stats(LiveGameStats stats,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_live_game_stats_values(gint (*values)[9]);
+void
+bygfoot_json_serialize_live_game_stats_values(gint (*values)[9],
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_live_game_stats_players(GPtrArray * (*players)[5]);
+void
+bygfoot_json_serialize_live_game_stats_players(GPtrArray * (*players)[5],
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_live_game_team_state_array(LiveGameTeamState *team_states);
+void
+bygfoot_json_serialize_live_game_team_state_array(LiveGameTeamState *team_states,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_live_game_team_state(const LiveGameTeamState *team_state);
+void
+bygfoot_json_serialize_live_game_team_state(const LiveGameTeamState *team_state,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_live_game_action_ids(GArray **action_ids);
+void
+bygfoot_json_serialize_live_game_action_ids(GArray **action_ids,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 /* @} */
 
 /** @name Stats */
 /* @{ */
-json_object*
-bygfoot_json_serialize_season_stats(const GArray *stats);
+void
+bygfoot_json_serialize_season_stats(const GArray *stats,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_season_stat(const SeasonStat *stat);
+void
+bygfoot_json_serialize_season_stat(const SeasonStat *stat,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_champ_stats(const GArray *stats);
+void
+bygfoot_json_serialize_champ_stats(const GArray *stats,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_champ_stat(const ChampStat *stat);
+void
+bygfoot_json_serialize_champ_stat(const ChampStat *stat,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_league_stats(const GArray *stats);
+void
+bygfoot_json_serialize_league_stats(const GArray *stats,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_league_stat(const LeagueStat *stat);
+void
+bygfoot_json_serialize_league_stat(const LeagueStat *stat,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_stats(const GArray *stats);
+void
+bygfoot_json_serialize_stats(const GArray *stats,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_stat(const Stat *stat);
+void
+bygfoot_json_serialize_stat(const Stat *stat,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 /* @} */
 
 /** @name Job */
 /* @{ */
-json_object *
-bygfoot_json_serialize_jobs(const GArray *jobs);
+void
+bygfoot_json_serialize_jobs(const GArray *jobs,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_job(const Job *job);
+void
+bygfoot_json_serialize_job(const Job *job,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 /* @} */
 
 /** @name Table */
 /* @{ */
-json_object *
-bygfoot_json_serialize_tables(const GArray *garray);
+void
+bygfoot_json_serialize_tables(const GArray *garray,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_table(const Table *table);
+void
+bygfoot_json_serialize_table(const Table *table,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_table_elements(const GArray *garray);
+void
+bygfoot_json_serialize_table_elements(const GArray *garray,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_table_element(const TableElement *element);
+void
+bygfoot_json_serialize_table_element(const TableElement *element,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 /* @} */
 
 /** @name Fixture */
 /* @{ */
-json_object *
-bygfoot_json_serialize_fixtures(const GArray *garray);
+void
+bygfoot_json_serialize_fixtures(const GArray *garray,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_fixture(const Fixture *fixture);
+void
+bygfoot_json_serialize_fixture(const Fixture *fixture,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_fixture_teams(Team * const *teams);
+void
+bygfoot_json_serialize_fixture_teams(Team * const *teams,
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 
-json_object *
-bygfoot_json_serialize_fixture_result(const gint (*result)[3]);
+void
+bygfoot_json_serialize_fixture_result(const gint (*result)[3],
+                               const json_object *fields,
+                               void (*write_func)(const char*, gpointer),
+                               gpointer userdata);
 /* @} */
 #endif
