@@ -511,9 +511,9 @@ file_get_country_files(void)
         g_ptr_array_add(country_files, 
             g_strdup((gchar*)g_ptr_array_index(dir_contents, i)));
 
-        sprintf(buf, "%s%s%s", g_strdup(country_structure),
+        sprintf(buf, "%s%s%s", country_structure,
             G_DIR_SEPARATOR_S,
-            g_strdup((gchar*)g_ptr_array_index(dir_contents, i)));
+            (gchar*)g_ptr_array_index(dir_contents, i));
         g_ptr_array_add(country_files_full_path,g_strdup(buf));
       }
     }
