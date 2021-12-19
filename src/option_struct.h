@@ -73,6 +73,31 @@ typedef struct
     gfloat float_player_streak_length_upper;
     gfloat float_player_etal_scout_factor;
     gfloat float_player_fitness_increase_younger_factor;
+    gfloat float_player_average_talent_variance;
+    gfloat float_player_age_lower;
+    gfloat float_player_age_upper;
+    gfloat float_player_peak_age_lower;
+    gfloat float_player_peak_age_goalie_addition;
+    gfloat float_player_peak_age_upper;
+    gfloat float_player_peak_region_lower;
+    gfloat float_player_peak_region_upper;
+    gfloat float_player_fitness_lower;
+    gfloat float_player_fitness_upper;
+    gfloat float_player_contract_lower;
+    gfloat float_player_contract_upper;
+    gfloat float_player_lsu_lower;
+    gfloat float_player_lsu_upper;
+    gfloat float_player_value_skill_weight;
+    gfloat float_player_value_power;
+    gfloat float_player_value_younger_factor;
+    gfloat float_player_value_older_factor;
+    gfloat float_player_wage_value_factor;
+    gfloat float_player_wage_random_dev;
+    gfloat float_player_pos_bound1;
+    gfloat float_player_pos_bound2;
+    gfloat float_player_skill_update_older_factor;
+    gfloat float_player_skill_update_older_add;
+    gint int_team_cpu_players;
 
 
 } OptionList;

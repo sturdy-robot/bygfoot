@@ -694,6 +694,31 @@ file_load_opt_file(const gchar *filename, OptionList *optionlist, gboolean sort)
     cache_option(float_player_streak_length_upper);
     cache_option(float_player_etal_scout_factor);
     cache_option(float_player_fitness_increase_younger_factor);
+    cache_option(float_player_average_talent_variance);
+    cache_option(float_player_age_lower);
+    cache_option(float_player_age_upper);
+    cache_option(float_player_peak_age_lower);
+    cache_option(float_player_peak_age_goalie_addition);
+    cache_option(float_player_peak_age_upper);
+    cache_option(float_player_peak_region_lower);
+    cache_option(float_player_peak_region_upper);
+    cache_option(float_player_fitness_lower);
+    cache_option(float_player_fitness_upper);
+    cache_option(float_player_contract_lower);
+    cache_option(float_player_contract_upper);
+    cache_option(float_player_lsu_lower);
+    cache_option(float_player_lsu_upper);
+    cache_option(float_player_value_skill_weight);
+    cache_option(float_player_value_power);
+    cache_option(float_player_value_younger_factor);
+    cache_option(float_player_value_older_factor);
+    cache_option(float_player_wage_value_factor);
+    cache_option(float_player_wage_random_dev);
+    cache_option(float_player_pos_bound1);
+    cache_option(float_player_pos_bound2);
+    cache_option(float_player_skill_update_older_factor);
+    cache_option(float_player_skill_update_older_add);
+    cache_option(int_team_cpu_players);
     //printf("streak: %f\n", optionlist->float_player_streak_influence_skill);
   }
 
