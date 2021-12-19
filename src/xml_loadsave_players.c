@@ -168,75 +168,71 @@ xml_loadsave_players_text(gchar *text)
 #ifdef DEBUG
     printf("xml_loadsave_players_text\n");
 #endif
-
-    gint int_value = -1;
-    gfloat float_value = -1;
-
-    int_value = (gint)g_ascii_strtod(text, NULL);
-    float_value = xml_read_float(text);
-
     if(state == TAG_PLAYER_NAME)
 	misc_string_assign(&new_player.name, text);
     else if(state == TAG_PLAYER_POS)
-	new_player.pos = int_value;
+	new_player.pos = xml_read_int(text);
     else if(state == TAG_PLAYER_CPOS)
-	new_player.cpos = int_value;
+	new_player.cpos = xml_read_int(text);
     else if(state == TAG_PLAYER_HEALTH)
-	new_player.health = int_value;
+	new_player.health = xml_read_int(text);
     else if(state == TAG_PLAYER_RECOVERY)
-	new_player.recovery = int_value;
+	new_player.recovery = xml_read_int(text);
     else if(state == TAG_PLAYER_ID)
-	new_player.id = int_value;
+	new_player.id = xml_read_int(text);
     else if(state == TAG_PLAYER_VALUE)
-	new_player.value = int_value;
+	new_player.value = xml_read_int(text);
     else if(state == TAG_PLAYER_WAGE)
-	new_player.wage = int_value;
+	new_player.wage = xml_read_int(text);
     else if(state == TAG_PLAYER_OFFERS)
-	new_player.offers = int_value;
+	new_player.offers = xml_read_int(text);
     else if(state == TAG_PLAYER_PARTICIPATION)
-	new_player.participation = int_value;
+	new_player.participation = xml_read_int(text);
     else if(state == TAG_PLAYER_SKILL)
-	new_player.skill = float_value;
+	new_player.skill = xml_read_float(text);
     else if(state == TAG_PLAYER_CSKILL)
-	new_player.cskill = float_value;
+	new_player.cskill = xml_read_float(text);
     else if(state == TAG_PLAYER_TALENT)
-	new_player.talent = float_value;
+	new_player.talent = xml_read_float(text);
     else if(state == TAG_PLAYER_FITNESS)
-	new_player.fitness = float_value;
+	new_player.fitness = xml_read_float(text);
     else if(state == TAG_PLAYER_LSU)
-	new_player.lsu = float_value;
+	new_player.lsu = xml_read_float(text);
     else if(state == TAG_PLAYER_AGE)
-	new_player.age = float_value;
+	new_player.age = xml_read_float(text);
     else if(state == TAG_PLAYER_PEAK_AGE)
-	new_player.peak_age = float_value;
+	new_player.peak_age = xml_read_float(text);
     else if(state == TAG_PLAYER_PEAK_REGION)
-	new_player.peak_region = float_value;
+	new_player.peak_region = xml_read_float(text);
     else if(state == TAG_PLAYER_CONTRACT)
-	new_player.contract = float_value;
+	new_player.contract = xml_read_float(text);
     else if(state == TAG_PLAYER_ETAL)
-	new_player.etal[etalidx] = float_value;
+	new_player.etal[etalidx] = xml_read_float(text);
     else if(state == TAG_PLAYER_GAMES_GOAL_CLID)
-	new_games_goals.clid = int_value;
+	new_games_goals.clid = xml_read_int(text);
     else if(state == TAG_PLAYER_GAMES_GOAL_GAMES)
-	new_games_goals.games = int_value;
+	new_games_goals.games = xml_read_int(text);
     else if(state == TAG_PLAYER_GAMES_GOAL_GOALS)
-	new_games_goals.goals = int_value;
+	new_games_goals.goals = xml_read_int(text);
     else if(state == TAG_PLAYER_GAMES_GOAL_SHOTS)
-	new_games_goals.shots = int_value;
+	new_games_goals.shots = xml_read_int(text);
     else if(state == TAG_PLAYER_CARD_CLID)
-	new_card.clid = int_value;
+	new_card.clid = xml_read_int(text);
     else if(state == TAG_PLAYER_CARD_YELLOW)
-	new_card.yellow = int_value;
+	new_card.yellow = xml_read_int(text);
     else if(state == TAG_PLAYER_CARD_RED)
-	new_card.red = int_value;
+	new_card.red = xml_read_int(text);
     else if(state == TAG_PLAYER_CAREER)
-	new_player.career[careeridx] = int_value;
+	new_player.career[careeridx] = xml_read_int(text);
     else if(state == TAG_PLAYER_STREAK)
-	new_player.streak = int_value;
+	new_player.streak = xml_read_int(text);
     else if(state == TAG_PLAYER_STREAK_COUNT)
-	new_player.streak_count = float_value;
+	new_player.streak_count = xml_read_float(text);
     else if(state == TAG_PLAYER_STREAK_PROB)
-	new_player.streak_prob = float_value;
+	new_player.streak_prob = xml_read_float(text);
+
+    #undef int_value
+    #undef float_value
 }
 
 void

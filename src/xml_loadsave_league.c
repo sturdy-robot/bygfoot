@@ -219,15 +219,10 @@ xml_loadsave_league_text         (GMarkupParseContext *context,
 #endif
 
     gchar buf[SMALL], buf2[SMALL];
-    gint int_value = -1;
-    gfloat float_value = -1;
     Table new_table;
 
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
-
-    float_value = xml_read_float(buf);
-    int_value = (gint)g_ascii_strtod(buf, NULL);
 
     if(state == TAG_NAME)
 	misc_string_assign(&new_league->name, buf);
@@ -242,36 +237,37 @@ xml_loadsave_league_text         (GMarkupParseContext *context,
     else if(state == TAG_SID)
 	misc_string_assign(&new_league->sid, buf);
     else if(state == TAG_ID)
-	new_league->id = int_value;
+	new_league->id = xml_read_int(buf);
     else if(state == TAG_LEAGUE_LAYER)
-	new_league->layer = int_value;
+	new_league->layer = xml_read_int(buf);
     else if(state == TAG_LEAGUE_FIRST_WEEK)
-	new_league->first_week = int_value;
+	new_league->first_week = xml_read_int(buf);
     else if(state == TAG_LEAGUE_ROUND_ROBINS)
-	new_league->round_robins = int_value;
+	new_league->round_robins = xml_read_int(buf);
     else if(state == TAG_WEEK_GAP)
-	new_league->week_gap = int_value;
+	new_league->week_gap = xml_read_int(buf);
     else if(state == TAG_WEEK_BREAK)
-        new_week_break.week_number = int_value;
+        new_week_break.week_number = xml_read_int(buf);
     else if(state == TAG_WEEK_BREAK_LENGTH)
     {
-        new_week_break.length = int_value;
+        new_week_break.length = xml_read_int(buf);
         g_array_append_val(new_league->week_breaks, new_week_break);
     }
     else if(state == TAG_SKIP_WEEKS_WITH)
         g_ptr_array_add(new_league->skip_weeks_with, g_strdup(buf));
     else if(state == TAG_YELLOW_RED)
-	new_league->yellow_red = int_value;
-    else if(state == TAG_LEAGUE_BREAK)
-	g_array_append_val(new_league->rr_breaks, int_value);
-    else if(state == TAG_LEAGUE_JOINED_LEAGUE_SID)	
+	new_league->yellow_red = xml_read_int(buf);
+    else if(state == TAG_LEAGUE_BREAK) {
+        gint val = xml_read_int(buf);
+	g_array_append_val(new_league->rr_breaks, val);
+    } else if(state == TAG_LEAGUE_JOINED_LEAGUE_SID)	
         g_array_index(new_league->joined_leagues,
                       JoinedLeague,
                       new_league->joined_leagues->len - 1).sid = g_strdup(buf);
     else if(state == TAG_LEAGUE_JOINED_LEAGUE_RR)
         g_array_index(new_league->joined_leagues,
                       JoinedLeague,
-                      new_league->joined_leagues->len - 1).rr = int_value;
+                      new_league->joined_leagues->len - 1).rr = xml_read_int(buf);
     else if(state == TAG_LEAGUE_NEW_TABLE_NAME)	
         g_array_index(new_league->new_tables,
                       NewTable,
@@ -279,12 +275,14 @@ xml_loadsave_league_text         (GMarkupParseContext *context,
     else if(state == TAG_LEAGUE_NEW_TABLE_ADD_WEEK)
         g_array_index(new_league->new_tables,
                       NewTable,
-                      new_league->new_tables->len - 1).add_week = int_value;
-    else if(state == TAG_LEAGUE_TWO_MATCH_WEEK_START)
-	g_array_append_val(new_league->two_match_weeks[0], int_value);
-    else if(state == TAG_LEAGUE_TWO_MATCH_WEEK_END)
-	g_array_append_val(new_league->two_match_weeks[1], int_value);
-    else if(state == TAG_LEAGUE_TABLE_FILE)
+                      new_league->new_tables->len - 1).add_week = xml_read_int(buf);
+    else if(state == TAG_LEAGUE_TWO_MATCH_WEEK_START) {
+        gint val = xml_read_int(buf);
+	g_array_append_val(new_league->two_match_weeks[0], val);
+    } else if(state == TAG_LEAGUE_TWO_MATCH_WEEK_END) {
+        gint val = xml_read_int(buf);
+	g_array_append_val(new_league->two_match_weeks[1], val);
+    } else if(state == TAG_LEAGUE_TABLE_FILE)
     {
 	new_table = table_new();
 
@@ -293,25 +291,25 @@ xml_loadsave_league_text         (GMarkupParseContext *context,
 	g_array_append_val(new_league->tables, new_table);
     }
     else if(state == TAG_LEAGUE_AVERAGE_TALENT)
-	new_league->average_talent = float_value;
+	new_league->average_talent = xml_read_float(buf);
     else if(state == TAG_LEAGUE_PROM_REL_PROM_GAMES_DEST_SID)
 	new_prom_games.dest_sid = g_strdup(buf);
     else if(state == TAG_LEAGUE_PROM_REL_PROM_GAMES_CUP_SID)
 	new_prom_games.cup_sid = g_strdup(buf);
     else if(state == TAG_LEAGUE_PROM_REL_PROM_GAMES_NUMBER_OF_ADVANCE)
-	new_prom_games.number_of_advance = int_value;
+	new_prom_games.number_of_advance = xml_read_int(buf);
     else if(state == TAG_LEAGUE_PROM_REL_PROM_GAMES_LOSER_SID)
 	new_prom_games.loser_sid = g_strdup(buf);
     else if(state == TAG_LEAGUE_PROM_REL_PROM_GAMES_RANK)
-	new_prom_games.ranks[promrankidx] = int_value;
+	new_prom_games.ranks[promrankidx] = xml_read_int(buf);
     else if(state == TAG_LEAGUE_PROM_REL_ELEMENT_RANK)
-	new_element.ranks[promrankidx] = int_value;
+	new_element.ranks[promrankidx] = xml_read_int(buf);
     else if(state == TAG_LEAGUE_PROM_REL_ELEMENT_NUMBER_OF_TEAMS)
-	new_element.num_teams = int_value;
+	new_element.num_teams = xml_read_int(buf);
     else if(state == TAG_LEAGUE_PROM_REL_ELEMENT_TYPE)
-	new_element.type = int_value;
+	new_element.type = xml_read_int(buf);
     else if(state == TAG_LEAGUE_PROM_REL_ELEMENT_FROM_TABLE)
-	new_element.from_table = int_value;
+	new_element.from_table = xml_read_int(buf);
     else if(state == TAG_LEAGUE_PROM_REL_ELEMENT_DEST_SID)
 	misc_string_assign(&new_element.dest_sid, buf);
 }

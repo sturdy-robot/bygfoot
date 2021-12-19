@@ -127,33 +127,28 @@ xml_loadsave_jobs_text         (GMarkupParseContext *context,
 #endif
 
     gchar buf[SMALL];
-    gint int_value = -1;
-    gfloat float_value = -1;
 
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
 
-    int_value = (gint)g_ascii_strtod(buf, NULL);
-    float_value = xml_read_float(text);
-
     if(state == TAG_JOB_TYPE)
-	new_job.type = int_value;
+	new_job.type = xml_read_int(buf);
     else if(state == TAG_JOB_TIME)
-	new_job.time = int_value;
+	new_job.time = xml_read_int(buf);
     else if(state == TAG_JOB_COUNTRY_FILE)
 	new_job.country_file = g_strdup(buf);
     else if(state == TAG_JOB_COUNTRY_NAME)
 	new_job.country_name = g_strdup(buf);
     else if(state == TAG_JOB_COUNTRY_RATING)
-	new_job.country_rating = int_value;
+	new_job.country_rating = xml_read_int(buf);
     else if(state == TAG_JOB_LEAGUE_NAME)
 	new_job.league_name = g_strdup(buf);
     else if(state == TAG_JOB_LEAGUE_LAYER)
-	new_job.league_layer = int_value;
+	new_job.league_layer = xml_read_int(buf);
     else if(state == TAG_JOB_TALENT_PERCENT)
-	new_job.talent_percent = int_value;
+	new_job.talent_percent = xml_read_int(buf);
     else if(state == TAG_JOB_TEAM_ID)
-	new_job.team_id = int_value;
+	new_job.team_id = xml_read_int(buf);
 }
 
 void

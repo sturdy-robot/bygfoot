@@ -130,19 +130,16 @@ xml_loadsave_newspaper_text         (GMarkupParseContext *context,
 #endif
 
     gchar buf[SMALL];
-    gint int_value = -1;
 
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
 
-    int_value = (gint)g_ascii_strtod(buf, NULL);
-
     if(state == TAG_NEWS_PAPER_ARTICLE_WEEK)
-	new_article.week_number = int_value;
+	new_article.week_number = xml_read_int(buf);
     else if(state == TAG_NEWS_PAPER_ARTICLE_WEEK_ROUND)
-	new_article.week_round_number = int_value;
+	new_article.week_round_number = xml_read_int(buf);
     else if(state == TAG_NEWS_PAPER_ARTICLE_ID)
-	new_article.id = int_value;
+	new_article.id = xml_read_int(buf);
     else if(state == TAG_NEWS_PAPER_ARTICLE_TITLE_SMALL)
 	new_article.title_small = g_strdup(buf);
     else if(state == TAG_NEWS_PAPER_ARTICLE_TITLE)
@@ -150,15 +147,15 @@ xml_loadsave_newspaper_text         (GMarkupParseContext *context,
     else if(state == TAG_NEWS_PAPER_ARTICLE_SUBTITLE)
 	new_article.subtitle = g_strdup(buf);
     else if(state == TAG_NEWS_PAPER_ARTICLE_TITLE_ID)
-	new_article.title_id = int_value;
+	new_article.title_id = xml_read_int(buf);
     else if(state == TAG_NEWS_PAPER_ARTICLE_SUBTITLE_ID)
-	new_article.subtitle_id = int_value;
+	new_article.subtitle_id = xml_read_int(buf);
     else if(state == TAG_NEWS_PAPER_ARTICLE_USER_IDX)
-	new_article.user_idx = int_value;
+	new_article.user_idx = xml_read_int(buf);
     else if(state == TAG_NEWS_PAPER_ARTICLE_CLID)
-	new_article.clid = int_value;
+	new_article.clid = xml_read_int(buf);
     else if(state == TAG_NEWS_PAPER_ARTICLE_CUP_ROUND)
-	new_article.cup_round = int_value;
+	new_article.cup_round = xml_read_int(buf);
 }
 
 void

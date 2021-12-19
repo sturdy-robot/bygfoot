@@ -190,50 +190,45 @@ xml_loadsave_live_game_text         (GMarkupParseContext *context,
 #endif
 
     gchar buf[SMALL];
-    gint int_value = -1;
-    gfloat float_value = -1;
 
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
 
-    int_value = (gint)g_ascii_strtod(buf, NULL);
-    float_value = xml_read_float(buf);
-
     if(state == TAG_LIVE_GAME_FIX_ID)
     {
-	lgame->fix_id = int_value;
-	lgame->fix = fixture_from_id(int_value, FALSE);
+	lgame->fix_id = xml_read_int(buf);
+	lgame->fix = fixture_from_id(xml_read_int(buf), FALSE);
     }
     else if(state == TAG_LIVE_GAME_TEAM_NAME)
 	misc_string_assign(&lgame->team_names[team_name_idx], buf);
     else if(state == TAG_LIVE_GAME_ATTENDANCE)
-	lgame->attendance = int_value;
+	lgame->attendance = xml_read_int(buf);
     else if(state == TAG_LIVE_GAME_UNIT_POSSESSION)
-	new_unit.possession = int_value;
+	new_unit.possession = xml_read_int(buf);
     else if(state == TAG_LIVE_GAME_UNIT_AREA)
-	new_unit.area = int_value;
+	new_unit.area = xml_read_int(buf);
     else if(state == TAG_LIVE_GAME_UNIT_MINUTE)
-	new_unit.minute = int_value;
+	new_unit.minute = xml_read_int(buf);
     else if(state == TAG_LIVE_GAME_UNIT_TIME)
-	new_unit.time = int_value;
+	new_unit.time = xml_read_int(buf);
     else if(state == TAG_LIVE_GAME_UNIT_RESULT)
-	new_unit.result[unitidx] = int_value;
+	new_unit.result[unitidx] = xml_read_int(buf);
     else if(state == TAG_LIVE_GAME_UNIT_EVENT_TYPE)
-	new_unit.event.type = int_value;
+	new_unit.event.type = xml_read_int(buf);
     else if(state == TAG_LIVE_GAME_UNIT_EVENT_TEAM)
-	new_unit.event.team = int_value;
+	new_unit.event.team = xml_read_int(buf);
     else if(state == TAG_LIVE_GAME_UNIT_EVENT_PLAYER)
-	new_unit.event.player = int_value;
+	new_unit.event.player = xml_read_int(buf);
     else if(state == TAG_LIVE_GAME_UNIT_EVENT_PLAYER2)
-	new_unit.event.player2 = int_value;
+	new_unit.event.player2 = xml_read_int(buf);
     else if(state == TAG_LIVE_GAME_UNIT_EVENT_COMMENTARY)
 	new_unit.event.commentary = g_strdup(buf);
     else if(state == TAG_LIVE_GAME_UNIT_EVENT_VERBOSITY)
-	new_unit.event.verbosity = int_value;
+	new_unit.event.verbosity = xml_read_int(buf);
     else if(state == TAG_LIVE_GAME_STAT_POSSESSION)
-	lgame->stats.possession = float_value;
+	lgame->stats.possession = xml_read_float(text);
     else if(state == TAG_LIVE_GAME_STAT_VALUE)
-	lgame->stats.values[statvalidx][statvalidx2] = int_value;
+	lgame->stats.values[statvalidx][statvalidx2] = xml_read_int(buf);
     else if(state == TAG_LIVE_GAME_STAT_PLAYER_ELEMENT)
 	g_ptr_array_add(lgame->stats.players[statplidx][statplidx2],
 			g_strdup(buf));

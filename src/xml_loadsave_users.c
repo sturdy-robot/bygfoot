@@ -273,95 +273,91 @@ xml_loadsave_users_text         (GMarkupParseContext *context,
 #endif
 
     gchar buf[SMALL];
-    gint int_value = -1;
-    gfloat float_value = -1;
 
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
-
-    int_value = (gint)g_ascii_strtod(buf, NULL);
-    float_value = xml_read_float(text);
 
     if(state == TAG_NAME)
 	misc_string_assign(&new_user.name, buf);
     else if(state == TAG_TEAM_ID)
     {
-	new_user.tm = team_of_id(int_value);
+	new_user.tm = team_of_id(xml_read_int(buf));
 	new_user.youth_academy.tm = new_user.tm;
     }
     else if(state == TAG_USER_MONEY)
-	new_user.money = int_value;
+	new_user.money = xml_read_int(buf);
     else if(state == TAG_USER_DEBT)
-	new_user.debt = int_value;
+	new_user.debt = xml_read_int(buf);
     else if(state == TAG_USER_DEBT_INTEREST)
-	new_user.debt_interest = float_value;
+	new_user.debt_interest = xml_read_float(text);
     else if(state == TAG_USER_ALR_START_WEEK)
-	new_user.alr_start_week = int_value;
+	new_user.alr_start_week = xml_read_int(buf);
     else if(state == TAG_USER_ALR_WEEKLY_INSTALLMENT)
-	new_user.alr_weekly_installment = int_value;
+	new_user.alr_weekly_installment = xml_read_int(buf);
     else if(state == TAG_USER_SCOUT)
-	new_user.scout = int_value;
+	new_user.scout = xml_read_int(buf);
     else if(state == TAG_USER_PHYSIO)
-	new_user.physio = int_value;
+	new_user.physio = xml_read_int(buf);
     else if(state == TAG_USER_SPONSOR_NAME)
     {
 	misc_string_replace_token(buf, "AND", "&amp;");
 	g_string_printf(new_user.sponsor.name, buf, NULL);
     }
     else if(state == TAG_USER_SPONSOR_CONTRACT)
-	new_user.sponsor.contract = int_value;
+	new_user.sponsor.contract = xml_read_int(buf);
     else if(state == TAG_USER_SPONSOR_BENEFIT)
-	new_user.sponsor.benefit = int_value;
+	new_user.sponsor.benefit = xml_read_int(buf);
     else if(state == TAG_USER_COUNTER)
-	new_user.counters[idx_cnt] = int_value;
+	new_user.counters[idx_cnt] = xml_read_int(buf);
     else if(state == TAG_USER_MONEY_IN)
-	new_user.money_in[idx_mon_in][idx] = int_value;
+	new_user.money_in[idx_mon_in][idx] = xml_read_int(buf);
     else if(state == TAG_USER_MONEY_OUT)
-	new_user.money_out[idx_mon_out][idx] = int_value;
+	new_user.money_out[idx_mon_out][idx] = xml_read_int(buf);
     else if(state == TAG_USER_HISTORY_SEASON)
-	new_history.season = int_value;
+	new_history.season = xml_read_int(buf);
     else if(state == TAG_USER_HISTORY_WEEK)
-	new_history.week = int_value;
+	new_history.week = xml_read_int(buf);
     else if(state == TAG_USER_HISTORY_TYPE)
-	new_history.type = int_value;
+	new_history.type = xml_read_int(buf);
     else if(state == TAG_USER_HISTORY_TEAM_NAME)
 	new_history.team_name = g_strdup(buf);
     else if(state == TAG_USER_HISTORY_STRING)	
 	new_history.string[idx] = (strlen(buf) == 0) ? NULL : g_strdup(buf);
     else if(state == TAG_USER_EVENT_TYPE)
-	new_event.type = int_value;
+	new_event.type = xml_read_int(buf);
     else if(state == TAG_USER_EVENT_VALUE1)
-	new_event.value1 = int_value;
+	new_event.value1 = xml_read_int(buf);
     else if(state == TAG_USER_EVENT_VALUE2)
-	new_event.value2 = int_value;
+	new_event.value2 = xml_read_int(buf);
     else if(state == TAG_USER_EVENT_VALUE_STRING)
 	new_event.value_string = g_strdup(buf);
     else if(state == TAG_USER_YA_COACH)
-	new_user.youth_academy.coach = int_value;
+	new_user.youth_academy.coach = xml_read_int(buf);
     else if(state == TAG_USER_YA_PERCENTAGE)
-	new_user.youth_academy.percentage = int_value;
+	new_user.youth_academy.percentage = xml_read_int(buf);
     else if(state == TAG_USER_YA_AV_COACH)
-	new_user.youth_academy.av_coach = float_value;
+	new_user.youth_academy.av_coach = xml_read_float(text);
     else if(state == TAG_USER_YA_AV_PERCENTAGE)
-	new_user.youth_academy.av_percentage = float_value;
+	new_user.youth_academy.av_percentage = xml_read_float(text);
     else if(state == TAG_USER_YA_COUNTER)
-	new_user.youth_academy.counter_youth = float_value;
+	new_user.youth_academy.counter_youth = xml_read_float(text);
     else if(state == TAG_USER_YA_PREFERENCE)
-	new_user.youth_academy.pos_pref = int_value;
+	new_user.youth_academy.pos_pref = xml_read_int(buf);
     else if(state == TAG_USER_BET_WAGER)
-	new_bet.wager = int_value;
+	new_bet.wager = xml_read_int(buf);
     else if(state == TAG_USER_BET_OUTCOME)
-	new_bet.outcome = int_value;
+	new_bet.outcome = xml_read_int(buf);
     else if(state == TAG_USER_BET_FIX_ID)
-	new_bet.fix_id = int_value;
-    else if(state == TAG_USER_DEFAULT_TEAM)
-        g_array_append_val(new_user.default_team, int_value);
-    else if(state == TAG_USER_DEFAULT_STRUCTURE)
-        new_user.default_structure = int_value;
+	new_bet.fix_id = xml_read_int(buf);
+    else if(state == TAG_USER_DEFAULT_TEAM) {
+        gint val = xml_read_int(buf);
+        g_array_append_val(new_user.default_team, val);
+    } else if(state == TAG_USER_DEFAULT_STRUCTURE)
+        new_user.default_structure = xml_read_int(buf);
     else if(state == TAG_USER_DEFAULT_STYLE)
-        new_user.default_style = int_value;
+        new_user.default_style = xml_read_int(buf);
     else if(state == TAG_USER_DEFAULT_BOOST)
-        new_user.default_boost = int_value;
+        new_user.default_boost = xml_read_int(buf);
     else if(state >= TAG_START_PLAYERS && state <= TAG_END_PLAYERS)
 	xml_loadsave_players_text(buf);
 }

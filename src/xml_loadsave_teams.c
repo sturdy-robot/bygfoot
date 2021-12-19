@@ -171,14 +171,9 @@ xml_loadsave_teams_text         (GMarkupParseContext *context,
 #endif
 
     gchar buf[SMALL];
-    gint int_value = -1;
-    gfloat float_value = -1;
 
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
-
-    int_value = (gint)g_ascii_strtod(buf, NULL);
-    float_value = xml_read_float(buf);
 
     if(state == TAG_NAME)
 	misc_string_assign(&new_team->name, buf);
@@ -187,39 +182,39 @@ xml_loadsave_teams_text         (GMarkupParseContext *context,
     else if(state == TAG_TEAM_NAMES_FILE)
 	misc_string_assign(&new_team->names_file, buf);
     else if(state == TAG_TEAM_CLID)
-	new_team->clid = int_value;
+	new_team->clid = xml_read_int(buf);
     else if(state == TAG_TEAM_STRATEGY_SID)
 	misc_string_assign(&new_team->strategy_sid, buf);
     else if(state == TAG_TEAM_ID)
-	new_team->id = int_value;
+	new_team->id = xml_read_int(buf);
     else if(state == TAG_TEAM_STRUCTURE)
-	new_team->structure = int_value;
+	new_team->structure = xml_read_int(buf);
     else if(state == TAG_TEAM_STYLE)
-	new_team->style = int_value;
+	new_team->style = xml_read_int(buf);
     else if(state == TAG_TEAM_BOOST)
-	new_team->boost = int_value;
+	new_team->boost = xml_read_int(buf);
     else if(state == TAG_TEAM_STADIUM_NAME)
 	misc_string_assign(&new_team->stadium.name, buf);
     else if(state == TAG_TEAM_STADIUM_CAPACITY)
-	new_team->stadium.capacity = int_value;
+	new_team->stadium.capacity = xml_read_int(buf);
     else if(state == TAG_TEAM_STADIUM_AVERAGE_ATTENDANCE)
-	new_team->stadium.average_attendance = int_value;
+	new_team->stadium.average_attendance = xml_read_int(buf);
     else if(state == TAG_TEAM_STADIUM_POSSIBLE_ATTENDANCE)
-	new_team->stadium.possible_attendance = int_value;
+	new_team->stadium.possible_attendance = xml_read_int(buf);
     else if(state == TAG_TEAM_STADIUM_GAMES)
-	new_team->stadium.games = int_value;
+	new_team->stadium.games = xml_read_int(buf);
     else if(state == TAG_TEAM_STADIUM_SAFETY)
-	new_team->stadium.safety = float_value;
+	new_team->stadium.safety = xml_read_float(buf);
     else if(state == TAG_TEAM_STADIUM_TICKET_PRICE)
-        new_team->stadium.ticket_price = float_value;
+        new_team->stadium.ticket_price = xml_read_float(buf);
     else if(state == TAG_TEAM_LUCK)
-	new_team->luck = float_value;
+	new_team->luck = xml_read_float(buf);
     else if(state == TAG_TEAM_FIRST_TEAM_SID)
 	misc_string_assign(&new_team->first_team_sid, buf);
     else if(state == TAG_TEAM_FIRST_TEAM_ID)
-    new_team->first_team_id = int_value;
+    new_team->first_team_id = xml_read_int(buf);
     else if(state == TAG_TEAM_RESERVE_LEVEL)
-	new_team->reserve_level = int_value;
+	new_team->reserve_level = xml_read_int(buf);
     else if(state >= TAG_START_PLAYERS && state <= TAG_END_PLAYERS)
 	xml_loadsave_players_text(buf);
 }

@@ -146,15 +146,12 @@ xml_loadsave_season_stats_text         (GMarkupParseContext *context,
 
     gchar buf[SMALL], buf2[SMALL];
     LeagueStat new_league_stat;
-    gint int_value = -1;
 
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
 
-    int_value = (gint)g_ascii_strtod(buf, NULL);
-
     if(state == TAG_SEASON_NUMBER)
-	new_season_stat.season_number = int_value;
+	new_season_stat.season_number = xml_read_int(buf);
     else if(state == TAG_CHAMP_STAT_TEAM_NAME)
 	new_champ_stat.team_name = g_strdup(buf);
     else if(state == TAG_CHAMP_STAT_CL_NAME)

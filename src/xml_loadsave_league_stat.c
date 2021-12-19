@@ -158,12 +158,9 @@ xml_loadsave_league_stat_text         (GMarkupParseContext *context,
 #endif
 
     gchar buf[SMALL];
-    gint int_value = -1;
 
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
-
-    int_value = (gint)g_ascii_strtod(buf, NULL);
 
     if(state == TAG_STAT_LEAGUE_NAME)
 	lig_stat->league_name = g_strdup(buf);
@@ -174,11 +171,11 @@ xml_loadsave_league_stat_text         (GMarkupParseContext *context,
     else if(state == TAG_STAT_VALUE)
     {
 	if(valueidx == 0)
-	    new_stat.value1 = int_value;
+	    new_stat.value1 = xml_read_int(buf);
 	else if(valueidx == 1)
-	    new_stat.value2 = int_value;
+	    new_stat.value2 = xml_read_int(buf);
 	else
-	    new_stat.value3 = int_value;
+	    new_stat.value3 = xml_read_int(buf);
     }
     else if(state == TAG_STAT_VALUE_STRING)
 	new_stat.value_string = g_strdup(buf);

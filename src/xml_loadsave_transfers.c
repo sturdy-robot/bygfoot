@@ -150,7 +150,7 @@ xml_loadsave_transfers_text         (GMarkupParseContext *context,
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
 
-    int_value = (gint)g_ascii_strtod(buf, NULL);
+    int_value = xml_read_int(buf);
 
     if(state == TAG_TEAM_ID)
 	new_transfer.tm = team_of_id(int_value);

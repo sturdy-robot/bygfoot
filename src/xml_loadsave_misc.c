@@ -190,42 +190,37 @@ xml_loadsave_misc_text         (GMarkupParseContext *context,
 
     MiscUserData *misc_user_data = (MiscUserData*)user_data;
     gchar buf[SMALL];
-    gint int_value = -1;
-    gfloat float_value = -1;
     gchar *dirname = (gchar*)user_data;
 
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
 
-    int_value = (gint)g_ascii_strtod(buf, NULL);
-    float_value = xml_read_float(buf);
-
     if(state == TAG_NAME)
 	misc_string_assign(&misc_user_data->country->name, buf);
     else if(state == TAG_MISC_RATING)
-	misc_user_data->country->rating = int_value;
+	misc_user_data->country->rating = xml_read_int(buf);
     else if(state == TAG_SYMBOL)
 	misc_string_assign(&misc_user_data->country->symbol, buf);
     else if(state == TAG_SID)
 	misc_string_assign(&misc_user_data->country->sid, buf);
     else if (state == TAG_MISC_RESERVE_PROMOTION_RULES)
-        misc_user_data->country->reserve_promotion_rules = int_value;
+        misc_user_data->country->reserve_promotion_rules = xml_read_int(buf);
     else if(state == TAG_MISC_SEASON)
-	season = int_value;
+	season = xml_read_int(buf);
     else if(state == TAG_MISC_WEEK)
-	week = int_value;
+	week = xml_read_int(buf);
     else if(state == TAG_MISC_WEEK_ROUND)
-	week_round = int_value;
+	week_round = xml_read_int(buf);
     else if(state == TAG_MISC_COUNTER)
-	counters[countidx] = int_value;
+	counters[countidx] = xml_read_int(buf);
     else if(state == TAG_MISC_ALLCUP)
-	g_ptr_array_add(acps, cup_from_clid(int_value));
+	g_ptr_array_add(acps, cup_from_clid(xml_read_int(buf)));
     else if(state == TAG_MISC_BET_ODD)
-	new_bet.odds[oddidx] = float_value;
+	new_bet.odds[oddidx] = xml_read_float(buf);
     else if(state == TAG_MISC_BET_FIX_ID)
-	new_bet.fix_id = int_value;
+	new_bet.fix_id = xml_read_int(buf);
     else if(state == TAG_MISC_CURRENT_INTEREST)
-      current_interest = float_value;
+      current_interest = xml_read_float(buf);
     else if(state == TAG_LEAGUE_FILE) {
         xml_load_league(misc_user_data->bygfoot, misc_user_data->country->leagues,
                         misc_user_data->directory, buf);

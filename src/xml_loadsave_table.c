@@ -126,25 +126,22 @@ xml_loadsave_table_text         (GMarkupParseContext *context,
 #endif
 
     gchar buf[SMALL];
-    gint int_value = -1;
 
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
 
-    int_value = (gint)g_ascii_strtod(buf, NULL);
-
     if(state == TAG_NAME)
 	misc_string_assign(&new_table->name, buf);
     else if(state == TAG_ID)
-	new_table->clid = int_value;
+	new_table->clid = xml_read_int(buf);
     else if(state == TAG_ROUND)
-	new_table->round = int_value;
+	new_table->round = xml_read_int(buf);
     else if(state == TAG_TEAM_ID)
-	new_element.team = GINT_TO_POINTER(int_value);
+	new_element.team = GINT_TO_POINTER(xml_read_int(buf));
     else if(state == TAG_TABLE_ELEMENT_VALUE)
-	new_element.values[valueidx] = int_value;
+	new_element.values[valueidx] = xml_read_int(buf);
     else if(state == TAG_TABLE_ELEMENT_OLD_RANK)
-	new_element.old_rank = int_value;
+	new_element.old_rank = xml_read_int(buf);
 }
 
 void
