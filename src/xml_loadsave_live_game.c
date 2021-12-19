@@ -197,7 +197,7 @@ xml_loadsave_live_game_text         (GMarkupParseContext *context,
     buf[text_len] = '\0';
 
     int_value = (gint)g_ascii_strtod(buf, NULL);
-    float_value = g_ascii_strtod(buf, NULL) / 10000;
+    float_value = xml_read_float(buf);
 
     if(state == TAG_LIVE_GAME_FIX_ID)
     {

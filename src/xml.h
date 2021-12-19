@@ -95,6 +95,8 @@ enum XmlTags
 
 #define xml_write_float(fil, value, tag, indent) fprintf(fil, "%s<_%d>%d</_%d>\n", indent, tag, (gint)rint(value * 10000), tag)
 
+#define xml_read_float(str) (((gfloat)(g_ascii_strtoll(str, NULL, 10)) / 10000))
+
 #define xml_get_tag_from_name(name) (gint)g_ascii_strtod(name + 1, NULL)
 
 void

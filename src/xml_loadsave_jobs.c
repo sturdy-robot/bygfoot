@@ -134,7 +134,7 @@ xml_loadsave_jobs_text         (GMarkupParseContext *context,
     buf[text_len] = '\0';
 
     int_value = (gint)g_ascii_strtod(buf, NULL);
-    float_value = (gfloat)g_ascii_strtod(text, NULL) / 10000;
+    float_value = xml_read_float(text);
 
     if(state == TAG_JOB_TYPE)
 	new_job.type = int_value;

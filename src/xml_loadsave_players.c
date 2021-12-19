@@ -173,7 +173,7 @@ xml_loadsave_players_text(gchar *text)
     gfloat float_value = -1;
 
     int_value = (gint)g_ascii_strtod(text, NULL);
-    float_value = (gfloat)g_ascii_strtod(text, NULL) / 10000;
+    float_value = xml_read_float(text);
 
     if(state == TAG_PLAYER_NAME)
 	misc_string_assign(&new_player.name, text);

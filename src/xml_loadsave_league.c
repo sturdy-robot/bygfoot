@@ -226,7 +226,7 @@ xml_loadsave_league_text         (GMarkupParseContext *context,
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
 
-    float_value = (gfloat)g_ascii_strtod(buf, NULL) / 10000;
+    float_value = xml_read_float(buf);
     int_value = (gint)g_ascii_strtod(buf, NULL);
 
     if(state == TAG_NAME)
