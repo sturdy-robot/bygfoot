@@ -38,6 +38,17 @@
 #include "transfer.h"
 #include "user.h"
 
+/** Initialize a player object.  This is faster than player_new andn is
+ * meant to be used when loading a player from a save file.
+ */
+void
+player_init(Player *player)
+{
+    memset(player, 0, sizeof(Player));
+    player->cards = g_array_new(FALSE, FALSE, sizeof(PlayerCard));
+    player->games_goals = g_array_new(FALSE, FALSE, sizeof(PlayerGamesGoals));
+}
+
 /** Create and return a new player.
     @param tm The team the player will belong to.
     @param average_talent The average talent of the team. 

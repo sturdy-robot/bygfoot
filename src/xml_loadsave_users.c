@@ -134,7 +134,8 @@ xml_loadsave_users_start_element (GMarkupParseContext *context,
 	    new_user.youth_academy.players = 
 		g_array_new(FALSE, FALSE, sizeof(Player));
 
-	xml_loadsave_players_start_element(tag, new_user.tm);
+	xml_loadsave_players_start_element(tag, new_user.tm,
+                                           new_user.youth_academy.players);
     }
     else if(tag == TAG_USER_HISTORY)
     {
@@ -252,7 +253,7 @@ xml_loadsave_users_end_element    (GMarkupParseContext *context,
 	state = (idx_bet == 0) ? TAG_USER_BET0 : TAG_USER_BET1;
     else if(tag >= TAG_START_PLAYERS && tag <= TAG_END_PLAYERS)
     {
-	xml_loadsave_players_end_element(tag, new_user.youth_academy.players);
+	xml_loadsave_players_end_element(tag);
 	if(tag == TAG_START_PLAYERS)
 	    state = TAG_USER;
     }

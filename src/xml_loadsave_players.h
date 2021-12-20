@@ -33,10 +33,10 @@ void
 xml_loadsave_players_text(gchar *text);
 
 void
-xml_loadsave_players_end_element(gint tag, GArray *players);
+xml_loadsave_players_end_element(gint tag);
 
 void
-xml_loadsave_players_start_element(gint tag, Team *tm);
+xml_loadsave_players_start_element(gint tag, Team *tm, GArray *players);
 
 void
 xml_loadsave_players_write_player(FILE *fil, const Player *pl);

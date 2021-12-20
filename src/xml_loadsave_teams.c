@@ -100,7 +100,7 @@ xml_loadsave_teams_start_element (GMarkupParseContext *context,
     {
 	valid_tag = TRUE;
 	state = TAG_START_PLAYERS;
-	xml_loadsave_players_start_element(tag, new_team);
+	xml_loadsave_players_start_element(tag, new_team, new_team->players);
     }
 
     if(!valid_tag)
@@ -150,7 +150,7 @@ xml_loadsave_teams_end_element    (GMarkupParseContext *context,
 	state = TAG_TEAM_STADIUM;
     else if(tag >= TAG_START_PLAYERS && tag <= TAG_END_PLAYERS)
     {
-	xml_loadsave_players_end_element(tag, new_team->players);
+	xml_loadsave_players_end_element(tag);
 	if(tag == TAG_START_PLAYERS)
 	    state = TAG_TEAM;
     }

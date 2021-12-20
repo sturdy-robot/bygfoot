@@ -49,6 +49,9 @@ enum PlayerCompareAttrib
 /** Reset the streak counter. */
 #define player_streak_reset_count(pl) pl->streak_count = -math_rnd((gfloat)const_int("int_player_streak_lock_length_lower"), (gfloat)const_int("int_player_streak_lock_length_upper"))
 
+void
+player_init(Player *player);
+
 Player
 player_new(Team *tm, gfloat average_skill, gboolean new_id);
 
