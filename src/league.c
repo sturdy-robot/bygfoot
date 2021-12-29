@@ -456,6 +456,11 @@ bygfoot_get_cup_sid(const gchar *sid)
         if (cup)
             return cup;
     }
+    for (i = 0; i < country.bygfoot->international_cups->len; i++) {
+        Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
+        if (strcmp(cup->sid, sid) == 0)
+            return cup;
+    }
     return NULL;
 }
 

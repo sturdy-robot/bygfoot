@@ -32,11 +32,15 @@ void
 xml_loadsave_misc_read(Bygfoot *bygfoot, const gchar *dirname, const gchar *basename);
 
 void
-xml_loadsave_misc_write(const gchar *prefix);
+xml_loadsave_misc_write(Bygfoot *bygfoot, const gchar *prefix);
 
 void
 xml_loadsave_misc_write_bets(FILE *fil);
 
 void
 xml_loadsave_misc_write_countries(FILE *fil, const gchar *prefix);
+
+void
+xml_loadsave_misc_write_international_cups(FILE *fil, Bygfoot *bygfoot,
+                                           const gchar *prefix);
 #endif

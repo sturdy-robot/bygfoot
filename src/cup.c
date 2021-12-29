@@ -209,7 +209,12 @@ query_cup_choose_team_is_league(const gchar *sid)
 gboolean
 cup_choose_team_should_generate(const CupChooseTeam *ct)
 {
+    Cup *cup;
     if (g_str_has_prefix(ct->sid, "LEAGUE") || g_str_has_prefix(ct->sid, "CUP"))
+        return FALSE;
+
+    cup = bygfoot_get_cup_sid(ct->sid);
+    if (cup && cup_has_property(cup, "international"))
         return FALSE;
 
     return !country_get_league_sid(&country, ct->sid) &&
@@ -291,6 +296,16 @@ cup_get_choose_team_league_cup(const CupChooseTeam *ct,
 		break;
 	    }
 	}
+        for(i=0; i< country.bygfoot->international_cups->len; i++)
+        {
+            Cup *c = &g_array_index(country.bygfoot->international_cups, Cup, i);
+            if (strcmp(c->sid, ct->sid) == 0)
+            {
+                *cup = c;
+                *league = NULL;
+                break;
+            }
+        }
     }
 
     if(*league == NULL && *cup == NULL)
@@ -1093,6 +1108,11 @@ cup_from_clid(gint clid)
 	if(cp(i).id == clid)
 	    return &cp(i);
 
+    for (i = 0; i < country.bygfoot->international_cups->len; i++) {
+        Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
+        if (cup->id == clid)
+            return cup;
+    }
     main_exit_program(EXIT_POINTER_NOT_FOUND, 
 		      "cup_from_clid: didn't find cup with id %d\n", clid);
 
@@ -1417,7 +1437,14 @@ cup_get_most_recent_results(const Cup *cup)
 }
 
 gboolean
+cup_has_property(const Cup *cup, const gchar *property)
+{
+    return query_misc_string_in_array(property, cup->properties);
+}
+
+gboolean
 cup_is_international(const Cup *cup)
 {
     return query_league_cup_has_property(cup->id, "international");
 }
+

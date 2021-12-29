@@ -416,6 +416,6 @@ job_change_country(Job *job, Bygfoot *bygfoot)
     /* Set season to 1 so that some special things
        in the start_new_season function don't get applied. */
     season = 1;
-    start_new_season();
+    start_new_season(bygfoot);
     season = season_temp;
 }

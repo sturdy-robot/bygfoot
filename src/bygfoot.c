@@ -24,6 +24,7 @@ bygfoot_init(Bygfoot *bygfoot, enum BygfootFrontend frontend)
         bygfoot->get_progress_bar_fraction = NULL;
         break;
     }
+    bygfoot->international_cups = g_array_new(FALSE, TRUE, sizeof(Cup));
 }
 
 Country *bygfoot_load_country(Bygfoot *bygfoot, const gchar *country_name)

@@ -26,6 +26,7 @@
 #include <glib/gstdio.h>
 
 #include "callbacks.h"
+#include "cup.h"
 #include "file.h"
 #include "free.h"
 #include "gui.h"
@@ -154,7 +155,7 @@ load_save_save_game(Bygfoot *bygfoot, const gchar *filename)
         _("Saving miscellaneous..."),
         PIC_TYPE_SAVE);
 
-    xml_loadsave_misc_write(prefix);
+    xml_loadsave_misc_write(bygfoot, prefix);
 
     bygfoot_show_progress(bygfoot,
         ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
@@ -180,6 +181,18 @@ load_save_save_game(Bygfoot *bygfoot, const gchar *filename)
     if (bygfoot->frontend == BYGFOOT_FRONTEND_GTK2) {
         setsav1;
     }
+}
+
+static void
+update_all_cups(void)
+{
+    gint i;
+    GPtrArray *new_acps = g_ptr_array_new();
+    for (i = 0; i < acps->len; i++) {
+        g_ptr_array_add(new_acps, cup_from_clid(GPOINTER_TO_INT(g_ptr_array_index(acps, i))));
+    }
+    g_ptr_array_free(acps, TRUE);
+    acps = new_acps;
 }
 
 /** Load the game from the specified file.
@@ -271,6 +284,8 @@ load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_mai
     /* Now that all the teams have been loaded, replace the team ids with team ptrs
      * where necessary. */
     xml_loadsave_leagues_cups_adjust_team_ptrs();
+    xml_loadsave_leagues_cups_adjust_team_ptrs_cups(bygfoot->international_cups);
+    update_all_cups();
 
 
     if(debug > 60)

@@ -1388,6 +1388,15 @@ fixture_from_id(gint id, gboolean abort_program)
 	    if(g_array_index(cp(i).fixtures, Fixture, j).id == id)
 		return &g_array_index(cp(i).fixtures, Fixture, j);
 
+    for (i = 0; i < country.bygfoot->international_cups->len; i++) {
+        Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
+        for (j = 0; j < cup->fixtures->len; j++) {
+            Fixture *fixture = &g_array_index(cup->fixtures, Fixture, j);
+            if (fixture->id == id)
+                return fixture;
+        }
+    }
+
     if(abort_program)
 	main_exit_program(EXIT_POINTER_NOT_FOUND, 
 			  "fixture_from_id: fixture with id %d found \n", id);

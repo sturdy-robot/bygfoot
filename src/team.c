@@ -159,6 +159,7 @@ query_team_is_in_cups(const Team *tm, gint group)
 #endif
 
     gint i, j;
+    const Cup *cup;
 
     if(group == -1)
 	return FALSE;
@@ -175,6 +176,16 @@ query_team_is_in_cups(const Team *tm, gint group)
 				group, cp(i).name, cp(i).sid);
 		return TRUE;
 	    }
+        }
+    }
+    for (i = 0; i < country.bygfoot->international_cups->len; i++) {
+        const Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
+        if (cup->group != group)
+            continue;
+        for (j = 0; j < cup->teams->len; j++) {
+            const Team *team = g_ptr_array_index(cup->teams, j);
+            if (team == tm)
+                return TRUE;
         }
     }
     return FALSE;

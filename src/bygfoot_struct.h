@@ -21,6 +21,11 @@ typedef struct
     void (*show_progress)(gfloat, const gchar *, gint);
     gdouble (*get_progress_bar_fraction)(void);
     /* @} */
+
+    /** @name Global state */
+    /* @{ */
+    GArray *international_cups;
+    /* @} */
 } Bygfoot;
 
 

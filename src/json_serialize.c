@@ -162,6 +162,7 @@ bygfoot_json_serialize_bygfoot(const Bygfoot *bygfoot)
     SERIALIZE_BYGFOOT_FIELD(current_interest, json_object_new_double);
     SERIALIZE_BYGFOOT_FIELD(jobs, bygfoot_json_serialize_jobs);
     SERIALIZE_BYGFOOT_FIELD(cur_user, json_object_new_int64);
+    json_object_object_add(bygfoot_obj, "international_cups", bygfoot_json_serialize_cups(bygfoot->international_cups));
     
     return bygfoot_obj;
 }

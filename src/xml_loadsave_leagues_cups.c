@@ -209,11 +209,54 @@ xml_loadsave_leagues_cups_write(const gchar *prefix)
 }
 
 void
-xml_loadsave_leagues_cups_adjust_team_ptrs(void)
+xml_loadsave_leagues_cups_adjust_team_ptrs_cups(GArray *cups)
 {
     gint i, j, k;
     GPtrArray *team_ptrs;
     GPtrArray *history;
+
+    for(i = 0; i < cups->len; i++)
+    {
+        Cup *cup = &g_array_index(cups, Cup, i);
+        fixture_refresh_team_pointers(cup->fixtures);
+
+        for(j = 0; j < cup->rounds->len; j++)
+        {
+            CupRound *round = &g_array_index(cup->rounds, CupRound, j);
+            team_ptrs = g_ptr_array_new();
+            for(k = 0; k < round->team_ptrs->len; k++) {
+                Team *team = team_of_id(GPOINTER_TO_INT(g_ptr_array_index(round->team_ptrs, k)));
+                g_ptr_array_add(team_ptrs, team);
+                g_ptr_array_add(cup->teams, team);
+            }
+
+            g_ptr_array_free(g_array_index(cup->rounds, CupRound, j).team_ptrs, TRUE);
+            g_array_index(cup->rounds, CupRound, j).team_ptrs = team_ptrs;
+
+            for(k = 0; k < g_array_index(cup->rounds, CupRound, j).tables->len; k++)
+                table_refresh_team_pointers(&g_array_index(g_array_index(cup->rounds, CupRound, j).tables, Table, k));
+        }
+
+        history = g_ptr_array_new();
+        for (j = 0; j < cup->history->len; j++) {
+           GPtrArray *season = g_ptr_array_index(cup->history, j);
+           team_ptrs = g_ptr_array_new();
+           for (k = 0; k < season->len; k++) {
+                g_ptr_array_add(team_ptrs, team_of_id(GPOINTER_TO_INT(g_ptr_array_index(season, k))));
+           }
+           g_ptr_array_add(history, team_ptrs);
+           g_ptr_array_unref(season);
+        }
+        g_ptr_array_unref(cup->history);
+        cup->history = history;
+    }
+
+}
+
+void
+xml_loadsave_leagues_cups_adjust_team_ptrs(void)
+{
+    gint i, j;
 
     for(i = 0; i < ligs->len; i++)
     {
@@ -223,39 +266,5 @@ xml_loadsave_leagues_cups_adjust_team_ptrs(void)
             table_refresh_team_pointers(&g_array_index(lig(i).tables, Table, j));
     }
 
-    for(i = 0; i < cps->len; i++)
-    {
-        Cup *cup = &cp(i);
-        fixture_refresh_team_pointers(cup->fixtures);
-
-        for(j = 0; j < cup->rounds->len; j++)
-        {
-            CupRound *round = &g_array_index(cp(i).rounds, CupRound, j);
-            team_ptrs = g_ptr_array_new();
-            for(k = 0; k < round->team_ptrs->len; k++) {
-                Team *team = team_of_id(GPOINTER_TO_INT(g_ptr_array_index(round->team_ptrs, k)));
-                g_ptr_array_add(team_ptrs, team);
-                g_ptr_array_add(cup->teams, team);
-            }
-
-            g_ptr_array_free(g_array_index(cp(i).rounds, CupRound, j).team_ptrs, TRUE);
-            g_array_index(cp(i).rounds, CupRound, j).team_ptrs = team_ptrs;
-
-            for(k = 0; k < g_array_index(cp(i).rounds, CupRound, j).tables->len; k++)
-                table_refresh_team_pointers(&g_array_index(g_array_index(cp(i).rounds, CupRound, j).tables, Table, k));
-        }
-
-        history = g_ptr_array_new();
-        for (j = 0; j < cp(i).history->len; j++) {
-           GPtrArray *season = g_ptr_array_index(cp(i).history, j);
-           team_ptrs = g_ptr_array_new();
-           for (k = 0; k < season->len; k++) {
-                g_ptr_array_add(team_ptrs, team_of_id(GPOINTER_TO_INT(g_ptr_array_index(season, k))));
-           }
-           g_ptr_array_add(history, team_ptrs);
-           g_ptr_array_unref(season);
-        }
-        g_ptr_array_unref(cp(i).history);
-        cp(i).history = history;
-    }
+    xml_loadsave_leagues_cups_adjust_team_ptrs_cups(cps);
 }

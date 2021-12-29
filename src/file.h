@@ -62,6 +62,9 @@ file_my_fopen(const gchar *filename, gchar *bits, FILE **fil, gboolean abort_pro
 GPtrArray*
 file_get_country_files(void);
 
+GPtrArray*
+file_get_international_cup_files(void);
+
 void
 file_load_conf_files(void);
 

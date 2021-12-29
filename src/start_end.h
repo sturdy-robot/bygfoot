@@ -32,13 +32,19 @@ void
 start_load_other_countries(Bygfoot *bygfoot);
 
 void
+start_load_international_cups(Bygfoot *bygfoot);
+
+void
 start_generate_cup_history(void);
+
+void
+start_generate_cup_history_international(Bygfoot *bygfoot);
 
 void
 start_new_game(Bygfoot *bygfoot);
 
 void
-start_new_season(void);
+start_new_season(Bygfoot *bygfoot);
 
 void
 start_write_variables(void);

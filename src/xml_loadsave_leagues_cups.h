@@ -56,6 +56,8 @@ xml_loadsave_leagues_cups_text         (GMarkupParseContext *context,
 void
 xml_loadsave_leagues_cups_read(Country *country, const gchar *dirname, const gchar *prefix);
 
+void
+xml_loadsave_leagues_cups_adjust_team_ptrs_cups(GArray *cups);
 
 void
 xml_loadsave_leagues_cups_adjust_team_ptrs(void);

@@ -482,11 +482,10 @@ file_dir_get_contents(const gchar *dir_name, const gchar *prefix, const gchar *s
   return contents;
 }
 
-/** Return the country definition files found in the support dirs.
- *  The files are appended with the directories*/
-  GPtrArray*
-file_get_country_files(void)
+static GPtrArray*
+file_get_definitions_with_prefix(const char *prefix)
 {
+
 #ifdef DEBUG
   printf("file_get_country_files\n");
 #endif
@@ -501,7 +500,7 @@ file_get_country_files(void)
 
   while(elem != NULL)
   {
-    dir_contents = file_dir_get_contents((gchar*)elem->data, "country_", ".xml");
+    dir_contents = file_dir_get_contents((gchar*)elem->data, prefix, ".xml");
     country_structure = misc_strip_definitions_root((gchar*)elem->data);
     for(i=0;i<dir_contents->len;i++)
     {
@@ -531,6 +530,29 @@ file_get_country_files(void)
   free_gchar_array(&country_files_full_path);
 
   return country_files;
+}
+
+/** Return the country definition files found in the support dirs.
+ *  The files are appended with the directories*/
+  GPtrArray*
+file_get_country_files(void)
+{
+    return file_get_definitions_with_prefix("country_");
+}
+
+static gint
+cup_files_compare(gconstpointer a, gconstpointer b)
+{
+    return strcmp(*(const gchar**)a, *(const gchar**)b);
+}
+
+GPtrArray*
+file_get_international_cup_files(void)
+{
+    GPtrArray *files = file_get_definitions_with_prefix("international_cup_");
+    /* Sort files so they are loaded in the correct order. */
+    g_ptr_array_sort(files, cup_files_compare);
+    return files;
 }
 
 /** Read the file until the next line that's not a comment or

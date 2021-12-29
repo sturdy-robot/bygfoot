@@ -34,6 +34,16 @@
 #define cup_get_last_tables_round(clid) &g_array_index(cup_from_clid(clid)->rounds, CupRound, cup_has_tables(clid))
 #define cup_get_last_tables(clid) g_array_index(cup_from_clid(clid)->rounds, CupRound, cup_has_tables(clid)).tables
 
+/* Helper macro to iterate through national and international cups. */
+
+#define __get_cup(bygfoot, i) \
+    (i < cps->len ? cp(i) : (i - cps->len < bygfoot->international_cups->len ? \
+                           g_ptr_array_index(bygfoot->international_cups, i - cps->len) : \
+                           NULL))
+
+#define foreach_available_cup(bygfoot, i, cup) \
+    for (i = 0, cup = __get_cup(bygfoot, i); cup; i++, cup = __get_cpu(bygfoot, i))
+
 Cup
 cup_new(gboolean new_id, Bygfoot *bygfoot);
 
@@ -153,6 +163,9 @@ cup_get_last_season_results(const Cup *cup);
 
 GPtrArray *
 cup_get_most_recent_results(const Cup *cup);
+
+gboolean
+cup_has_property(const Cup *cup, const gchar *property);
 
 gboolean
 cup_is_international(const Cup *cup);

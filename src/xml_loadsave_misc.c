@@ -56,6 +56,7 @@ enum XmlLoadSaveCountryTags
     TAG_LEAGUES_CUPS,
     TAG_LEAGUE_FILE,
     TAG_CUP_FILE,
+    TAG_INTERNATIONAL_CUPS,
     TAG_END
 };
 
@@ -63,6 +64,7 @@ typedef struct {
     Country *country;
     const gchar *directory;
     Bygfoot *bygfoot;
+    GArray *cups;
 
 } MiscUserData;
 
@@ -117,6 +119,12 @@ xml_loadsave_misc_start_element (GMarkupParseContext *context,
         misc_user_data->country->leagues = g_array_new(FALSE, FALSE, sizeof(League));
         misc_user_data->country->cups = g_array_new(FALSE, FALSE, sizeof(Cup));
         misc_user_data->country->allcups = g_ptr_array_new();
+        misc_user_data->country->bygfoot = misc_user_data->bygfoot;
+        misc_user_data->cups = misc_user_data->country->cups;
+    }
+
+    if (tag == TAG_INTERNATIONAL_CUPS) {
+        misc_user_data->cups = misc_user_data->bygfoot->international_cups;
     }
 
     if(!valid_tag)
@@ -151,6 +159,7 @@ xml_loadsave_misc_end_element    (GMarkupParseContext *context,
        tag == TAG_MISC_WEEK_ROUND ||
        tag == TAG_MISC_BET0 ||
        tag == TAG_LEAGUES_CUPS ||
+       tag == TAG_INTERNATIONAL_CUPS ||
        tag == TAG_LEAGUE_FILE ||
        tag == TAG_CUP_FILE ||
        tag == TAG_COUNTRIES ||
@@ -214,7 +223,7 @@ xml_loadsave_misc_text         (GMarkupParseContext *context,
     else if(state == TAG_MISC_COUNTER)
 	counters[countidx] = xml_read_int(buf);
     else if(state == TAG_MISC_ALLCUP)
-	g_ptr_array_add(acps, cup_from_clid(xml_read_int(buf)));
+	g_ptr_array_add(acps, GINT_TO_POINTER(xml_read_int(buf)));
     else if(state == TAG_MISC_BET_ODD)
 	new_bet.odds[oddidx] = xml_read_float(buf);
     else if(state == TAG_MISC_BET_FIX_ID)
@@ -226,9 +235,9 @@ xml_loadsave_misc_text         (GMarkupParseContext *context,
                         misc_user_data->directory, buf);
     } else if (state == TAG_CUP_FILE) {
         Cup new_cup = cup_new(FALSE, misc_user_data->bygfoot);
-        g_array_append_val(misc_user_data->country->cups, new_cup);
+        g_array_append_val(misc_user_data->cups, new_cup);
         xml_load_cup(misc_user_data->bygfoot,
-	             &g_array_index(misc_user_data->country->cups, Cup, misc_user_data->country->cups->len - 1),
+	             &g_array_index(misc_user_data->cups, Cup, misc_user_data->cups->len - 1),
                      misc_user_data->directory, buf);
     }
 }
@@ -269,6 +278,10 @@ xml_loadsave_misc_read(Bygfoot *bygfoot, const gchar *dirname, const gchar *base
     if (country_list)
         g_ptr_array_free(country_list, TRUE);
     country_list = g_ptr_array_new();
+    if (bygfoot->international_cups) {
+	g_array_free(bygfoot->international_cups, TRUE);
+        bygfoot->international_cups = g_array_new(FALSE, TRUE, sizeof(Cup));
+    }
     free_bets(TRUE);
 
     if(g_markup_parse_context_parse(context, file_contents, length, &error))
@@ -286,7 +299,7 @@ xml_loadsave_misc_read(Bygfoot *bygfoot, const gchar *dirname, const gchar *base
 
 /** Save the country variable into the file. */
 void
-xml_loadsave_misc_write(const gchar *prefix)
+xml_loadsave_misc_write(Bygfoot *bygfoot, const gchar *prefix)
 {
 #ifdef DEBUG
     printf("xml_loadsave_misc_write\n");
@@ -322,6 +335,8 @@ xml_loadsave_misc_write(const gchar *prefix)
     xml_loadsave_misc_write_bets(fil);
 
     xml_loadsave_misc_write_countries(fil, prefix);
+
+    xml_loadsave_misc_write_international_cups(fil, bygfoot, prefix);
 
     fprintf(fil, "</_%d>\n", TAG_MISC);
     fclose(fil);
@@ -398,4 +413,23 @@ xml_loadsave_misc_write_countries(FILE *fil, const gchar *prefix)
     }
 
     fprintf(fil, "%s</_%d>\n", I0, TAG_COUNTRIES);
+
+}
+
+void
+xml_loadsave_misc_write_international_cups(FILE *fil, Bygfoot *bygfoot,
+                                           const gchar *prefix)
+{
+    gint i;
+    gchar buf[SMALL];
+    gchar *basename = g_path_get_basename(prefix);
+
+    fprintf(fil, "%s<_%d>\n", I2, TAG_INTERNATIONAL_CUPS);
+    for (i = 0; i < bygfoot->international_cups->len; i++) {
+        const Cup *cup = &g_array_index(bygfoot->international_cups, Cup, i);
+	xml_loadsave_cup_write(prefix, cup);
+	sprintf(buf, "%s___cup_%d.xml", basename, cup->id);
+	xml_write_string(fil, buf, TAG_CUP_FILE, I3);
+    }
+    fprintf(fil, "%s</_%d>\n", I2, TAG_INTERNATIONAL_CUPS);
 }

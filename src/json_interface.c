@@ -392,6 +392,14 @@ bygfoot_json_call_get_fixtures(Bygfoot *bygfoot, const json_object *args)
             json_object_array_add(fixtures_obj, bygfoot_json_fixture_to_json(fixture));
         }
     }
+    for (i = 0; i < bygfoot->international_cups->len; i++) {
+        const Cup *cup = &g_array_index(bygfoot->international_cups, Cup, i);
+        int j;
+        for (j = 0; j < cup->fixtures->len; j++) {
+            const Fixture *fixture = &g_array_index(cup->fixtures, Fixture, j);
+            json_object_array_add(fixtures_obj, bygfoot_json_fixture_to_json(fixture));
+        }
+    }
 
     data = json_object_new_object();
     response = json_object_new_object();
