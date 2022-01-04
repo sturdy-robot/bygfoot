@@ -47,7 +47,7 @@ void
 misc2_callback_mmatches_button_press(GtkWidget *widget, gint row_num, gint col_num, Bygfoot *bygfoot);
 
 gboolean
-misc2_callback_evaluate_job_application(Job *job, User *user);
+misc2_callback_evaluate_job_application(Bygfoot *bygfoot, Job *job, User *user);
 
 #endif
 

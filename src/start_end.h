@@ -29,13 +29,13 @@
 #include "bygfoot.h"
 
 void
-start_load_other_countries(void);
+start_load_other_countries(Bygfoot *bygfoot);
 
 void
 start_generate_cup_history(void);
 
 void
-start_new_game(void);
+start_new_game(Bygfoot *bygfoot);
 
 void
 start_new_season(void);

@@ -363,7 +363,7 @@ job_remove(Job *job, gboolean free_tm)
 /** Change the game so that the country is
     used that's specified in the job. */
 void
-job_change_country(Job *job)
+job_change_country(Job *job, Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("job_change_country\n");
@@ -390,7 +390,7 @@ job_change_country(Job *job)
 
     free_country(&country, TRUE);
 
-    xml_country_read(job->country_file, &country);
+    xml_country_read(job->country_file, &country, bygfoot);
 
     stat5 = STATUS_GENERATE_TEAMS;
     for(i=0;i<ligs->len;i++)

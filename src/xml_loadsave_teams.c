@@ -78,6 +78,7 @@ xml_loadsave_teams_start_element (GMarkupParseContext *context,
     gint i;
     gint tag = xml_get_tag_from_name(element_name);
     gboolean valid_tag = FALSE;
+    Country *country = (Country*)user_data;
 
     for(i=TAG_TEAMS;i<TAG_END;i++)
 	if(tag == i)
@@ -95,7 +96,7 @@ xml_loadsave_teams_start_element (GMarkupParseContext *context,
 
     if(tag == TAG_TEAM) {
         new_team = g_malloc0(sizeof(Team));
-	*new_team = team_new(FALSE);
+	*new_team = team_new(FALSE, country);
     } else if(tag >= TAG_START_PLAYERS && tag <= TAG_END_PLAYERS)
     {
 	valid_tag = TRUE;
@@ -220,7 +221,7 @@ xml_loadsave_teams_text         (GMarkupParseContext *context,
 }
 
 void
-xml_loadsave_teams_read(const gchar *filename, GPtrArray *teams)
+xml_loadsave_teams_read(const gchar *filename, Country *country, GPtrArray *teams)
 {
 #ifdef DEBUG
     printf("xml_loadsave_teams_read\n");
@@ -236,7 +237,7 @@ xml_loadsave_teams_read(const gchar *filename, GPtrArray *teams)
     GError *error = NULL;
 
     context = 
-	g_markup_parse_context_new(&parser, 0, NULL, NULL);
+	g_markup_parse_context_new(&parser, 0, country, NULL);
 
     if(!g_file_get_contents(filename, &file_contents, &length, &error))
     {

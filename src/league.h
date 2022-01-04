@@ -62,7 +62,7 @@ typedef struct
 } MoveSummary;
 
 League
-league_new(gboolean new_id);
+league_new(gboolean new_id, Country *country);
 
 PromRelElement
 prom_rel_element_new(void);

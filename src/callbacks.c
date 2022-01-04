@@ -458,14 +458,17 @@ on_treeview_right_button_press_event   (GtkWidget       *widget,
 		game_gui_show_job_offer(NULL, 
 					&g_array_index(jobs, Job, idx - 1),
 					STATUS_JOB_EXCHANGE_SHOW_TEAM);
-	    else if(event->button == 3)
+	    else if(event->button == 3) {
+                Bygfoot *bygfoot = (Bygfoot*)user_data;
 		if(misc2_callback_evaluate_job_application(
+                        bygfoot, 
 		       &g_array_index(jobs, Job, idx - 1), &current_user))
 		{
 		    stat0 = STATUS_MAIN;
 		    game_gui_show_main();
 		    setsav0;
 		}
+            }
 	    break;
 
     case STATUS_SHOW_TABLES:

@@ -43,7 +43,7 @@
    @see League
 */
 League
-league_new(gboolean new_id)
+league_new(gboolean new_id, Country *country)
 {
 #ifdef DEBUG
     printf("league_new\n");
@@ -82,6 +82,7 @@ league_new(gboolean new_id)
     new.yellow_red = 1000;
 
     new.stats = stat_league_new("", "");
+    new.country = country;
     
     return new;
 }

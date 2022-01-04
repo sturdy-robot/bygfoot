@@ -65,6 +65,6 @@ gint
 job_team_is_in_cup(const gchar *team_name);
 
 void
-job_change_country(Job *job);
+job_change_country(Job *job, Bygfoot *bygfoot);
 
 #endif

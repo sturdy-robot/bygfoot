@@ -341,7 +341,7 @@ xml_loadsave_league_read(const gchar *filename, const gchar *team_file, League *
     new_league = league;
     dirname = g_path_get_dirname(filename);
 
-    xml_loadsave_teams_read(team_file, new_league->teams);
+    xml_loadsave_teams_read(team_file, league->country, new_league->teams);
 
     if(g_markup_parse_context_parse(context, file_contents, length, &error))
     {

@@ -222,10 +222,10 @@ xml_loadsave_misc_text         (GMarkupParseContext *context,
     else if(state == TAG_MISC_CURRENT_INTEREST)
       current_interest = xml_read_float(buf);
     else if(state == TAG_LEAGUE_FILE) {
-        xml_load_league(misc_user_data->bygfoot, misc_user_data->country->leagues,
+        xml_load_league(misc_user_data->country, misc_user_data->country->leagues,
                         misc_user_data->directory, buf);
     } else if (state == TAG_CUP_FILE) {
-        Cup new_cup = cup_new(FALSE);
+        Cup new_cup = cup_new(FALSE, misc_user_data->bygfoot);
         g_array_append_val(misc_user_data->country->cups, new_cup);
         xml_load_cup(misc_user_data->bygfoot,
 	             &g_array_index(misc_user_data->country->cups, Cup, misc_user_data->country->cups->len - 1),

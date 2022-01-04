@@ -215,6 +215,8 @@ typedef struct
     /* An GPtrrray containing a GPtrArray of Team pointers representing
      * the resuilts of previous seasons of the cup. */
     GPtrArray *history;
+
+    Bygfoot *bygfoot;
 } Cup;
 
 #endif

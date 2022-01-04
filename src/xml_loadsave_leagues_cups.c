@@ -102,7 +102,7 @@ xml_loadsave_leagues_cups_text         (GMarkupParseContext *context,
 					gpointer             user_data,
 					GError             **error)
 {
-    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    Country *country = (Country*)user_data;
 #ifdef DEBUG
     printf("xml_loadsave_leagues_cups_text\n");
 #endif
@@ -114,18 +114,18 @@ xml_loadsave_leagues_cups_text         (GMarkupParseContext *context,
     buf[text_len] = '\0';
 
     if(state == TAG_LEAGUE_FILE)
-	xml_load_league(bygfoot, ligs, dir, buf);
+	xml_load_league(country, country->leagues, dir, buf);
     else if(state == TAG_CUP_FILE)
     {
-	new_cup = cup_new(FALSE);
-	g_array_append_val(cps, new_cup);
-	xml_load_cup(bygfoot, &g_array_index(cps, Cup, cps->len - 1), dir, buf);
+	new_cup = cup_new(FALSE, country->bygfoot);
+	g_array_append_val(country->cups, new_cup);
+	xml_load_cup(country->bygfoot, &g_array_index(country->cups, Cup, country->cups->len - 1), dir, buf);
     }
 }
 
 /** Load the leagues and cups given in the leagues_cups.xml file. */
 void
-xml_loadsave_leagues_cups_read(Bygfoot *bygfoot, const gchar *dirname, const gchar *prefix)
+xml_loadsave_leagues_cups_read(Country *country, const gchar *dirname, const gchar *prefix)
 {
 #ifdef DEBUG
     printf("xml_loadsave_leagues_cups_read\n");
@@ -143,7 +143,7 @@ xml_loadsave_leagues_cups_read(Bygfoot *bygfoot, const gchar *dirname, const gch
     sprintf(file, "%s%s%s___leagues_cups.xml", dirname, G_DIR_SEPARATOR_S, prefix);
 
     context = 
-	g_markup_parse_context_new(&parser, 0, bygfoot, NULL);
+	g_markup_parse_context_new(&parser, 0, country, NULL);
 
     if(!g_file_get_contents(file, &file_contents, &length, &error))
     {
@@ -151,8 +151,8 @@ xml_loadsave_leagues_cups_read(Bygfoot *bygfoot, const gchar *dirname, const gch
 	misc_print_error(&error, TRUE);
     }
 
-    free_leagues_array(&ligs, TRUE);
-    free_cups_array(&cps, TRUE);
+    free_leagues_array(&country->leagues, TRUE);
+    free_cups_array(&country->cups, TRUE);
 
     dir = dirname;
 

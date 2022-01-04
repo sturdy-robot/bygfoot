@@ -202,6 +202,8 @@ load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_mai
                     g_strdup(basename);
     gchar *pwd = g_get_current_dir();
 
+    if (!country.bygfoot)
+        country.bygfoot = bygfoot;
     if(g_str_has_suffix(filename, "last_save"))
     {
         g_free(basename);
@@ -254,7 +256,7 @@ load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_mai
         _("Loading leagues and cups..."),
         PIC_TYPE_LOAD);
 
-    xml_loadsave_leagues_cups_read(bygfoot, dirname, prefix);
+    xml_loadsave_leagues_cups_read(&country, dirname, prefix);
 
     if(debug > 60)
         g_print("load_save_load misc \n");

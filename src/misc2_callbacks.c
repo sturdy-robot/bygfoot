@@ -57,10 +57,11 @@ on_button_offer_ok_clicked             (GtkButton       *button,
 
     gboolean changed = TRUE;
     gchar *team_name = g_strdup(current_user.tm->name);
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
 
     if(stat2 == STATUS_JOB_EXCHANGE_SHOW_TEAM)
 	changed = 
-	    misc2_callback_evaluate_job_application((Job*)statp, &current_user);
+	    misc2_callback_evaluate_job_application(bygfoot, (Job*)statp, &current_user);
     else
 	user_change_team(&current_user, (Team*)statp);
 

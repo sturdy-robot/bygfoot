@@ -26,7 +26,7 @@
 #ifndef LEAGUE_STRUCT_H
 #define LEAGUE_STRUCT_H
 
-#include "bygfoot.h"
+#include "bygfoot_typedefs.h"
 #include "stat_struct.h"
 #include "table_struct.h"
 
@@ -193,6 +193,8 @@ typedef struct
         the fixtures of which should be avoided when scheduling
         the league fixtures. */
     GPtrArray *skip_weeks_with;
+
+    Country *country;
 } League;
 
 #endif

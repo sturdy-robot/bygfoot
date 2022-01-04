@@ -42,7 +42,7 @@
    @see #Cup
 */
 Cup
-cup_new(gboolean new_id)
+cup_new(gboolean new_id, Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("cup_new\n");
@@ -77,6 +77,7 @@ cup_new(gboolean new_id)
     new.next_fixture_update_week_round = -1;
 
     new.history = g_ptr_array_new();
+    new.bygfoot = bygfoot;
     return new;
 }
 

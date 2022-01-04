@@ -44,6 +44,7 @@
 #include <gtk/gtk.h>
 #include "gettext_macros.h"
 #include "debug.h"
+#include "bygfoot_typedefs.h"
 #include "user_struct.h"
 #include "bygfoot_struct.h"
 
@@ -156,7 +157,7 @@ enum ReservePromRules
 /**
  * A struct representing a country.
  */
-typedef struct
+typedef struct country
 {
     gchar *name, /**< Name of the country. */
 	*symbol, /**< Symbol of the country, eg a flag pixmap. */
@@ -174,6 +175,8 @@ typedef struct
     
     /** Pointer array holding all cups. */
     GPtrArray *allcups;
+
+    Bygfoot *bygfoot;
 } Country;
 
 /** Struct used for having all the windows

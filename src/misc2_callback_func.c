@@ -336,7 +336,7 @@ misc2_callback_mmatches_button_press(GtkWidget *widget, gint row_num, gint col_n
     is accepted and show the appropriate popups.
     @return TRUE if accepted, FALSE otherwise. */
 gboolean
-misc2_callback_evaluate_job_application(Job *job, User *user)
+misc2_callback_evaluate_job_application(Bygfoot *bygfoot, Job *job, User *user)
 {
 #ifdef DEBUG
     printf("misc2_callback_evaluate_job_application\n");
@@ -358,7 +358,7 @@ misc2_callback_evaluate_job_application(Job *job, User *user)
 	       the last 2 years of his second presidency. */
 	    _("The owners of %s accept your application. Since %s don't want to get stuck with a lame duck, you get fired instantly and spend the rest of the current season tending your garden."),
 	    job_get_team(job)->name, user->tm->name);
-	job_change_country(job);
+	job_change_country(job, bygfoot);
     }
     else
 	game_gui_show_warning(

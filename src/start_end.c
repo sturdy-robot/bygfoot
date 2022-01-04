@@ -81,7 +81,7 @@ WeekFunc end_week_funcs[] = {stat_update_leagues, end_week_hide_cups, NULL};
 
 /** Generate the teams etc. */
 void
-start_new_game(void)
+start_new_game(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("start_new_game\n");
@@ -91,48 +91,41 @@ start_new_game(void)
 
     start_generate_league_teams();
 
-    start_load_other_countries();
+    start_load_other_countries(bygfoot);
 
     start_generate_cup_history();
 
     start_new_season();
 }
 
-/** callback function for start_load_other_countries to load countries and
- * add them to the country_list.
- */
-static void load_country(gpointer country_file, gpointer user_data)
-{
-
-    GPtrArray *country_list = (GPtrArray*)user_data;
-    Country *new_country = g_malloc0(sizeof(Country));
-    gint i;
-
-    xml_country_read(country_file, new_country);
-    if (!strcmp(new_country->sid, country.sid))
-        return;
-    for (i = 0; i < new_country->leagues->len; i++) {
-        League *league = &g_array_index(new_country->leagues, League, i);
-        gint j;
-        for (j = 0; j < league->teams->len; j++) {
-            Team *team = g_ptr_array_index(league->teams, j);
-	    team_generate_players_stadium(team, league->average_talent);
-        }
-    }
-
-    g_ptr_array_add(country_list, new_country);
-}
-
 /** Load other countries that the user isn't playing, so we can easily reference
  * the cups and leagues.
  */
 void
-start_load_other_countries()
+start_load_other_countries(Bygfoot *bygfoot)
 {
     GPtrArray *country_files = file_get_country_files();
     country_list = g_ptr_array_new();
+    gint i;
 
-    g_ptr_array_foreach(country_files, load_country, country_list);
+    for (i = 0; i < country_files->len; i++) {
+        gint j;
+        const gchar *country_file = g_ptr_array_index(country_files, i);
+        Country *new_country = g_malloc0(sizeof(Country));
+
+        xml_country_read(country_file, new_country, bygfoot);
+        if (!strcmp(new_country->sid, country.sid))
+            continue;
+        for (j = 0; j < new_country->leagues->len; j++) {
+            League *league = &g_array_index(new_country->leagues, League, j);
+            gint k;
+            for (k = 0; k < league->teams->len; k++) {
+                Team *team = g_ptr_array_index(league->teams, k);
+	            team_generate_players_stadium(team, league->average_talent);
+            }
+        }
+        g_ptr_array_add(country_list, new_country);
+    }
 }
 
 /** Generate cup results so that in the first season we can select the cup

@@ -282,11 +282,11 @@ window_show_startup(Bygfoot *bygfoot)
     g_object_unref(model);
 
     if(country.sid != NULL)
-        misc_callback_show_team_list(combo_country, country.sid);        
+        misc_callback_show_team_list(combo_country, country.sid, bygfoot);
     else if(last_country != NULL)
-        misc_callback_show_team_list(combo_country, last_country);        
+        misc_callback_show_team_list(combo_country, last_country, bygfoot);
     else
-        misc_callback_show_team_list(combo_country, (const gchar*)g_ptr_array_index(country_files, country_files->len - 1));
+        misc_callback_show_team_list(combo_country, (const gchar*)g_ptr_array_index(country_files, country_files->len - 1), bygfoot);
 
     if(last_country != NULL)
         g_free(last_country);
@@ -837,7 +837,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
 	    if(window.job_offer != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.job_offer = create_window_job_offer();
+		window.job_offer = create_window_job_offer(bygfoot);
 	    wind = window.job_offer;
 	    strcpy(buf, _("Job offer"));
 	    break;

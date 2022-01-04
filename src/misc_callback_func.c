@@ -50,7 +50,8 @@
 /* show the teams from the leagues in the country in
    the startup window */
 void
-misc_callback_show_team_list(GtkWidget *widget, const gchar *country_file)
+misc_callback_show_team_list(GtkWidget *widget, const gchar *country_file,
+                             Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("misc_callback_show_team_list\n");
@@ -59,7 +60,7 @@ misc_callback_show_team_list(GtkWidget *widget, const gchar *country_file)
     GtkWidget *treeview_startup =
 	lookup_widget(widget, "treeview_startup");
 
-    xml_country_read(country_file, NULL);
+    xml_country_read(country_file, NULL, bygfoot);
 
     treeview_show_team_list(GTK_TREE_VIEW(treeview_startup), FALSE, FALSE);
 
@@ -119,7 +120,7 @@ misc_callback_start_game(Bygfoot *bygfoot)
     }
     else
     {
-       start_new_game();
+       start_new_game(bygfoot);
 	free_users(TRUE);
 	debug_calibrate_betting_odds(opt_int("int_opt_calodds_skilldiffmax"),
 				     opt_int("int_opt_calodds_matches"), bygfoot);

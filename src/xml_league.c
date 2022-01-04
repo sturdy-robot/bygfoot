@@ -130,6 +130,7 @@ enum XmlLeagueStates
 
 typedef struct {
     Team *new_team;
+    Country *country;
 } LeagueUserData;
 
 /**
@@ -167,7 +168,7 @@ xml_league_read_start_element (GMarkupParseContext *context,
 
     if(strcmp(element_name, TAG_LEAGUE) == 0)
     {
-	new_league = league_new(TRUE);
+	new_league = league_new(TRUE, league_user_data->country);
 	state = STATE_LEAGUE;
     }
     else if(strcmp(element_name, TAG_DEF_NAME) == 0)
@@ -278,7 +279,7 @@ xml_league_read_start_element (GMarkupParseContext *context,
     else if(strcmp(element_name, TAG_TEAM) == 0)
     {
     	league_user_data->new_team = g_malloc0(sizeof(Team));
-	*league_user_data->new_team = team_new(TRUE);
+	*league_user_data->new_team = team_new(TRUE, league_user_data->country);
 	misc_string_assign(&(league_user_data->new_team->symbol), new_league.symbol);
 	misc_string_assign(&(league_user_data->new_team->names_file), new_league.names_file);
 	league_user_data->new_team->clid = new_league.id;
@@ -524,7 +525,7 @@ xml_league_read_text         (GMarkupParseContext *context,
  * @param leagues The array we write the league into.
  */
 void
-xml_league_read(const gchar *league_name, GArray *leagues)
+xml_league_read(const gchar *league_name, Country *country)
 {
 #ifdef DEBUG
     printf("xml_league_read\n");
@@ -542,6 +543,7 @@ xml_league_read(const gchar *league_name, GArray *leagues)
     LeagueUserData user_data;
 
     memset(&user_data, 0, sizeof(user_data));
+    user_data.country = country;
 
     context = 
 	g_markup_parse_context_new(&parser, 0, &user_data, NULL);
@@ -572,7 +574,7 @@ xml_league_read(const gchar *league_name, GArray *leagues)
 
         league_cup_adjust_rr_breaks(new_league.rr_breaks, new_league.round_robins, new_league.week_gap);
         league_cup_adjust_week_breaks(new_league.week_breaks, new_league.week_gap);
-	g_array_append_val(leagues, new_league);
+	g_array_append_val(country->leagues, new_league);
 
         for (i = 0; i < new_league.prom_rel.elements->len; i++) {
             PromRelElement *elem = &g_array_index(new_league.prom_rel.elements,

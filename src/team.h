@@ -44,7 +44,7 @@ enum TeamCompare
 };
 
 Team
-team_new(gboolean new_id);
+team_new(gboolean new_id, Country *country);
 
 gboolean
 query_is_my_team(const Team *tm);

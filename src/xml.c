@@ -73,14 +73,14 @@ xml_load_users(const gchar *dirname, const gchar *basename)
 }
 
 void
-xml_load_league(Bygfoot *bygfoot, GArray *league_list, const gchar *dirname, const gchar *basename)
+xml_load_league(Country *country, GArray *league_list, const gchar *dirname, const gchar *basename)
 {
 #ifdef DEBUG
     printf("xml_load_league\n");
 #endif
 
     gchar buf[SMALL], team_file[SMALL];
-    League new = league_new(FALSE);
+    League new = league_new(FALSE, country);
     gchar *prefix = g_strndup(basename, strlen(basename) - 4);
     League *league = NULL;
 
@@ -93,7 +93,7 @@ xml_load_league(Bygfoot *bygfoot, GArray *league_list, const gchar *dirname, con
 
     sprintf(buf, _("Loading league: %s"), league->name);
 
-    bygfoot_show_progress(bygfoot, bygfoot_get_progress_bar_fraction(bygfoot), buf,
+    bygfoot_show_progress(country->bygfoot, bygfoot_get_progress_bar_fraction(country->bygfoot), buf,
                       PIC_TYPE_LOAD);
 
     if(debug > 80)

@@ -25,11 +25,11 @@
   g_object_set_data (G_OBJECT (component), name, widget)
 
 GtkWidget*
-create_window_job_offer (void)
+create_window_job_offer (Bygfoot *bygfoot)
 {
   GtkWidget *window_job_offer;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE));
+  builder = load_ui_with_userdata(file_find_support_file("bygfoot_misc2.glade", TRUE), bygfoot);
   window_job_offer = GTK_WIDGET (gtk_builder_get_object (builder, "window_job_offer"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */

@@ -360,24 +360,21 @@ main_init_variables(void)
     option_add(&settings, "int_opt_disable_training_camp", 0, NULL);
 }
 
-/**
-  Callback to use with g_ptr_array_foreach() to validate country xml files.
- */
-static void validate_country_file(gpointer country_file, gpointer user_data)
-{
-    Country country;
-    memset(&country, 0, sizeof(country));
-    xml_country_read(country_file, &country);
-}
-
-static void validate_country_files()
+static void validate_country_files(Bygfoot *bygfoot)
 {
     GPtrArray *country_files = file_get_country_files();
+    gint i;
 
     if(country_files->len == 0)
 	main_exit_program(EXIT_NO_COUNTRY_FILES,
 			  "Didn't find any country definition files in the support directories.");
-    g_ptr_array_foreach(country_files, validate_country_file, NULL);
+
+    for (i = 0; i < country_files->len; i++) {
+        Country country;
+        const gchar *country_file = g_ptr_array_index(country_files, i);
+        memset(&country, 0, sizeof(country));
+        xml_country_read(country_file, &country, bygfoot);
+    }
 }
 
 /**
@@ -470,7 +467,7 @@ main (gint argc, gchar *argv[])
         bygfoot_init(&bygfoot, BYGFOOT_FRONTEND_CONSOLE);
         main_init(&argc, &argv, &bygfoot);
         file_check_home_dir_create_dirs();
-        validate_country_files();
+        validate_country_files(&bygfoot);
         return bygfoot_json_main(&bygfoot, &cl_args);
     }
 #endif
@@ -479,7 +476,7 @@ main (gint argc, gchar *argv[])
 
     main_init(&argc, &argv, &bygfoot);
 
-    validate_country_files();
+    validate_country_files(&bygfoot);
 
     if((load_last_save && !load_game_from_command_line(&bygfoot, "last_save")) ||
             (!load_last_save && (argc == 1 ||

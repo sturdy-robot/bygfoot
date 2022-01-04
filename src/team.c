@@ -48,7 +48,7 @@
    @return A new team.
 */
 Team
-team_new(gboolean new_id)
+team_new(gboolean new_id, Country *country)
 {
 #ifdef DEBUG
     printf("team_new\n");
@@ -72,6 +72,7 @@ team_new(gboolean new_id)
     new.first_team_sid = NULL;
     new.first_team_id = 0;
     new.reserve_level = 0;
+    new.country = country;
 
     return new;
 }

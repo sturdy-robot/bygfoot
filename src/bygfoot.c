@@ -28,7 +28,7 @@ bygfoot_init(Bygfoot *bygfoot, enum BygfootFrontend frontend)
 
 Country *bygfoot_load_country(Bygfoot *bygfoot, const gchar *country_name)
 {
-    xml_country_read(country_name, NULL);
+    xml_country_read(country_name, NULL, bygfoot);
     return &country;
 }
 
@@ -49,7 +49,7 @@ void bygfoot_start_game(Bygfoot *bygfoot)
 {
     unsigned i;
 
-    start_new_game();
+    start_new_game(bygfoot);
     for (i = 0; i < users->len; i++)
         user_set_up_team_new_game(&usr(i));
 }
