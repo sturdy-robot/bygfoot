@@ -58,8 +58,10 @@ void
 game_gui_show_warning(const gchar *format, ...)
 __attribute__ ((format (printf, 1, 2)));
 #else
+
 void
 game_gui_show_warning(const gchar *format, ...);
+
 #endif
 
 #ifdef G_OS_UNIX
@@ -67,8 +69,10 @@ void
 game_gui_print_message(gchar *format, ...)
 __attribute__ ((format (printf, 1, 2)));
 #else
+
 void
 game_gui_print_message(gchar *format, ...);
+
 #endif
 
 gboolean
@@ -79,14 +83,16 @@ void
 game_gui_print_message_with_delay(const gchar *format, ...)
 __attribute__ ((format (printf, 1, 2)));
 #else
+
 void
 game_gui_print_message_with_delay(const gchar *format, ...);
+
 #endif
 
 void
 game_gui_get_radio_items(GtkWidget **style, GtkWidget **scout,
-			 GtkWidget **physio, GtkWidget **boost,
-			 GtkWidget **yc, GtkWidget **ya_pos_pref);
+                         GtkWidget **physio, GtkWidget **boost,
+                         GtkWidget **yc, GtkWidget **ya_pos_pref);
 
 void
 game_gui_read_radio_items(GtkWidget *widget);
@@ -104,8 +110,8 @@ void
 game_gui_write_av_skills(const Team *tm);
 
 void
-game_gui_write_meter_images(const Team *tm, GtkImage *style, 
-			    GtkImage *boost);
+game_gui_write_meter_images(const Team *tm, GtkImage *style,
+                            GtkImage *boost);
 
 void
 game_gui_write_meters(const Team *tm);

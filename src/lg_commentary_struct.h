@@ -28,8 +28,7 @@
 
 /** Structure describing a commentary
     for the live game.  */
-typedef struct
-{
+typedef struct {
     /** The commentary text (possibly containing tokens). */
     gchar *text;
     /** A condition (if not fulfilled, the commentary doesn't get

@@ -42,8 +42,7 @@
 #define I8 "\t\t\t\t\t\t\t\t"
 
 /** Tags that are used in more than one type of xml file. */
-enum XmlTags
-{
+enum XmlTags {
     TAG_NAME = 0,
     TAG_SYMBOL,
     TAG_SID,
@@ -98,7 +97,7 @@ enum XmlTags
 #define xml_get_tag_from_name(name) (gint)g_ascii_strtod(name + 1, NULL)
 
 void
-xml_write_string(FILE *fil, const gchar *string, gint tag, const gchar* indent);
+xml_write_string(FILE *fil, const gchar *string, gint tag, const gchar *indent);
 
 void
 xml_load_users(const gchar *dirname, const gchar *basename);

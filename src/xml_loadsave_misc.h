@@ -39,4 +39,5 @@ xml_loadsave_misc_write_bets(FILE *fil);
 
 void
 xml_loadsave_misc_write_countries(FILE *fil, const gchar *prefix);
+
 #endif

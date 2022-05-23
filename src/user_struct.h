@@ -35,19 +35,17 @@
 #include "youth_academy_struct.h"
 
 /** Indices for the money_in array. */
-enum MonIn
-{
+enum MonIn {
     MON_IN_PRIZE = 0,
     MON_IN_TICKET,
     MON_IN_SPONSOR,
     MON_IN_BETS,
-    MON_IN_TRANSFERS,    
+    MON_IN_TRANSFERS,
     MON_IN_END
 };
 
 /** Indices for the money_out array. */
-enum MonOut
-{
+enum MonOut {
     MON_OUT_WAGE = 0,
     MON_OUT_PHYSIO,
     MON_OUT_SCOUT,
@@ -65,8 +63,7 @@ enum MonOut
 };
 
 /** Indices for the counters variable in #User. */
-enum CounterValue
-{
+enum CounterValue {
     COUNT_USER_LOAN = 0, /** How many weeks until user has to pay back his loan. */
     COUNT_USER_OVERDRAWN, /**< How often the user overdrew his bank account. */
     COUNT_USER_POSITIVE, /**< How many weeks until the bank account has to be positive
@@ -86,8 +83,7 @@ enum CounterValue
 };
 
 /** User-related things that get recorded. */
-enum UserHistoryType
-{
+enum UserHistoryType {
     USER_HISTORY_START_GAME = 0,
     USER_HISTORY_FIRE_FINANCE,
     USER_HISTORY_FIRE_FAILURE,
@@ -103,8 +99,7 @@ enum UserHistoryType
 };
 
 /** A memorable match (a recording of a live game) of a user. */
-typedef struct
-{
+typedef struct {
     /** Name of the country the user was playing with. */
     gchar *country_name;
     /** The name of the competition, including
@@ -121,11 +116,10 @@ typedef struct
 
 /** A structure holding an element of a user's history,
     e.g. the event of being fired. */
-typedef struct
-{
+typedef struct {
     /** When the event happened. */
     gint season, week;
-    
+
     /** The type (see #UserHistoryType) of the history event. */
     gint type;
     /** The team of the user at the time. */
@@ -136,16 +130,14 @@ typedef struct
 } UserHistory;
 
 /** A user sponsor. */
-typedef struct
-{
+typedef struct {
     GString *name;
     gint benefit; /**< Money per week. */
     gint contract; /**< Contract length in weeks. */
 } UserSponsor;
 
 /** A structure representing a human player. */
-typedef struct
-{
+typedef struct {
     /** Username. */
     gchar *name;
     /** The team the user manages. */
@@ -163,7 +155,7 @@ typedef struct
 	We have double arrays to store information about
 	the current and the past week. */
     gint money, debt, money_in[2][MON_IN_END],
-      money_out[2][MON_OUT_END];
+            money_out[2][MON_OUT_END];
     /** Interest the debt was taken at. */
     gfloat debt_interest;
     /** Information about the automatic loan repayment. */
@@ -193,8 +185,7 @@ typedef struct
     gint default_boost;
 } User;
 
-enum EventType
-{
+enum EventType {
     EVENT_TYPE_WARNING = 0,
     EVENT_TYPE_PLAYER_LEFT,
     EVENT_TYPE_PAYBACK,
@@ -218,8 +209,7 @@ enum EventType
 
 /** A structure representing an event for a user. This is used
     to show information like a successful transfer or a job offer. */
-typedef struct
-{
+typedef struct {
     /** Pointer to the user the event belongs to. */
     User *user;
     /** Type of the event. See #EventType. */

@@ -30,18 +30,16 @@
 #include "fixture_struct.h"
 
 /** A struct representing a betting possibility: a fixture plus odds. */
-typedef struct
-{
+typedef struct {
     /** The match the bet is about. */
     gint fix_id;
     /** The odds for a win, draw or loss of the first team. */
     gfloat odds[3];
-    
+
 } BetMatch;
 
 /** A struct representing a bet by a user. */
-typedef struct
-{
+typedef struct {
     /** Match the user betted on. */
     gint fix_id;
     /** Which outcome he picked. */

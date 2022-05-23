@@ -43,7 +43,7 @@ news_select(const GArray *news_array, gchar *title, gchar *subtitle,
             gint *article_id, gint *title_id, gint *subtitle_id);
 
 gint
-news_get_title(const GArray *titles, gchar *title, gint *order, 
+news_get_title(const GArray *titles, gchar *title, gint *order,
                gboolean is_title, gboolean ignore_repetition, gint to_check);
 
 gboolean

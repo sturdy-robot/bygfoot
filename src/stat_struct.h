@@ -28,16 +28,14 @@
 
 /** A statistics element holding some
     string and integer values. */
-typedef struct
-{
+typedef struct {
     gchar *team_name;
     gint value1, value2, value3;
     gchar *value_string;
 } Stat;
 
 /** A structure holding some stat arrays about a league. */
-typedef struct
-{    
+typedef struct {
     gchar *league_symbol;
     gchar *league_name;
 
@@ -48,21 +46,19 @@ typedef struct
 } LeagueStat;
 
 /** A team name and a competition name. */
-typedef struct
-{
+typedef struct {
     gchar *team_name, *cl_name;
 } ChampStat;
 
 /** A season statistics structure. */
-typedef struct
-{
+typedef struct {
     /** Which season */
     gint season_number;
 
     /** League and cup winners. */
     GArray *league_champs;
     GArray *cup_champs;
-    
+
     /** The league stats at the end of the season. */
     GArray *league_stats;
 } SeasonStat;

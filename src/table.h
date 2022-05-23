@@ -44,8 +44,8 @@ table_update_get_elements(TableElement **elements, const Fixture *fix, gboolean 
 
 gint
 table_element_compare_func(gconstpointer a,
-			   gconstpointer b,
-			   gpointer clid_round);
+                           gconstpointer b,
+                           gpointer clid_round);
 
 gboolean
 query_tables_in_country(void);

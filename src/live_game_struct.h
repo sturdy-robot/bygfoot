@@ -35,8 +35,7 @@
     in a scoring chance.  We pick one of these randomly in this case.
     @see #LiveGameEvent
     @see #LiveGameUnit */
-enum LiveGameEventType
-{
+enum LiveGameEventType {
     /** This is the 'main' event, nothing in
 	particular is happening; one of the teams
 	is in possession of the ball. */
@@ -88,8 +87,7 @@ enum LiveGameEventType
     LIVE_GAME_EVENT_END /* 41 */
 };
 
-enum LiveGameUnitArea
-{
+enum LiveGameUnitArea {
     LIVE_GAME_UNIT_AREA_DEFEND = 0,
     LIVE_GAME_UNIT_AREA_MIDFIELD,
     LIVE_GAME_UNIT_AREA_ATTACK,
@@ -98,8 +96,7 @@ enum LiveGameUnitArea
 
 /** Indices for the time variable of th
     #LiveGameUnit struct.  */
-enum LiveGameUnitTime
-{
+enum LiveGameUnitTime {
     LIVE_GAME_UNIT_TIME_FIRST_HALF = 0,
     LIVE_GAME_UNIT_TIME_SECOND_HALF,
     LIVE_GAME_UNIT_TIME_EXTRA_TIME,
@@ -108,8 +105,7 @@ enum LiveGameUnitTime
 };
 
 /** Indices for the values in #LiveGameStats. */
-enum LiveGameStatValue
-{
+enum LiveGameStatValue {
     LIVE_GAME_STAT_VALUE_GOALS_REGULAR = 0,
     LIVE_GAME_STAT_VALUE_SHOTS,
     LIVE_GAME_STAT_VALUE_SHOT_PERCENTAGE,
@@ -122,8 +118,7 @@ enum LiveGameStatValue
     LIVE_GAME_STAT_VALUE_END
 };
 
-enum LiveGameStatArray
-{
+enum LiveGameStatArray {
     LIVE_GAME_STAT_ARRAY_SCORERS_FOR_DISPLAY = 0,
     LIVE_GAME_STAT_ARRAY_SCORERS,
     LIVE_GAME_STAT_ARRAY_YELLOWS,
@@ -134,8 +129,7 @@ enum LiveGameStatArray
 
 /** Indices for the team_value array.
     @see game_get_values() */
-enum GameTeamValue
-{
+enum GameTeamValue {
     GAME_TEAM_VALUE_GOALIE = 0,
     GAME_TEAM_VALUE_DEFEND,
     GAME_TEAM_VALUE_MIDFIELD,
@@ -145,8 +139,7 @@ enum GameTeamValue
 
 /** Some stats for a live game like ball possession,
     shots on goal etc. */
-typedef struct
-{
+typedef struct {
     gfloat possession;
     gint values[2][LIVE_GAME_STAT_VALUE_END];
     GPtrArray *players[2][LIVE_GAME_STAT_ARRAY_END];
@@ -154,8 +147,7 @@ typedef struct
 
 /** A struct telling us what's happening at
     a certain moment in a game. */
-typedef struct
-{
+typedef struct {
     /** @see #LiveGameEventType */
     gint type;
     /** Verbosity value. The lower the more important
@@ -171,8 +163,7 @@ typedef struct
 } LiveGameEvent;
 
 /** A struct representing a fraction of a live game. */
-typedef struct
-{   
+typedef struct {
     /** Tells us which of the teams is in possession
 	of the ball. */
     gint possession;
@@ -183,7 +174,7 @@ typedef struct
 	like a substitution that doesn't count as a 
 	match time consuming event. @see #GameUnitTime */
     gint minute, time;
-    
+
     /** The match result at the time of this unit. */
     gint result[2];
 
@@ -194,16 +185,14 @@ typedef struct
 
 /** A structure storing team settings during a live game
     pause (so that we know what users have changed in pauses. */
-typedef struct
-{
+typedef struct {
     gint structure, style;
     gboolean boost;
     gint player_ids[11];
 
 } LiveGameTeamState;
 
-typedef struct
-{
+typedef struct {
     /** The fixture that belongs to the game. */
     Fixture *fix;
     /** Integer determining the fixture (needed because fixture pointers
@@ -228,7 +217,7 @@ typedef struct
     /** The home advantage factor. */
     gfloat home_advantage;
     /** The array of units. @see #GameUnit */
-    GArray *units;    
+    GArray *units;
     /** Match statistics. @see #LiveGameStats */
     LiveGameStats stats;
     LiveGameTeamState team_state[2];

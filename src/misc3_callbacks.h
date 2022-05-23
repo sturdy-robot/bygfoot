@@ -30,95 +30,100 @@
 
 
 gboolean
-on_window_bets_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+on_window_bets_delete_event(GtkWidget *widget,
+                            GdkEvent *event,
+                            gpointer user_data);
 
 void
-on_button_bet_close_clicked            (GtkButton       *button,
-                                        gpointer         user_data);
+on_button_bet_close_clicked(GtkButton *button,
+                            gpointer user_data);
+
 gboolean
 on_checkbutton_bet_all_leagues_button_press_event
-                                        (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
+        (GtkWidget *widget,
+         GdkEventButton *event,
+         gpointer user_data);
 
 gboolean
 on_checkbutton_bet_cups_button_press_event
-                                        (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
+        (GtkWidget *widget,
+         GdkEventButton *event,
+         gpointer user_data);
 
 gboolean
-on_treeview_bets_button_press_event    (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
+on_treeview_bets_button_press_event(GtkWidget *widget,
+                                    GdkEventButton *event,
+                                    gpointer user_data);
 
 gboolean
 on_checkbutton_bet_user_recent_button_press_event
-                                        (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
+        (GtkWidget *widget,
+         GdkEventButton *event,
+         gpointer user_data);
+
 gboolean
-on_window_splash_delete_event          (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+on_window_splash_delete_event(GtkWidget *widget,
+                              GdkEvent *event,
+                              gpointer user_data);
 
 void
-on_button_splash_new_game_clicked      (GtkButton       *button,
-                                        gpointer         user_data);
+on_button_splash_new_game_clicked(GtkButton *button,
+                                  gpointer user_data);
 
 void
-on_button_splash_load_game_clicked     (GtkButton       *button,
-                                        gpointer         user_data);
+on_button_splash_load_game_clicked(GtkButton *button,
+                                   gpointer user_data);
 
 void
-on_button_splash_resume_game_clicked   (GtkButton       *button,
-                                        gpointer         user_data);
+on_button_splash_resume_game_clicked(GtkButton *button,
+                                     gpointer user_data);
 
 void
-on_button_splash_quit_clicked          (GtkButton       *button,
-                                        gpointer         user_data);
+on_button_splash_quit_clicked(GtkButton *button,
+                              gpointer user_data);
 
 void
-on_button_splash_hint_back_clicked     (GtkButton       *button,
-                                        gpointer         user_data);
+on_button_splash_hint_back_clicked(GtkButton *button,
+                                   gpointer user_data);
 
 void
-on_button_splash_hint_next_clicked     (GtkButton       *button,
-                                        gpointer         user_data);
+on_button_splash_hint_next_clicked(GtkButton *button,
+                                   gpointer user_data);
 
 void
 on_button_calculate_installment_clicked
-                                        (GtkButton       *button,
-                                        gpointer         user_data);
-void
-on_button_calculate_start_week_clicked (GtkButton       *button,
-                                        gpointer         user_data);
+        (GtkButton *button,
+         gpointer user_data);
 
 void
-on_button_alr_confirm_clicked          (GtkButton       *button,
-                                        gpointer         user_data);
+on_button_calculate_start_week_clicked(GtkButton *button,
+                                       gpointer user_data);
 
 void
-on_button_alr_cancel_clicked           (GtkButton       *button,
-                                        gpointer         user_data);
-gboolean
-on_window_alr_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                       gpointer         user_data);
+on_button_alr_confirm_clicked(GtkButton *button,
+                              gpointer user_data);
+
+void
+on_button_alr_cancel_clicked(GtkButton *button,
+                             gpointer user_data);
 
 gboolean
-on_window_news_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+on_window_alr_delete_event(GtkWidget *widget,
+                           GdkEvent *event,
+                           gpointer user_data);
 
 gboolean
-on_window_news_destroy_event           (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+on_window_news_delete_event(GtkWidget *widget,
+                            GdkEvent *event,
+                            gpointer user_data);
+
+gboolean
+on_window_news_destroy_event(GtkWidget *widget,
+                             GdkEvent *event,
+                             gpointer user_data);
 
 void
-on_button_news_close_clicked           (GtkButton       *button,
-                                        gpointer         user_data);
+on_button_news_close_clicked(GtkButton *button,
+                             gpointer user_data);
+
 #endif

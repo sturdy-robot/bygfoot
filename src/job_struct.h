@@ -27,8 +27,7 @@
 #define JOB_STRUCT_H
 
 /** Enumeration describing the type of a job. */
-enum
-{
+enum {
     /** Job offer by a team from the country
 	the user's playing. */
     JOB_TYPE_NATIONAL = 0,
@@ -43,8 +42,7 @@ enum
 };
 
 /** A structure representing a job in the job exchange. */
-typedef struct
-{
+typedef struct {
     /** Whether it's an international job or a national one. */
     gint type;
     /** How many weeks remaining the offer is on the list. */

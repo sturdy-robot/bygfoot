@@ -40,10 +40,10 @@ misc_swap_int(gint *first, gint *second);
 void
 misc_swap_gpointer(gpointer *first, gpointer *second);
 
-GPtrArray*
+GPtrArray *
 misc_separate_strings(gchar *string);
 
-GPtrArray*
+GPtrArray *
 misc_randomise_g_pointer_array(GPtrArray *array);
 
 void
@@ -58,7 +58,7 @@ misc_int_compare(gint first, gint second);
 gint
 misc_float_compare(gfloat first, gfloat second);
 
-const gchar*
+const gchar *
 misc_strip_definitions_root(gchar *directory);
 
 gboolean
@@ -71,31 +71,31 @@ gboolean
 query_misc_integer_is_in_g_array(gint item, GArray *array);
 
 void
-misc_string_replace_token(gchar *string, const gchar *token, 
-			  const gchar *replacement);
+misc_string_replace_token(gchar *string, const gchar *token,
+                          const gchar *replacement);
 
 gfloat
 misc_get_age_from_birth(gint birth_year, gint birth_month);
 
-const gchar*
-misc_skip_spaces(const gchar* s);
+const gchar *
+misc_skip_spaces(const gchar *s);
 
-const gchar*
+const gchar *
 misc_parse_value(const gchar *s, gint *value);
 
-const gchar*
+const gchar *
 misc_parse_expression(const gchar *s, gint *result);
 
-const gchar*
+const gchar *
 misc_parse_comparison(const gchar *s, gint *result);
 
-const gchar*
+const gchar *
 misc_parse_and(const gchar *s, gint *result);
 
-const gchar*
+const gchar *
 misc_parse(const gchar *s, gint *result);
 
-GPtrArray*
+GPtrArray *
 misc_copy_ptr_array(const GPtrArray *array);
 
 void
@@ -123,8 +123,8 @@ gboolean
 misc_parse_condition(const gchar *condition, GPtrArray **token_rep);
 
 void
-misc_token_add(GPtrArray **token_rep, gint token_idx, 
-	       gchar *replacement);
+misc_token_add(GPtrArray **token_rep, gint token_idx,
+               gchar *replacement);
 
 void
 misc_token_remove(GPtrArray **token_rep, gint idx);
@@ -133,15 +133,15 @@ void
 misc_string_get_parenthesised(const gchar *string, gchar *dest);
 
 void
-misc_string_replace_parenthesised(gchar *string, const gchar *paren, 
-				  const gchar *replacement);
+misc_string_replace_parenthesised(gchar *string, const gchar *paren,
+                                  const gchar *replacement);
 
 gboolean
 misc_string_replace_all_tokens(GPtrArray **token_rep,
                                const gchar *text_tokens, gchar *dest);
 
 void
-misc_token_add_bool(GPtrArray **token_rep, gint token_idx, 
+misc_token_add_bool(GPtrArray **token_rep, gint token_idx,
                     gboolean value);
 
 gint

@@ -31,14 +31,13 @@
 
 /** Structure representing a fixture, or, in other words,
     a match. */
-typedef struct
-{
+typedef struct {
     /** The cup or league the fixture belongs to. */
     gint clid;
     /** The unique id of the fixture. */
     gint id;
     /** The round (in a cup) the fixture belongs to. */
-    gint round;    
+    gint round;
     /** The replay number (ie. how often the match was repeated because of a draw). */
     gint replay_number;
     /** When it takes place. */

@@ -35,7 +35,9 @@
  * Standard gettext macros.
  */
 #ifdef ENABLE_NLS
+
 #  include <libintl.h>
+
 #  undef _
 #  define _(String) dgettext (PACKAGE, String)
 #  define Q_(String) g_strip_context ((String), gettext (String))
@@ -55,7 +57,7 @@
 #  define N_(String) (String)
 #endif
 
-#define GTK_HOOKUP_OBJECT(component,builder,name) \
+#define GTK_HOOKUP_OBJECT(component, builder, name) \
   g_object_set_data_full (G_OBJECT (component), name, \
     gtk_widget_ref (GTK_WIDGET (gtk_builder_get_object \
       (builder, name))), (GDestroyNotify) gtk_widget_unref)
@@ -70,16 +72,16 @@
  * or alternatively any widget in the component, and the name of the widget
  * you want returned.
  */
-GtkWidget*  lookup_widget              (GtkWidget       *widget,
-                                        const gchar     *widget_name);
+GtkWidget *lookup_widget(GtkWidget *widget,
+                         const gchar *widget_name);
 
 /** This will load the ui file, connect the signals and return the builder
 */
-GtkBuilder*
-load_ui (const gchar *filename);
+GtkBuilder *
+load_ui(const gchar *filename);
 
-GtkBuilder*
-load_ui_with_userdata (const gchar *filename, Bygfoot *bygfoot);
+GtkBuilder *
+load_ui_with_userdata(const gchar *filename, Bygfoot *bygfoot);
 
 /* Use this function to set the directory containing installed pixmaps. */
-void        add_pixmap_directory       (const gchar     *directory);
+void add_pixmap_directory(const gchar *directory);

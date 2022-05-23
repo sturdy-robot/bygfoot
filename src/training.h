@@ -32,20 +32,20 @@
 
 void
 calculateTrainingCamp(Team *current_team,
-					  gdouble value_training,
+                      gdouble value_training,
                       gdouble value_recreation,
                       gint number_camp);
-                      
+
 gfloat
 calculate_skill_points(gint value_training,
                        gint number_camp,
                        gfloat age,
                        gfloat fitness,
                        gfloat lsu);
-                                
+
 gfloat
 calculate_fitness_points(gint value_training,
-						 gint value_recreation,
+                         gint value_recreation,
                          gint number_camp,
                          gfloat age);
 
@@ -53,7 +53,7 @@ gint
 calculate_recovery_points(gint value_recreation,
                           gint number_camp,
                           gfloat age);
-                          
+
 gint
 random_int(gint min, gint max);
 

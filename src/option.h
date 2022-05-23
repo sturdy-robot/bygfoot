@@ -73,13 +73,13 @@ option_float(const gchar *name, OptionList *optionlist);
 gint
 option_int(const gchar *name, OptionList *optionlist);
 
-gint*
+gint *
 option_int_pointer(const gchar *name, OptionList *optionlist);
 
-gchar*
+gchar *
 option_string(const gchar *name, OptionList *optionlist);
 
-gchar**
+gchar **
 option_string_pointer(const gchar *name, OptionList *optionlist);
 
 void

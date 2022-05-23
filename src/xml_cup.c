@@ -79,8 +79,7 @@
 /**
  * Enum with the states used in the XML parser functions.
  */
-enum XmlCupStates
-{
+enum XmlCupStates {
     STATE_CUP = 0,
     STATE_NAME,
     STATE_SHORT_NAME,
@@ -150,146 +149,135 @@ gboolean alternatives = FALSE;
  * @see The GLib manual (Simple XML parser).
  */
 void
-xml_cup_read_start_element (GMarkupParseContext *context,
-			    const gchar         *element_name,
-			    const gchar        **attribute_names,
-			    const gchar        **attribute_values,
-			    gpointer             user_data,
-			    GError             **error)
-{
+xml_cup_read_start_element(GMarkupParseContext *context,
+                           const gchar *element_name,
+                           const gchar **attribute_names,
+                           const gchar **attribute_values,
+                           gpointer user_data,
+                           GError **error) {
 #ifdef DEBUG
     printf("xml_cup_read_start_element\n");
 #endif
 
-    if(strcmp(element_name, TAG_CUP) == 0)
-    {
-	new_cup = cup_new(FALSE);
-	state = STATE_CUP;
-    }
-    else if(strcmp(element_name, TAG_DEF_NAME) == 0)
-	state = STATE_NAME;
-    else if(strcmp(element_name, TAG_DEF_SHORT_NAME) == 0)
-	state = STATE_SHORT_NAME;
-    else if(strcmp(element_name, TAG_DEF_SYMBOL) == 0)
-	state = STATE_SYMBOL;
-    else if(strcmp(element_name, TAG_DEF_SID) == 0)
-	state = STATE_SID;
-    else if(strcmp(element_name, TAG_GROUP) == 0)
-	state = STATE_GROUP;
-    else if(strcmp(element_name, TAG_LAST_WEEK) == 0)
-	state = STATE_LAST_WEEK;
-    else if(strcmp(element_name, TAG_DEF_PROPERTY) == 0)
-	state = STATE_PROPERTY;
-    else if(strcmp(element_name, TAG_ADD_WEEK) == 0)
-	state = STATE_ADD_WEEK;
-    else if(strcmp(element_name, TAG_DEF_WEEK_GAP) == 0)
-	state = STATE_WEEK_GAP;
-    else if(strcmp(element_name, TAG_DEF_WEEK_BREAK) == 0)
-    {
-     	state = STATE_WEEK_BREAK;
-        if(attribute_names[0] != NULL && strcmp(attribute_names[0], ATT_DEF_NAME_WEEK_BREAK_LENGTH) == 0)
-            new_week_break.length = (gint)g_ascii_strtod(attribute_values[0], NULL);
+    if (strcmp(element_name, TAG_CUP) == 0) {
+        new_cup = cup_new(FALSE);
+        state = STATE_CUP;
+    } else if (strcmp(element_name, TAG_DEF_NAME) == 0)
+        state = STATE_NAME;
+    else if (strcmp(element_name, TAG_DEF_SHORT_NAME) == 0)
+        state = STATE_SHORT_NAME;
+    else if (strcmp(element_name, TAG_DEF_SYMBOL) == 0)
+        state = STATE_SYMBOL;
+    else if (strcmp(element_name, TAG_DEF_SID) == 0)
+        state = STATE_SID;
+    else if (strcmp(element_name, TAG_GROUP) == 0)
+        state = STATE_GROUP;
+    else if (strcmp(element_name, TAG_LAST_WEEK) == 0)
+        state = STATE_LAST_WEEK;
+    else if (strcmp(element_name, TAG_DEF_PROPERTY) == 0)
+        state = STATE_PROPERTY;
+    else if (strcmp(element_name, TAG_ADD_WEEK) == 0)
+        state = STATE_ADD_WEEK;
+    else if (strcmp(element_name, TAG_DEF_WEEK_GAP) == 0)
+        state = STATE_WEEK_GAP;
+    else if (strcmp(element_name, TAG_DEF_WEEK_BREAK) == 0) {
+        state = STATE_WEEK_BREAK;
+        if (attribute_names[0] != NULL && strcmp(attribute_names[0], ATT_DEF_NAME_WEEK_BREAK_LENGTH) == 0)
+            new_week_break.length = (gint) g_ascii_strtod(attribute_values[0], NULL);
         else
             new_week_break.length = -1000;
-    }
-    else if(strcmp(element_name, TAG_DEF_SKIP_WEEKS_WITH) == 0)
+    } else if (strcmp(element_name, TAG_DEF_SKIP_WEEKS_WITH) == 0)
         state = STATE_SKIP_WEEKS_WITH;
-    else if(strcmp(element_name, TAG_DEF_YELLOW_RED) == 0)
-	state = STATE_YELLOW_RED;
-    else if(strcmp(element_name, TAG_TALENT_DIFF) == 0)
-	state = STATE_TALENT_DIFF;
-    else if(strcmp(element_name, TAG_CUP_ROUNDS) == 0)
-	state = STATE_CUP_ROUNDS;
-    else if(strcmp(element_name, TAG_CUP_ROUND) == 0)
-    {
-	new_round = cup_round_new();
-	state = STATE_CUP_ROUND;
-    }
-    else if(strcmp(element_name, TAG_CUP_ROUND_NAME) == 0)
-	state = STATE_CUP_ROUND_NAME;
-    else if(strcmp(element_name, TAG_CUP_ROUND_NEW_TEAMS) == 0)
-	state = STATE_CUP_ROUND_NEW_TEAMS;
-    else if(strcmp(element_name, TAG_CUP_ROUND_BYES) == 0)
-	state = STATE_CUP_ROUND_BYES;
-    else if(strcmp(element_name, TAG_CUP_ROUND_HOME_AWAY) == 0)
-	state = STATE_CUP_ROUND_HOME_AWAY;
-    else if(strcmp(element_name, TAG_CUP_ROUND_REPLAY) == 0)
-	state = STATE_CUP_ROUND_REPLAY;
-    else if(strcmp(element_name, TAG_CUP_ROUND_NEUTRAL) == 0)
-	state = STATE_CUP_ROUND_NEUTRAL;
-    else if(strcmp(element_name, TAG_CUP_ROUND_DELAY) == 0)
-	state = STATE_CUP_ROUND_DELAY;
-    else if(strcmp(element_name, TAG_CUP_ROUND_RANDOMISE_TEAMS) == 0)
-	state = STATE_CUP_ROUND_RANDOMISE_TEAMS;
-    else if(strcmp(element_name, TAG_CUP_ROUND_NUMBER_OF_GROUPS) == 0)
-	state = STATE_CUP_ROUND_NUMBER_OF_GROUPS;
-    else if(strcmp(element_name, TAG_CUP_ROUND_NUMBER_OF_ADVANCE) == 0)
-	state = STATE_CUP_ROUND_NUMBER_OF_ADVANCE;
-    else if(strcmp(element_name, TAG_CUP_ROUND_NUMBER_OF_BEST_ADVANCE) == 0)
-	state = STATE_CUP_ROUND_NUMBER_OF_BEST_ADVANCE;
-    else if(strcmp(element_name, TAG_CUP_ROUND_ROUND_ROBINS) == 0)
-	state = STATE_CUP_ROUND_ROUND_ROBINS;
-    else if(strcmp(element_name, TAG_CUP_ROUND_BREAK) == 0)
-	state = STATE_CUP_ROUND_BREAK;
-    else if(strcmp(element_name, TAG_CUP_ROUND_WAIT) == 0)
-    {
-     	state = STATE_CUP_ROUND_WAIT;
-        if(attribute_names[0] != NULL && strcmp(attribute_names[0], ATT_NAME_CUP_ROUND_WAIT_ROUND) == 0)
-            new_wait.cup_round = (gint)g_ascii_strtod(attribute_values[0], NULL) - 1;
-        else
-        {
+    else if (strcmp(element_name, TAG_DEF_YELLOW_RED) == 0)
+        state = STATE_YELLOW_RED;
+    else if (strcmp(element_name, TAG_TALENT_DIFF) == 0)
+        state = STATE_TALENT_DIFF;
+    else if (strcmp(element_name, TAG_CUP_ROUNDS) == 0)
+        state = STATE_CUP_ROUNDS;
+    else if (strcmp(element_name, TAG_CUP_ROUND) == 0) {
+        new_round = cup_round_new();
+        state = STATE_CUP_ROUND;
+    } else if (strcmp(element_name, TAG_CUP_ROUND_NAME) == 0)
+        state = STATE_CUP_ROUND_NAME;
+    else if (strcmp(element_name, TAG_CUP_ROUND_NEW_TEAMS) == 0)
+        state = STATE_CUP_ROUND_NEW_TEAMS;
+    else if (strcmp(element_name, TAG_CUP_ROUND_BYES) == 0)
+        state = STATE_CUP_ROUND_BYES;
+    else if (strcmp(element_name, TAG_CUP_ROUND_HOME_AWAY) == 0)
+        state = STATE_CUP_ROUND_HOME_AWAY;
+    else if (strcmp(element_name, TAG_CUP_ROUND_REPLAY) == 0)
+        state = STATE_CUP_ROUND_REPLAY;
+    else if (strcmp(element_name, TAG_CUP_ROUND_NEUTRAL) == 0)
+        state = STATE_CUP_ROUND_NEUTRAL;
+    else if (strcmp(element_name, TAG_CUP_ROUND_DELAY) == 0)
+        state = STATE_CUP_ROUND_DELAY;
+    else if (strcmp(element_name, TAG_CUP_ROUND_RANDOMISE_TEAMS) == 0)
+        state = STATE_CUP_ROUND_RANDOMISE_TEAMS;
+    else if (strcmp(element_name, TAG_CUP_ROUND_NUMBER_OF_GROUPS) == 0)
+        state = STATE_CUP_ROUND_NUMBER_OF_GROUPS;
+    else if (strcmp(element_name, TAG_CUP_ROUND_NUMBER_OF_ADVANCE) == 0)
+        state = STATE_CUP_ROUND_NUMBER_OF_ADVANCE;
+    else if (strcmp(element_name, TAG_CUP_ROUND_NUMBER_OF_BEST_ADVANCE) == 0)
+        state = STATE_CUP_ROUND_NUMBER_OF_BEST_ADVANCE;
+    else if (strcmp(element_name, TAG_CUP_ROUND_ROUND_ROBINS) == 0)
+        state = STATE_CUP_ROUND_ROUND_ROBINS;
+    else if (strcmp(element_name, TAG_CUP_ROUND_BREAK) == 0)
+        state = STATE_CUP_ROUND_BREAK;
+    else if (strcmp(element_name, TAG_CUP_ROUND_WAIT) == 0) {
+        state = STATE_CUP_ROUND_WAIT;
+        if (attribute_names[0] != NULL && strcmp(attribute_names[0], ATT_NAME_CUP_ROUND_WAIT_ROUND) == 0)
+            new_wait.cup_round = (gint) g_ascii_strtod(attribute_values[0], NULL) - 1;
+        else {
             new_wait.cup_round = -1;
-            debug_print_message("xml_cup_read_start_element: No round number specified for cup round wait in cup %s\n", new_cup.name);            
+            debug_print_message("xml_cup_read_start_element: No round number specified for cup round wait in cup %s\n",
+                                new_cup.name);
         }
-    }
-    else if(strcmp(element_name, TAG_CUP_ROUND_TWO_MATCH_WEEK_START) == 0)
-	state = STATE_CUP_ROUND_TWO_MATCH_WEEK_START;
-    else if(strcmp(element_name, TAG_CUP_ROUND_TWO_MATCH_WEEK_END) == 0)
-	state = STATE_CUP_ROUND_TWO_MATCH_WEEK_END;
-    else if(strcmp(element_name, TAG_CUP_ROUND_TWO_MATCH_WEEK) == 0)
-	state = STATE_CUP_ROUND_TWO_MATCH_WEEK;
-    else if(strcmp(element_name, TAG_CHOOSE_TEAMS) == 0)
-	state = STATE_CHOOSE_TEAMS;
-    else if(strcmp(element_name, TAG_CHOOSE_TEAM) == 0)
-    {
+    } else if (strcmp(element_name, TAG_CUP_ROUND_TWO_MATCH_WEEK_START) == 0)
+        state = STATE_CUP_ROUND_TWO_MATCH_WEEK_START;
+    else if (strcmp(element_name, TAG_CUP_ROUND_TWO_MATCH_WEEK_END) == 0)
+        state = STATE_CUP_ROUND_TWO_MATCH_WEEK_END;
+    else if (strcmp(element_name, TAG_CUP_ROUND_TWO_MATCH_WEEK) == 0)
+        state = STATE_CUP_ROUND_TWO_MATCH_WEEK;
+    else if (strcmp(element_name, TAG_CHOOSE_TEAMS) == 0)
+        state = STATE_CHOOSE_TEAMS;
+    else if (strcmp(element_name, TAG_CHOOSE_TEAM) == 0) {
         if (!alternatives) {
-	    CupChooseTeam new = cup_choose_team_new();
+            CupChooseTeam new = cup_choose_team_new();
             g_array_append_val(new_round.choose_teams, new);
             new_choose_team = &g_array_index(new_round.choose_teams, CupChooseTeam,
-	                                     new_round.choose_teams->len - 1);
+                                             new_round.choose_teams->len - 1);
         } else {
-            new_choose_team->next = g_malloc(sizeof(CupChooseTeam ));
+            new_choose_team->next = g_malloc(sizeof(CupChooseTeam));
             *new_choose_team->next = cup_choose_team_new();
             new_choose_team = new_choose_team->next;
         }
-	state = STATE_CHOOSE_TEAM;
-    }
-    else if(strcmp(element_name, TAG_CHOOSE_TEAM_SID) == 0)
-	state = STATE_CHOOSE_TEAM_SID;
-    else if(strcmp(element_name, TAG_CHOOSE_TEAM_NUMBER_OF_TEAMS) == 0)
-	state = STATE_CHOOSE_TEAM_NUMBER_OF_TEAMS;
-    else if(strcmp(element_name, TAG_CHOOSE_TEAM_START_IDX) == 0)
-	state = STATE_CHOOSE_TEAM_START_IDX;
-    else if(strcmp(element_name, TAG_CHOOSE_TEAM_END_IDX) == 0)
-	state = STATE_CHOOSE_TEAM_END_IDX;
-    else if(strcmp(element_name, TAG_CHOOSE_TEAM_RANDOMLY) == 0)
-	state = STATE_CHOOSE_TEAM_RANDOMLY;
-    else if(strcmp(element_name, TAG_CHOOSE_TEAM_GENERATE) == 0)
-	state = STATE_CHOOSE_TEAM_GENERATE;
-    else if(strcmp(element_name, TAG_CHOOSE_TEAM_SKIP_GROUP_CHECK) == 0)
-	state = STATE_CHOOSE_TEAM_SKIP_GROUP_CHECK;
-    else if(strcmp(element_name, TAG_CHOOSE_TEAM_FROM_TABLE) == 0)
-	state = STATE_CHOOSE_TEAM_FROM_TABLE;
-    else if(strcmp(element_name, TAG_CHOOSE_TEAM_PRELOAD) == 0)
-	state = STATE_CHOOSE_TEAM_PRELOAD;
-    else if(strcmp(element_name, TAG_CHOOSE_TEAM_OPTIONAL) == 0)
-	state = STATE_CHOOSE_TEAM_OPTIONAL;
-    else if(strcmp(element_name, TAG_CHOOSE_TEAM_ALTERNATIVES) == 0) {
-	state = STATE_CHOOSE_TEAM_ALTERNATIVES;
-	alternatives = TRUE;
+        state = STATE_CHOOSE_TEAM;
+    } else if (strcmp(element_name, TAG_CHOOSE_TEAM_SID) == 0)
+        state = STATE_CHOOSE_TEAM_SID;
+    else if (strcmp(element_name, TAG_CHOOSE_TEAM_NUMBER_OF_TEAMS) == 0)
+        state = STATE_CHOOSE_TEAM_NUMBER_OF_TEAMS;
+    else if (strcmp(element_name, TAG_CHOOSE_TEAM_START_IDX) == 0)
+        state = STATE_CHOOSE_TEAM_START_IDX;
+    else if (strcmp(element_name, TAG_CHOOSE_TEAM_END_IDX) == 0)
+        state = STATE_CHOOSE_TEAM_END_IDX;
+    else if (strcmp(element_name, TAG_CHOOSE_TEAM_RANDOMLY) == 0)
+        state = STATE_CHOOSE_TEAM_RANDOMLY;
+    else if (strcmp(element_name, TAG_CHOOSE_TEAM_GENERATE) == 0)
+        state = STATE_CHOOSE_TEAM_GENERATE;
+    else if (strcmp(element_name, TAG_CHOOSE_TEAM_SKIP_GROUP_CHECK) == 0)
+        state = STATE_CHOOSE_TEAM_SKIP_GROUP_CHECK;
+    else if (strcmp(element_name, TAG_CHOOSE_TEAM_FROM_TABLE) == 0)
+        state = STATE_CHOOSE_TEAM_FROM_TABLE;
+    else if (strcmp(element_name, TAG_CHOOSE_TEAM_PRELOAD) == 0)
+        state = STATE_CHOOSE_TEAM_PRELOAD;
+    else if (strcmp(element_name, TAG_CHOOSE_TEAM_OPTIONAL) == 0)
+        state = STATE_CHOOSE_TEAM_OPTIONAL;
+    else if (strcmp(element_name, TAG_CHOOSE_TEAM_ALTERNATIVES) == 0) {
+        state = STATE_CHOOSE_TEAM_ALTERNATIVES;
+        alternatives = TRUE;
     } else
-	debug_print_message("xml_cup_read_start_element: unknown tag: %s; I'm in state %d\n",
-		  element_name, state);
+        debug_print_message("xml_cup_read_start_element: unknown tag: %s; I'm in state %d\n",
+                            element_name, state);
 }
 
 /**
@@ -298,92 +286,81 @@ xml_cup_read_start_element (GMarkupParseContext *context,
  * @see The GLib manual (Simple XML parser).
  */
 void
-xml_cup_read_end_element    (GMarkupParseContext *context,
-			     const gchar         *element_name,
-			     gpointer             user_data,
-			     GError             **error)
-{
+xml_cup_read_end_element(GMarkupParseContext *context,
+                         const gchar *element_name,
+                         gpointer user_data,
+                         GError **error) {
 #ifdef DEBUG
     printf("xml_cup_read_end_element\n");
 #endif
 
-    if(strcmp(element_name, TAG_DEF_NAME) == 0 ||
-       strcmp(element_name, TAG_DEF_SHORT_NAME) == 0 ||
-       strcmp(element_name, TAG_DEF_SYMBOL) == 0 ||
-       strcmp(element_name, TAG_DEF_SID) == 0 ||
-       strcmp(element_name, TAG_GROUP) == 0 ||
-       strcmp(element_name, TAG_LAST_WEEK) == 0 ||
-       strcmp(element_name, TAG_DEF_PROPERTY) == 0 ||
-       strcmp(element_name, TAG_ADD_WEEK) == 0 ||
-       strcmp(element_name, TAG_DEF_WEEK_GAP) == 0 ||
-       strcmp(element_name, TAG_DEF_SKIP_WEEKS_WITH) == 0 ||
-       strcmp(element_name, TAG_DEF_YELLOW_RED) == 0 ||
-       strcmp(element_name, TAG_TALENT_DIFF) == 0 ||
-       strcmp(element_name, TAG_CUP_ROUNDS) == 0)
-	state = STATE_CUP;
-    else if(strcmp(element_name, TAG_DEF_WEEK_BREAK) == 0)
-    {
-	state = STATE_CUP;
+    if (strcmp(element_name, TAG_DEF_NAME) == 0 ||
+        strcmp(element_name, TAG_DEF_SHORT_NAME) == 0 ||
+        strcmp(element_name, TAG_DEF_SYMBOL) == 0 ||
+        strcmp(element_name, TAG_DEF_SID) == 0 ||
+        strcmp(element_name, TAG_GROUP) == 0 ||
+        strcmp(element_name, TAG_LAST_WEEK) == 0 ||
+        strcmp(element_name, TAG_DEF_PROPERTY) == 0 ||
+        strcmp(element_name, TAG_ADD_WEEK) == 0 ||
+        strcmp(element_name, TAG_DEF_WEEK_GAP) == 0 ||
+        strcmp(element_name, TAG_DEF_SKIP_WEEKS_WITH) == 0 ||
+        strcmp(element_name, TAG_DEF_YELLOW_RED) == 0 ||
+        strcmp(element_name, TAG_TALENT_DIFF) == 0 ||
+        strcmp(element_name, TAG_CUP_ROUNDS) == 0)
+        state = STATE_CUP;
+    else if (strcmp(element_name, TAG_DEF_WEEK_BREAK) == 0) {
+        state = STATE_CUP;
         g_array_append_val(new_cup.week_breaks, new_week_break);
-    }
-    else if(strcmp(element_name, TAG_CUP_ROUND) == 0)
-    {
-	state = STATE_CUP_ROUNDS;
-        
-        if(new_round.home_away == 0)
+    } else if (strcmp(element_name, TAG_CUP_ROUND) == 0) {
+        state = STATE_CUP_ROUNDS;
+
+        if (new_round.home_away == 0)
             new_round.round_robins = 1;
-	
+
         league_cup_adjust_rr_breaks(new_round.rr_breaks, new_round.round_robins, new_cup.week_gap);
-	g_array_append_val(new_cup.rounds, new_round);
-    }
-    else if(strcmp(element_name, TAG_CUP_ROUND_HOME_AWAY) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_REPLAY) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_NEUTRAL) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_DELAY) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_RANDOMISE_TEAMS) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_NUMBER_OF_GROUPS) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_NUMBER_OF_ADVANCE) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_NUMBER_OF_BEST_ADVANCE) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_ROUND_ROBINS) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_BREAK) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_WAIT) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_TWO_MATCH_WEEK_START) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_TWO_MATCH_WEEK_END) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_TWO_MATCH_WEEK) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_NEW_TEAMS) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_NAME) == 0 ||
-	    strcmp(element_name, TAG_CUP_ROUND_BYES) == 0 ||
-	    strcmp(element_name, TAG_CHOOSE_TEAMS) == 0)
-    {
-     	state = STATE_CUP_ROUND;
-        if(strcmp(element_name, TAG_CUP_ROUND_WAIT) == 0)
+        g_array_append_val(new_cup.rounds, new_round);
+    } else if (strcmp(element_name, TAG_CUP_ROUND_HOME_AWAY) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_REPLAY) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_NEUTRAL) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_DELAY) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_RANDOMISE_TEAMS) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_NUMBER_OF_GROUPS) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_NUMBER_OF_ADVANCE) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_NUMBER_OF_BEST_ADVANCE) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_ROUND_ROBINS) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_BREAK) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_WAIT) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_TWO_MATCH_WEEK_START) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_TWO_MATCH_WEEK_END) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_TWO_MATCH_WEEK) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_NEW_TEAMS) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_NAME) == 0 ||
+               strcmp(element_name, TAG_CUP_ROUND_BYES) == 0 ||
+               strcmp(element_name, TAG_CHOOSE_TEAMS) == 0) {
+        state = STATE_CUP_ROUND;
+        if (strcmp(element_name, TAG_CUP_ROUND_WAIT) == 0)
             g_array_append_val(new_round.waits, new_wait);
-    }
-    else if(strcmp(element_name, TAG_CHOOSE_TEAM) == 0)
-    {
-	state = STATE_CHOOSE_TEAMS;
-    }
-    else if (strcmp(element_name, TAG_CHOOSE_TEAM_ALTERNATIVES) == 0)
-    {
+    } else if (strcmp(element_name, TAG_CHOOSE_TEAM) == 0) {
+        state = STATE_CHOOSE_TEAMS;
+    } else if (strcmp(element_name, TAG_CHOOSE_TEAM_ALTERNATIVES) == 0) {
         new_choose_team = &g_array_index(new_round.choose_teams, CupChooseTeam,
-	                                 new_round.choose_teams->len - 1);
-	state = STATE_CHOOSE_TEAM;
-	alternatives = FALSE;
-    }
-    else if(strcmp(element_name, TAG_CHOOSE_TEAM_SID) == 0 ||
-	    strcmp(element_name, TAG_CHOOSE_TEAM_NUMBER_OF_TEAMS) == 0 ||
-	    strcmp(element_name, TAG_CHOOSE_TEAM_START_IDX) == 0 ||
-	    strcmp(element_name, TAG_CHOOSE_TEAM_END_IDX) == 0 ||
-	    strcmp(element_name, TAG_CHOOSE_TEAM_RANDOMLY) == 0 ||
-	    strcmp(element_name, TAG_CHOOSE_TEAM_SKIP_GROUP_CHECK) == 0 ||
-	    strcmp(element_name, TAG_CHOOSE_TEAM_FROM_TABLE) == 0 ||
-	    strcmp(element_name, TAG_CHOOSE_TEAM_PRELOAD) == 0 ||
-	    strcmp(element_name, TAG_CHOOSE_TEAM_OPTIONAL) == 0 ||
-	    strcmp(element_name, TAG_CHOOSE_TEAM_GENERATE) == 0)
-	    state = STATE_CHOOSE_TEAM;
-    else if(strcmp(element_name, TAG_CUP) != 0)
-	debug_print_message("xml_cup_read_end_element: unknown tag: %s; I'm in state %d\n",
-		  element_name, state);
+                                         new_round.choose_teams->len - 1);
+        state = STATE_CHOOSE_TEAM;
+        alternatives = FALSE;
+    } else if (strcmp(element_name, TAG_CHOOSE_TEAM_SID) == 0 ||
+               strcmp(element_name, TAG_CHOOSE_TEAM_NUMBER_OF_TEAMS) == 0 ||
+               strcmp(element_name, TAG_CHOOSE_TEAM_START_IDX) == 0 ||
+               strcmp(element_name, TAG_CHOOSE_TEAM_END_IDX) == 0 ||
+               strcmp(element_name, TAG_CHOOSE_TEAM_RANDOMLY) == 0 ||
+               strcmp(element_name, TAG_CHOOSE_TEAM_SKIP_GROUP_CHECK) == 0 ||
+               strcmp(element_name, TAG_CHOOSE_TEAM_FROM_TABLE) == 0 ||
+               strcmp(element_name, TAG_CHOOSE_TEAM_PRELOAD) == 0 ||
+               strcmp(element_name, TAG_CHOOSE_TEAM_OPTIONAL) == 0 ||
+               strcmp(element_name, TAG_CHOOSE_TEAM_GENERATE) == 0)
+        state = STATE_CHOOSE_TEAM;
+    else if (strcmp(element_name, TAG_CUP) != 0)
+        debug_print_message("xml_cup_read_end_element: unknown tag: %s; I'm in state %d\n",
+                            element_name, state);
 }
 
 /**
@@ -393,12 +370,11 @@ xml_cup_read_end_element    (GMarkupParseContext *context,
  * @see The GLib manual (Simple XML parser).
  */
 void
-xml_cup_read_text         (GMarkupParseContext *context,
-			   const gchar         *text,
-			   gsize                text_len,  
-			   gpointer             user_data,
-			   GError             **error)
-{
+xml_cup_read_text(GMarkupParseContext *context,
+                  const gchar *text,
+                  gsize text_len,
+                  gpointer user_data,
+                  GError **error) {
 #ifdef DEBUG
     printf("xml_cup_read_text\n");
 #endif
@@ -410,90 +386,90 @@ xml_cup_read_text         (GMarkupParseContext *context,
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
 
-    int_value = (gint)g_ascii_strtod(buf, NULL);
-    float_value = (gfloat)g_ascii_strtod(buf, NULL);
+    int_value = (gint) g_ascii_strtod(buf, NULL);
+    float_value = (gfloat) g_ascii_strtod(buf, NULL);
 
-    if(state == STATE_NAME)
-	misc_string_assign(&new_cup.name, buf);
-    else if(state == STATE_SHORT_NAME)
-	misc_string_assign(&new_cup.short_name, buf);
-    else if(state == STATE_SYMBOL)
-	misc_string_assign(&new_cup.symbol, buf);
-    else if(state == STATE_SID)
-	misc_string_assign(&new_cup.sid, buf);
-    else if(state == STATE_GROUP)
-	new_cup.group = int_value;
-    else if(state == STATE_LAST_WEEK)
-	new_cup.last_week = int_value;
-    else if(state == STATE_PROPERTY)
-	g_ptr_array_add(new_cup.properties, g_strdup(buf));
-    else if(state == STATE_ADD_WEEK)
-	new_cup.add_week = int_value;
-    else if(state == STATE_WEEK_GAP)
-	new_cup.week_gap = int_value;
-    else if(state == STATE_WEEK_BREAK)
-	new_week_break.week_number = int_value;
-    else if(state == STATE_SKIP_WEEKS_WITH)
+    if (state == STATE_NAME)
+        misc_string_assign(&new_cup.name, buf);
+    else if (state == STATE_SHORT_NAME)
+        misc_string_assign(&new_cup.short_name, buf);
+    else if (state == STATE_SYMBOL)
+        misc_string_assign(&new_cup.symbol, buf);
+    else if (state == STATE_SID)
+        misc_string_assign(&new_cup.sid, buf);
+    else if (state == STATE_GROUP)
+        new_cup.group = int_value;
+    else if (state == STATE_LAST_WEEK)
+        new_cup.last_week = int_value;
+    else if (state == STATE_PROPERTY)
+        g_ptr_array_add(new_cup.properties, g_strdup(buf));
+    else if (state == STATE_ADD_WEEK)
+        new_cup.add_week = int_value;
+    else if (state == STATE_WEEK_GAP)
+        new_cup.week_gap = int_value;
+    else if (state == STATE_WEEK_BREAK)
+        new_week_break.week_number = int_value;
+    else if (state == STATE_SKIP_WEEKS_WITH)
         g_ptr_array_add(new_cup.skip_weeks_with, g_strdup(buf));
-    else if(state == STATE_YELLOW_RED)
-	new_cup.yellow_red = int_value;
-    else if(state == STATE_TALENT_DIFF)
-	new_cup.talent_diff = 
-	    (float_value / 10000);
-    else if(state == STATE_CUP_ROUND_NAME)
-	new_round.name = g_strdup(buf);
-    else if(state == STATE_CUP_ROUND_NEW_TEAMS)
-	new_round.new_teams = int_value;
-    else if(state == STATE_CUP_ROUND_BYES)
-	new_round.byes = int_value;
-    else if(state == STATE_CUP_ROUND_HOME_AWAY)
-	new_round.home_away = int_value;
-    else if(state == STATE_CUP_ROUND_REPLAY)
-	new_round.replay = int_value;
-    else if(state == STATE_CUP_ROUND_NEUTRAL)
-	new_round.neutral = int_value;
-    else if(state == STATE_CUP_ROUND_DELAY)
-	new_round.delay = int_value;
-    else if(state == STATE_CUP_ROUND_RANDOMISE_TEAMS)
-	new_round.randomise_teams = int_value;
-    else if(state == STATE_CUP_ROUND_NUMBER_OF_GROUPS)
-	new_round.round_robin_number_of_groups = int_value;
-    else if(state == STATE_CUP_ROUND_NUMBER_OF_ADVANCE)
-	new_round.round_robin_number_of_advance = int_value;
-    else if(state == STATE_CUP_ROUND_NUMBER_OF_BEST_ADVANCE)
-	new_round.round_robin_number_of_best_advance = int_value;
-    else if(state == STATE_CUP_ROUND_ROUND_ROBINS)
-	new_round.round_robins = int_value;
-    else if(state == STATE_CUP_ROUND_BREAK)
-	league_cup_fill_rr_breaks(new_round.rr_breaks, buf);
-    else if(state == STATE_CUP_ROUND_WAIT)
+    else if (state == STATE_YELLOW_RED)
+        new_cup.yellow_red = int_value;
+    else if (state == STATE_TALENT_DIFF)
+        new_cup.talent_diff =
+                (float_value / 10000);
+    else if (state == STATE_CUP_ROUND_NAME)
+        new_round.name = g_strdup(buf);
+    else if (state == STATE_CUP_ROUND_NEW_TEAMS)
+        new_round.new_teams = int_value;
+    else if (state == STATE_CUP_ROUND_BYES)
+        new_round.byes = int_value;
+    else if (state == STATE_CUP_ROUND_HOME_AWAY)
+        new_round.home_away = int_value;
+    else if (state == STATE_CUP_ROUND_REPLAY)
+        new_round.replay = int_value;
+    else if (state == STATE_CUP_ROUND_NEUTRAL)
+        new_round.neutral = int_value;
+    else if (state == STATE_CUP_ROUND_DELAY)
+        new_round.delay = int_value;
+    else if (state == STATE_CUP_ROUND_RANDOMISE_TEAMS)
+        new_round.randomise_teams = int_value;
+    else if (state == STATE_CUP_ROUND_NUMBER_OF_GROUPS)
+        new_round.round_robin_number_of_groups = int_value;
+    else if (state == STATE_CUP_ROUND_NUMBER_OF_ADVANCE)
+        new_round.round_robin_number_of_advance = int_value;
+    else if (state == STATE_CUP_ROUND_NUMBER_OF_BEST_ADVANCE)
+        new_round.round_robin_number_of_best_advance = int_value;
+    else if (state == STATE_CUP_ROUND_ROUND_ROBINS)
+        new_round.round_robins = int_value;
+    else if (state == STATE_CUP_ROUND_BREAK)
+        league_cup_fill_rr_breaks(new_round.rr_breaks, buf);
+    else if (state == STATE_CUP_ROUND_WAIT)
         new_wait.cup_sid = g_strdup(buf);
-    else if(state == STATE_CUP_ROUND_TWO_MATCH_WEEK_START)
-	g_array_append_val(new_round.two_match_weeks[0], int_value);
-    else if(state == STATE_CUP_ROUND_TWO_MATCH_WEEK_END)
-	g_array_append_val(new_round.two_match_weeks[1], int_value);
-    else if(state == STATE_CUP_ROUND_TWO_MATCH_WEEK)
-	new_round.two_match_week = int_value;
-    else if(state == STATE_CHOOSE_TEAM_SID)
-	misc_string_assign(&new_choose_team->sid, buf);
-    else if(state == STATE_CHOOSE_TEAM_NUMBER_OF_TEAMS)
-	new_choose_team->number_of_teams = int_value;
-    else if(state == STATE_CHOOSE_TEAM_START_IDX)
-	new_choose_team->start_idx = int_value;
-    else if(state == STATE_CHOOSE_TEAM_END_IDX)
-	new_choose_team->end_idx = int_value;
-    else if(state == STATE_CHOOSE_TEAM_RANDOMLY)
-	new_choose_team->randomly = int_value;
-    else if(state == STATE_CHOOSE_TEAM_GENERATE)
-	new_choose_team->generate = int_value;
-    else if(state == STATE_CHOOSE_TEAM_SKIP_GROUP_CHECK)
-	new_choose_team->skip_group_check = int_value;
-    else if(state == STATE_CHOOSE_TEAM_FROM_TABLE)
-	new_choose_team->from_table = int_value;
-    else if(state == STATE_CHOOSE_TEAM_PRELOAD)
-	new_choose_team->preload = int_value;
-    else if(state == STATE_CHOOSE_TEAM_OPTIONAL)
-	new_choose_team->optional = int_value;
+    else if (state == STATE_CUP_ROUND_TWO_MATCH_WEEK_START)
+        g_array_append_val(new_round.two_match_weeks[0], int_value);
+    else if (state == STATE_CUP_ROUND_TWO_MATCH_WEEK_END)
+        g_array_append_val(new_round.two_match_weeks[1], int_value);
+    else if (state == STATE_CUP_ROUND_TWO_MATCH_WEEK)
+        new_round.two_match_week = int_value;
+    else if (state == STATE_CHOOSE_TEAM_SID)
+        misc_string_assign(&new_choose_team->sid, buf);
+    else if (state == STATE_CHOOSE_TEAM_NUMBER_OF_TEAMS)
+        new_choose_team->number_of_teams = int_value;
+    else if (state == STATE_CHOOSE_TEAM_START_IDX)
+        new_choose_team->start_idx = int_value;
+    else if (state == STATE_CHOOSE_TEAM_END_IDX)
+        new_choose_team->end_idx = int_value;
+    else if (state == STATE_CHOOSE_TEAM_RANDOMLY)
+        new_choose_team->randomly = int_value;
+    else if (state == STATE_CHOOSE_TEAM_GENERATE)
+        new_choose_team->generate = int_value;
+    else if (state == STATE_CHOOSE_TEAM_SKIP_GROUP_CHECK)
+        new_choose_team->skip_group_check = int_value;
+    else if (state == STATE_CHOOSE_TEAM_FROM_TABLE)
+        new_choose_team->from_table = int_value;
+    else if (state == STATE_CHOOSE_TEAM_PRELOAD)
+        new_choose_team->preload = int_value;
+    else if (state == STATE_CHOOSE_TEAM_OPTIONAL)
+        new_choose_team->optional = int_value;
 }
 
 /**
@@ -505,16 +481,15 @@ xml_cup_read_text         (GMarkupParseContext *context,
  * @param cups The array we append the new cup to.
  */
 void
-xml_cup_read(const gchar *cup_name, GArray *cups)
-{
+xml_cup_read(const gchar *cup_name, GArray *cups) {
 #ifdef DEBUG
     printf("xml_cup_read\n");
 #endif
 
     gchar *file_name = file_find_support_file(cup_name, FALSE);
     GMarkupParser parser = {xml_cup_read_start_element,
-			    xml_cup_read_end_element,
-			    xml_cup_read_text, NULL, NULL};
+                            xml_cup_read_end_element,
+                            xml_cup_read_text, NULL, NULL};
     GMarkupParseContext *context;
     gchar *file_contents;
     gsize length;
@@ -522,44 +497,38 @@ xml_cup_read(const gchar *cup_name, GArray *cups)
     gchar buf[SMALL];
     gint i;
 
-    context = 
-	g_markup_parse_context_new(&parser, 0, NULL, NULL);
+    context =
+            g_markup_parse_context_new(&parser, 0, NULL, NULL);
 
-    if(file_name == NULL)
-    {
-	sprintf(buf, "cup_%s.xml", cup_name);
-	file_name = file_find_support_file(buf, TRUE);
+    if (file_name == NULL) {
+        sprintf(buf, "cup_%s.xml", cup_name);
+        file_name = file_find_support_file(buf, TRUE);
     }
 
-    if(!g_file_get_contents(file_name, &file_contents, &length, &error))
-    {
-	debug_print_message("xml_cup_read: error reading file %s\n", file_name);
-	misc_print_error(&error, FALSE);
-	return;
+    if (!g_file_get_contents(file_name, &file_contents, &length, &error)) {
+        debug_print_message("xml_cup_read: error reading file %s\n", file_name);
+        misc_print_error(&error, FALSE);
+        return;
     }
 
     state = STATE_CUP;
     strcpy(buf, file_name);
     g_free(file_name);
 
-    if(g_markup_parse_context_parse(context, file_contents, length, &error))
-    {
-	g_markup_parse_context_end_parse(context, NULL);	
-	g_markup_parse_context_free(context);
-	g_free(file_contents);
-    }
-    else
-    {
-	g_critical("xml_cup_read: error parsing file %s\n", buf);
-	misc_print_error(&error, TRUE);
+    if (g_markup_parse_context_parse(context, file_contents, length, &error)) {
+        g_markup_parse_context_end_parse(context, NULL);
+        g_markup_parse_context_free(context);
+        g_free(file_contents);
+    } else {
+        g_critical("xml_cup_read: error parsing file %s\n", buf);
+        misc_print_error(&error, TRUE);
     }
 
     new_cup.id = cup_id_new;
     league_cup_adjust_week_breaks(new_cup.week_breaks, new_cup.week_gap);
 
-    for(i = 0; i < new_cup.rounds->len; i++)
-        if(g_array_index(new_cup.rounds, CupRound, i).name == NULL)
-        {
+    for (i = 0; i < new_cup.rounds->len; i++)
+        if (g_array_index(new_cup.rounds, CupRound, i).name == NULL) {
             cup_get_round_name(&new_cup, i, buf);
             g_array_index(new_cup.rounds, CupRound, i).name = g_strdup(buf);
         }

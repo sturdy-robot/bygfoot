@@ -32,8 +32,7 @@
 #include "team_struct.h"
 
 /** Possibilities for team comparison. */
-enum TeamCompare
-{
+enum TeamCompare {
     TEAM_COMPARE_LEAGUE_RANK = 0,
     TEAM_COMPARE_LEAGUE_LAYER,
     TEAM_COMPARE_UNSORTED,
@@ -58,16 +57,16 @@ query_team_is_in_cups(const Team *tm, gint group);
 gboolean
 query_team_is_in_cup(const Team *tm, const Cup *cup);
 
-GPtrArray*
+GPtrArray *
 team_get_pointers_from_array(const GArray *teams, GPtrArray *team_ptrs);
 
-Team*
+Team *
 team_of_id(gint id);
 
-Team*
+Team *
 team_of_sid(const char *sid, const Country *country);
 
-const Fixture*
+const Fixture *
 team_get_fixture(const Team *tm, gboolean last_fixture);
 
 gfloat
@@ -97,11 +96,11 @@ team_find_appropriate_structure(const Team *tm);
 void
 team_rearrange(Team *tm);
 
-gchar*
+gchar *
 team_attribute_to_char(gint attribute, gint value);
 
 void
-team_change_attribute_with_message(Team * tm, gint attribute, gint new_value);
+team_change_attribute_with_message(Team *tm, gint attribute, gint new_value);
 
 void
 team_update_team_weekly(Team *tm);
@@ -115,10 +114,10 @@ team_update_cpu_new_players(Team *tm);
 void
 team_update_team_week_roundly(Team *tm);
 
-Team*
+Team *
 team_get_new(const Team *tm, gboolean fire);
 
-GPtrArray*
+GPtrArray *
 team_get_sorted(GCompareDataFunc compare_function, gint type, gboolean cup);
 
 gint
@@ -151,7 +150,7 @@ query_team_is_in_teams_array(const Team *tm, const GPtrArray *teams);
 gboolean
 query_team_id_is_in_teams_array(const Team *tm, const GArray *teams);
 
-gchar*
+gchar *
 team_has_def_file(const Team *tm);
 
 void

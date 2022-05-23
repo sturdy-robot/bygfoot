@@ -48,8 +48,7 @@
 /**
  * Enum with the states used in the XML parser functions.
  */
-enum XmlCountryStates
-{
+enum XmlCountryStates {
     STATE_COUNTRY = 0,
     STATE_NAME,
     STATE_RATING,
@@ -77,50 +76,45 @@ Country *cntry;
  * @see The GLib manual (Simple XML parser).
  */
 void
-xml_country_read_start_element (GMarkupParseContext *context,
-				const gchar         *element_name,
-				const gchar        **attribute_names,
-				const gchar        **attribute_values,
-				gpointer             user_data,
-				GError             **error)
-{
+xml_country_read_start_element(GMarkupParseContext *context,
+                               const gchar *element_name,
+                               const gchar **attribute_names,
+                               const gchar **attribute_values,
+                               gpointer user_data,
+                               GError **error) {
 #ifdef DEBUG
     printf("xml_country_read_start_element\n");
 #endif
 
-    if(strcmp(element_name, TAG_DEF_NAME) == 0)
-	state = STATE_NAME;
-    else if(strcmp(element_name, TAG_RATING) == 0)
-	state = STATE_RATING;
-    else if(strcmp(element_name, TAG_DEF_SYMBOL) == 0)
-	state = STATE_SYMBOL;
-    else if(strcmp(element_name, TAG_DEF_SID) == 0)
-	state = STATE_SID;
-    else if(strcmp(element_name, TAG_SUPERNATIONAL) == 0)
-	state = STATE_SUPERNATIONAL;
-    else if(strcmp(element_name, TAG_LEAGUES) == 0)
-    {
-	state = STATE_LEAGUES;
-	if(cntry->leagues == NULL)
-	    cntry->leagues = g_array_new(FALSE, FALSE, sizeof(League));
-	//if(cntry->teams == NULL)
-	//    cntry->teams = g_array_new(FALSE, FALSE, sizeof(Country));
-    }
-    else if(strcmp(element_name, TAG_LEAGUE) == 0)
-	state = STATE_LEAGUE;
-    else if(strcmp(element_name, TAG_CUPS) == 0)
-    {
-	state = STATE_CUPS;
-	if(cntry->cups == NULL)
-	    cntry->cups = g_array_new(FALSE, FALSE, sizeof(Cup));
-    }
-    else if(strcmp(element_name, TAG_CUP) == 0)
-	state = STATE_CUP;
-    else if(strcmp(element_name, TAG_RESERVE_PROMOTION_RULES) == 0)
-	state = STATE_RESERVE_PROMOTION_RULES;
-    else if(strcmp(element_name, TAG_COUNTRY) != 0)
-	debug_print_message("xml_country_read_start_element: unknown tag: %s; I'm in state %d\n",
-		  element_name, state);
+    if (strcmp(element_name, TAG_DEF_NAME) == 0)
+        state = STATE_NAME;
+    else if (strcmp(element_name, TAG_RATING) == 0)
+        state = STATE_RATING;
+    else if (strcmp(element_name, TAG_DEF_SYMBOL) == 0)
+        state = STATE_SYMBOL;
+    else if (strcmp(element_name, TAG_DEF_SID) == 0)
+        state = STATE_SID;
+    else if (strcmp(element_name, TAG_SUPERNATIONAL) == 0)
+        state = STATE_SUPERNATIONAL;
+    else if (strcmp(element_name, TAG_LEAGUES) == 0) {
+        state = STATE_LEAGUES;
+        if (cntry->leagues == NULL)
+            cntry->leagues = g_array_new(FALSE, FALSE, sizeof(League));
+        //if(cntry->teams == NULL)
+        //    cntry->teams = g_array_new(FALSE, FALSE, sizeof(Country));
+    } else if (strcmp(element_name, TAG_LEAGUE) == 0)
+        state = STATE_LEAGUE;
+    else if (strcmp(element_name, TAG_CUPS) == 0) {
+        state = STATE_CUPS;
+        if (cntry->cups == NULL)
+            cntry->cups = g_array_new(FALSE, FALSE, sizeof(Cup));
+    } else if (strcmp(element_name, TAG_CUP) == 0)
+        state = STATE_CUP;
+    else if (strcmp(element_name, TAG_RESERVE_PROMOTION_RULES) == 0)
+        state = STATE_RESERVE_PROMOTION_RULES;
+    else if (strcmp(element_name, TAG_COUNTRY) != 0)
+        debug_print_message("xml_country_read_start_element: unknown tag: %s; I'm in state %d\n",
+                            element_name, state);
 }
 
 /**
@@ -129,33 +123,32 @@ xml_country_read_start_element (GMarkupParseContext *context,
  * @see The GLib manual (Simple XML parser).
  */
 void
-xml_country_read_end_element    (GMarkupParseContext *context,
-				 const gchar         *element_name,
-				 gpointer             user_data,
-				 GError             **error)
-{
+xml_country_read_end_element(GMarkupParseContext *context,
+                             const gchar *element_name,
+                             gpointer user_data,
+                             GError **error) {
 
 #ifdef DEBUG
     printf("xml_country_read_end_element\n");
 #endif
 
-    if(strcmp(element_name, TAG_DEF_NAME) == 0 ||
-       strcmp(element_name, TAG_RATING) == 0 ||
-       strcmp(element_name, TAG_DEF_SYMBOL) == 0 ||
-       strcmp(element_name, TAG_DEF_SID) == 0 ||
-       strcmp(element_name, TAG_SUPERNATIONAL) == 0 ||
-       strcmp(element_name, TAG_LEAGUES) == 0 ||
-       strcmp(element_name, TAG_RESERVE_PROMOTION_RULES) == 0 ||
-       strcmp(element_name, TAG_CUPS) == 0)
-	state = STATE_COUNTRY;
-    else if(strcmp(element_name, TAG_LEAGUE) == 0)
-	state = STATE_LEAGUES;
-    else if(strcmp(element_name, TAG_CUP) == 0)
-	state = STATE_CUPS;
+    if (strcmp(element_name, TAG_DEF_NAME) == 0 ||
+        strcmp(element_name, TAG_RATING) == 0 ||
+        strcmp(element_name, TAG_DEF_SYMBOL) == 0 ||
+        strcmp(element_name, TAG_DEF_SID) == 0 ||
+        strcmp(element_name, TAG_SUPERNATIONAL) == 0 ||
+        strcmp(element_name, TAG_LEAGUES) == 0 ||
+        strcmp(element_name, TAG_RESERVE_PROMOTION_RULES) == 0 ||
+        strcmp(element_name, TAG_CUPS) == 0)
+        state = STATE_COUNTRY;
+    else if (strcmp(element_name, TAG_LEAGUE) == 0)
+        state = STATE_LEAGUES;
+    else if (strcmp(element_name, TAG_CUP) == 0)
+        state = STATE_CUPS;
 
-    else if(strcmp(element_name, TAG_COUNTRY) != 0)
-	debug_print_message("xml_country_read_end_element: unknown tag: %s; I'm in state %d\n",
-		  element_name, state);
+    else if (strcmp(element_name, TAG_COUNTRY) != 0)
+        debug_print_message("xml_country_read_end_element: unknown tag: %s; I'm in state %d\n",
+                            element_name, state);
 }
 
 /**
@@ -165,12 +158,11 @@ xml_country_read_end_element    (GMarkupParseContext *context,
  * @see The GLib manual (Simple XML parser).
  */
 void
-xml_country_read_text         (GMarkupParseContext *context,
-			       const gchar         *text,
-			       gsize                text_len,  
-			       gpointer             user_data,
-			       GError             **error)
-{
+xml_country_read_text(GMarkupParseContext *context,
+                      const gchar *text,
+                      gsize text_len,
+                      gpointer user_data,
+                      GError **error) {
 #ifdef DEBUG
     printf("xml_country_read_text\n");
 #endif
@@ -181,39 +173,37 @@ xml_country_read_text         (GMarkupParseContext *context,
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
 
-    int_value = (gint)g_ascii_strtod(buf, NULL);
+    int_value = (gint) g_ascii_strtod(buf, NULL);
 
-    if(state == STATE_NAME)
-	misc_string_assign(&cntry->name, buf);
-    else if(state == STATE_RATING)
-	cntry->rating = int_value;
-    else if(state == STATE_SYMBOL)
-	misc_string_assign(&cntry->symbol, buf);
-    else if(state == STATE_SID)
-	misc_string_assign(&cntry->sid, buf);
-    else if(state == STATE_SUPERNATIONAL && cntry == &country)
-    {
-	sett_set_int("int_opt_disable_finances", 1);
-	sett_set_int("int_opt_disable_transfers", 1);
-	sett_set_int("int_opt_disable_stadium", 1);
-	sett_set_int("int_opt_disable_contracts", 1);
-	sett_set_int("int_opt_disable_boost_on", 1);
-	sett_set_int("int_opt_disable_ya", 1);
-	sett_set_int("int_opt_disable_training_camp", 1);//***ML***
-    }
-    else if(state == STATE_LEAGUE)
-	xml_league_read(buf, cntry->leagues);
-    else if(state == STATE_CUP)
-	xml_cup_read(buf, cntry->cups);
-    else if(state == STATE_RESERVE_PROMOTION_RULES) {
-	if (!strcmp(buf, "none"))
-	    cntry->reserve_promotion_rules = RESERVE_PROM_RULES_NONE;
-	else if (!strcmp(buf, "default"))
-	    cntry->reserve_promotion_rules = RESERVE_PROM_RULES_DEFAULT;
-	else {
-	    g_warning("Unknown value for <reserve_promotion_rules>: %s\n", buf);
-	    cntry->reserve_promotion_rules = RESERVE_PROM_RULES_NONE;
-	}
+    if (state == STATE_NAME)
+        misc_string_assign(&cntry->name, buf);
+    else if (state == STATE_RATING)
+        cntry->rating = int_value;
+    else if (state == STATE_SYMBOL)
+        misc_string_assign(&cntry->symbol, buf);
+    else if (state == STATE_SID)
+        misc_string_assign(&cntry->sid, buf);
+    else if (state == STATE_SUPERNATIONAL && cntry == &country) {
+        sett_set_int("int_opt_disable_finances", 1);
+        sett_set_int("int_opt_disable_transfers", 1);
+        sett_set_int("int_opt_disable_stadium", 1);
+        sett_set_int("int_opt_disable_contracts", 1);
+        sett_set_int("int_opt_disable_boost_on", 1);
+        sett_set_int("int_opt_disable_ya", 1);
+        sett_set_int("int_opt_disable_training_camp", 1);//***ML***
+    } else if (state == STATE_LEAGUE)
+        xml_league_read(buf, cntry->leagues);
+    else if (state == STATE_CUP)
+        xml_cup_read(buf, cntry->cups);
+    else if (state == STATE_RESERVE_PROMOTION_RULES) {
+        if (!strcmp(buf, "none"))
+            cntry->reserve_promotion_rules = RESERVE_PROM_RULES_NONE;
+        else if (!strcmp(buf, "default"))
+            cntry->reserve_promotion_rules = RESERVE_PROM_RULES_DEFAULT;
+        else {
+            g_warning("Unknown value for <reserve_promotion_rules>: %s\n", buf);
+            cntry->reserve_promotion_rules = RESERVE_PROM_RULES_NONE;
+        }
     }
 }
 
@@ -227,16 +217,15 @@ xml_country_read_text         (GMarkupParseContext *context,
   @param cntry The country variable to write.
  */
 void
-xml_country_read(const gchar *country_name, Country *cntry_arg)
-{
+xml_country_read(const gchar *country_name, Country *cntry_arg) {
 #ifdef DEBUG
     printf("xml_country_read\n");
 #endif
 
     gchar *file_name = file_find_support_file(country_name, FALSE);
     GMarkupParser parser = {xml_country_read_start_element,
-			    xml_country_read_end_element,
-			    xml_country_read_text, NULL, NULL};
+                            xml_country_read_end_element,
+                            xml_country_read_text, NULL, NULL};
     GMarkupParseContext *context;
     gchar *file_contents;
     gsize length;
@@ -244,20 +233,18 @@ xml_country_read(const gchar *country_name, Country *cntry_arg)
     gchar buf[SMALL];
     gint i;
 
-    context = 
-	g_markup_parse_context_new(&parser, 0, NULL, NULL);
+    context =
+            g_markup_parse_context_new(&parser, 0, NULL, NULL);
 
-    if(file_name == NULL)
-    {
-	sprintf(buf, "country_%s.xml", country_name);
-	file_name = file_find_support_file(buf, TRUE);
+    if (file_name == NULL) {
+        sprintf(buf, "country_%s.xml", country_name);
+        file_name = file_find_support_file(buf, TRUE);
     }
-	
-    if(!g_file_get_contents(file_name, &file_contents, &length, &error))
-    {
-	debug_print_message("xml_country_read: error reading file %s\n", file_name);
-	misc_print_error(&error, TRUE);
-	return;
+
+    if (!g_file_get_contents(file_name, &file_contents, &length, &error)) {
+        debug_print_message("xml_country_read: error reading file %s\n", file_name);
+        misc_print_error(&error, TRUE);
+        return;
     }
 
     cntry = (cntry_arg == NULL) ? &country : cntry_arg;
@@ -268,30 +255,26 @@ xml_country_read(const gchar *country_name, Country *cntry_arg)
 
     free_country(cntry, TRUE);
 
-    if(cntry_arg == NULL)
-    {
-	sett_set_int("int_opt_disable_finances", 0);
-	sett_set_int("int_opt_disable_transfers", 0);
-	sett_set_int("int_opt_disable_stadium", 0);
-	sett_set_int("int_opt_disable_contracts", 0);
-	sett_set_int("int_opt_disable_boost_on", 0);
-	sett_set_int("int_opt_disable_ya", 0);
-	sett_set_int("int_opt_disable_training_camp", 0); //***ML***
+    if (cntry_arg == NULL) {
+        sett_set_int("int_opt_disable_finances", 0);
+        sett_set_int("int_opt_disable_transfers", 0);
+        sett_set_int("int_opt_disable_stadium", 0);
+        sett_set_int("int_opt_disable_contracts", 0);
+        sett_set_int("int_opt_disable_boost_on", 0);
+        sett_set_int("int_opt_disable_ya", 0);
+        sett_set_int("int_opt_disable_training_camp", 0); //***ML***
     }
 
-    if(g_markup_parse_context_parse(context, file_contents, length, &error))
-    {
-	g_markup_parse_context_end_parse(context, NULL);	
-	g_markup_parse_context_free(context);
-	g_free(file_contents);
-    }
-    else
-    {
-	g_critical("xml_country_read: error parsing file %s\n", buf);
-	misc_print_error(&error, TRUE);
+    if (g_markup_parse_context_parse(context, file_contents, length, &error)) {
+        g_markup_parse_context_end_parse(context, NULL);
+        g_markup_parse_context_free(context);
+        g_free(file_contents);
+    } else {
+        g_critical("xml_country_read: error parsing file %s\n", buf);
+        misc_print_error(&error, TRUE);
     }
 
-    for(i=0;i<cntry->leagues->len;i++)
-	if(g_array_index(cntry->leagues, League, i).layer == -1)
-	    g_array_index(cntry->leagues, League, i).layer = i + 1;
+    for (i = 0; i < cntry->leagues->len; i++)
+        if (g_array_index(cntry->leagues, League, i).layer == -1)
+            g_array_index(cntry->leagues, League, i).layer = i + 1;
 }

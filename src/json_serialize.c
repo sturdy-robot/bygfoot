@@ -23,8 +23,7 @@
 #include "league_struct.h"
 
 static json_object *
-serialize_string(const gchar * string)
-{
+serialize_string(const gchar *string) {
     if (!string)
         return NULL;
 
@@ -32,15 +31,13 @@ serialize_string(const gchar * string)
 }
 
 static void
-serialize_gchar_ptr_array_callback(gpointer string, gpointer user_data)
-{
-    struct json_object *obj = (struct json_object*)user_data;
+serialize_gchar_ptr_array_callback(gpointer string, gpointer user_data) {
+    struct json_object *obj = (struct json_object *) user_data;
     json_object_array_add(obj, serialize_string(string));
 }
 
-static struct json_object*
-serialize_gchar_ptr_array(GPtrArray* ptr_array)
-{
+static struct json_object *
+serialize_gchar_ptr_array(GPtrArray *ptr_array) {
     struct json_object *array_obj = json_object_new_array_ext(ptr_array->len);
     int i;
 
@@ -50,8 +47,7 @@ serialize_gchar_ptr_array(GPtrArray* ptr_array)
 }
 
 static json_object *
-serialize_gchar_array(gchar *const *array, gint len)
-{
+serialize_gchar_array(gchar *const *array, gint len) {
     json_object *array_obj = json_object_new_array_ext(len);
     gint i;
 
@@ -62,8 +58,7 @@ serialize_gchar_array(gchar *const *array, gint len)
 }
 
 static struct json_object *
-serialize_int_array(const gint *array, gint len)
-{
+serialize_int_array(const gint *array, gint len) {
     json_object *array_obj = json_object_new_array_ext(len);
     gint i;
 
@@ -74,8 +69,7 @@ serialize_int_array(const gint *array, gint len)
 }
 
 static json_object *
-serialize_float_array(const float *array, gint len)
-{
+serialize_float_array(const float *array, gint len) {
     json_object *array_obj = json_object_new_array_ext(len);
     gint i;
 
@@ -86,14 +80,12 @@ serialize_float_array(const float *array, gint len)
 }
 
 static struct json_object *
-serialize_int_garray(GArray *array)
-{
-    return serialize_int_array((const gint*)array->data, array->len);
+serialize_int_garray(GArray *array) {
+    return serialize_int_array((const gint *) array->data, array->len);
 }
 
-static GHashTable*
-fields_to_hash_table(gchar **fields)
-{
+static GHashTable *
+fields_to_hash_table(gchar **fields) {
     gchar *field;
     GHashTable *hash_table;
 
@@ -105,12 +97,11 @@ fields_to_hash_table(gchar **fields)
     }
     return hash_table;
 }
+
 struct json_object *
-bygfoot_json_serialize_country_list(GPtrArray *country_list)
-{
+bygfoot_json_serialize_country_list(GPtrArray *country_list) {
     return serialize_gchar_ptr_array(country_list);
 }
-
 
 
 #define SERIALIZE_OBJECT_FIELD_FILTER(json_object, object, field, \
@@ -143,11 +134,10 @@ bygfoot_json_serialize_country_list(GPtrArray *country_list)
 
 
 struct json_object *
-bygfoot_json_serialize_bygfoot(const Bygfoot *bygfoot)
-{
+bygfoot_json_serialize_bygfoot(const Bygfoot *bygfoot) {
     struct json_object *bygfoot_obj = json_object_new_object();
 
-    #define SERIALIZE_BYGFOOT_FIELD(field, serialize_func) \
+#define SERIALIZE_BYGFOOT_FIELD(field, serialize_func) \
             json_object_object_add(bygfoot_obj, #field, serialize_func(field));
 
     json_object_object_add(bygfoot_obj, "country", bygfoot_json_serialize_country(&country));
@@ -162,29 +152,27 @@ bygfoot_json_serialize_bygfoot(const Bygfoot *bygfoot)
     SERIALIZE_BYGFOOT_FIELD(current_interest, json_object_new_double);
     SERIALIZE_BYGFOOT_FIELD(jobs, bygfoot_json_serialize_jobs);
     SERIALIZE_BYGFOOT_FIELD(cur_user, json_object_new_int64);
-    
+
     return bygfoot_obj;
 }
 
 json_object *
-bygfoot_json_serialize_users(const GArray *users)
-{
+bygfoot_json_serialize_users(const GArray *users) {
     json_object *users_array = json_object_new_array_ext(users->len);
     gint i;
 
-    for (i = 0 ; i < users->len; i++) {
+    for (i = 0; i < users->len; i++) {
         const User *user = &g_array_index(users, User, i);
         json_object_array_add(users_array, bygfoot_json_serialize_user(user));
     }
     return users_array;
 }
 
-struct json_object*
-bygfoot_json_serialize_user(const User *user)
-{
+struct json_object *
+bygfoot_json_serialize_user(const User *user) {
     struct json_object *user_obj = json_object_new_object();
-    
-    #define SERIALIZE_USER_FIELD(field, serialize_func) \
+
+#define SERIALIZE_USER_FIELD(field, serialize_func) \
             json_object_object_add(user_obj, #field, serialize_func(user->field));
 
     SERIALIZE_USER_FIELD(name, serialize_string);
@@ -219,8 +207,7 @@ bygfoot_json_serialize_user(const User *user)
 }
 
 json_object *
-bygfoot_json_serialize_user_bets(GArray * const *bets)
-{
+bygfoot_json_serialize_user_bets(GArray *const *bets) {
     json_object *bets_array = json_object_new_array_ext(2);
     gint i;
 
@@ -238,25 +225,23 @@ bygfoot_json_serialize_user_bets(GArray * const *bets)
 }
 
 json_object *
-bygfoot_json_serialize_user_sponsor(UserSponsor sponsor)
-{
+bygfoot_json_serialize_user_sponsor(UserSponsor sponsor) {
     json_object *sponsor_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(sponsor_obj, (&sponsor), field, serialize_func);
 
     json_object_object_add(sponsor_obj, "name",
                            json_object_new_string_len(sponsor.name->str, sponsor.name->len));
     SERIALIZE(benefit, json_object_new_int64);
     SERIALIZE(contract, json_object_new_int64);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return sponsor_obj;
 }
-    
+
 json_object *
-bygfoot_json_serialize_user_histories(const GArray *histories)
-{
+bygfoot_json_serialize_user_histories(const GArray *histories) {
     json_object *history_array = json_object_new_array_ext(histories->len);
     gint i;
 
@@ -269,11 +254,10 @@ bygfoot_json_serialize_user_histories(const GArray *histories)
 }
 
 json_object *
-bygfoot_json_serialize_user_history(const UserHistory *history)
-{
+bygfoot_json_serialize_user_history(const UserHistory *history) {
     json_object *history_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(history_obj, history, field, serialize_func);
 
     SERIALIZE(season, json_object_new_int64);
@@ -281,14 +265,13 @@ bygfoot_json_serialize_user_history(const UserHistory *history)
     SERIALIZE(type, json_object_new_int64);
     SERIALIZE(team_name, serialize_string);
     json_object_object_add(history_obj, "string", serialize_gchar_array(history->string, 3));
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return history_obj;
 }
 
 json_object *
-bygfoot_json_serialize_user_money_in(const gint (*money_in)[5])
-{
+bygfoot_json_serialize_user_money_in(const gint (*money_in)[5]) {
     json_object *money_in_array = json_object_new_array_ext(2);
     gint i;
 
@@ -300,8 +283,7 @@ bygfoot_json_serialize_user_money_in(const gint (*money_in)[5])
 }
 
 json_object *
-bygfoot_json_serialize_user_money_out(const gint (*money_out)[13])
-{
+bygfoot_json_serialize_user_money_out(const gint (*money_out)[13]) {
     json_object *money_out_array = json_object_new_array_ext(2);
     gint i;
 
@@ -313,22 +295,20 @@ bygfoot_json_serialize_user_money_out(const gint (*money_out)[13])
 }
 
 json_object *
-bygfoot_json_serialize_bet_user(const BetUser *bet_user)
-{
+bygfoot_json_serialize_bet_user(const BetUser *bet_user) {
     json_object *bet_user_obj = json_object_new_object();
 
-    #define SERIALIZE_FIELD(field, serialize_func) \
+#define SERIALIZE_FIELD(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(bet_user_obj, bet_user, field, serialize_func);
 
     SERIALIZE_FIELD(fix_id, json_object_new_int64);
     SERIALIZE_FIELD(outcome, json_object_new_int64);
     SERIALIZE_FIELD(wager, json_object_new_int64);
-    #undef SERIALIZE_FIELD
+#undef SERIALIZE_FIELD
 }
 
 json_object *
-bygfoot_json_serialize_bets(GArray **bets)
-{
+bygfoot_json_serialize_bets(GArray **bets) {
     json_object *bets_array = json_object_new_array_ext(2);
     gint i;
 
@@ -347,23 +327,21 @@ bygfoot_json_serialize_bets(GArray **bets)
 }
 
 json_object *
-bygfoot_json_serialize_bet_match(const BetMatch *bet_match)
-{
+bygfoot_json_serialize_bet_match(const BetMatch *bet_match) {
     json_object *bet_match_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(bet_match_obj, bet_match, field, serialize_func);
 
     SERIALIZE(fix_id, json_object_new_int64);
     json_object_object_add(bet_match_obj, "odds", serialize_float_array(bet_match->odds, 3));
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return bet_match_obj;
 }
 
 struct json_object *
-bygfoot_json_serialize_countries(const GPtrArray *countries)
-{
+bygfoot_json_serialize_countries(const GPtrArray *countries) {
     struct json_object *countries_obj = json_object_new_array_ext(countries->len);
     gint i;
 
@@ -375,11 +353,10 @@ bygfoot_json_serialize_countries(const GPtrArray *countries)
 }
 
 struct json_object *
-bygfoot_json_serialize_country(const Country *country)
-{
+bygfoot_json_serialize_country(const Country *country) {
     struct json_object *country_obj = json_object_new_object();
 
-    #define SERIALIZE_COUNTRY_FIELD(field, serialize_func) \
+#define SERIALIZE_COUNTRY_FIELD(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(country_obj, country, field, serialize_func)
     SERIALIZE_COUNTRY_FIELD(name, serialize_string);
     SERIALIZE_COUNTRY_FIELD(symbol, serialize_string);
@@ -390,16 +367,15 @@ bygfoot_json_serialize_country(const Country *country)
     SERIALIZE_COUNTRY_FIELD(cups, bygfoot_json_serialize_cups);
     SERIALIZE_COUNTRY_FIELD(allcups, bygfoot_json_serialize_cup_ptrs);
 
-    #undef SERIALIZE_COUNTRY_FIELD
+#undef SERIALIZE_COUNTRY_FIELD
 
     return country_obj;
 }
 
 struct json_object *
-bygfoot_json_serialize_league_array(const GArray *league_array)
-{
+bygfoot_json_serialize_league_array(const GArray *league_array) {
     struct json_object *league_array_obj =
-            json_object_new_array_ext(league_array->len);
+    json_object_new_array_ext(league_array->len);
     gint i;
     for (i = 0; i < league_array->len; i++) {
         const League *league = &g_array_index(league_array, League, i);
@@ -410,13 +386,12 @@ bygfoot_json_serialize_league_array(const GArray *league_array)
 }
 
 struct json_object *
-bygfoot_json_serialize_league(const League *league)
-{
+bygfoot_json_serialize_league(const League *league) {
     struct json_object *league_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(league_obj, league, field, serialize_func);
-    #define SERIALIZE_STRUCT(field, serialize_func) \
+#define SERIALIZE_STRUCT(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD_STRUCT(league_obj, league, field, serialize_func, NULL);
 
     SERIALIZE(name, serialize_string);
@@ -443,22 +418,21 @@ bygfoot_json_serialize_league(const League *league)
     SERIALIZE(week_breaks, bygfoot_json_serialize_week_breaks);
     json_object_object_add(league_obj, "stats", bygfoot_json_serialize_league_stat(&league->stats));
     SERIALIZE(skip_weeks_with, serialize_gchar_ptr_array);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return league_obj;
 }
 
 json_object *
-bygfoot_json_serialize_prom_rel(PromRel prom_rel)
-{
+bygfoot_json_serialize_prom_rel(PromRel prom_rel) {
     json_object *prom_rel_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(prom_rel_obj, (&prom_rel), field, serialize_func);
 
     SERIALIZE(elements, bygfoot_json_serialize_prom_rel_elements);
     SERIALIZE(prom_games, bygfoot_json_serialize_prom_games_array);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return prom_rel_obj;
 }
@@ -468,11 +442,10 @@ SERIALIZE_GARRAY_FUNC_DEF(bygfoot_json_serialize_prom_rel_elements,
                           bygfoot_json_serialize_prom_rel_element);
 
 json_object *
-bygfoot_json_serialize_prom_rel_element(const PromRelElement* element)
-{
+bygfoot_json_serialize_prom_rel_element(const PromRelElement *element) {
     json_object *element_obj = json_object_new_object();
-    
-    #define SERIALIZE(field, serialize_func) \
+
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(element_obj, element, field, serialize_func);
 
     json_object_object_add(element_obj, "ranks", serialize_int_array(element->ranks, 2));
@@ -480,7 +453,7 @@ bygfoot_json_serialize_prom_rel_element(const PromRelElement* element)
     SERIALIZE(dest_sid, serialize_string);
     SERIALIZE(type, json_object_new_int64);
     SERIALIZE(num_teams, json_object_new_int64);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return element_obj;
 }
@@ -489,12 +462,11 @@ SERIALIZE_GARRAY_FUNC_DEF(bygfoot_json_serialize_prom_games_array,
                           PromGames,
                           bygfoot_json_serialize_prom_games);
 
-json_object*
-bygfoot_json_serialize_prom_games(const PromGames *prom_games)
-{
+json_object *
+bygfoot_json_serialize_prom_games(const PromGames *prom_games) {
     json_object *prom_games_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(prom_games_obj, prom_games, field, serialize_func);
 
     json_object_object_add(prom_games_obj, "ranks", serialize_int_array(prom_games->ranks, 2));
@@ -502,14 +474,13 @@ bygfoot_json_serialize_prom_games(const PromGames *prom_games)
     SERIALIZE(loser_sid, serialize_string);
     SERIALIZE(number_of_advance, json_object_new_int64);
     SERIALIZE(cup_sid, serialize_string);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return prom_games_obj;
 }
-    
+
 json_object *
-bygfoot_json_serialize_two_match_weeks(GArray * const *two_match_weeks)
-{
+bygfoot_json_serialize_two_match_weeks(GArray *const *two_match_weeks) {
     json_object *two_match_weeks_array = json_object_new_array_ext(2);
     gint i;
 
@@ -525,16 +496,15 @@ SERIALIZE_GARRAY_FUNC_DEF(bygfoot_json_serialize_joined_leagues,
                           bygfoot_json_serialize_joined_league);
 
 json_object *
-bygfoot_json_serialize_joined_league(const JoinedLeague *league)
-{
-    json_object *league_obj = json_object_new_object(); 
+bygfoot_json_serialize_joined_league(const JoinedLeague *league) {
+    json_object *league_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(league_obj, league, field, serialize_func);
 
     SERIALIZE(sid, serialize_string);
     SERIALIZE(rr, json_object_new_int64);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return league_obj;
 }
@@ -544,16 +514,15 @@ SERIALIZE_GARRAY_FUNC_DEF(bygfoot_json_serialize_new_tables,
                           bygfoot_json_serialize_new_table);
 
 json_object *
-bygfoot_json_serialize_new_table(const NewTable *table)
-{
-    json_object *table_obj = json_object_new_object(); 
+bygfoot_json_serialize_new_table(const NewTable *table) {
+    json_object *table_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(table_obj, table, field, serialize_func);
 
     SERIALIZE(add_week, json_object_new_int64);
     SERIALIZE(name, serialize_string);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return table_obj;
 }
@@ -563,27 +532,25 @@ SERIALIZE_GARRAY_FUNC_DEF(bygfoot_json_serialize_week_breaks,
                           bygfoot_json_serialize_week_break);
 
 json_object *
-bygfoot_json_serialize_week_break(const WeekBreak *week_break)
-{
+bygfoot_json_serialize_week_break(const WeekBreak *week_break) {
     json_object *week_break_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(week_break_obj, week_break, field, serialize_func);
 
     SERIALIZE(week_number, json_object_new_int64);
     SERIALIZE(length, json_object_new_int64);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return week_break_obj;
 }
 
 struct json_object *
-bygfoot_json_serialize_stadium(Stadium stadium, GHashTable *fields)
-{
+bygfoot_json_serialize_stadium(Stadium stadium, GHashTable *fields) {
     struct json_object *stadium_obj = json_object_new_object();
     Stadium *stadium_ptr = &stadium;
 
-    #define SERIALIZE_STADIUM_FIELD(field, serialize_func) \
+#define SERIALIZE_STADIUM_FIELD(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD_FILTER(stadium_obj, stadium_ptr, field, serialize_func, fields);
 
     SERIALIZE_STADIUM_FIELD(name, serialize_string);
@@ -597,8 +564,7 @@ bygfoot_json_serialize_stadium(Stadium stadium, GHashTable *fields)
 }
 
 json_object *
-bygfoot_json_serialize_teams(const GPtrArray *teams)
-{
+bygfoot_json_serialize_teams(const GPtrArray *teams) {
     json_object *teams_array = json_object_new_array_ext(teams->len);
     gint i;
 
@@ -610,14 +576,13 @@ bygfoot_json_serialize_teams(const GPtrArray *teams)
 }
 
 struct json_object *
-bygfoot_json_serialize_team(const Team *team, GHashTable *fields)
-{
+bygfoot_json_serialize_team(const Team *team, GHashTable *fields) {
 
     struct json_object *team_obj = json_object_new_object();
 
-    #define SERIALIZE_TEAM_FIELD(field, serialize_func) \
+#define SERIALIZE_TEAM_FIELD(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD_FILTER(team_obj, team, field, serialize_func, fields);
-    #define SERIALIZE_TEAM_FIELD_STRUCT(field, serialize_func) \
+#define SERIALIZE_TEAM_FIELD_STRUCT(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD_STRUCT(team_obj, team, field, serialize_func, fields);
 
     SERIALIZE_TEAM_FIELD(name, serialize_string);
@@ -642,8 +607,7 @@ bygfoot_json_serialize_team(const Team *team, GHashTable *fields)
 }
 
 struct json_object *
-bygfoot_json_serialize_team_ptrs(GPtrArray *team_ptrs, GHashTable *fields)
-{
+bygfoot_json_serialize_team_ptrs(GPtrArray *team_ptrs, GHashTable *fields) {
     struct json_object *teams_array;
     gint i;
 
@@ -661,23 +625,21 @@ bygfoot_json_serialize_team_ptrs(GPtrArray *team_ptrs, GHashTable *fields)
 
 
 struct json_object *
-bygfoot_json_serialize_team_ptr(const Team *team)
-{
+bygfoot_json_serialize_team_ptr(const Team *team) {
     gchar *fields[] = {
-        "name",
-        "id",
-	NULL
+            "name",
+            "id",
+            NULL
     };
     GHashTable *hash_table = fields_to_hash_table(fields);
     return bygfoot_json_serialize_team(team, hash_table);
 }
 
 json_object *
-bygfoot_json_serialize_youth_academy(const YouthAcademy youth_academy)
-{
+bygfoot_json_serialize_youth_academy(const YouthAcademy youth_academy) {
     json_object *youth_academy_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(youth_academy_obj, (&youth_academy), field, serialize_func)
 
     SERIALIZE(tm, bygfoot_json_serialize_team_ptr);
@@ -689,14 +651,13 @@ bygfoot_json_serialize_youth_academy(const YouthAcademy youth_academy)
     SERIALIZE(counter_youth, json_object_new_double);
     SERIALIZE(players, bygfoot_json_serialize_players);
 
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return youth_academy_obj;
 }
 
 json_object *
-bygfoot_json_serialize_players(const GArray *players)
-{
+bygfoot_json_serialize_players(const GArray *players) {
     json_object *players_array = json_object_new_array_ext(players->len);
     gint i;
 
@@ -708,10 +669,9 @@ bygfoot_json_serialize_players(const GArray *players)
 }
 
 json_object *
-bygfoot_json_serialize_player(const Player *player)
-{
+bygfoot_json_serialize_player(const Player *player) {
     json_object *player_obj = json_object_new_object();
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(player_obj, player, field, serialize_func);
 
     SERIALIZE(name, serialize_string);
@@ -742,28 +702,26 @@ bygfoot_json_serialize_player(const Player *player)
     SERIALIZE(cards, bygfoot_json_serialize_cards);
     json_object_object_add(player_obj, "career", serialize_int_array(player->career, PLAYER_VALUE_END));
     SERIALIZE(team, bygfoot_json_serialize_team_ptr);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return player_obj;
 }
 
 json_object *
-bygfoot_json_serialize_player_ptr(const Player *player)
-{
+bygfoot_json_serialize_player_ptr(const Player *player) {
     json_object *player_obj = json_object_new_object();
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(player_obj, player, field, serialize_func);
 
     SERIALIZE(name, serialize_string);
     SERIALIZE(id, json_object_new_int64);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return player_obj;
 }
 
 json_object *
-bygfoot_json_serialize_cards(const GArray *cards)
-{
+bygfoot_json_serialize_cards(const GArray *cards) {
     json_object *cards_array = json_object_new_array_ext(cards->len);
     gint i;
 
@@ -775,58 +733,54 @@ bygfoot_json_serialize_cards(const GArray *cards)
 }
 
 json_object *
-bygfoot_json_serialize_player_card(const PlayerCard *card)
-{
+bygfoot_json_serialize_player_card(const PlayerCard *card) {
     json_object *card_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(card_obj, card, field, serialize_func);
 
     SERIALIZE(clid, json_object_new_int64);
     SERIALIZE(yellow, json_object_new_int64);
     SERIALIZE(red, json_object_new_int64);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return card_obj;
 }
 
 json_object *
-bygfoot_json_serialize_games_goals_array(const GArray *games_goals)
-{
+bygfoot_json_serialize_games_goals_array(const GArray *games_goals) {
     json_object *games_goals_array = json_object_new_array_ext(games_goals->len);
     gint i;
     for (i = 0; i < games_goals->len; i++) {
-        const PlayerGamesGoals *stats = &g_array_index(games_goals,PlayerGamesGoals, i);
+        const PlayerGamesGoals *stats = &g_array_index(games_goals, PlayerGamesGoals, i);
         json_object_array_add(games_goals_array, bygfoot_json_serialize_games_goals(stats));
     }
     return games_goals_array;
 }
 
 json_object *
-bygfoot_json_serialize_games_goals(const PlayerGamesGoals *games_goals)
-{
+bygfoot_json_serialize_games_goals(const PlayerGamesGoals *games_goals) {
     json_object *games_goals_obj = json_object_new_object();
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(games_goals_obj, games_goals, field, serialize_func);
 
     SERIALIZE(clid, json_object_new_int64);
     SERIALIZE(games, json_object_new_int64);
     SERIALIZE(goals, json_object_new_int64);
     SERIALIZE(shots, json_object_new_int64);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return games_goals_obj;
 }
 
 struct json_object *
 bygfoot_json_serialize_cup_round(const CupRound *round,
-                                 GHashTable *fields)
-{
+                                 GHashTable *fields) {
     struct json_object *cup_round_obj = json_object_new_object();
 
-    #define SERIALIZE_CUP_ROUND_FIELD(field, serialize_func) \
+#define SERIALIZE_CUP_ROUND_FIELD(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD_FILTER(cup_round_obj, round, field, serialize_func, fields);
-    #define SERIALIZE_CUP_ROUND_FIELD_STRUCT(field, serialize_func) \
+#define SERIALIZE_CUP_ROUND_FIELD_STRUCT(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD_STRUCT(cup_round_obj, round, field, serialize_func, fields);
 
     SERIALIZE_CUP_ROUND_FIELD(name, serialize_string);
@@ -853,10 +807,9 @@ bygfoot_json_serialize_cup_round(const CupRound *round,
 
 struct json_object *
 bygfoot_json_serialize_cup_rounds(const GArray *rounds,
-                                  GHashTable *fields)
-{
+                                  GHashTable *fields) {
     struct json_object *rounds_array_obj =
-            json_object_new_array_ext(rounds->len);
+    json_object_new_array_ext(rounds->len);
     gint i;
     for (i = 0; i < rounds->len; i++) {
         const CupRound *round = &g_array_index(rounds, CupRound, i);
@@ -871,13 +824,12 @@ SERIALIZE_GARRAY_FUNC_DEF(bygfoot_json_serialize_cups,
                           bygfoot_json_serialize_cup);
 
 struct json_object *
-bygfoot_json_serialize_cup(const Cup *cup)
-{
+bygfoot_json_serialize_cup(const Cup *cup) {
     struct json_object *cup_obj = json_object_new_object();
 
-    #define SERIALIZE_CUP_FIELD(field, serialize_func) \
+#define SERIALIZE_CUP_FIELD(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(cup_obj, cup, field, serialize_func);
-    #define SERIALIZE_CUP_FIELD_STRUCT(field, serialize_func) \
+#define SERIALIZE_CUP_FIELD_STRUCT(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD_STRUCT(cup_obj, cup, field, serialize_func, NULL);
 
     SERIALIZE_CUP_FIELD(name, serialize_string);
@@ -905,8 +857,7 @@ bygfoot_json_serialize_cup(const Cup *cup)
 }
 
 json_object *
-bygfoot_json_serialize_cup_ptrs(GPtrArray *cups)
-{
+bygfoot_json_serialize_cup_ptrs(GPtrArray *cups) {
     struct json_object *cups_array = json_object_new_array_ext(cups->len);
     gint i;
 
@@ -918,8 +869,7 @@ bygfoot_json_serialize_cup_ptrs(GPtrArray *cups)
 }
 
 json_object *
-bygfoot_json_serialize_cup_ptr(const Cup *cup)
-{
+bygfoot_json_serialize_cup_ptr(const Cup *cup) {
     struct json_object *cup_obj = json_object_new_object();
 
     json_object_object_add(cup_obj, "sid", serialize_string(cup->sid));
@@ -932,15 +882,14 @@ SERIALIZE_GARRAY_FUNC_DEF(bygfoot_json_serialize_cup_choose_teams,
                           bygfoot_json_serialize_cup_choose_team);
 
 json_object *
-bygfoot_json_serialize_cup_choose_team(const CupChooseTeam *choose_team)
-{
+bygfoot_json_serialize_cup_choose_team(const CupChooseTeam *choose_team) {
     json_object *choose_team_array = json_object_new_array();
     const CupChooseTeam *iter;
 
     for (iter = choose_team; iter; iter = iter->next) {
         json_object *choose_team_obj = json_object_new_object();
         json_object_array_add(choose_team_array, choose_team_obj);
-        #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
                 SERIALIZE_OBJECT_FIELD(choose_team_obj, iter, field, serialize_func);
 
         SERIALIZE(sid, serialize_string);
@@ -953,7 +902,7 @@ bygfoot_json_serialize_cup_choose_team(const CupChooseTeam *choose_team)
         SERIALIZE(preload, json_object_new_boolean);
         SERIALIZE(optional, json_object_new_boolean);
         SERIALIZE(previous_season, json_object_new_boolean);
-        #undef SERIALIZE
+#undef SERIALIZE
     }
     return choose_team_array;
 }
@@ -963,22 +912,20 @@ SERIALIZE_GARRAY_FUNC_DEF(bygfoot_json_serialize_cup_round_waits,
                           bygfoot_json_serialize_cup_round_wait);
 
 json_object *
-bygfoot_json_serialize_cup_round_wait(const CupRoundWait *wait)
-{
+bygfoot_json_serialize_cup_round_wait(const CupRoundWait *wait) {
     json_object *wait_obj = json_object_new_object();
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(wait_obj, wait, field, serialize_func);
 
     SERIALIZE(cup_sid, serialize_string);
     SERIALIZE(cup_round, json_object_new_int64);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return wait_obj;
 }
 
 json_object *
-bygfoot_json_serialize_cup_history(const GPtrArray *history)
-{
+bygfoot_json_serialize_cup_history(const GPtrArray *history) {
     json_object *history_array = json_object_new_array_ext(history->len);
     gint i;
 
@@ -991,8 +938,7 @@ bygfoot_json_serialize_cup_history(const GPtrArray *history)
 }
 
 json_object *
-bygfoot_json_serialize_transfers(const GArray *transfers)
-{
+bygfoot_json_serialize_transfers(const GArray *transfers) {
     json_object *transfers_array = json_object_new_array_ext(transfers->len);
     gint i;
 
@@ -1005,11 +951,10 @@ bygfoot_json_serialize_transfers(const GArray *transfers)
 }
 
 struct json_object *
-bygfoot_json_serialize_transfer(const Transfer *transfer)
-{
+bygfoot_json_serialize_transfer(const Transfer *transfer) {
     struct json_object *transfer_obj = json_object_new_object();
 
-    #define SERIALIZE_TRANSFER_FIELD(field, serialize_func) \
+#define SERIALIZE_TRANSFER_FIELD(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(transfer_obj, transfer, field, serialize_func);
 
     SERIALIZE_TRANSFER_FIELD(tm, bygfoot_json_serialize_team_ptr);
@@ -1023,10 +968,9 @@ bygfoot_json_serialize_transfer(const Transfer *transfer)
 }
 
 struct json_object *
-bygfoot_json_serialize_transfer_offers(const GArray *offers)
-{
+bygfoot_json_serialize_transfer_offers(const GArray *offers) {
     struct json_object *offers_array_obj =
-            json_object_new_array_ext(offers->len);
+    json_object_new_array_ext(offers->len);
     gint i;
 
     for (i = 0; i < offers->len; i++) {
@@ -1038,12 +982,11 @@ bygfoot_json_serialize_transfer_offers(const GArray *offers)
 }
 
 struct json_object *
-bygfoot_json_serialize_transfer_offer(const TransferOffer *offer)
-{
-    
+bygfoot_json_serialize_transfer_offer(const TransferOffer *offer) {
+
     struct json_object *offer_obj = json_object_new_object();
 
-    #define SERIALIZE_TRANSFER_OFFER_FIELD(field, serialize_func) \
+#define SERIALIZE_TRANSFER_OFFER_FIELD(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(offer_obj, offer, field, serialize_func);
 
     SERIALIZE_TRANSFER_OFFER_FIELD(tm, bygfoot_json_serialize_team_ptr);
@@ -1052,25 +995,23 @@ bygfoot_json_serialize_transfer_offer(const TransferOffer *offer)
     SERIALIZE_TRANSFER_OFFER_FIELD(status, json_object_new_int64);
 }
 
-json_object*
-bygfoot_json_serialize_fixture_ptr(const Fixture *fixture)
-{
+json_object *
+bygfoot_json_serialize_fixture_ptr(const Fixture *fixture) {
     struct json_object *fixture_obj = json_object_new_object();
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(fixture_obj, fixture, field, serialize_func);
 
     SERIALIZE(id, json_object_new_int64);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return fixture_obj;
 }
 
 json_object *
-bygfoot_json_serialize_live_game(LiveGame live_game)
-{
+bygfoot_json_serialize_live_game(LiveGame live_game) {
     struct json_object *live_game_obj;
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(live_game_obj, (&live_game), field, serialize_func);
 
     SERIALIZE(fix, bygfoot_json_serialize_fixture_ptr);
@@ -1086,14 +1027,13 @@ bygfoot_json_serialize_live_game(LiveGame live_game)
     SERIALIZE(stats, bygfoot_json_serialize_live_game_stats);
     SERIALIZE(team_state, bygfoot_json_serialize_live_game_team_state_array);
     SERIALIZE(action_ids, bygfoot_json_serialize_live_game_action_ids);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return live_game_obj;
 }
 
 json_object *
-bygfoot_json_serialize_live_game_team_values(const gfloat (*team_values)[4])
-{
+bygfoot_json_serialize_live_game_team_values(const gfloat (*team_values)[4]) {
     json_object *team_values_array = json_object_new_array_ext(2);
     gint i;
 
@@ -1105,8 +1045,7 @@ bygfoot_json_serialize_live_game_team_values(const gfloat (*team_values)[4])
 }
 
 json_object *
-bygfoot_json_serialize_live_game_units(const GArray *units)
-{
+bygfoot_json_serialize_live_game_units(const GArray *units) {
     json_object *units_array = json_object_new_array_ext(units->len);
     gint i;
 
@@ -1118,11 +1057,10 @@ bygfoot_json_serialize_live_game_units(const GArray *units)
 }
 
 json_object *
-bygfoot_json_serialize_live_game_unit(const LiveGameUnit *unit)
-{
+bygfoot_json_serialize_live_game_unit(const LiveGameUnit *unit) {
     json_object *unit_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(unit_obj, unit, field, serialize_func);
 
     SERIALIZE(possession, json_object_new_int64);
@@ -1131,17 +1069,16 @@ bygfoot_json_serialize_live_game_unit(const LiveGameUnit *unit)
     SERIALIZE(time, json_object_new_int64);
     json_object_object_add(unit_obj, "result", serialize_int_array(unit->result, 2));
     SERIALIZE(event, bygfoot_json_serialize_live_game_event);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return unit_obj;
 }
 
 json_object *
-bygfoot_json_serialize_live_game_event(LiveGameEvent event)
-{
+bygfoot_json_serialize_live_game_event(LiveGameEvent event) {
     json_object *event_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(event_obj, (&event), field, serialize_func);
 
     SERIALIZE(type, json_object_new_int64);
@@ -1151,45 +1088,43 @@ bygfoot_json_serialize_live_game_event(LiveGameEvent event)
     SERIALIZE(player2, json_object_new_int64);
     SERIALIZE(commentary, serialize_string);
     SERIALIZE(commentary_id, json_object_new_int64);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return event_obj;
 
 }
 
 json_object *
-bygfoot_json_serialize_live_game_stats(LiveGameStats stats)
-{
+bygfoot_json_serialize_live_game_stats(LiveGameStats stats) {
     json_object *stats_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(stats_obj, (&stats), field, serialize_func);
 
     SERIALIZE(possession, json_object_new_double);
     SERIALIZE(values, bygfoot_json_serialize_live_game_stats_values);
     SERIALIZE(players, bygfoot_json_serialize_live_game_stats_players);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return stats_obj;
 }
 
 json_object *
-bygfoot_json_serialize_live_game_stats_values(gint (*values)[9])
-{
+bygfoot_json_serialize_live_game_stats_values(gint (*values)[9]) {
     static const struct key_index {
         const gchar *key;
         gint index;
     } value_fields[] = {
-        { "goals_regular", LIVE_GAME_STAT_VALUE_GOALS_REGULAR },
-        { "shots", LIVE_GAME_STAT_VALUE_SHOTS },
-        { "shot_percentage", LIVE_GAME_STAT_VALUE_SHOT_PERCENTAGE },
-        { "possession", LIVE_GAME_STAT_VALUE_POSSESSION },
-        { "penalties", LIVE_GAME_STAT_VALUE_PENALTIES },
-        { "fouls", LIVE_GAME_STAT_VALUE_FOULS },
-        { "cards", LIVE_GAME_STAT_VALUE_CARDS },
-        { "reds", LIVE_GAME_STAT_VALUE_REDS } ,
-        { "injuries", LIVE_GAME_STAT_VALUE_INJURIES },
-        { NULL, LIVE_GAME_STAT_VALUE_END }
+            {"goals_regular",   LIVE_GAME_STAT_VALUE_GOALS_REGULAR},
+            {"shots",           LIVE_GAME_STAT_VALUE_SHOTS},
+            {"shot_percentage", LIVE_GAME_STAT_VALUE_SHOT_PERCENTAGE},
+            {"possession",      LIVE_GAME_STAT_VALUE_POSSESSION},
+            {"penalties",       LIVE_GAME_STAT_VALUE_PENALTIES},
+            {"fouls",           LIVE_GAME_STAT_VALUE_FOULS},
+            {"cards",           LIVE_GAME_STAT_VALUE_CARDS},
+            {"reds",            LIVE_GAME_STAT_VALUE_REDS},
+            {"injuries",        LIVE_GAME_STAT_VALUE_INJURIES},
+            {NULL,              LIVE_GAME_STAT_VALUE_END}
     };
 
     json_object *values_array = json_object_new_array_ext(2);
@@ -1207,13 +1142,12 @@ bygfoot_json_serialize_live_game_stats_values(gint (*values)[9])
 }
 
 json_object *
-bygfoot_json_serialize_live_game_stats_players(GPtrArray* (*players)[5])
-{
+bygfoot_json_serialize_live_game_stats_players(GPtrArray *(*players)[5]) {
 
     json_object *players_array = json_object_new_array_ext(2);
     gint i;
 
-    for (i = 0; i < 2; i ++) {
+    for (i = 0; i < 2; i++) {
         json_object *stats_array = json_object_new_array_ext(LIVE_GAME_STAT_ARRAY_END);
         gint j;
         json_object_array_add(players_array, stats_array);
@@ -1230,8 +1164,7 @@ bygfoot_json_serialize_live_game_stats_players(GPtrArray* (*players)[5])
 }
 
 json_object *
-bygfoot_json_serialize_live_game_team_state_array(LiveGameTeamState *team_states)
-{
+bygfoot_json_serialize_live_game_team_state_array(LiveGameTeamState *team_states) {
     json_object *team_state_array = json_object_new_array_ext(2);
     gint i;
 
@@ -1244,25 +1177,23 @@ bygfoot_json_serialize_live_game_team_state_array(LiveGameTeamState *team_states
 }
 
 json_object *
-bygfoot_json_serialize_live_game_team_state(const LiveGameTeamState *team_state)
-{
+bygfoot_json_serialize_live_game_team_state(const LiveGameTeamState *team_state) {
     json_object *team_state_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(team_state_obj, team_state, field, serialize_func);
 
     SERIALIZE(structure, json_object_new_int64);
     SERIALIZE(style, json_object_new_int64);
     SERIALIZE(boost, json_object_new_boolean);
     json_object_object_add(team_state_obj, "player_ids", serialize_int_array(team_state->player_ids, 11));
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return team_state_obj;
 }
 
 json_object *
-bygfoot_json_serialize_live_game_action_ids(GArray **action_ids)
-{
+bygfoot_json_serialize_live_game_action_ids(GArray **action_ids) {
     json_object *action_ids_array = json_object_new_array_ext(2);
     gint i;
 
@@ -1271,10 +1202,9 @@ bygfoot_json_serialize_live_game_action_ids(GArray **action_ids)
     }
     return action_ids_array;
 }
-    
-json_object*
-bygfoot_json_serialize_season_stats(const GArray *stats)
-{
+
+json_object *
+bygfoot_json_serialize_season_stats(const GArray *stats) {
     json_object *stats_array = json_object_new_array_ext(stats->len);
     gint i;
 
@@ -1286,29 +1216,27 @@ bygfoot_json_serialize_season_stats(const GArray *stats)
 }
 
 json_object *
-bygfoot_json_serialize_season_stat(const SeasonStat *stat)
-{
+bygfoot_json_serialize_season_stat(const SeasonStat *stat) {
     json_object *stat_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(stat_obj, stat, field, serialize_func);
 
     SERIALIZE(season_number, json_object_new_int64);
     SERIALIZE(league_champs, bygfoot_json_serialize_champ_stats);
     SERIALIZE(cup_champs, bygfoot_json_serialize_champ_stats);
     SERIALIZE(league_stats, bygfoot_json_serialize_league_stats);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return stat_obj;
 }
 
 json_object *
-bygfoot_json_serialize_champ_stats(const GArray *stats)
-{
+bygfoot_json_serialize_champ_stats(const GArray *stats) {
     json_object *stats_array = json_object_new_array_ext(stats->len);
     gint i;
 
-    for (i = 0 ; i < stats->len; i++) {
+    for (i = 0; i < stats->len; i++) {
         const ChampStat *stat = &g_array_index(stats, ChampStat, i);
         json_object_array_add(stats_array, bygfoot_json_serialize_champ_stat(stat));
     }
@@ -1316,23 +1244,21 @@ bygfoot_json_serialize_champ_stats(const GArray *stats)
 }
 
 json_object *
-bygfoot_json_serialize_champ_stat(const ChampStat *stat)
-{
+bygfoot_json_serialize_champ_stat(const ChampStat *stat) {
     json_object *stat_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(stat_obj, stat, field, serialize_func);
 
     SERIALIZE(team_name, serialize_string);
     SERIALIZE(cl_name, serialize_string);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return stat_obj;
 }
-    
+
 json_object *
-bygfoot_json_serialize_league_stats(const GArray *stats)
-{
+bygfoot_json_serialize_league_stats(const GArray *stats) {
     json_object *stats_array = json_object_new_array_ext(stats->len);
     gint i;
 
@@ -1344,10 +1270,9 @@ bygfoot_json_serialize_league_stats(const GArray *stats)
 }
 
 json_object *
-bygfoot_json_serialize_league_stat(const LeagueStat *stat)
-{
+bygfoot_json_serialize_league_stat(const LeagueStat *stat) {
     json_object *stat_obj = json_object_new_object();
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(stat_obj, stat, field, serialize_func);
 
     SERIALIZE(league_symbol, serialize_string);
@@ -1356,14 +1281,13 @@ bygfoot_json_serialize_league_stat(const LeagueStat *stat)
     SERIALIZE(teams_def, bygfoot_json_serialize_stats);
     SERIALIZE(player_scorers, bygfoot_json_serialize_stats);
     SERIALIZE(player_goalies, bygfoot_json_serialize_stats);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return stat_obj;
 }
 
 json_object *
-bygfoot_json_serialize_stats(const GArray *stats)
-{
+bygfoot_json_serialize_stats(const GArray *stats) {
     json_object *stats_array = json_object_new_array_ext(stats->len);
     gint i;
 
@@ -1375,11 +1299,10 @@ bygfoot_json_serialize_stats(const GArray *stats)
 }
 
 json_object *
-bygfoot_json_serialize_stat(const Stat *stat)
-{
+bygfoot_json_serialize_stat(const Stat *stat) {
     json_object *stat_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(stat_obj, stat, field, serialize_func);
 
     SERIALIZE(team_name, serialize_string);
@@ -1387,14 +1310,13 @@ bygfoot_json_serialize_stat(const Stat *stat)
     SERIALIZE(value2, json_object_new_int64);
     SERIALIZE(value3, json_object_new_int64);
     SERIALIZE(value_string, serialize_string);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return stat_obj;
 }
-    
+
 json_object *
-bygfoot_json_serialize_jobs(const GArray *jobs)
-{
+bygfoot_json_serialize_jobs(const GArray *jobs) {
     json_object *jobs_array = json_object_new_array_ext(jobs->len);
     gint i;
 
@@ -1406,10 +1328,9 @@ bygfoot_json_serialize_jobs(const GArray *jobs)
 }
 
 json_object *
-bygfoot_json_serialize_job(const Job *job)
-{
+bygfoot_json_serialize_job(const Job *job) {
     json_object *job_obj = json_object_new_object();
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(job_obj, job, field, serialize_func);
 
     SERIALIZE(type, json_object_new_int64);
@@ -1421,7 +1342,7 @@ bygfoot_json_serialize_job(const Job *job)
     SERIALIZE(country_rating, json_object_new_int64);
     SERIALIZE(talent_percent, json_object_new_int64);
     SERIALIZE(team_id, json_object_new_int64);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return job_obj;
 }
@@ -1431,18 +1352,17 @@ SERIALIZE_GARRAY_FUNC_DEF(bygfoot_json_serialize_tables,
                           bygfoot_json_serialize_table);
 
 json_object *
-bygfoot_json_serialize_table(const Table *table)
-{
+bygfoot_json_serialize_table(const Table *table) {
     json_object *table_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(table_obj, table, field, serialize_func);
 
     SERIALIZE(name, serialize_string);
     SERIALIZE(clid, json_object_new_int64);
     SERIALIZE(round, json_object_new_int64);
     SERIALIZE(elements, bygfoot_json_serialize_table_elements);
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return table_obj;
 }
@@ -1452,11 +1372,10 @@ SERIALIZE_GARRAY_FUNC_DEF(bygfoot_json_serialize_table_elements,
                           bygfoot_json_serialize_table_element);
 
 json_object *
-bygfoot_json_serialize_table_element(const TableElement *element)
-{
+bygfoot_json_serialize_table_element(const TableElement *element) {
     json_object *element_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(element_obj, element, field, serialize_func);
 
     SERIALIZE(team, bygfoot_json_serialize_team_ptr);
@@ -1477,7 +1396,7 @@ bygfoot_json_serialize_table_element(const TableElement *element)
                            json_object_new_int64(element->values[TABLE_GD]));
     json_object_object_add(element_obj, "pts",
                            json_object_new_int64(element->values[TABLE_PTS]));
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return element_obj;
 }
@@ -1487,11 +1406,10 @@ SERIALIZE_GARRAY_FUNC_DEF(bygfoot_json_serialize_fixtures,
                           bygfoot_json_serialize_fixture);
 
 json_object *
-bygfoot_json_serialize_fixture(const Fixture *fixture)
-{
+bygfoot_json_serialize_fixture(const Fixture *fixture) {
     json_object *fixture_obj = json_object_new_object();
 
-    #define SERIALIZE(field, serialize_func) \
+#define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(fixture_obj, fixture, field, serialize_func);
 
     SERIALIZE(clid, json_object_new_int64);
@@ -1506,14 +1424,13 @@ bygfoot_json_serialize_fixture(const Fixture *fixture)
     SERIALIZE(second_leg, json_object_new_boolean);
     SERIALIZE(decisive, json_object_new_boolean);
     /* live_game not serialized, because it is temporary */
-    #undef SERIALIZE
+#undef SERIALIZE
 
     return fixture_obj;
 }
 
 json_object *
-bygfoot_json_serialize_fixture_teams(Team * const *teams)
-{
+bygfoot_json_serialize_fixture_teams(Team *const *teams) {
     json_object *teams_array = json_object_new_array_ext(2);
     gint i;
 
@@ -1525,8 +1442,7 @@ bygfoot_json_serialize_fixture_teams(Team * const *teams)
 }
 
 json_object *
-bygfoot_json_serialize_fixture_result(const gint (*result)[3])
-{
+bygfoot_json_serialize_fixture_result(const gint (*result)[3]) {
     json_object *result_array = json_object_new_array_ext(2);
     gint i;
 
@@ -1535,10 +1451,10 @@ bygfoot_json_serialize_fixture_result(const gint (*result)[3])
             const gchar *key;
             gint index;
         } result_fields[] = {
-            { "goals_regulation", 0 },
-            { "goals_extra_time", 1 },
-            { "goals_penalty_shootout", 2 },
-            { NULL, 0 }
+                {"goals_regulation",       0},
+                {"goals_extra_time",       1},
+                {"goals_penalty_shootout", 2},
+                {NULL,                     0}
         };
         const struct key_index *iter;
         json_object *result_obj = json_object_new_object();

@@ -60,7 +60,7 @@ query_user_game_in_week_round(gint usr_idx, gint week_number, gint week_round_nu
 gboolean
 query_user_games_in_week_round(gint week_number, gint week_round_number);
 
-User*
+User *
 user_from_team(const Team *tm);
 
 void
@@ -72,12 +72,14 @@ user_event_new(void);
 #ifdef G_OS_UNIX
 void
 user_event_add(User *user, gint type, gint value1, gint value2, 
-	       gpointer value_pointer, gchar *format, ...)
+           gpointer value_pointer, gchar *format, ...)
 __attribute__ ((format (printf, 6, 7)));
 #else
+
 void
-user_event_add(User *user, gint type, gint value1, gint value2, 
-	       gpointer value_pointer, gchar *format, ...);
+user_event_add(User *user, gint type, gint value1, gint value2,
+               gpointer value_pointer, gchar *format, ...);
+
 #endif
 
 void
@@ -100,8 +102,8 @@ query_user_teams_have_unfit(void);
 
 void
 user_history_add(User *user, gint type, const gchar *team_name,
-		 const gchar* string0, const gchar *string1,
-		 const gchar *string2);
+                 const gchar *string0, const gchar *string1,
+                 const gchar *string2);
 
 void
 user_history_to_string(const UserHistory *history, gchar *buf);

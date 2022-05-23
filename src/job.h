@@ -39,8 +39,8 @@ void
 job_add_new_international(gint num_of_new);
 
 gint
-job_country_is_in_list(const gchar *country_file, 
-		       const Country *countries, gint len);
+job_country_is_in_list(const gchar *country_file,
+                       const Country *countries, gint len);
 
 void
 job_add_new_national(void);
@@ -48,7 +48,7 @@ job_add_new_national(void);
 gint
 job_team_is_on_list(gint team_id);
 
-Team*
+Team *
 job_get_team(const Job *job);
 
 

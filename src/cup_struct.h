@@ -31,8 +31,7 @@
 
 /** Information about what cup another cup has to wait for
     before scheduling matches. */
-typedef struct
-{
+typedef struct {
     /** The cup we wait for. */
     gchar *cup_sid;
     /** The cup round of the cup we wait for. */
@@ -42,8 +41,7 @@ typedef struct
 /** Rules for a round of a cup.
     Cups consist of rounds, e.g. the final counts as
     a round or the round robin games. */
-typedef struct
-{
+typedef struct {
     /** Name of the cup round. By default filled with "Last 32", "Final" etc. */
     gchar *name;
     /** Whether there are home and away games or only one leg. 
@@ -108,8 +106,7 @@ typedef struct
    This could tell us to select the first three teams
    from the league 'Italy 1' to participate in the cup.
 */
-typedef struct CupChooseTeam
-{
+typedef struct CupChooseTeam {
     /** The string id of the league we choose from.
 	Default: "". */
     gchar *sid;
@@ -155,12 +152,11 @@ typedef struct CupChooseTeam
      *  teams using this one.
      */
     struct CupChooseTeam *next;
-    
+
 } CupChooseTeam;
 
 /** Structure representing a cup. */
-typedef struct
-{
+typedef struct {
     /** Name and short name of the cup, a pixmap path,
 	and the string id (e.g. england_fa or so).
 	Default: "". */

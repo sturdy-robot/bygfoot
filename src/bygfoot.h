@@ -111,8 +111,7 @@
 /**
  * Exit codes.
  */
-enum ExitCodes
-{
+enum ExitCodes {
     EXIT_OK = 0, /**< Normal exit. */
     EXIT_GENERAL, /**< A general, multi-purpose exit code. */
     EXIT_NO_COUNTRY_FILES, /**< Exit when no country files have been found. */
@@ -140,20 +139,18 @@ enum ExitCodes
 /**
  * An enum representing a countries promotion rules for reserve teams.
  */
-enum ReservePromRules
-{
-   RESERVE_PROM_RULES_NONE = 0,
-   RESERVE_PROM_RULES_DEFAULT
+enum ReservePromRules {
+    RESERVE_PROM_RULES_NONE = 0,
+    RESERVE_PROM_RULES_DEFAULT
 };
 
 /**
  * A struct representing a country.
  */
-typedef struct
-{
+typedef struct {
     gchar *name, /**< Name of the country. */
-	*symbol, /**< Symbol of the country, eg a flag pixmap. */
-	*sid; /**< Id of the country, eg 'england'. */
+    *symbol, /**< Symbol of the country, eg a flag pixmap. */
+    *sid; /**< Id of the country, eg 'england'. */
 
     /** A rating point from 0-10 telling us
 	how good the first league of the country is.
@@ -164,43 +161,42 @@ typedef struct
 
     /** Leagues and cups arrays. */
     GArray *leagues, *cups;
-    
+
     /** Pointer array holding all cups. */
     GPtrArray *allcups;
 } Country;
 
 /** Struct used for having all the windows
     in one place. */
-typedef struct
-{
+typedef struct {
     GtkWidget *main,
-	*startup,
-	*live,
-	*warning,
-	*progress,
-	*digits,
-	*stadium,
-	*job_offer,
-	*yesno,
-	*options,
-        *constants,
-	*font_sel,
-	*file_chooser,
-	*contract,
-	*menu_player,
-	*menu_youth,
-	*user_management,
-	*wdebug,
-	*help,
-	*transfer_dialog,
-	*sponsors,
-	*mmatches,
-	*bets,
-	*splash,
-	*training_camp,
-	*news,
-        *alr;
-    
+            *startup,
+            *live,
+            *warning,
+            *progress,
+            *digits,
+            *stadium,
+            *job_offer,
+            *yesno,
+            *options,
+            *constants,
+            *font_sel,
+            *file_chooser,
+            *contract,
+            *menu_player,
+            *menu_youth,
+            *user_management,
+            *wdebug,
+            *help,
+            *transfer_dialog,
+            *sponsors,
+            *mmatches,
+            *bets,
+            *splash,
+            *training_camp,
+            *news,
+            *alr;
+
     /** The position of the horizontal divider is stored here. */
     gint paned_pos;
 } Windows;
@@ -210,10 +206,17 @@ typedef struct {
 } CommandLineArgs;
 
 void bygfoot_init(Bygfoot *bygfoot, enum BygfootFrontend frontend);
+
 void bygfoot_load_bygfoot(Bygfoot *bygfoot, const gchar *id);
+
 Country *bygfoot_load_country(Bygfoot *bygfoot, const gchar *country_name);
+
 User *bygfoot_add_user(Bygfoot *bygfoot, const gchar *username, Team *tm);
+
 void bygfoot_start_game(Bygfoot *bygfoot);
+
 void bygfoot_show_progress(const Bygfoot *bygfoot, gfloat value, const gchar *text, gint pictype);
+
 gdouble bygfoot_get_progress_bar_fraction(const Bygfoot *bygfoot);
+
 #endif

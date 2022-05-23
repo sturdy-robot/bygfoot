@@ -13,31 +13,49 @@
 #include "start_end.h"
 
 static int bygfoot_json_do_commands(Bygfoot *bygfoot, const json_object *commands);
+
 static int bygfoot_json_do_add_user(Bygfoot *bygfoot, const json_object *args);
+
 static struct json_object *bygfoot_json_call_load_bygfoot(Bygfoot *bygfoot, const json_object *args);
+
 static struct json_object *bygfoot_json_call_save_bygfoot(Bygfoot *bygfoot, const json_object *args);
+
 static struct json_object *bygfoot_json_call_dump_bygfoot(Bygfoot *bygfoot, const json_object *args);
+
 static struct json_object *bygfoot_json_call_add_country(Bygfoot *bygfoot, const json_object *args);
+
 static struct json_object *bygfoot_json_call_add_user(Bygfoot *bygfoot, const json_object *args);
+
 static struct json_object *bygfoot_json_call_start_bygfoot(Bygfoot *bygfoot, const json_object *args);
+
 static struct json_object *bygfoot_json_call_simulate_games(Bygfoot *bygfoot,
-                                                      const json_object *args);
+                                                            const json_object *args);
+
 static struct json_object *bygfoot_json_call_get_tables(Bygfoot *bygfoot,
                                                         const json_object *args);
+
 static struct json_object *bygfoot_json_call_get_players(Bygfoot *bygfoot,
                                                          const json_object *args);
+
 static struct json_object *bygfoot_json_call_get_fixtures(Bygfoot *bygfoot,
                                                           const json_object *args);
+
 static struct json_object *bygfoot_json_call_get_cups(Bygfoot *bygfoot,
                                                       const json_object *args);
+
 static struct json_object *bygfoot_json_call_get_leagues(Bygfoot *bygfoot,
                                                          const json_object *args);
+
 static struct json_object *bygfoot_json_response_error(const char *command,
-                                               const char *error);
+                                                       const char *error);
+
 static json_object *
 bygfoot_json_fixture_to_json(const Fixture *fixture);
-static json_object * bygfoot_json_player_to_json(const Player *player);
+
+static json_object *bygfoot_json_player_to_json(const Player *player);
+
 static json_object *bygfoot_json_user_to_json(const User *user);
+
 static json_object *bygfoot_json_table_to_json(const Table *table);
 
 struct json_field {
@@ -47,11 +65,10 @@ struct json_field {
 
 static gboolean
 bygfoot_json_validate_arg_types(const struct json_object *args,
-                                const struct json_field *fields)
-{
+                                const struct json_field *fields) {
     const struct json_field *field;
 
-    for (field = fields; field->name; field++ ) {
+    for (field = fields; field->name; field++) {
         struct json_object *value;
         if (!json_object_object_get_ex(args, field->name, &value))
             continue;
@@ -61,8 +78,7 @@ bygfoot_json_validate_arg_types(const struct json_object *args,
     return TRUE;
 }
 
-int bygfoot_json_main(Bygfoot *bygfoot, const CommandLineArgs *cl_args)
-{
+int bygfoot_json_main(Bygfoot *bygfoot, const CommandLineArgs *cl_args) {
     gchar *contents;
     GError *error;
     struct json_object *json;
@@ -89,7 +105,8 @@ int bygfoot_json_main(Bygfoot *bygfoot, const CommandLineArgs *cl_args)
     /* TODO: Get option from json */
     //bygfoot_set_save_dir(bygfoot, NULL);
 
-    json_object_object_foreach(json, key, val) {
+    json_object_object_foreach(json, key, val)
+    {
         if (!strcmp("commands", key))
             return bygfoot_json_do_commands(bygfoot, val);
     }
@@ -97,27 +114,27 @@ int bygfoot_json_main(Bygfoot *bygfoot, const CommandLineArgs *cl_args)
     return 1;
 }
 
-static int bygfoot_json_do_commands(Bygfoot *bygfoot, const json_object *commands)
-{
+static int bygfoot_json_do_commands(Bygfoot *bygfoot, const json_object *commands) {
     size_t i, num_commands;
 
     static const struct json_func {
         const gchar *command;
-        json_object* (*func)(Bygfoot *, const json_object *);
+
+        json_object *(*func)(Bygfoot *, const json_object *);
     } json_funcs[] = {
-        { "load_bygfoot", bygfoot_json_call_load_bygfoot },
-        { "save_bygfoot", bygfoot_json_call_save_bygfoot },
-        { "dump_bygfoot", bygfoot_json_call_dump_bygfoot },
-        { "add_country", bygfoot_json_call_add_country },
-        { "add_user", bygfoot_json_call_add_user },
-        { "start_bygfoot", bygfoot_json_call_start_bygfoot },
-        { "simulate_games", bygfoot_json_call_simulate_games },
-        { "get_tables", bygfoot_json_call_get_tables },
-        { "get_players", bygfoot_json_call_get_players },
-        { "get_fixtures", bygfoot_json_call_get_fixtures },
-        { "cups", bygfoot_json_call_get_cups },
-	{ "leagues", bygfoot_json_call_get_leagues },
-        { NULL, NULL}
+            {"load_bygfoot",   bygfoot_json_call_load_bygfoot},
+            {"save_bygfoot",   bygfoot_json_call_save_bygfoot},
+            {"dump_bygfoot",   bygfoot_json_call_dump_bygfoot},
+            {"add_country",    bygfoot_json_call_add_country},
+            {"add_user",       bygfoot_json_call_add_user},
+            {"start_bygfoot",  bygfoot_json_call_start_bygfoot},
+            {"simulate_games", bygfoot_json_call_simulate_games},
+            {"get_tables",     bygfoot_json_call_get_tables},
+            {"get_players",    bygfoot_json_call_get_players},
+            {"get_fixtures",   bygfoot_json_call_get_fixtures},
+            {"cups",           bygfoot_json_call_get_cups},
+            {"leagues",        bygfoot_json_call_get_leagues},
+            {NULL, NULL}
     };
 
     if (!json_object_is_type(commands, json_type_array)) {
@@ -131,7 +148,8 @@ static int bygfoot_json_do_commands(Bygfoot *bygfoot, const json_object *command
         struct json_object *response = NULL;
         // TODO: CHECK COMMAND SIZE
 
-        json_object_object_foreach(command, key, val) {
+        json_object_object_foreach(command, key, val)
+        {
             const struct json_func *json_func;
             for (json_func = json_funcs; json_func->command; json_func++) {
                 if (!strcmp(json_func->command, key)) {
@@ -151,14 +169,13 @@ static int bygfoot_json_do_commands(Bygfoot *bygfoot, const json_object *command
 }
 
 static const gchar *
-bygfoot_json_validate_bygfoot_id(const json_object *args, json_object **error)
-{
+bygfoot_json_validate_bygfoot_id(const json_object *args, json_object **error) {
     const gchar *id;
     /* Get the id field */
     json_object *id_obj = json_object_object_get(args, "id");
 
     if (id_obj) {
-        if(!json_object_is_type(id_obj, json_type_string)) {
+        if (!json_object_is_type(id_obj, json_type_string)) {
             *error = bygfoot_json_response_error("",
                                                  "field 'id' must be a string");
             return NULL;
@@ -171,13 +188,12 @@ bygfoot_json_validate_bygfoot_id(const json_object *args, json_object **error)
 }
 
 static struct json_object *
-bygfoot_json_call_load_bygfoot(Bygfoot *bygfoot, const json_object *args)
-{
+bygfoot_json_call_load_bygfoot(Bygfoot *bygfoot, const json_object *args) {
     const gchar *id = NULL;
     struct json_object *filename_obj;
     const gchar *filename;
-    static const struct json_field fields [] = {
-        { "filename", json_type_string }
+    static const struct json_field fields[] = {
+            {"filename", json_type_string}
     };
 
     if (!bygfoot_json_validate_arg_types(args, fields))
@@ -186,7 +202,7 @@ bygfoot_json_call_load_bygfoot(Bygfoot *bygfoot, const json_object *args)
 
     if (!json_object_object_get_ex(args, "filename", &filename_obj))
         return bygfoot_json_response_error("load_bygfoot",
-                                          "filename argument is required");
+                                           "filename argument is required");
 
     filename = json_object_get_string(filename_obj);
     if (!g_file_test(filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
@@ -197,13 +213,12 @@ bygfoot_json_call_load_bygfoot(Bygfoot *bygfoot, const json_object *args)
 }
 
 static struct json_object *
-bygfoot_json_call_save_bygfoot(Bygfoot *bygfoot, const json_object *args)
-{
+bygfoot_json_call_save_bygfoot(Bygfoot *bygfoot, const json_object *args) {
     const gchar *id = NULL;
     struct json_object *filename_obj;
     const gchar *filename;
-    static const struct json_field fields [] = {
-        { "filename", json_type_string }
+    static const struct json_field fields[] = {
+            {"filename", json_type_string}
     };
 
     if (!bygfoot_json_validate_arg_types(args, fields))
@@ -212,7 +227,7 @@ bygfoot_json_call_save_bygfoot(Bygfoot *bygfoot, const json_object *args)
 
     if (!json_object_object_get_ex(args, "filename", &filename_obj))
         return bygfoot_json_response_error("save_bygfoot",
-                                          "filename argument is required");
+                                           "filename argument is required");
 
     filename = json_object_get_string(filename_obj);
 
@@ -221,22 +236,20 @@ bygfoot_json_call_save_bygfoot(Bygfoot *bygfoot, const json_object *args)
 }
 
 static json_object *
-bygfoot_json_call_dump_bygfoot(Bygfoot *bygfoot, const json_object *args)
-{
+bygfoot_json_call_dump_bygfoot(Bygfoot *bygfoot, const json_object *args) {
     return bygfoot_json_serialize_bygfoot(bygfoot);
 }
 
 static json_object *
-bygfoot_json_call_add_country(Bygfoot *bygfoot, const json_object *args)
-{
+bygfoot_json_call_add_country(Bygfoot *bygfoot, const json_object *args) {
     gchar const *country_name = NULL;
-    static const struct json_field fields [] = {
-        { "name", json_type_string },
-        { NULL, json_type_null }
+    static const struct json_field fields[] = {
+            {"name", json_type_string},
+            {NULL,   json_type_null}
     };
     const struct json_field *field;
 
-    for (field = fields; field->name; field++ ) {
+    for (field = fields; field->name; field++) {
         struct json_object *value = json_object_object_get(args, field->name);
         if (!value)
             continue;
@@ -254,8 +267,7 @@ bygfoot_json_call_add_country(Bygfoot *bygfoot, const json_object *args)
     return json_object_new_string("success");
 }
 
-static json_object  *bygfoot_json_call_add_user(Bygfoot *bygfoot, const json_object *args)
-{
+static json_object *bygfoot_json_call_add_user(Bygfoot *bygfoot, const json_object *args) {
     const char *command = "add_user";
     const char *username = NULL;
     const char *country_name = NULL;
@@ -264,7 +276,8 @@ static json_object  *bygfoot_json_call_add_user(Bygfoot *bygfoot, const json_obj
     Country *country;
     Team *tm;
     User *user;
-    json_object_object_foreach(args, key, val) {
+    json_object_object_foreach(args, key, val)
+    {
         if (!strcmp("username", key)) {
             if (!json_object_is_type(val, json_type_string)) {
                 return bygfoot_json_response_error(command, "username must be of type string");
@@ -304,9 +317,8 @@ static json_object  *bygfoot_json_call_add_user(Bygfoot *bygfoot, const json_obj
     return response;
 }
 
-static json_object  *bygfoot_json_call_start_bygfoot(Bygfoot *bygfoot,
-                                                  const json_object *args)
-{
+static json_object *bygfoot_json_call_start_bygfoot(Bygfoot *bygfoot,
+                                                    const json_object *args) {
     unsigned i;
     bygfoot_start_game(bygfoot);
 
@@ -322,8 +334,7 @@ static json_object  *bygfoot_json_call_start_bygfoot(Bygfoot *bygfoot,
     return json_object_new_string("success");
 }
 
-static void simulate_weeks(Bygfoot *bygfoot, gint weeks)
-{
+static void simulate_weeks(Bygfoot *bygfoot, gint weeks) {
     gint num_weeks = 0;
     gint current_week = week;
     while (num_weeks < weeks) {
@@ -335,14 +346,14 @@ static void simulate_weeks(Bygfoot *bygfoot, gint weeks)
     }
 }
 
-static struct json_object  *bygfoot_json_call_simulate_games(Bygfoot *bygfoot,
-                                                      const json_object *args)
-{
+static struct json_object *bygfoot_json_call_simulate_games(Bygfoot *bygfoot,
+                                                            const json_object *args) {
     int32_t rounds = 0;
     int32_t weeks = 0;
     int32_t seasons = 0;
     unsigned i;
-    json_object_object_foreach(args, key, val) {
+    json_object_object_foreach(args, key, val)
+    {
         if (!strcmp("rounds", key)) {
             rounds = json_object_get_int(val);
             for (i = 0; i < rounds; i++) {
@@ -371,8 +382,7 @@ static struct json_object  *bygfoot_json_call_simulate_games(Bygfoot *bygfoot,
 }
 
 static json_object *
-bygfoot_json_call_get_fixtures(Bygfoot *bygfoot, const json_object *args)
-{
+bygfoot_json_call_get_fixtures(Bygfoot *bygfoot, const json_object *args) {
     struct json_object *fixtures_obj = json_object_new_array();
     struct json_object *response, *data;
     int i;
@@ -402,17 +412,16 @@ bygfoot_json_call_get_fixtures(Bygfoot *bygfoot, const json_object *args)
 }
 
 static json_object *
-bygfoot_json_call_get_tables(Bygfoot *bygfoot, const json_object *args)
-{
+bygfoot_json_call_get_tables(Bygfoot *bygfoot, const json_object *args) {
     gchar const *country_name = NULL;
-    static const struct json_field fields [] = {
-        { NULL, json_type_null }
+    static const struct json_field fields[] = {
+            {NULL, json_type_null}
     };
     const struct json_field *field;
     int i;
     struct json_object *response, *data, *tables;
 
-    for (field = fields; field->name; field++ ) {
+    for (field = fields; field->name; field++) {
         struct json_object *value = json_object_object_get(args, field->name);
         if (!value)
             continue;
@@ -438,8 +447,7 @@ bygfoot_json_call_get_tables(Bygfoot *bygfoot, const json_object *args)
 }
 
 static json_object *
-bygfoot_json_call_get_players(Bygfoot *bygfoot, const json_object *args)
-{
+bygfoot_json_call_get_players(Bygfoot *bygfoot, const json_object *args) {
     struct json_object *players_obj = json_object_new_array();
     struct json_object *response, *data;
     int i;
@@ -464,8 +472,7 @@ bygfoot_json_call_get_players(Bygfoot *bygfoot, const json_object *args)
 }
 
 static json_object *
-bygfoot_json_call_get_cups(Bygfoot *bygfoot, const json_object *args)
-{
+bygfoot_json_call_get_cups(Bygfoot *bygfoot, const json_object *args) {
 
     struct json_object *cups_obj = json_object_new_array_ext(country.cups->len);
 
@@ -480,20 +487,17 @@ bygfoot_json_call_get_cups(Bygfoot *bygfoot, const json_object *args)
 }
 
 static json_object *
-bygfoot_json_call_get_leagues(Bygfoot *bygfoot, const json_object *args)
-{
+bygfoot_json_call_get_leagues(Bygfoot *bygfoot, const json_object *args) {
     return bygfoot_json_serialize_league_array(country.leagues);
 }
 
 static json_object *
-bygfoot_json_live_game_stats_to_json(const LiveGameStats *stats, gint team_index)
-{
+bygfoot_json_live_game_stats_to_json(const LiveGameStats *stats, gint team_index) {
 
 }
 
 static json_object *
-bygfoot_json_fixture_stats_to_json(const Fixture *fixture, gint team_index)
-{
+bygfoot_json_fixture_stats_to_json(const Fixture *fixture, gint team_index) {
     struct json_object *team_obj = json_object_new_object();
     struct json_object *stats_obj = json_object_new_object();
 
@@ -501,23 +505,23 @@ bygfoot_json_fixture_stats_to_json(const Fixture *fixture, gint team_index)
         const gchar *key;
         gint index;
     } result_fields[] = {
-        { "goals_regulation", 0 },
-        { "goals_extra_time", 1 },
-        { "goals_penalty_shootout", 2 },
-        { NULL, 0 }
+            {"goals_regulation",       0},
+            {"goals_extra_time",       1},
+            {"goals_penalty_shootout", 2},
+            {NULL,                     0}
     };
 
     static const struct key_index live_stats_fields[] = {
-        { "goals_regular", LIVE_GAME_STAT_VALUE_GOALS_REGULAR },
-        { "shots", LIVE_GAME_STAT_VALUE_SHOTS },
-        { "shot_percentage", LIVE_GAME_STAT_VALUE_SHOT_PERCENTAGE },
-        { "possession", LIVE_GAME_STAT_VALUE_POSSESSION },
-        { "penalties", LIVE_GAME_STAT_VALUE_PENALTIES },
-        { "fouls", LIVE_GAME_STAT_VALUE_FOULS },
-        { "cards", LIVE_GAME_STAT_VALUE_CARDS },
-        { "reds", LIVE_GAME_STAT_VALUE_REDS } ,
-        { "injuries", LIVE_GAME_STAT_VALUE_INJURIES },
-        { NULL, LIVE_GAME_STAT_VALUE_END }
+            {"goals_regular",   LIVE_GAME_STAT_VALUE_GOALS_REGULAR},
+            {"shots",           LIVE_GAME_STAT_VALUE_SHOTS},
+            {"shot_percentage", LIVE_GAME_STAT_VALUE_SHOT_PERCENTAGE},
+            {"possession",      LIVE_GAME_STAT_VALUE_POSSESSION},
+            {"penalties",       LIVE_GAME_STAT_VALUE_PENALTIES},
+            {"fouls",           LIVE_GAME_STAT_VALUE_FOULS},
+            {"cards",           LIVE_GAME_STAT_VALUE_CARDS},
+            {"reds",            LIVE_GAME_STAT_VALUE_REDS},
+            {"injuries",        LIVE_GAME_STAT_VALUE_INJURIES},
+            {NULL,              LIVE_GAME_STAT_VALUE_END}
     };
 
     const struct key_index *iter;
@@ -536,8 +540,7 @@ bygfoot_json_fixture_stats_to_json(const Fixture *fixture, gint team_index)
 }
 
 static json_object *
-bygfoot_json_fixture_to_json(const Fixture *fixture)
-{
+bygfoot_json_fixture_to_json(const Fixture *fixture) {
     struct json_object *fixture_obj = json_object_new_object();
     struct json_object *home_team_obj = json_object_new_object();
     struct json_object *away_team_obj = json_object_new_object();
@@ -560,8 +563,7 @@ bygfoot_json_fixture_to_json(const Fixture *fixture)
 }
 
 static json_object *
-bygfoot_json_player_games_goals_to_json(const GArray *stats)
-{
+bygfoot_json_player_games_goals_to_json(const GArray *stats) {
     int i;
     struct json_object *stats_obj = json_object_new_array_ext(stats->len);
     for (i = 0; i < stats->len; i++) {
@@ -582,8 +584,7 @@ bygfoot_json_player_games_goals_to_json(const GArray *stats)
 }
 
 static json_object *
-bygfoot_json_player_to_json(const Player *player)
-{
+bygfoot_json_player_to_json(const Player *player) {
     struct json_object *player_obj = json_object_new_object();
     json_object_object_add(player_obj, "name", json_object_new_string(player->name));
     json_object_object_add(player_obj, "season_stats",
@@ -593,8 +594,7 @@ bygfoot_json_player_to_json(const Player *player)
 }
 
 static json_object *
-bygfoot_json_team_to_json(const Team *team)
-{
+bygfoot_json_team_to_json(const Team *team) {
     struct json_object *team_obj = json_object_new_object();
 
     json_object_object_add(team_obj, "name",
@@ -603,8 +603,7 @@ bygfoot_json_team_to_json(const Team *team)
 }
 
 static json_object *
-bygfoot_json_table_element_to_json(const TableElement *element)
-{
+bygfoot_json_table_element_to_json(const TableElement *element) {
     struct json_object *element_obj = json_object_new_object();
 
     json_object_object_add(element_obj, "team",
@@ -631,8 +630,7 @@ bygfoot_json_table_element_to_json(const TableElement *element)
 }
 
 static json_object *
-bygfoot_json_table_to_json(const Table *table)
-{
+bygfoot_json_table_to_json(const Table *table) {
     struct json_object *table_obj = json_object_new_object();
     struct json_object *elements_obj = json_object_new_array_ext(table->elements->len);
     int i;
@@ -652,8 +650,7 @@ bygfoot_json_table_to_json(const Table *table)
     return table_obj;
 }
 
-static json_object *bygfoot_json_user_to_json(const User *user)
-{
+static json_object *bygfoot_json_user_to_json(const User *user) {
     struct json_object *json = json_object_new_object();
     struct json_object *user_obj = json_object_new_object();
     json_object_object_add(user_obj, "name", json_object_new_string(user->name));
@@ -662,15 +659,13 @@ static json_object *bygfoot_json_user_to_json(const User *user)
 }
 
 static struct json_object *bygfoot_json_response_error(const char *command,
-                                                       const char *error)
-{
+                                                       const char *error) {
     struct json_object *json = json_object_new_object();
     json_object_object_add(json, "message", json_object_new_string(error));
     return json;
 }
 
-static void bygfoot_json_error_to_console(const char *command, const char *error)
-{
+static void bygfoot_json_error_to_console(const char *command, const char *error) {
     struct json_object *json = bygfoot_json_response_error(command, error);
     fprintf(stderr, "%s\n", json_object_to_json_string_ext(json, JSON_C_TO_STRING_PRETTY));
     json_object_put(json);

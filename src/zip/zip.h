@@ -46,7 +46,9 @@
 #define _zip_H
 
 #ifndef _ZLIB_H
+
 #include "zlib.h"
+
 #endif
 
 #if defined(STRICTZIP) || defined(STRICTZIPUNZIP)
@@ -73,27 +75,26 @@ typedef voidp zipFile;
 #endif
 
 /* tm_zip contain date/time info */
-typedef struct tm_zip_s 
-{
-	uInt tm_sec;            /* seconds after the minute - [0,59] */
-	uInt tm_min;            /* minutes after the hour - [0,59] */
-	uInt tm_hour;           /* hours since midnight - [0,23] */
-	uInt tm_mday;           /* day of the month - [1,31] */
-	uInt tm_mon;            /* months since January - [0,11] */
-	uInt tm_year;           /* years - [1980..2044] */
+typedef struct tm_zip_s {
+    uInt tm_sec;            /* seconds after the minute - [0,59] */
+    uInt tm_min;            /* minutes after the hour - [0,59] */
+    uInt tm_hour;           /* hours since midnight - [0,23] */
+    uInt tm_mday;           /* day of the month - [1,31] */
+    uInt tm_mon;            /* months since January - [0,11] */
+    uInt tm_year;           /* years - [1980..2044] */
 } tm_zip;
 
-typedef struct
-{
-	tm_zip      tmz_date;       /* date in understandable format           */
-    uLong       dosDate;       /* if dos_date == 0, tmu_date is used      */
+typedef struct {
+    tm_zip tmz_date;       /* date in understandable format           */
+    uLong dosDate;       /* if dos_date == 0, tmu_date is used      */
 /*    uLong       flag;        */   /* general purpose bit flag        2 bytes */
 
-    uLong       internal_fa;    /* internal file attributes        2 bytes */
-    uLong       external_fa;    /* external file attributes        4 bytes */
+    uLong internal_fa;    /* internal file attributes        2 bytes */
+    uLong external_fa;    /* external file attributes        4 bytes */
 } zip_fileinfo;
 
-extern zipFile ZEXPORT zipOpen (const char *pathname, int append);
+extern zipFile ZEXPORT zipOpen(const char *pathname, int append);
+
 /*
   Create a zipfile.
 	 pathname contain on Windows NT a filename like "c:\\zlib\\zlib111.zip" or on
@@ -107,16 +108,17 @@ extern zipFile ZEXPORT zipOpen (const char *pathname, int append);
 
 */
 
-extern int ZEXPORT zipOpenNewFileInZip (zipFile file,
-					   const char* filename,
-					   const zip_fileinfo* zipfi,
-					   const void* extrafield_local,
-					   uInt size_extrafield_local,
-					   const void* extrafield_global,
-					   uInt size_extrafield_global,
-					   const char* comment,
-					   int method,
-					   int level);
+extern int ZEXPORT zipOpenNewFileInZip(zipFile file,
+                                       const char *filename,
+                                       const zip_fileinfo *zipfi,
+                                       const void *extrafield_local,
+                                       uInt size_extrafield_local,
+                                       const void *extrafield_global,
+                                       uInt size_extrafield_global,
+                                       const char *comment,
+                                       int method,
+                                       int level);
+
 /*
   Open a file in the ZIP for writing.
   filename : the filename in zip (if NULL, '-' without quote will be used
@@ -130,20 +132,22 @@ extern int ZEXPORT zipOpenNewFileInZip (zipFile file,
   level contain the level of compression (can be Z_DEFAULT_COMPRESSION)
 */
 
-extern int ZEXPORT zipWriteInFileInZip (zipFile file,
-					   const voidp buf,
-					   unsigned len);
+extern int ZEXPORT zipWriteInFileInZip(zipFile file,
+                                       const voidp buf,
+                                       unsigned len);
+
 /*
   Write data in the zipfile
 */
 
-extern int ZEXPORT zipCloseFileInZip (zipFile file);
+extern int ZEXPORT zipCloseFileInZip(zipFile file);
+
 /*
   Close the current file in the zipfile
 */
 
-extern int ZEXPORT zipClose (zipFile file,
-				const char* global_comment);
+extern int ZEXPORT zipClose(zipFile file,
+                            const char *global_comment);
 /*
   Close the zipfile
 */

@@ -27,8 +27,7 @@
 #define ENUMS_H
 
 /** Some counters. */
-enum Counters
-{
+enum Counters {
     COUNT_AUTOSAVE = 0,
     COUNT_AUTOSAVE_FILE,
     COUNT_TEAM_ID,
@@ -48,8 +47,7 @@ enum Counters
 };
 
 /** Scout and physio qualities. */
-enum Quality
-{
+enum Quality {
     QUALITY_BEST = 0,
     QUALITY_GOOD,
     QUALITY_AVERAGE,
@@ -58,8 +56,7 @@ enum Quality
 };
 
 /** Indices for the #finances variable. */
-enum FinanceValue
-{
+enum FinanceValue {
     FIN_PRIZE = 0, /**< Prize money at the end of the season. */
     FIN_DEBTS, /**< User's debts. */
     FIN_MONEY, /**< User's money. */
@@ -77,8 +74,7 @@ enum FinanceValue
 
 /** Enum used to determine what kind of fixtures or
     tables to show (e.g. when an arrow is clicked on). */
-enum ShowType
-{
+enum ShowType {
     SHOW_TEAM = 0,
     SHOW_CURRENT,
     SHOW_NEXT,
@@ -89,8 +85,7 @@ enum ShowType
 };
 
 /** Possible values for a status variable. */
-enum Status0Value
-{
+enum Status0Value {
     STATUS_NONE = 0,
     STATUS_MAIN,
     STATUS_SHOW_LIVE_GAME,
@@ -115,7 +110,7 @@ enum Status0Value
     STATUS_SHOW_EVENT,
     STATUS_JOB_OFFER_SUCCESS,
     STATUS_JOB_OFFER_FIRE_FINANCE,
-    STATUS_JOB_OFFER_FIRE_FAILURE,    
+    STATUS_JOB_OFFER_FIRE_FAILURE,
     STATUS_TRANSFER_OFFER_USER,
     STATUS_TRANSFER_OFFER_CPU,
     STATUS_CUSTOM_STRUCTURE,

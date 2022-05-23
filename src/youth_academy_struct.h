@@ -30,8 +30,7 @@
 
 /** The data about a user's youth academy is bundled
     here. */
-typedef struct
-{
+typedef struct {
     /** Pointer to the team the academy belongs to. */
     Team *tm;
     /** Position preference of the user. */

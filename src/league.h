@@ -43,8 +43,7 @@
 
 /** A struct needed when managing promotions
     and relegations. */
-typedef struct
-{
+typedef struct {
     Team *tm; /**< The team we move. */
     GArray *dest_idcs;   /**< Array of possible destination indices. */
     gint prom_rel_type; /**< Promotion or relegation */
@@ -53,8 +52,7 @@ typedef struct
 } TeamMove;
 
 
-typedef struct
-{
+typedef struct {
     gint num_promotions_from;
     gint num_promotions_to;
     gint num_relegations_from;
@@ -73,7 +71,7 @@ prom_games_new(void);
 gint
 league_cup_get_index_from_clid(gint clid);
 
-League*
+League *
 league_from_clid(gint clid);
 
 gint
@@ -82,10 +80,10 @@ league_cup_get_next_clid(gint clid, gboolean count_inactive);
 gint
 league_cup_get_previous_clid(gint clid, gboolean count_inactive);
 
-Fixture*
+Fixture *
 league_cup_get_next_fixture(gint clid, gint week_number, gint week_round_number);
 
-Fixture*
+Fixture *
 league_cup_get_previous_fixture(gint clid, gint week_number, gint week_round_number);
 
 gint
@@ -139,18 +137,18 @@ league_get_team_movements_prom_rel(const League *league, GArray *team_movements)
 void
 league_get_team_movements_prom_games(const League *league, const PromGames *prom_games,
                                      GArray *team_movements,
-				     const GPtrArray *prom_games_teams, gboolean up);
+                                     const GPtrArray *prom_games_teams, gboolean up);
 
 void
 league_team_movements_destinations(GArray *team_movements, const gint *league_size);
 
 void
 league_team_movements_prune(GArray *team_movements, const gint *league_size,
-			    gint *league_cur_size);
+                            gint *league_cur_size);
 
 void
 league_team_movements_assign_dest(GArray *team_movements, gint idx,
-				  const gint *league_size, gint *league_cur_size);
+                                  const gint *league_size, gint *league_cur_size);
 
 gboolean
 query_league_team_movements_unassigned_single(const GArray *team_movements);
@@ -159,12 +157,12 @@ gboolean
 query_league_team_movements_unassigned(const GArray *team_movements);
 
 void
-league_team_movements_print(const GArray *team_movements, 
-			    const gint *league_size, const gint *league_cur_size);
+league_team_movements_print(const GArray *team_movements,
+                            const gint *league_size, const gint *league_cur_size);
 
 gint
-league_team_movements_compare_dest_idcs(gconstpointer a, gconstpointer b, 
-					gpointer data);
+league_team_movements_compare_dest_idcs(gconstpointer a, gconstpointer b,
+                                        gpointer data);
 
 gboolean
 query_leagues_active_in_country(void);
@@ -181,10 +179,10 @@ league_add_table(League *league);
 gboolean
 query_league_cup_has_property(gint clid, const gchar *property);
 
-GPtrArray*
+GPtrArray *
 league_cup_get_teams(gint clid);
 
-GPtrArray*
+GPtrArray *
 league_cup_get_properties(gint clid);
 
 void

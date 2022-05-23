@@ -55,10 +55,9 @@
 ***********************************************************************************************************/
 
 G_MODULE_EXPORT gboolean
-on_button_quit_clicked                 (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
+on_button_quit_clicked(GtkWidget *widget,
+                       GdkEvent *event,
+                       gpointer user_data) {
 #ifdef DEBUG
     printf("on_button_quit_clicked\n");
 #endif
@@ -70,35 +69,34 @@ on_button_quit_clicked                 (GtkWidget       *widget,
 
 
 G_MODULE_EXPORT gboolean
-on_eventbox_style_button_press_event   (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
-{
+on_eventbox_style_button_press_event(GtkWidget *widget,
+                                     GdkEventButton *event,
+                                     gpointer user_data) {
 #ifdef DEBUG
     printf("on_eventbox_style_button_press_event\n");
 #endif
 
     gint new_style = -1;
 
-    if(event->type != GDK_BUTTON_PRESS)
-	return FALSE;
+    if (event->type != GDK_BUTTON_PRESS)
+        return FALSE;
 
-    if(event->button == 3)
-	new_style = (current_user.tm->style != 2) ?
-	    current_user.tm->style + 1 : -2;
-    else if(event->button == 1)
-	new_style = (current_user.tm->style != -2) ?
-	    current_user.tm->style - 1 : 2;
+    if (event->button == 3)
+        new_style = (current_user.tm->style != 2) ?
+                    current_user.tm->style + 1 : -2;
+    else if (event->button == 1)
+        new_style = (current_user.tm->style != -2) ?
+                    current_user.tm->style - 1 : 2;
     else
-	return FALSE;
+        return FALSE;
 
     team_change_attribute_with_message(current_user.tm, TEAM_ATTRIBUTE_STYLE, new_style);
 
     game_gui_write_meters(current_user.tm);
     game_gui_write_radio_items();
-    
-    if(stat0 == STATUS_MAIN)
-	treeview_show_next_opponent();
+
+    if (stat0 == STATUS_MAIN)
+        treeview_show_next_opponent();
 
     setsav0;
 
@@ -107,38 +105,37 @@ on_eventbox_style_button_press_event   (GtkWidget       *widget,
 
 
 G_MODULE_EXPORT gboolean
-on_eventbox_boost_button_press_event   (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
-{
+on_eventbox_boost_button_press_event(GtkWidget *widget,
+                                     GdkEventButton *event,
+                                     gpointer user_data) {
 #ifdef DEBUG
     printf("on_eventbox_boost_button_press_event\n");
 #endif
 
-    gint new_boost = -1; 
+    gint new_boost = -1;
 
-    if(event->type != GDK_BUTTON_PRESS)
-	return FALSE;
+    if (event->type != GDK_BUTTON_PRESS)
+        return FALSE;
 
-    if(event->button == 3)
-	new_boost = (current_user.tm->boost != 1) ?
-	    current_user.tm->boost + 1 : -1;
-    else if(event->button == 1)
-	new_boost = (current_user.tm->boost != -1) ?
-	    current_user.tm->boost - 1 : 1;
+    if (event->button == 3)
+        new_boost = (current_user.tm->boost != 1) ?
+                    current_user.tm->boost + 1 : -1;
+    else if (event->button == 1)
+        new_boost = (current_user.tm->boost != -1) ?
+                    current_user.tm->boost - 1 : 1;
     else
-	return FALSE;
+        return FALSE;
 
-    if(new_boost == 1 && sett_int("int_opt_disable_boost_on"))
-	game_gui_print_message(_("Boost ON is disabled in this country definition."));
+    if (new_boost == 1 && sett_int("int_opt_disable_boost_on"))
+        game_gui_print_message(_("Boost ON is disabled in this country definition."));
     else
-	team_change_attribute_with_message(current_user.tm, TEAM_ATTRIBUTE_BOOST, new_boost);
+        team_change_attribute_with_message(current_user.tm, TEAM_ATTRIBUTE_BOOST, new_boost);
 
     game_gui_write_meters(current_user.tm);
     game_gui_write_radio_items();
 
-    if(stat0 == STATUS_MAIN)
-	treeview_show_next_opponent();
+    if (stat0 == STATUS_MAIN)
+        treeview_show_next_opponent();
 
     setsav0;
 
@@ -146,9 +143,8 @@ on_eventbox_boost_button_press_event   (GtkWidget       *widget,
 }
 
 G_MODULE_EXPORT void
-on_button_load_clicked                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
+on_button_load_clicked(GtkButton *button,
+                       gpointer user_data) {
 #ifdef DEBUG
     printf("on_button_load_clicked\n");
 #endif
@@ -158,9 +154,8 @@ on_button_load_clicked                 (GtkButton       *button,
 
 
 G_MODULE_EXPORT void
-on_button_save_clicked                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
+on_button_save_clicked(GtkButton *button,
+                       gpointer user_data) {
 #ifdef DEBUG
     printf("on_button_save_clicked\n");
 #endif
@@ -170,89 +165,78 @@ on_button_save_clicked                 (GtkButton       *button,
 
 
 G_MODULE_EXPORT void
-on_button_back_to_main_clicked         (GtkButton       *button,
-                                        gpointer         user_data)
-{
+on_button_back_to_main_clicked(GtkButton *button,
+                               gpointer user_data) {
 #ifdef DEBUG
     printf("on_button_back_to_main_clicked\n");
 #endif
 
-    if(stat0 != STATUS_LIVE_GAME_PAUSE)
-	stat0 = STATUS_MAIN;
+    if (stat0 != STATUS_LIVE_GAME_PAUSE)
+        stat0 = STATUS_MAIN;
     gtk_notebook_set_current_page(GTK_NOTEBOOK(lookup_widget(window.main, "notebook_player")), 0);
     selected_row = -1;
     game_gui_show_main();
 
     gui_set_arrows();
 
-    if((opt_int("int_opt_news_popup") == 2 ||
-        (opt_int("int_opt_news_popup") == 1 &&
-         counters[COUNT_NEW_NEWS] == 1)) &&
-       counters[COUNT_NEWS_SHOWN] == 0 &&
-       counters[COUNT_NEW_NEWS] != 0)
+    if ((opt_int("int_opt_news_popup") == 2 ||
+         (opt_int("int_opt_news_popup") == 1 &&
+          counters[COUNT_NEW_NEWS] == 1)) &&
+        counters[COUNT_NEWS_SHOWN] == 0 &&
+        counters[COUNT_NEW_NEWS] != 0)
         on_menu_news_activate(NULL, NULL);
 }
 
 
 G_MODULE_EXPORT void
-on_button_transfers_clicked            (GtkButton       *button,
-                                        gpointer         user_data)
-{
+on_button_transfers_clicked(GtkButton *button,
+                            gpointer user_data) {
 #ifdef DEBUG
     printf("on_button_transfers_clicked\n");
 #endif
 
-    if(sett_int("int_opt_disable_transfers"))
-	game_gui_print_message(_("Transfers are disabled in this country definition."));
-    else if(week < transfer_get_deadline() || transfer_list->len > 0)
-    {
-	if(stat0 != STATUS_SHOW_TRANSFER_LIST)
-	{
-	    stat0 = STATUS_SHOW_TRANSFER_LIST;
-	    game_gui_print_message(
-		_("Left click to make an offer. Right click to remove offer."));
-	    game_gui_print_message_with_delay(
-		_("Transfer deadline is Week %d"), transfer_get_deadline());
-	}
+    if (sett_int("int_opt_disable_transfers"))
+        game_gui_print_message(_("Transfers are disabled in this country definition."));
+    else if (week < transfer_get_deadline() || transfer_list->len > 0) {
+        if (stat0 != STATUS_SHOW_TRANSFER_LIST) {
+            stat0 = STATUS_SHOW_TRANSFER_LIST;
+            game_gui_print_message(
+                    _("Left click to make an offer. Right click to remove offer."));
+            game_gui_print_message_with_delay(
+                    _("Transfer deadline is Week %d"), transfer_get_deadline());
+        }
 
-	treeview_show_transfer_list(
-	    GTK_TREE_VIEW(lookup_widget(window.main, "treeview_right")));
-	gtk_notebook_set_current_page(
-	    GTK_NOTEBOOK(lookup_widget(window.main, "notebook_player")), 1);
-	
-	gui_set_arrows();
-    }
-    else
-	game_gui_print_message(_("The transfer deadline is over."));
+        treeview_show_transfer_list(
+                GTK_TREE_VIEW(lookup_widget(window.main, "treeview_right")));
+        gtk_notebook_set_current_page(
+                GTK_NOTEBOOK(lookup_widget(window.main, "notebook_player")), 1);
+
+        gui_set_arrows();
+    } else
+        game_gui_print_message(_("The transfer deadline is over."));
 }
 
 
 G_MODULE_EXPORT void
-on_button_new_week_clicked             (GtkButton       *button,
-                                        gpointer         user_data)
-{
-    Bygfoot *bygfoot = (Bygfoot*)user_data;
+on_button_new_week_clicked(GtkButton *button,
+                           gpointer user_data) {
+    Bygfoot *bygfoot = (Bygfoot *) user_data;
 #ifdef DEBUG
     printf("on_button_new_week_clicked\n");
 #endif
 
-    if(transfer_offers_pending())
-	game_gui_show_warning(_("You still have some transfer business to manage."));
-    else if(query_user_no_turn())
-    {
-	stat1 = STATUS_QUERY_USER_NO_TURN;
-	window_show_yesno(_("At least one user didn't take his turn this week. Continue?"));
-    }
-    else if(opt_int("int_opt_confirm_unfit") &&
-	    query_user_teams_have_unfit())
-    {
-	stat1 = STATUS_QUERY_UNFIT;
-	window_show_yesno(_("There are injured or banned players in one of the user teams. Continue?"));
-    }
-    else
-    {
-	load_save_autosave(bygfoot);
-	callback_show_next_live_game(bygfoot);
+    if (transfer_offers_pending())
+        game_gui_show_warning(_("You still have some transfer business to manage."));
+    else if (query_user_no_turn()) {
+        stat1 = STATUS_QUERY_USER_NO_TURN;
+        window_show_yesno(_("At least one user didn't take his turn this week. Continue?"));
+    } else if (opt_int("int_opt_confirm_unfit") &&
+               query_user_teams_have_unfit()) {
+        stat1 = STATUS_QUERY_UNFIT;
+        window_show_yesno(_("There are injured or banned players in one of the user teams. Continue?"));
+    } else {
+        load_save_autosave(bygfoot);
+        callback_show_next_live_game(bygfoot);
     }
 }
 
@@ -261,123 +245,115 @@ on_button_new_week_clicked             (GtkButton       *button,
 ***********************************************************************************************************/
 
 G_MODULE_EXPORT void
-on_button_browse_forward_clicked       (GtkButton       *button,
-                                        gpointer         user_data)
-{
+on_button_browse_forward_clicked(GtkButton *button,
+                                 gpointer user_data) {
 #ifdef DEBUG
     printf("on_button_browse_forward_clicked\n");
 #endif
 
-    switch(stat0)
-    {
-	case STATUS_SHOW_FIXTURES:
-	    callback_show_fixtures(SHOW_NEXT);
-	    break;
-	case STATUS_SHOW_FIXTURES_WEEK:
-	    callback_show_fixtures_week(SHOW_NEXT);
-	    break;
-	case STATUS_BROWSE_TEAMS:
-	    callback_show_team(SHOW_NEXT);
-	    break;
-	case STATUS_SHOW_PLAYER_INFO:
-	    selected_row = (selected_row + 1) % current_user.tm->players->len;
-	    on_menu_show_info_activate(NULL, NULL);
-	    break;
-	case STATUS_SHOW_SEASON_HISTORY:
-	    callback_show_season_history(SHOW_NEXT);
-	    break;
+    switch (stat0) {
+        case STATUS_SHOW_FIXTURES:
+            callback_show_fixtures(SHOW_NEXT);
+            break;
+        case STATUS_SHOW_FIXTURES_WEEK:
+            callback_show_fixtures_week(SHOW_NEXT);
+            break;
+        case STATUS_BROWSE_TEAMS:
+            callback_show_team(SHOW_NEXT);
+            break;
+        case STATUS_SHOW_PLAYER_INFO:
+            selected_row = (selected_row + 1) % current_user.tm->players->len;
+            on_menu_show_info_activate(NULL, NULL);
+            break;
+        case STATUS_SHOW_SEASON_HISTORY:
+            callback_show_season_history(SHOW_NEXT);
+            break;
     }
 }
 
 
 G_MODULE_EXPORT void
-on_button_browse_back_clicked          (GtkButton       *button,
-                                        gpointer         user_data)
-{
+on_button_browse_back_clicked(GtkButton *button,
+                              gpointer user_data) {
 #ifdef DEBUG
     printf("on_button_browse_back_clicked\n");
 #endif
 
-    switch(stat0)
-    {
-	case STATUS_SHOW_FIXTURES:
-	    callback_show_fixtures(SHOW_PREVIOUS);
-	    break;
-	case STATUS_SHOW_FIXTURES_WEEK:
-	    callback_show_fixtures_week(SHOW_PREVIOUS);
-	    break;
-	case STATUS_BROWSE_TEAMS:
-	    callback_show_team(SHOW_PREVIOUS);
-	    break;
-	case STATUS_SHOW_PLAYER_INFO:
-	    selected_row = (selected_row == 0) ? current_user.tm->players->len - 1 : selected_row - 1;
-	    on_menu_show_info_activate(NULL, NULL);
-	    break;
-	case STATUS_SHOW_SEASON_HISTORY:
-	    callback_show_season_history(SHOW_PREVIOUS);
-	    break;
+    switch (stat0) {
+        case STATUS_SHOW_FIXTURES:
+            callback_show_fixtures(SHOW_PREVIOUS);
+            break;
+        case STATUS_SHOW_FIXTURES_WEEK:
+            callback_show_fixtures_week(SHOW_PREVIOUS);
+            break;
+        case STATUS_BROWSE_TEAMS:
+            callback_show_team(SHOW_PREVIOUS);
+            break;
+        case STATUS_SHOW_PLAYER_INFO:
+            selected_row = (selected_row == 0) ? current_user.tm->players->len - 1 : selected_row - 1;
+            on_menu_show_info_activate(NULL, NULL);
+            break;
+        case STATUS_SHOW_SEASON_HISTORY:
+            callback_show_season_history(SHOW_PREVIOUS);
+            break;
     }
 }
 
 G_MODULE_EXPORT void
-on_button_cl_back_clicked              (GtkButton       *button,
-                                        gpointer         user_data)
-{
+on_button_cl_back_clicked(GtkButton *button,
+                          gpointer user_data) {
 #ifdef DEBUG
     printf("on_button_cl_back_clicked\n");
 #endif
 
-    switch(stat0)
-    {
-	case STATUS_SHOW_FIXTURES:
-	    callback_show_fixtures(SHOW_PREVIOUS_LEAGUE);
-	    break;
-	case STATUS_SHOW_TABLES:	    
-	    callback_show_tables(SHOW_PREVIOUS_LEAGUE);
-	    break;
-	case STATUS_BROWSE_TEAMS:
-	    callback_show_team(SHOW_PREVIOUS_LEAGUE);
-	    break;
-	case STATUS_SHOW_PLAYER_LIST:
-	    callback_show_player_list(SHOW_PREVIOUS_LEAGUE);
-	    break;
-	case STATUS_SHOW_LEAGUE_STATS:
-	    callback_show_league_stats(SHOW_PREVIOUS_LEAGUE);
-	    break;
-	case STATUS_SHOW_SEASON_HISTORY:
-	    callback_show_season_history(SHOW_PREVIOUS_LEAGUE);
-	    break;
+    switch (stat0) {
+        case STATUS_SHOW_FIXTURES:
+            callback_show_fixtures(SHOW_PREVIOUS_LEAGUE);
+            break;
+        case STATUS_SHOW_TABLES:
+            callback_show_tables(SHOW_PREVIOUS_LEAGUE);
+            break;
+        case STATUS_BROWSE_TEAMS:
+            callback_show_team(SHOW_PREVIOUS_LEAGUE);
+            break;
+        case STATUS_SHOW_PLAYER_LIST:
+            callback_show_player_list(SHOW_PREVIOUS_LEAGUE);
+            break;
+        case STATUS_SHOW_LEAGUE_STATS:
+            callback_show_league_stats(SHOW_PREVIOUS_LEAGUE);
+            break;
+        case STATUS_SHOW_SEASON_HISTORY:
+            callback_show_season_history(SHOW_PREVIOUS_LEAGUE);
+            break;
     }
 }
 
 G_MODULE_EXPORT void
-on_button_cl_forward_clicked           (GtkButton       *button,
-                                        gpointer         user_data)
-{
+on_button_cl_forward_clicked(GtkButton *button,
+                             gpointer user_data) {
 #ifdef DEBUG
     printf("on_button_cl_forward_clicked\n");
 #endif
 
-    switch(stat0)
-    {
-	case STATUS_SHOW_FIXTURES:
-	    callback_show_fixtures(SHOW_NEXT_LEAGUE);
-	    break;
-	case STATUS_SHOW_TABLES:
-	    callback_show_tables(SHOW_NEXT_LEAGUE);
-	    break;
-	case STATUS_BROWSE_TEAMS:
-	    callback_show_team(SHOW_NEXT_LEAGUE);
-	    break;
-	case STATUS_SHOW_PLAYER_LIST:
-	    callback_show_player_list(SHOW_NEXT_LEAGUE);
-	    break;
-	case STATUS_SHOW_LEAGUE_STATS:
-	    callback_show_league_stats(SHOW_NEXT_LEAGUE);
-	    break;
-	case STATUS_SHOW_SEASON_HISTORY:
-	    callback_show_season_history(SHOW_NEXT_LEAGUE);
-	    break;
+    switch (stat0) {
+        case STATUS_SHOW_FIXTURES:
+            callback_show_fixtures(SHOW_NEXT_LEAGUE);
+            break;
+        case STATUS_SHOW_TABLES:
+            callback_show_tables(SHOW_NEXT_LEAGUE);
+            break;
+        case STATUS_BROWSE_TEAMS:
+            callback_show_team(SHOW_NEXT_LEAGUE);
+            break;
+        case STATUS_SHOW_PLAYER_LIST:
+            callback_show_player_list(SHOW_NEXT_LEAGUE);
+            break;
+        case STATUS_SHOW_LEAGUE_STATS:
+            callback_show_league_stats(SHOW_NEXT_LEAGUE);
+            break;
+        case STATUS_SHOW_SEASON_HISTORY:
+            callback_show_season_history(SHOW_NEXT_LEAGUE);
+            break;
     }
 }
 
@@ -386,141 +362,130 @@ on_button_cl_forward_clicked           (GtkButton       *button,
 ***********************************************************************************************************/
 
 G_MODULE_EXPORT gboolean
-on_treeview_right_button_press_event   (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
-{
+on_treeview_right_button_press_event(GtkWidget *widget,
+                                     GdkEventButton *event,
+                                     gpointer user_data) {
 #ifdef DEBUG
     printf("on_treeview_right_button_press_event\n");
 #endif
 
     gint idx;
 
-    if(stat0 == STATUS_SHOW_FINANCES)
-    {
-	if(event->button == 1)
-	    callback_get_loan();
-	else if(event->button == 3)
-	    callback_pay_loan();
-	else if(event->button == 2)
-	    on_menu_show_stadium_activate(NULL, NULL);
+    if (stat0 == STATUS_SHOW_FINANCES) {
+        if (event->button == 1)
+            callback_get_loan();
+        else if (event->button == 3)
+            callback_pay_loan();
+        else if (event->button == 2)
+            on_menu_show_stadium_activate(NULL, NULL);
     }
 
-    if(gtk_tree_selection_get_mode(
-	   gtk_tree_view_get_selection(GTK_TREE_VIEW(widget))) ==
-       GTK_SELECTION_NONE)
-	return TRUE;
+    if (gtk_tree_selection_get_mode(
+            gtk_tree_view_get_selection(GTK_TREE_VIEW(widget))) ==
+        GTK_SELECTION_NONE)
+        return TRUE;
 
-    if(treeview_helper_select_row(GTK_TREE_VIEW(widget), event))
-	idx = treeview_helper_get_index(GTK_TREE_VIEW(widget), 0);
+    if (treeview_helper_select_row(GTK_TREE_VIEW(widget), event))
+        idx = treeview_helper_get_index(GTK_TREE_VIEW(widget), 0);
     else
-	return TRUE;
+        return TRUE;
 
-    switch(stat0)
-    {
-	case STATUS_SHOW_TRANSFER_LIST:
-	    if(trans(idx - 1).tm == current_user.tm ||
-	       (trans(idx - 1).offers->len > 0 && 
-		transoff(idx - 1, 0).status == TRANSFER_OFFER_ACCEPTED) ||
-	       event->button == 1)
-		callback_transfer_list_clicked(event->button, idx - 1);
-	    else if(event->button == 3)
-	    {
-		if(transfer_remove_offer(idx - 1, current_user.tm))
-		    game_gui_print_message(_("Your offer has been removed."));
-		else
-		    game_gui_print_message(
-			_("You haven't made an offer for the player."));
-		return TRUE;
-	    }
-	    break;
-	case STATUS_SHOW_TEAM_LIST:
-	    callback_show_team(SHOW_CURRENT);
-	    break;
-	case STATUS_MAIN:
-	    callback_show_next_opponent();
-	    break;
-	case STATUS_SHOW_PLAYER_LIST:
-	    callback_show_player_team();
-	    break;
-	case STATUS_SHOW_YA:
-	    selected_row = idx - 1;
-	    if(event->button == 1)
-		on_menu_youth_move_to_team_activate(NULL, NULL);
-	    else if(event->button == 3)
-		window_show_menu_youth((GdkEvent*)event);
-	    break;
-	case STATUS_SHOW_JOB_EXCHANGE:
-	    if(g_array_index(jobs, Job, idx - 1).type != JOB_TYPE_NATIONAL &&
-	       users->len > 1)
-		game_gui_show_warning(_("You can't apply for a job from abroad if there's more than one user."));
-	    else if(event->button == 1)
-		game_gui_show_job_offer(NULL, 
-					&g_array_index(jobs, Job, idx - 1),
-					STATUS_JOB_EXCHANGE_SHOW_TEAM);
-	    else if(event->button == 3)
-		if(misc2_callback_evaluate_job_application(
-		       &g_array_index(jobs, Job, idx - 1), &current_user))
-		{
-		    stat0 = STATUS_MAIN;
-		    game_gui_show_main();
-		    setsav0;
-		}
-	    break;
+    switch (stat0) {
+        case STATUS_SHOW_TRANSFER_LIST:
+            if (trans(idx - 1).tm == current_user.tm ||
+                (trans(idx - 1).offers->len > 0 &&
+                 transoff(idx - 1, 0).status == TRANSFER_OFFER_ACCEPTED) ||
+                event->button == 1)
+                callback_transfer_list_clicked(event->button, idx - 1);
+            else if (event->button == 3) {
+                if (transfer_remove_offer(idx - 1, current_user.tm))
+                    game_gui_print_message(_("Your offer has been removed."));
+                else
+                    game_gui_print_message(
+                            _("You haven't made an offer for the player."));
+                return TRUE;
+            }
+            break;
+        case STATUS_SHOW_TEAM_LIST:
+            callback_show_team(SHOW_CURRENT);
+            break;
+        case STATUS_MAIN:
+            callback_show_next_opponent();
+            break;
+        case STATUS_SHOW_PLAYER_LIST:
+            callback_show_player_team();
+            break;
+        case STATUS_SHOW_YA:
+            selected_row = idx - 1;
+            if (event->button == 1)
+                on_menu_youth_move_to_team_activate(NULL, NULL);
+            else if (event->button == 3)
+                window_show_menu_youth((GdkEvent *) event);
+            break;
+        case STATUS_SHOW_JOB_EXCHANGE:
+            if (g_array_index(jobs, Job, idx - 1).type != JOB_TYPE_NATIONAL &&
+                users->len > 1)
+                game_gui_show_warning(_("You can't apply for a job from abroad if there's more than one user."));
+            else if (event->button == 1)
+                game_gui_show_job_offer(NULL,
+                                        &g_array_index(jobs, Job, idx - 1),
+                                        STATUS_JOB_EXCHANGE_SHOW_TEAM);
+            else if (event->button == 3)
+                if (misc2_callback_evaluate_job_application(
+                        &g_array_index(jobs, Job, idx - 1), &current_user)) {
+                    stat0 = STATUS_MAIN;
+                    game_gui_show_main();
+                    setsav0;
+                }
+            break;
 
-    case STATUS_SHOW_TABLES:
-        stat0 = STATUS_SHOW_FIXTURES;
-        stat2 = week;
-        stat3 = week_round;
-        callback_show_fixtures(SHOW_CURRENT);
-        break;
-    case STATUS_SHOW_FIXTURES:
-        if(stat1 >= ID_CUP_START && cup_has_tables(stat1) == -1)
-            game_gui_print_message(_("Cup has no tables."));
-        else
-        {
-            stat0 = STATUS_SHOW_TABLES;
-            callback_show_tables(SHOW_CURRENT);   
-        }
-        break;
+        case STATUS_SHOW_TABLES:
+            stat0 = STATUS_SHOW_FIXTURES;
+            stat2 = week;
+            stat3 = week_round;
+            callback_show_fixtures(SHOW_CURRENT);
+            break;
+        case STATUS_SHOW_FIXTURES:
+            if (stat1 >= ID_CUP_START && cup_has_tables(stat1) == -1)
+                game_gui_print_message(_("Cup has no tables."));
+            else {
+                stat0 = STATUS_SHOW_TABLES;
+                callback_show_tables(SHOW_CURRENT);
+            }
+            break;
     }
-    
+
     gui_set_arrows();
 
     return TRUE;
 }
 
 G_MODULE_EXPORT gboolean
-on_player_list1_button_press_event     (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
-{
+on_player_list1_button_press_event(GtkWidget *widget,
+                                   GdkEventButton *event,
+                                   gpointer user_data) {
 #ifdef DEBUG
     printf("on_player_list1_button_press_event\n");
 #endif
 
     gint idx = -1;
 
-    if(event->button == 2)
-    {
-	on_menu_rearrange_team_activate(NULL, NULL);
-	return TRUE;
-    }
-    else if(stat0 == STATUS_LIVE_GAME_PAUSE && event->button == 3)
-    {
-	on_menu_reset_players_activate(NULL, NULL);
-	return TRUE;
+    if (event->button == 2) {
+        on_menu_rearrange_team_activate(NULL, NULL);
+        return TRUE;
+    } else if (stat0 == STATUS_LIVE_GAME_PAUSE && event->button == 3) {
+        on_menu_reset_players_activate(NULL, NULL);
+        return TRUE;
     }
 
-    if(treeview_helper_select_row(GTK_TREE_VIEW(widget), event))
-	idx = treeview_helper_get_index(GTK_TREE_VIEW(widget), 0);
+    if (treeview_helper_select_row(GTK_TREE_VIEW(widget), event))
+        idx = treeview_helper_get_index(GTK_TREE_VIEW(widget), 0);
 
-    if(idx < 0 || idx - 1 == selected_row)
-    {
-	selected_row = -1;
-	return FALSE;
+    if (idx < 0 || idx - 1 == selected_row) {
+        selected_row = -1;
+        return FALSE;
     }
- 
+
     callback_player_clicked(idx - 1, event);
 
     return FALSE;
@@ -528,25 +493,23 @@ on_player_list1_button_press_event     (GtkWidget       *widget,
 
 
 G_MODULE_EXPORT gboolean
-on_player_list1_key_press_event        (GtkWidget       *widget,
-                                        GdkEventKey     *event,
-                                        gpointer         user_data)
-{
+on_player_list1_key_press_event(GtkWidget *widget,
+                                GdkEventKey *event,
+                                gpointer user_data) {
 #ifdef DEBUG
     printf("on_player_list1_key_press_event\n");
 #endif
 
     gint idx = -1;
 
-    if(event->keyval != GDK_Return)
-	return FALSE;
+    if (event->keyval != GDK_Return)
+        return FALSE;
 
     idx = treeview_helper_get_index(GTK_TREE_VIEW(widget), 0);
 
-    if(idx < 0 || idx - 1 == selected_row)
-    {
-	selected_row = -1;
-	return FALSE;
+    if (idx < 0 || idx - 1 == selected_row) {
+        selected_row = -1;
+        return FALSE;
     }
 
     callback_player_activate(idx - 1);
@@ -559,34 +522,31 @@ on_player_list1_key_press_event        (GtkWidget       *widget,
 ***********************************************************************************************************/
 
 G_MODULE_EXPORT void
-on_menu_load_last_save_activate        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    Bygfoot *bygfoot = (Bygfoot*)user_data;
+on_menu_load_last_save_activate(GtkMenuItem *menuitem,
+                                gpointer user_data) {
+    Bygfoot *bygfoot = (Bygfoot *) user_data;
 #ifdef DEBUG
     printf("on_menu_load_last_save_activate\n");
 #endif
 
-    if(load_save_load_game(bygfoot, "last_save", FALSE))
-    {
-	cur_user = 0;
-	on_button_back_to_main_clicked(NULL, NULL);
-	setsav1;
+    if (load_save_load_game(bygfoot, "last_save", FALSE)) {
+        cur_user = 0;
+        on_button_back_to_main_clicked(NULL, NULL);
+        setsav1;
     }
 }
 
 G_MODULE_EXPORT void
-on_menu_new_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    Bygfoot *bygfoot = (Bygfoot*)user_data;
+on_menu_new_activate(GtkMenuItem *menuitem,
+                     gpointer user_data) {
+    Bygfoot *bygfoot = (Bygfoot *) user_data;
 #ifdef DEBUG
     printf("on_menu_new_activate\n");
 #endif
 
     window_destroy(&window.main);
     free_memory();
-    
+
     main_init(NULL, NULL, bygfoot);
     window_show_startup(user_data);
     stat0 = STATUS_TEAM_SELECTION;
@@ -595,10 +555,9 @@ on_menu_new_activate                   (GtkMenuItem     *menuitem,
 
 
 G_MODULE_EXPORT void
-on_menu_open_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    Bygfoot *bygfoot = (Bygfoot*)user_data;
+on_menu_open_activate(GtkMenuItem *menuitem,
+                      gpointer user_data) {
+    Bygfoot *bygfoot = (Bygfoot *) user_data;
 #ifdef DEBUG
     printf("on_menu_open_activate\n");
 #endif
@@ -609,27 +568,25 @@ on_menu_open_activate                  (GtkMenuItem     *menuitem,
 
 
 G_MODULE_EXPORT void
-on_menu_save_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    Bygfoot *bygfoot = (Bygfoot*)user_data;
+on_menu_save_activate(GtkMenuItem *menuitem,
+                      gpointer user_data) {
+    Bygfoot *bygfoot = (Bygfoot *) user_data;
 #ifdef DEBUG
     printf("on_menu_save_activate\n");
 #endif
 
-    if(!opt_int("int_opt_save_will_overwrite") ||
-       save_file == NULL)
-	on_menu_save_as_activate(NULL, user_data);
+    if (!opt_int("int_opt_save_will_overwrite") ||
+        save_file == NULL)
+        on_menu_save_as_activate(NULL, user_data);
     else
-	load_save_save_game(bygfoot, save_file);
+        load_save_save_game(bygfoot, save_file);
 }
 
 
 G_MODULE_EXPORT void
-on_menu_save_as_activate               (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    Bygfoot *bygfoot = (Bygfoot*)user_data;
+on_menu_save_as_activate(GtkMenuItem *menuitem,
+                         gpointer user_data) {
+    Bygfoot *bygfoot = (Bygfoot *) user_data;
 #ifdef DEBUG
     printf("on_menu_save_as_activate\n");
 #endif
@@ -639,19 +596,17 @@ on_menu_save_as_activate               (GtkMenuItem     *menuitem,
 }
 
 G_MODULE_EXPORT void
-on_menu_quit_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_quit_activate(GtkMenuItem *menuitem,
+                      gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_quit_activate\n");
 #endif
 
-    if(!getsav || !opt_int("int_opt_confirm_quit"))
-	main_exit_program(EXIT_OK, NULL);
-    else
-    {
-	stat1 = STATUS_QUERY_QUIT;
-	window_show_yesno(_("The current game state is unsaved and will be lost. Continue?"));
+    if (!getsav || !opt_int("int_opt_confirm_quit"))
+        main_exit_program(EXIT_OK, NULL);
+    else {
+        stat1 = STATUS_QUERY_QUIT;
+        window_show_yesno(_("The current game state is unsaved and will be lost. Continue?"));
     }
 }
 
@@ -661,9 +616,8 @@ on_menu_quit_activate                  (GtkMenuItem     *menuitem,
 ***********************************************************************************************************/
 
 G_MODULE_EXPORT void
-on_menu_save_window_geometry_activate  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_save_window_geometry_activate(GtkMenuItem *menuitem,
+                                      gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_save_window_geometry_activate\n");
 #endif
@@ -672,10 +626,9 @@ on_menu_save_window_geometry_activate  (GtkMenuItem     *menuitem,
 }
 
 G_MODULE_EXPORT gboolean
-on_menu_check_button_press_event       (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
-{
+on_menu_check_button_press_event(GtkWidget *widget,
+                                 GdkEventButton *event,
+                                 gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_check_button_press_event\n");
 #endif
@@ -683,14 +636,13 @@ on_menu_check_button_press_event       (GtkWidget       *widget,
     game_gui_read_check_items(widget);
 
     setsav0;
-	
+
     return FALSE;
 }
 
 G_MODULE_EXPORT void
-on_menu_preferences_activate           (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_preferences_activate(GtkMenuItem *menuitem,
+                             gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_preferences_activate\n");
 #endif
@@ -703,15 +655,14 @@ on_menu_preferences_activate           (GtkMenuItem     *menuitem,
 ***********************************************************************************************************/
 
 G_MODULE_EXPORT void
-on_menu_fixtures_activate              (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_fixtures_activate(GtkMenuItem *menuitem,
+                          gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_fixtures_activate\n");
 #endif
 
     game_gui_print_message(
-        _("Left click to show table."));
+            _("Left click to show table."));
 
     stat0 = STATUS_SHOW_FIXTURES;
     callback_show_fixtures(SHOW_TEAM);
@@ -720,9 +671,8 @@ on_menu_fixtures_activate              (GtkMenuItem     *menuitem,
 }
 
 G_MODULE_EXPORT void
-on_menu_fixtures_week_activate         (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_fixtures_week_activate(GtkMenuItem *menuitem,
+                               gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_fixtures_week_activate\n");
 #endif
@@ -735,23 +685,21 @@ on_menu_fixtures_week_activate         (GtkMenuItem     *menuitem,
 
 
 G_MODULE_EXPORT void
-on_menu_tables_activate                (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_tables_activate(GtkMenuItem *menuitem,
+                        gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_tables_activate\n");
 #endif
 
     /* No tables in this country? */
-    if(!query_tables_in_country())
-    {
-	game_gui_print_message(
-	    _("There are no leagues or cups with tables in this country definition."));
-	return;
+    if (!query_tables_in_country()) {
+        game_gui_print_message(
+                _("There are no leagues or cups with tables in this country definition."));
+        return;
     }
 
     game_gui_print_message(
-        _("Left click to show fixtures."));
+            _("Left click to show fixtures."));
 
     stat0 = STATUS_SHOW_TABLES;
     stat1 = team_get_table_clid(current_user.tm);
@@ -762,18 +710,16 @@ on_menu_tables_activate                (GtkMenuItem     *menuitem,
 
 
 G_MODULE_EXPORT void
-on_menu_league_stats_activate          (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_league_stats_activate(GtkMenuItem *menuitem,
+                              gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_league_stats_activate\n");
 #endif
 
-    if(!query_leagues_active_in_country())
-    {
-	game_gui_print_message(
-	    _("There are no leagues in this country definition (only cups)."));
-	return;	
+    if (!query_leagues_active_in_country()) {
+        game_gui_print_message(
+                _("There are no leagues in this country definition (only cups)."));
+        return;
     }
 
     stat0 = STATUS_SHOW_LEAGUE_STATS;
@@ -784,18 +730,16 @@ on_menu_league_stats_activate          (GtkMenuItem     *menuitem,
 
 
 G_MODULE_EXPORT void
-on_menu_season_history_activate        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_season_history_activate(GtkMenuItem *menuitem,
+                                gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_season_history_activate\n");
 #endif
 
-    if(season_stats->len == 0)
-    {
-	game_gui_print_message(
-	    _("There are no season history elements stored yet."));
-	return;
+    if (season_stats->len == 0) {
+        game_gui_print_message(
+                _("There are no season history elements stored yet."));
+        return;
     }
 
     stat0 = STATUS_SHOW_SEASON_HISTORY;
@@ -810,18 +754,16 @@ on_menu_season_history_activate        (GtkMenuItem     *menuitem,
 ***********************************************************************************************************/
 
 G_MODULE_EXPORT void
-on_menu_show_youth_academy_activate    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_show_youth_academy_activate(GtkMenuItem *menuitem,
+                                    gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_show_youth_academy_activate\n");
 #endif
 
-    if(sett_int("int_opt_disable_ya"))
-    {
-	game_gui_print_message(
-	    _("Youth academy is disabled in this country definition."));
-	return;
+    if (sett_int("int_opt_disable_ya")) {
+        game_gui_print_message(
+                _("Youth academy is disabled in this country definition."));
+        return;
     }
 
     callback_show_youth_academy();
@@ -829,30 +771,27 @@ on_menu_show_youth_academy_activate    (GtkMenuItem     *menuitem,
 }
 
 G_MODULE_EXPORT void
-on_menu_set_investment_activate        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_set_investment_activate(GtkMenuItem *menuitem,
+                                gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_set_investment_activate\n");
 #endif
 
-    if(sett_int("int_opt_disable_ya"))
-    {
-	game_gui_print_message(
-	    _("Youth academy is disabled in this country definition."));
-	return;
+    if (sett_int("int_opt_disable_ya")) {
+        game_gui_print_message(
+                _("Youth academy is disabled in this country definition."));
+        return;
     }
 
     stat1 = STATUS_SET_YA_PERCENTAGE;
     window_show_digits(
-	_("Set the percentage of your income you want to devote to your youth academy."),
-	NULL, -1, "%", current_user.youth_academy.percentage, FALSE);
+            _("Set the percentage of your income you want to devote to your youth academy."),
+            NULL, -1, "%", current_user.youth_academy.percentage, FALSE);
 }
 
 G_MODULE_EXPORT void
-on_menu_show_job_exchange_activate     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_show_job_exchange_activate(GtkMenuItem *menuitem,
+                                   gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_show_job_exchange_activate\n");
 #endif
@@ -864,43 +803,39 @@ on_menu_show_job_exchange_activate     (GtkMenuItem     *menuitem,
     treeview2_show_job_exchange();
 
     game_gui_print_message(
-	_("Right click to apply for job at once, left click to see team info."));
+            _("Right click to apply for job at once, left click to see team info."));
     game_gui_print_message_with_delay(
-	_("The job exchange update interval is %d weeks."),
-	const_int("int_job_update_interval"));
+            _("The job exchange update interval is %d weeks."),
+            const_int("int_job_update_interval"));
 }
 
 G_MODULE_EXPORT void
-on_default_team1_activate              (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_default_team1_activate(GtkMenuItem *menuitem,
+                          gpointer user_data) {
 
 }
 
 
 G_MODULE_EXPORT void
-on_default_team_store_activate         (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_default_team_store_activate(GtkMenuItem *menuitem,
+                               gpointer user_data) {
 #ifdef DEBUG
     printf("on_default_team_store_activate\n");
 #endif
-store_default_team(&current_user);
+    store_default_team(&current_user);
 }
 
 
 G_MODULE_EXPORT void
-on_default_team_restore_activate       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_default_team_restore_activate(GtkMenuItem *menuitem,
+                                 gpointer user_data) {
 #ifdef DEBUG
     printf("on_default_team_restore_activate\n");
 #endif
-    if (current_user.default_team->len==0)
-    {
-	game_gui_print_message(
-	    _("There is no default team stored yet."));
-	return;
+    if (current_user.default_team->len == 0) {
+        game_gui_print_message(
+                _("There is no default team stored yet."));
+        return;
     }
     restore_default_team(&current_user);
     // reload the treeview
@@ -908,41 +843,36 @@ on_default_team_restore_activate       (GtkMenuItem     *menuitem,
 }
 
 G_MODULE_EXPORT void
-on_training_camp_activate              (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_training_camp_activate(GtkMenuItem *menuitem,
+                          gpointer user_data) {
 #ifdef DEBUG
     printf("on_training_camp_activate\n");
 #endif
 
-   if(sett_int("int_opt_disable_training_camp"))
-    {
-	game_gui_print_message(
-	    _("Training camp is disabled in this country definition."));
-	return;
+    if (sett_int("int_opt_disable_training_camp")) {
+        game_gui_print_message(
+                _("Training camp is disabled in this country definition."));
+        return;
     }
 
-   if(current_user.counters[COUNT_USER_TRAININGS_WEEK] == 
-      const_int("int_training_camps_week"))
-   {
-       game_gui_print_message(_("Your team has already had enough training camps this week."));
-       return;
-   }
+    if (current_user.counters[COUNT_USER_TRAININGS_WEEK] ==
+        const_int("int_training_camps_week")) {
+        game_gui_print_message(_("Your team has already had enough training camps this week."));
+        return;
+    }
 
-   if(current_user.counters[COUNT_USER_TRAININGS_LEFT_SEASON] == 0)
-   {
-       game_gui_print_message(_("You've reached the limit of %d training camps for the season."),
-			      const_int("int_training_camps_per_season"));
-       return;
-   }
+    if (current_user.counters[COUNT_USER_TRAININGS_LEFT_SEASON] == 0) {
+        game_gui_print_message(_("You've reached the limit of %d training camps for the season."),
+                               const_int("int_training_camps_per_season"));
+        return;
+    }
 
-   window_show_training_camp();
+    window_show_training_camp();
 }
 
 G_MODULE_EXPORT void
-on_menu_rearrange_team_activate        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_rearrange_team_activate(GtkMenuItem *menuitem,
+                                gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_rearrange_team_activate\n");
 #endif
@@ -952,10 +882,9 @@ on_menu_rearrange_team_activate        (GtkMenuItem     *menuitem,
 }
 
 G_MODULE_EXPORT gboolean
-on_menu_team_button_release_event        (GtkWidget       *widget,
-					  GdkEventButton  *event,
-					  gpointer         user_data)
-{
+on_menu_team_button_release_event(GtkWidget *widget,
+                                  GdkEventButton *event,
+                                  gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_team_button_release_event\n");
 #endif
@@ -967,28 +896,26 @@ on_menu_team_button_release_event        (GtkWidget       *widget,
 }
 
 G_MODULE_EXPORT void
-on_menu_custom_structure_activate      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_custom_structure_activate(GtkMenuItem *menuitem,
+                                  gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_custom_structure_activate\n");
 #endif
 
     stat1 = STATUS_CUSTOM_STRUCTURE;
     window_show_digits(_("Enter a structure. The digits must sum up to 10."),
-		       NULL, -1, _("Structure"), current_user.tm->structure, FALSE);
+                       NULL, -1, _("Structure"), current_user.tm->structure, FALSE);
 }
 
 G_MODULE_EXPORT void
-on_menu_browse_teams_activate          (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_browse_teams_activate(GtkMenuItem *menuitem,
+                              gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_browse_teams_activate\n");
 #endif
 
     GtkWidget *treeview_right =
-	lookup_widget(window.main, "treeview_right");
+            lookup_widget(window.main, "treeview_right");
 
     treeview_show_team_list(GTK_TREE_VIEW(treeview_right), TRUE, TRUE);
 
@@ -1002,25 +929,23 @@ on_menu_browse_teams_activate          (GtkMenuItem     *menuitem,
 ***********************************************************************************************************/
 
 G_MODULE_EXPORT void
-on_menu_edit_name_activate             (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_edit_name_activate(GtkMenuItem *menuitem,
+                           gpointer user_data) {
     GtkTreeViewColumn *col;
     GtkNotebook *notebook;
     GtkTreeView *player_list;
     GtkTreePath *tpath;
 
-    if(selected_row == -1)
-    {
-	game_gui_print_message(_("You haven't selected a player."));
-	return;
+    if (selected_row == -1) {
+        game_gui_print_message(_("You haven't selected a player."));
+        return;
     }
 
     notebook = GTK_NOTEBOOK(lookup_widget(window.main, "notebook_player"));
-    if(gtk_notebook_get_current_page(notebook) != 1)
+    if (gtk_notebook_get_current_page(notebook) != 1)
         gtk_notebook_set_current_page(notebook, 1);
 
-    if(selected_row < 11)
+    if (selected_row < 11)
         tpath = gtk_tree_path_new_from_indices(selected_row, -1);
     else
         tpath = gtk_tree_path_new_from_indices(selected_row + 1, -1);
@@ -1034,9 +959,8 @@ on_menu_edit_name_activate             (GtkMenuItem     *menuitem,
 }
 
 G_MODULE_EXPORT void
-on_menu_browse_players_activate        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_browse_players_activate(GtkMenuItem *menuitem,
+                                gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_browse_players_activate\n");
 #endif
@@ -1048,23 +972,20 @@ on_menu_browse_players_activate        (GtkMenuItem     *menuitem,
 }
 
 G_MODULE_EXPORT void
-on_menu_offer_new_contract_activate    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_offer_new_contract_activate(GtkMenuItem *menuitem,
+                                    gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_offer_new_contract_activate\n");
 #endif
 
-    if(sett_int("int_opt_disable_contracts"))
-    {
-	game_gui_print_message(_("Contracts are disabled in this country definition."));
-	return;
+    if (sett_int("int_opt_disable_contracts")) {
+        game_gui_print_message(_("Contracts are disabled in this country definition."));
+        return;
     }
 
-    if(selected_row == -1)
-    {
-	game_gui_print_message(_("You haven't selected a player."));
-	return;
+    if (selected_row == -1) {
+        game_gui_print_message(_("You haven't selected a player."));
+        return;
     }
 
     callback_offer_new_contract(selected_row);
@@ -1074,156 +995,140 @@ on_menu_offer_new_contract_activate    (GtkMenuItem     *menuitem,
 
 
 G_MODULE_EXPORT void
-on_menu_show_info_activate      (GtkMenuItem     *menuitem,
-				 gpointer         user_data)
-{
+on_menu_show_info_activate(GtkMenuItem *menuitem,
+                           gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_show_info_activate\n");
 #endif
 
-    if(selected_row == -1)
-    {
-	game_gui_print_message(_("You haven't selected a player."));
-	return;
-    }    
+    if (selected_row == -1) {
+        game_gui_print_message(_("You haven't selected a player."));
+        return;
+    }
 
-    if(stat0 != STATUS_LIVE_GAME_PAUSE)
-	stat0 = STATUS_SHOW_PLAYER_INFO;
+    if (stat0 != STATUS_LIVE_GAME_PAUSE)
+        stat0 = STATUS_SHOW_PLAYER_INFO;
     treeview_show_player_info(player_of_idx_team(current_user.tm, selected_row));
 
     gui_set_arrows();
 }
 
 G_MODULE_EXPORT void
-on_menu_put_on_transfer_list_activate  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_put_on_transfer_list_activate(GtkMenuItem *menuitem,
+                                      gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_put_on_transfer_list_activate\n");
 #endif
 
-    if(sett_int("int_opt_disable_transfers"))
-	game_gui_print_message(_("Transfers are disabled in this country definition."));
-    else if(selected_row == -1)
-	game_gui_print_message(_("You haven't selected a player."));
-    else if(query_transfer_player_is_on_list(player_of_idx_team(current_user.tm, selected_row)))
-	game_gui_print_message(_("The player is already on the list."));
-    else
-    {
-	setsav0;
-	transfer_add_remove_user_player(player_of_idx_team(current_user.tm, selected_row));
+    if (sett_int("int_opt_disable_transfers"))
+        game_gui_print_message(_("Transfers are disabled in this country definition."));
+    else if (selected_row == -1)
+        game_gui_print_message(_("You haven't selected a player."));
+    else if (query_transfer_player_is_on_list(player_of_idx_team(current_user.tm, selected_row)))
+        game_gui_print_message(_("The player is already on the list."));
+    else {
+        setsav0;
+        transfer_add_remove_user_player(player_of_idx_team(current_user.tm, selected_row));
     }
 }
 
 
 G_MODULE_EXPORT void
-on_menu_remove_from_transfer_list_activate (GtkMenuItem     *menuitem,
-					    gpointer         user_data)
-{
+on_menu_remove_from_transfer_list_activate(GtkMenuItem *menuitem,
+                                           gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_remove_from_transfer_list_activate\n");
 #endif
 
-    if(selected_row == -1)
-	game_gui_print_message(_("You haven't selected a player."));
-    else if(!query_transfer_player_is_on_list(player_of_idx_team(current_user.tm, selected_row)))
-	game_gui_print_message(_("The player is not on the list."));
-    else
-    {
-	setsav0;
-	transfer_add_remove_user_player(player_of_idx_team(current_user.tm, selected_row));
+    if (selected_row == -1)
+        game_gui_print_message(_("You haven't selected a player."));
+    else if (!query_transfer_player_is_on_list(player_of_idx_team(current_user.tm, selected_row)))
+        game_gui_print_message(_("The player is not on the list."));
+    else {
+        setsav0;
+        transfer_add_remove_user_player(player_of_idx_team(current_user.tm, selected_row));
     }
 }
 
 
 G_MODULE_EXPORT void
-on_menu_fire_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_fire_activate(GtkMenuItem *menuitem,
+                      gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_fire_activate\n");
 #endif
 
-    if(selected_row == -1)
-	game_gui_print_message(_("You haven't selected a player."));
-    else if(current_user.tm->players->len == 11)
-	game_gui_show_warning(_("Your team can't have less than 11 players."));
-    else
-    {
-	callback_fire_player(selected_row);
-	selected_row = -1;
+    if (selected_row == -1)
+        game_gui_print_message(_("You haven't selected a player."));
+    else if (current_user.tm->players->len == 11)
+        game_gui_show_warning(_("Your team can't have less than 11 players."));
+    else {
+        callback_fire_player(selected_row);
+        selected_row = -1;
     }
 }
 
 
 G_MODULE_EXPORT void
-on_menu_shoots_penalties_activate      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_shoots_penalties_activate(GtkMenuItem *menuitem,
+                                  gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_shoots_penalties_activate\n");
 #endif
 
-    if(selected_row == -1)
-	game_gui_print_message(_("You haven't selected a player."));
-    else if(player_of_idx_team(current_user.tm, selected_row)->id ==
-	    opt_user_int("int_opt_user_penalty_shooter"))
-    {
-	opt_user_set_int("int_opt_user_penalty_shooter", -1);
-	game_gui_print_message(_("Penalty/free kick shooter deselected."));
-	treeview_show_user_player_list();
-	setsav0;
-    }
-    else
-    {
-	game_gui_print_message(_("%s will shoot penalties and free kicks when he plays."),
-			       player_of_idx_team(current_user.tm, selected_row)->name);
-	opt_user_set_int("int_opt_user_penalty_shooter",
-			 player_of_idx_team(current_user.tm, selected_row)->id);
-	treeview_show_user_player_list();
-	setsav0;
+    if (selected_row == -1)
+        game_gui_print_message(_("You haven't selected a player."));
+    else if (player_of_idx_team(current_user.tm, selected_row)->id ==
+             opt_user_int("int_opt_user_penalty_shooter")) {
+        opt_user_set_int("int_opt_user_penalty_shooter", -1);
+        game_gui_print_message(_("Penalty/free kick shooter deselected."));
+        treeview_show_user_player_list();
+        setsav0;
+    } else {
+        game_gui_print_message(_("%s will shoot penalties and free kicks when he plays."),
+                               player_of_idx_team(current_user.tm, selected_row)->name);
+        opt_user_set_int("int_opt_user_penalty_shooter",
+                         player_of_idx_team(current_user.tm, selected_row)->id);
+        treeview_show_user_player_list();
+        setsav0;
     }
 }
 
 
 G_MODULE_EXPORT void
-on_menu_move_to_youth_academy_activate (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_move_to_youth_academy_activate(GtkMenuItem *menuitem,
+                                       gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_move_to_youth_academy_activate\n");
 #endif
 
     Player *pl;
 
-    if(sett_int("int_opt_disable_ya"))
-    {
-	game_gui_print_message(
-	    _("Youth academy is disabled in this country definition."));
-	return;
+    if (sett_int("int_opt_disable_ya")) {
+        game_gui_print_message(
+                _("Youth academy is disabled in this country definition."));
+        return;
     }
 
-    if(selected_row == -1)
-	game_gui_print_message(_("You haven't selected a player."));
-    else
-    {
-	pl = player_of_idx_team(current_user.tm, selected_row);
+    if (selected_row == -1)
+        game_gui_print_message(_("You haven't selected a player."));
+    else {
+        pl = player_of_idx_team(current_user.tm, selected_row);
 
-	if(pl->age > const_float("float_player_age_lower"))
-	    game_gui_print_message(_("The player is too old for the youth academy."));
-	else if(current_user.tm->players->len <= 11)
-	    game_gui_print_message(
-		_("You can't move the player, there are too few players in your team."));
-	else if(current_user.youth_academy.players->len ==
-		const_int("int_youth_academy_max_youths"))
-	    game_gui_print_message(_("There is no room in your youth academy."));
-	else
-	{
-	    player_move_to_ya(selected_row);
-	    treeview_show_user_player_list();
-	    on_menu_show_youth_academy_activate(NULL, NULL);
-	    selected_row = -1;
-	}
+        if (pl->age > const_float("float_player_age_lower"))
+            game_gui_print_message(_("The player is too old for the youth academy."));
+        else if (current_user.tm->players->len <= 11)
+            game_gui_print_message(
+                    _("You can't move the player, there are too few players in your team."));
+        else if (current_user.youth_academy.players->len ==
+                 const_int("int_youth_academy_max_youths"))
+            game_gui_print_message(_("There is no room in your youth academy."));
+        else {
+            player_move_to_ya(selected_row);
+            treeview_show_user_player_list();
+            on_menu_show_youth_academy_activate(NULL, NULL);
+            selected_row = -1;
+        }
     }
 }
 
@@ -1234,16 +1139,14 @@ on_menu_move_to_youth_academy_activate (GtkMenuItem     *menuitem,
 
 
 G_MODULE_EXPORT void
-on_player_menu_edit_name_activate      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_player_menu_edit_name_activate(GtkMenuItem *menuitem,
+                                  gpointer user_data) {
     on_menu_edit_name_activate(NULL, NULL);
 }
 
 G_MODULE_EXPORT void
-on_player_menu_show_info_activate      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_player_menu_show_info_activate(GtkMenuItem *menuitem,
+                                  gpointer user_data) {
 #ifdef DEBUG
     printf("on_player_menu_show_info_activate\n");
 #endif
@@ -1253,9 +1156,8 @@ on_player_menu_show_info_activate      (GtkMenuItem     *menuitem,
 
 G_MODULE_EXPORT void
 on_player_menu_put_on_transfer_list_activate
-                                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+        (GtkMenuItem *menuitem,
+         gpointer user_data) {
 #ifdef DEBUG
     printf("on_player_menu_put_on_transfer_list_activate\n");
 #endif
@@ -1266,9 +1168,8 @@ on_player_menu_put_on_transfer_list_activate
 
 G_MODULE_EXPORT void
 on_player_menu_remove_from_transfer_list_activate
-                                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+        (GtkMenuItem *menuitem,
+         gpointer user_data) {
 #ifdef DEBUG
     printf("on_player_menu_remove_from_transfer_list_activate\n");
 #endif
@@ -1279,9 +1180,8 @@ on_player_menu_remove_from_transfer_list_activate
 
 G_MODULE_EXPORT void
 on_player_menu_offer_new_contract_activate
-                                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+        (GtkMenuItem *menuitem,
+         gpointer user_data) {
 #ifdef DEBUG
     printf("on_player_menu_offer_new_contract_activate\n");
 #endif
@@ -1291,9 +1191,8 @@ on_player_menu_offer_new_contract_activate
 
 
 G_MODULE_EXPORT void
-on_player_menu_fire_activate           (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_player_menu_fire_activate(GtkMenuItem *menuitem,
+                             gpointer user_data) {
 #ifdef DEBUG
     printf("on_player_menu_fire_activate\n");
 #endif
@@ -1304,9 +1203,8 @@ on_player_menu_fire_activate           (GtkMenuItem     *menuitem,
 
 G_MODULE_EXPORT void
 on_player_menu_shoots_penalties_activate
-                                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+        (GtkMenuItem *menuitem,
+         gpointer user_data) {
 #ifdef DEBUG
     printf("on_player_menu_shoots_penalties_activate\n");
 #endif
@@ -1316,9 +1214,8 @@ on_player_menu_shoots_penalties_activate
 
 G_MODULE_EXPORT void
 on_player_menu_move_to_youth_academy_activate
-                                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+        (GtkMenuItem *menuitem,
+         gpointer user_data) {
 #ifdef DEBUG
     printf("on_player_menu_move_to_youth_academy_activate\n");
 #endif
@@ -1331,53 +1228,46 @@ on_player_menu_move_to_youth_academy_activate
 ***********************************************************************************************************/
 
 G_MODULE_EXPORT void
-on_menu_youth_move_to_team_activate    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_youth_move_to_team_activate(GtkMenuItem *menuitem,
+                                    gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_youth_move_to_team_activate\n");
 #endif
 
-    if(sett_int("int_opt_disable_ya"))
-    {
-	game_gui_print_message(
-	    _("Youth academy is disabled in this country definition."));
-	return;
+    if (sett_int("int_opt_disable_ya")) {
+        game_gui_print_message(
+                _("Youth academy is disabled in this country definition."));
+        return;
     }
 
-    if(current_user.tm->players->len == const_int("int_team_max_players"))
-	game_gui_print_message(_("You can't have more than %d players in the team."),
-			       const_int("int_team_max_players"));
-    else
-    {
-	player_move_from_ya(selected_row);
-	treeview_show_user_player_list();
-	on_menu_show_youth_academy_activate(NULL, NULL);
-	selected_row = -1;
+    if (current_user.tm->players->len == const_int("int_team_max_players"))
+        game_gui_print_message(_("You can't have more than %d players in the team."),
+                               const_int("int_team_max_players"));
+    else {
+        player_move_from_ya(selected_row);
+        treeview_show_user_player_list();
+        on_menu_show_youth_academy_activate(NULL, NULL);
+        selected_row = -1;
     }
 }
 
 
 G_MODULE_EXPORT void
 on_menu_youth_kick_out_of_academy_activate
-                                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+        (GtkMenuItem *menuitem,
+         gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_youth_kick_out_of_academy_activate\n");
 #endif
 
-    if(opt_user_int("int_opt_user_confirm_youth"))
-    {
-	stat1 = STATUS_QUERY_KICK_YOUTH;
-	window_show_yesno(_("Do you really want to kick the poor boy out of your academy?"));
-    }
-    else
-    {
-	free_player(&g_array_index(current_user.youth_academy.players, Player, selected_row));
-	g_array_remove_index(current_user.youth_academy.players, selected_row);
-	on_menu_show_youth_academy_activate(NULL, NULL);
-	selected_row = -1;
+    if (opt_user_int("int_opt_user_confirm_youth")) {
+        stat1 = STATUS_QUERY_KICK_YOUTH;
+        window_show_yesno(_("Do you really want to kick the poor boy out of your academy?"));
+    } else {
+        free_player(&g_array_index(current_user.youth_academy.players, Player, selected_row));
+        g_array_remove_index(current_user.youth_academy.players, selected_row);
+        on_menu_show_youth_academy_activate(NULL, NULL);
+        selected_row = -1;
     }
 }
 
@@ -1386,17 +1276,15 @@ on_menu_youth_kick_out_of_academy_activate
 ***********************************************************************************************************/
 
 G_MODULE_EXPORT void
-on_menu_next_user_activate             (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_next_user_activate(GtkMenuItem *menuitem,
+                           gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_next_user_activate\n");
 #endif
 
-    if(transfer_offers_pending())
-    {
-	game_gui_show_warning(_("You still have some transfer business to manage."));
-	return;
+    if (transfer_offers_pending()) {
+        game_gui_show_warning(_("You still have some transfer business to manage."));
+        return;
     }
 
     cur_user = (cur_user + 1) % users->len;
@@ -1407,17 +1295,15 @@ on_menu_next_user_activate             (GtkMenuItem     *menuitem,
 
 
 G_MODULE_EXPORT void
-on_menu_previous_user_activate         (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_previous_user_activate(GtkMenuItem *menuitem,
+                               gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_previous_user_activate\n");
 #endif
 
-    if(transfer_offers_pending())
-    {
-	game_gui_show_warning(_("You still have some transfer business to manage."));
-	return;
+    if (transfer_offers_pending()) {
+        game_gui_show_warning(_("You still have some transfer business to manage."));
+        return;
     }
 
     cur_user = (cur_user == 0) ? users->len - 1 : cur_user - 1;
@@ -1427,9 +1313,8 @@ on_menu_previous_user_activate         (GtkMenuItem     *menuitem,
 }
 
 G_MODULE_EXPORT void
-on_menu_manage_users_activate          (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_manage_users_activate(GtkMenuItem *menuitem,
+                              gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_manage_users_activate\n");
 #endif
@@ -1438,23 +1323,21 @@ on_menu_manage_users_activate          (GtkMenuItem     *menuitem,
     window_create(WINDOW_USER_MANAGEMENT);
     treeview_show_users(GTK_TREE_VIEW(lookup_widget(window.user_management, "treeview_user_management_users")));
     treeview_show_team_list(GTK_TREE_VIEW(lookup_widget(window.user_management, "treeview_user_management_teams")),
-			    FALSE, FALSE);
+                            FALSE, FALSE);
 }
 
 
 G_MODULE_EXPORT void
-on_menu_user_show_last_match_activate  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    Bygfoot *bygfoot = (Bygfoot*)user_data;
+on_menu_user_show_last_match_activate(GtkMenuItem *menuitem,
+                                      gpointer user_data) {
+    Bygfoot *bygfoot = (Bygfoot *) user_data;
 #ifdef DEBUG
     printf("on_menu_user_show_last_match_activate\n");
 #endif
 
-    if(current_user.live_game.units->len == 0)
-    {
-	game_gui_show_warning(_("No match stored."));
-	return;
+    if (current_user.live_game.units->len == 0) {
+        game_gui_show_warning(_("No match stored."));
+        return;
     }
 
     stat1 = STATUS_SHOW_LAST_MATCH;
@@ -1464,17 +1347,15 @@ on_menu_user_show_last_match_activate  (GtkMenuItem     *menuitem,
 
 
 G_MODULE_EXPORT void
-on_menu_user_show_last_stats_activate  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_user_show_last_stats_activate(GtkMenuItem *menuitem,
+                                      gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_user_show_last_stats_activate\n");
 #endif
 
-    if(current_user.live_game.units->len == 0)
-    {
-	game_gui_show_warning(_("No match stored."));
-	return;
+    if (current_user.live_game.units->len == 0) {
+        game_gui_show_warning(_("No match stored."));
+        return;
     }
 
     stat0 = STATUS_SHOW_LAST_MATCH_STATS;
@@ -1486,9 +1367,8 @@ on_menu_user_show_last_stats_activate  (GtkMenuItem     *menuitem,
 
 G_MODULE_EXPORT void
 on_menu_user_show_coming_matches_activate
-                                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+        (GtkMenuItem *menuitem,
+         gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_user_show_coming_matches_activate\n");
 #endif
@@ -1505,9 +1385,8 @@ on_menu_user_show_coming_matches_activate
 
 
 G_MODULE_EXPORT void
-on_menu_betting_activate               (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_betting_activate(GtkMenuItem *menuitem,
+                         gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_betting_activate\n");
 #endif
@@ -1517,69 +1396,60 @@ on_menu_betting_activate               (GtkMenuItem     *menuitem,
 }
 
 G_MODULE_EXPORT void
-on_automatic_loan_repayment_activate   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_automatic_loan_repayment_activate(GtkMenuItem *menuitem,
+                                     gpointer user_data) {
 #ifdef DEBUG
     printf("on_automatic_loan_repayment_activate\n");
 #endif
 
-    if(sett_int("int_opt_disable_finances"))
-    {
-	game_gui_print_message(_("Finances are disabled in this country definition."));
-	return;
-    }
-
-    if(current_user.debt == 0)
-    {
-        game_gui_print_message(_("You are not in debt."));
+    if (sett_int("int_opt_disable_finances")) {
+        game_gui_print_message(_("Finances are disabled in this country definition."));
         return;
     }
-    else if(week >= fixture_get_last_scheduled_week() - 1)
-    {
+
+    if (current_user.debt == 0) {
+        game_gui_print_message(_("You are not in debt."));
+        return;
+    } else if (week >= fixture_get_last_scheduled_week() - 1) {
         game_gui_print_message(_("It's too late in the season for automatic loan repayment."));
-        return;            
+        return;
     }
-    
+
     window_show_alr();
 }
 
 G_MODULE_EXPORT void
-on_menu_show_finances_activate         (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_show_finances_activate(GtkMenuItem *menuitem,
+                               gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_show_finances_activate\n");
 #endif
 
-    if(sett_int("int_opt_disable_finances"))
-    {
-	game_gui_print_message(_("Finances are disabled in this country definition."));
-	return;
+    if (sett_int("int_opt_disable_finances")) {
+        game_gui_print_message(_("Finances are disabled in this country definition."));
+        return;
     }
 
     stat0 = STATUS_SHOW_FINANCES;
     game_gui_print_message(_("Left-click: get loan; Right-click: pay back; Middle click: stadium window."));
     treeview_show_finances(GTK_TREE_VIEW(lookup_widget(window.main, "treeview_right")),
-			   &current_user);
+                           &current_user);
 
     gui_set_arrows();
 }
 
 
 G_MODULE_EXPORT void
-on_menu_show_stadium_activate          (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_show_stadium_activate(GtkMenuItem *menuitem,
+                              gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_show_stadium_activate\n");
 #endif
 
-    if(sett_int("int_opt_disable_stadium"))
-    {
-	game_gui_print_message(
-	    _("Stadium management is disabled in this country definition."));
-	return;
+    if (sett_int("int_opt_disable_stadium")) {
+        game_gui_print_message(
+                _("Stadium management is disabled in this country definition."));
+        return;
     }
 
     window_show_stadium();
@@ -1590,9 +1460,8 @@ on_menu_show_stadium_activate          (GtkMenuItem     *menuitem,
 ***********************************************************************************************************/
 
 G_MODULE_EXPORT void
-on_menu_user_show_history_activate     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_user_show_history_activate(GtkMenuItem *menuitem,
+                                   gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_user_show_history_activate\n");
 #endif
@@ -1604,62 +1473,53 @@ on_menu_user_show_history_activate     (GtkMenuItem     *menuitem,
 }
 
 G_MODULE_EXPORT void
-on_mm_add_last_match_activate          (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    Bygfoot *bygfoot = (Bygfoot*)user_data;
+on_mm_add_last_match_activate(GtkMenuItem *menuitem,
+                              gpointer user_data) {
+    Bygfoot *bygfoot = (Bygfoot *) user_data;
 #ifdef DEBUG
     printf("on_mm_add_last_match_activate\n");
 #endif
 
-    if(current_user.live_game.units->len == 0)
-    {
-	game_gui_show_warning(_("No match stored."));
-	return;
+    if (current_user.live_game.units->len == 0) {
+        game_gui_show_warning(_("No match stored."));
+        return;
     }
 
-    if(current_user.mmatches_file == NULL)
-    {
-	stat5 = STATUS_SELECT_MM_FILE_ADD;
-	window_show_file_sel(bygfoot);
-    }
-    else
-	user_mm_add_last_match(FALSE, TRUE);
+    if (current_user.mmatches_file == NULL) {
+        stat5 = STATUS_SELECT_MM_FILE_ADD;
+        window_show_file_sel(bygfoot);
+    } else
+        user_mm_add_last_match(FALSE, TRUE);
 }
 
 
 G_MODULE_EXPORT void
-on_mm_manage_matches_activate          (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    Bygfoot *bygfoot = (Bygfoot*)user_data;
+on_mm_manage_matches_activate(GtkMenuItem *menuitem,
+                              gpointer user_data) {
+    Bygfoot *bygfoot = (Bygfoot *) user_data;
 #ifdef DEBUG
     printf("on_mm_manage_matches_activate\n");
 #endif
 
-    if(current_user.mmatches_file == NULL)
-    {
-	stat5 = STATUS_SELECT_MM_FILE_LOAD;
-	window_show_file_sel(bygfoot);
-    }
-    else
-	window_show_mmatches(bygfoot);
+    if (current_user.mmatches_file == NULL) {
+        stat5 = STATUS_SELECT_MM_FILE_LOAD;
+        window_show_file_sel(bygfoot);
+    } else
+        window_show_mmatches(bygfoot);
 }
 
 
 G_MODULE_EXPORT void
-on_menu_news_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_news_activate(GtkMenuItem *menuitem,
+                      gpointer user_data) {
     window_create(WINDOW_NEWS);
     treeview2_show_news();
     counters[COUNT_NEWS_SHOWN] = 1;
 }
 
 G_MODULE_EXPORT void
-on_menu_my_league_results_activate     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_my_league_results_activate(GtkMenuItem *menuitem,
+                                   gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_my_league_results_activate\n");
 #endif
@@ -1671,11 +1531,9 @@ on_menu_my_league_results_activate     (GtkMenuItem     *menuitem,
 }
 
 
-
 G_MODULE_EXPORT void
-on_menu_season_results_activate        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_season_results_activate(GtkMenuItem *menuitem,
+                                gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_season_results_activate\n");
 #endif
@@ -1691,9 +1549,8 @@ on_menu_season_results_activate        (GtkMenuItem     *menuitem,
 
 
 G_MODULE_EXPORT void
-on_menu_help_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_help_activate(GtkMenuItem *menuitem,
+                      gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_help_activate\n");
 #endif
@@ -1703,9 +1560,8 @@ on_menu_help_activate                  (GtkMenuItem     *menuitem,
 
 
 G_MODULE_EXPORT void
-on_menu_contributors_activate          (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_contributors_activate(GtkMenuItem *menuitem,
+                              gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_contributors_activate\n");
 #endif
@@ -1715,9 +1571,8 @@ on_menu_contributors_activate          (GtkMenuItem     *menuitem,
 
 
 G_MODULE_EXPORT void
-on_menu_about_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_about_activate(GtkMenuItem *menuitem,
+                       gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_about_activate\n");
 #endif
@@ -1730,47 +1585,41 @@ on_menu_about_activate                 (GtkMenuItem     *menuitem,
 ***********************************************************************************************************/
 
 G_MODULE_EXPORT gboolean
-on_hpaned2_button_release_event        (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
-{
+on_hpaned2_button_release_event(GtkWidget *widget,
+                                GdkEventButton *event,
+                                gpointer user_data) {
 #ifdef DEBUG
     printf("on_hpaned2_button_release_event\n");
 #endif
 
-    window.paned_pos = 
-	gtk_paned_get_position(GTK_PANED(widget));
+    window.paned_pos =
+            gtk_paned_get_position(GTK_PANED(widget));
 
     return FALSE;
 }
 
 G_MODULE_EXPORT gboolean
-on_button_quit_button_press_event      (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
-{
+on_button_quit_button_press_event(GtkWidget *widget,
+                                  GdkEventButton *event,
+                                  gpointer user_data) {
 #ifdef DEBUG
     printf("on_button_quit_button_press_event\n");
 #endif
 
-    if(event->button == 3 && counters[COUNT_SHOW_DEBUG] == 0)
-    {
-	counters[COUNT_SHOW_DEBUG] = 1;
-	g_timeout_add(3000, (GSourceFunc)debug_reset_counter, NULL);
-    }
-    else if(event->button == 2 && counters[COUNT_SHOW_DEBUG] == 1)
-    {
-	window_create(WINDOW_DEBUG);
-	counters[COUNT_SHOW_DEBUG] = 0;
+    if (event->button == 3 && counters[COUNT_SHOW_DEBUG] == 0) {
+        counters[COUNT_SHOW_DEBUG] = 1;
+        g_timeout_add(3000, (GSourceFunc) debug_reset_counter, NULL);
+    } else if (event->button == 2 && counters[COUNT_SHOW_DEBUG] == 1) {
+        window_create(WINDOW_DEBUG);
+        counters[COUNT_SHOW_DEBUG] = 0;
     }
 
     return FALSE;
 }
 
 G_MODULE_EXPORT void
-on_button_reset_players_clicked        (GtkButton       *button,
-                                        gpointer         user_data)
-{
+on_button_reset_players_clicked(GtkButton *button,
+                                gpointer user_data) {
 #ifdef DEBUG
     printf("on_button_reset_players_clicked\n");
 #endif
@@ -1780,25 +1629,23 @@ on_button_reset_players_clicked        (GtkButton       *button,
 
 
 G_MODULE_EXPORT void
-on_menu_reset_players_activate         (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
+on_menu_reset_players_activate(GtkMenuItem *menuitem,
+                               gpointer user_data) {
 #ifdef DEBUG
     printf("on_menu_reset_players_activate\n");
 #endif
 
     gint idx = -1;
 
-    if(team_is_user(usr(stat2).live_game.fix->teams[0]) == -1 ||
-       team_is_user(usr(stat2).live_game.fix->teams[1]) == -1)
-	idx  = (team_is_user(usr(stat2).live_game.fix->teams[0]) == -1);
-    else
-    {
-	if(team_is_user(usr(stat2).live_game.fix->teams[0]) == cur_user)
-	    idx = 0;
-	else
-	    idx = 1;
+    if (team_is_user(usr(stat2).live_game.fix->teams[0]) == -1 ||
+        team_is_user(usr(stat2).live_game.fix->teams[1]) == -1)
+        idx = (team_is_user(usr(stat2).live_game.fix->teams[0]) == -1);
+    else {
+        if (team_is_user(usr(stat2).live_game.fix->teams[0]) == cur_user)
+            idx = 0;
+        else
+            idx = 1;
     }
-    
+
     game_reset_players(idx);
 }

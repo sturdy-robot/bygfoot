@@ -29,8 +29,7 @@
 #include "xml.h"
 #include "xml_loadsave_players.h"
 
-enum
-{
+enum {
     TAG_PLAYERS = TAG_START_PLAYERS,
     TAG_PLAYER,
     TAG_PLAYER_NAME,
@@ -75,8 +74,7 @@ PlayerGamesGoals new_games_goals;
 PlayerCard new_card;
 
 void
-xml_loadsave_players_start_element(gint tag, Team *tm)
-{
+xml_loadsave_players_start_element(gint tag, Team *tm) {
 #ifdef DEBUG
     printf("xml_loadsave_players_start_element\n");
 #endif
@@ -84,87 +82,81 @@ xml_loadsave_players_start_element(gint tag, Team *tm)
     gint i;
     gboolean valid_tag = FALSE;
 
-    for(i=TAG_PLAYERS;i<TAG_END;i++)
-	if(tag == i)
-	{
-	    state = i;
-	    valid_tag = TRUE;
-	}
+    for (i = TAG_PLAYERS; i < TAG_END; i++)
+        if (tag == i) {
+            state = i;
+            valid_tag = TRUE;
+        }
 
-    if(tag == TAG_PLAYER)
-    {
-	new_player = player_new(tm, 80, FALSE);
-	etalidx = careeridx = 0;
+    if (tag == TAG_PLAYER) {
+        new_player = player_new(tm, 80, FALSE);
+        etalidx = careeridx = 0;
     }
 
-    if(!valid_tag)
-	debug_print_message("xml_loadsave_players_start_element: unknown tag. I'm in state %d\n",
-		  state);
+    if (!valid_tag)
+        debug_print_message("xml_loadsave_players_start_element: unknown tag. I'm in state %d\n",
+                            state);
 }
 
 void
-xml_loadsave_players_end_element(gint tag, GArray *players)
-{
+xml_loadsave_players_end_element(gint tag, GArray *players) {
 #ifdef DEBUG
     printf("xml_loadsave_players_end_element\n");
 #endif
 
-    if(tag == TAG_PLAYER)
-	g_array_append_val(players, new_player);
-    else if(tag == TAG_PLAYER_NAME ||
-	    tag == TAG_PLAYER_POS ||
-	    tag == TAG_PLAYER_CPOS ||
-	    tag == TAG_PLAYER_HEALTH ||
-	    tag == TAG_PLAYER_RECOVERY ||
-	    tag == TAG_PLAYER_ID ||
-	    tag == TAG_PLAYER_VALUE ||
-	    tag == TAG_PLAYER_WAGE ||
-	    tag == TAG_PLAYER_OFFERS ||
-	    tag == TAG_PLAYER_SKILL ||
-	    tag == TAG_PLAYER_CSKILL ||
-	    tag == TAG_PLAYER_TALENT ||
-	    tag == TAG_PLAYER_ETAL ||
-	    tag == TAG_PLAYER_FITNESS ||
-	    tag == TAG_PLAYER_LSU ||
-	    tag == TAG_PLAYER_AGE ||
-	    tag == TAG_PLAYER_PEAK_AGE ||
-	    tag == TAG_PLAYER_PEAK_REGION ||
-	    tag == TAG_PLAYER_CONTRACT ||
-	    tag == TAG_PLAYER_PARTICIPATION ||
-	    tag == TAG_PLAYER_GAMES_GOAL ||
-	    tag == TAG_PLAYER_CAREER ||
-	    tag == TAG_PLAYER_CARD ||
-	    tag == TAG_PLAYER_STREAK ||
-	    tag == TAG_PLAYER_STREAK_COUNT ||
-	    tag == TAG_PLAYER_STREAK_PROB)
-    {
-	state = TAG_PLAYER;
-	if(tag == TAG_PLAYER_ETAL)
-	    etalidx++;
-	else if(tag == TAG_PLAYER_CAREER)
-	    careeridx++;
-	else if(tag == TAG_PLAYER_CARD)
-	    g_array_append_val(new_player.cards, new_card);
-	else if(tag == TAG_PLAYER_GAMES_GOAL)
-	    g_array_append_val(new_player.games_goals, new_games_goals);
-    }
-    else if(tag == TAG_PLAYER_GAMES_GOAL_CLID ||
-	    tag == TAG_PLAYER_GAMES_GOAL_GAMES ||
-	    tag == TAG_PLAYER_GAMES_GOAL_GOALS ||
-	    tag == TAG_PLAYER_GAMES_GOAL_SHOTS)
-	state = TAG_PLAYER_GAMES_GOAL;
-    else if(tag == TAG_PLAYER_CARD_CLID ||
-	    tag == TAG_PLAYER_CARD_YELLOW ||
-	    tag == TAG_PLAYER_CARD_RED)
-	state = TAG_PLAYER_CARD;
-    else if(tag != TAG_PLAYERS)
-	debug_print_message("xml_loadsave_players_end_element: unknown tag. I'm in state %d\n",
-		  state);
+    if (tag == TAG_PLAYER)
+        g_array_append_val(players, new_player);
+    else if (tag == TAG_PLAYER_NAME ||
+             tag == TAG_PLAYER_POS ||
+             tag == TAG_PLAYER_CPOS ||
+             tag == TAG_PLAYER_HEALTH ||
+             tag == TAG_PLAYER_RECOVERY ||
+             tag == TAG_PLAYER_ID ||
+             tag == TAG_PLAYER_VALUE ||
+             tag == TAG_PLAYER_WAGE ||
+             tag == TAG_PLAYER_OFFERS ||
+             tag == TAG_PLAYER_SKILL ||
+             tag == TAG_PLAYER_CSKILL ||
+             tag == TAG_PLAYER_TALENT ||
+             tag == TAG_PLAYER_ETAL ||
+             tag == TAG_PLAYER_FITNESS ||
+             tag == TAG_PLAYER_LSU ||
+             tag == TAG_PLAYER_AGE ||
+             tag == TAG_PLAYER_PEAK_AGE ||
+             tag == TAG_PLAYER_PEAK_REGION ||
+             tag == TAG_PLAYER_CONTRACT ||
+             tag == TAG_PLAYER_PARTICIPATION ||
+             tag == TAG_PLAYER_GAMES_GOAL ||
+             tag == TAG_PLAYER_CAREER ||
+             tag == TAG_PLAYER_CARD ||
+             tag == TAG_PLAYER_STREAK ||
+             tag == TAG_PLAYER_STREAK_COUNT ||
+             tag == TAG_PLAYER_STREAK_PROB) {
+        state = TAG_PLAYER;
+        if (tag == TAG_PLAYER_ETAL)
+            etalidx++;
+        else if (tag == TAG_PLAYER_CAREER)
+            careeridx++;
+        else if (tag == TAG_PLAYER_CARD)
+            g_array_append_val(new_player.cards, new_card);
+        else if (tag == TAG_PLAYER_GAMES_GOAL)
+            g_array_append_val(new_player.games_goals, new_games_goals);
+    } else if (tag == TAG_PLAYER_GAMES_GOAL_CLID ||
+               tag == TAG_PLAYER_GAMES_GOAL_GAMES ||
+               tag == TAG_PLAYER_GAMES_GOAL_GOALS ||
+               tag == TAG_PLAYER_GAMES_GOAL_SHOTS)
+        state = TAG_PLAYER_GAMES_GOAL;
+    else if (tag == TAG_PLAYER_CARD_CLID ||
+             tag == TAG_PLAYER_CARD_YELLOW ||
+             tag == TAG_PLAYER_CARD_RED)
+        state = TAG_PLAYER_CARD;
+    else if (tag != TAG_PLAYERS)
+        debug_print_message("xml_loadsave_players_end_element: unknown tag. I'm in state %d\n",
+                            state);
 }
 
 void
-xml_loadsave_players_text(gchar *text)
-{
+xml_loadsave_players_text(gchar *text) {
 #ifdef DEBUG
     printf("xml_loadsave_players_text\n");
 #endif
@@ -172,76 +164,75 @@ xml_loadsave_players_text(gchar *text)
     gint int_value = -1;
     gfloat float_value = -1;
 
-    int_value = (gint)g_ascii_strtod(text, NULL);
-    float_value = (gfloat)g_ascii_strtod(text, NULL) / 10000;
+    int_value = (gint) g_ascii_strtod(text, NULL);
+    float_value = (gfloat) g_ascii_strtod(text, NULL) / 10000;
 
-    if(state == TAG_PLAYER_NAME)
-	misc_string_assign(&new_player.name, text);
-    else if(state == TAG_PLAYER_POS)
-	new_player.pos = int_value;
-    else if(state == TAG_PLAYER_CPOS)
-	new_player.cpos = int_value;
-    else if(state == TAG_PLAYER_HEALTH)
-	new_player.health = int_value;
-    else if(state == TAG_PLAYER_RECOVERY)
-	new_player.recovery = int_value;
-    else if(state == TAG_PLAYER_ID)
-	new_player.id = int_value;
-    else if(state == TAG_PLAYER_VALUE)
-	new_player.value = int_value;
-    else if(state == TAG_PLAYER_WAGE)
-	new_player.wage = int_value;
-    else if(state == TAG_PLAYER_OFFERS)
-	new_player.offers = int_value;
-    else if(state == TAG_PLAYER_PARTICIPATION)
-	new_player.participation = int_value;
-    else if(state == TAG_PLAYER_SKILL)
-	new_player.skill = float_value;
-    else if(state == TAG_PLAYER_CSKILL)
-	new_player.cskill = float_value;
-    else if(state == TAG_PLAYER_TALENT)
-	new_player.talent = float_value;
-    else if(state == TAG_PLAYER_FITNESS)
-	new_player.fitness = float_value;
-    else if(state == TAG_PLAYER_LSU)
-	new_player.lsu = float_value;
-    else if(state == TAG_PLAYER_AGE)
-	new_player.age = float_value;
-    else if(state == TAG_PLAYER_PEAK_AGE)
-	new_player.peak_age = float_value;
-    else if(state == TAG_PLAYER_PEAK_REGION)
-	new_player.peak_region = float_value;
-    else if(state == TAG_PLAYER_CONTRACT)
-	new_player.contract = float_value;
-    else if(state == TAG_PLAYER_ETAL)
-	new_player.etal[etalidx] = float_value;
-    else if(state == TAG_PLAYER_GAMES_GOAL_CLID)
-	new_games_goals.clid = int_value;
-    else if(state == TAG_PLAYER_GAMES_GOAL_GAMES)
-	new_games_goals.games = int_value;
-    else if(state == TAG_PLAYER_GAMES_GOAL_GOALS)
-	new_games_goals.goals = int_value;
-    else if(state == TAG_PLAYER_GAMES_GOAL_SHOTS)
-	new_games_goals.shots = int_value;
-    else if(state == TAG_PLAYER_CARD_CLID)
-	new_card.clid = int_value;
-    else if(state == TAG_PLAYER_CARD_YELLOW)
-	new_card.yellow = int_value;
-    else if(state == TAG_PLAYER_CARD_RED)
-	new_card.red = int_value;
-    else if(state == TAG_PLAYER_CAREER)
-	new_player.career[careeridx] = int_value;
-    else if(state == TAG_PLAYER_STREAK)
-	new_player.streak = int_value;
-    else if(state == TAG_PLAYER_STREAK_COUNT)
-	new_player.streak_count = float_value;
-    else if(state == TAG_PLAYER_STREAK_PROB)
-	new_player.streak_prob = float_value;
+    if (state == TAG_PLAYER_NAME)
+        misc_string_assign(&new_player.name, text);
+    else if (state == TAG_PLAYER_POS)
+        new_player.pos = int_value;
+    else if (state == TAG_PLAYER_CPOS)
+        new_player.cpos = int_value;
+    else if (state == TAG_PLAYER_HEALTH)
+        new_player.health = int_value;
+    else if (state == TAG_PLAYER_RECOVERY)
+        new_player.recovery = int_value;
+    else if (state == TAG_PLAYER_ID)
+        new_player.id = int_value;
+    else if (state == TAG_PLAYER_VALUE)
+        new_player.value = int_value;
+    else if (state == TAG_PLAYER_WAGE)
+        new_player.wage = int_value;
+    else if (state == TAG_PLAYER_OFFERS)
+        new_player.offers = int_value;
+    else if (state == TAG_PLAYER_PARTICIPATION)
+        new_player.participation = int_value;
+    else if (state == TAG_PLAYER_SKILL)
+        new_player.skill = float_value;
+    else if (state == TAG_PLAYER_CSKILL)
+        new_player.cskill = float_value;
+    else if (state == TAG_PLAYER_TALENT)
+        new_player.talent = float_value;
+    else if (state == TAG_PLAYER_FITNESS)
+        new_player.fitness = float_value;
+    else if (state == TAG_PLAYER_LSU)
+        new_player.lsu = float_value;
+    else if (state == TAG_PLAYER_AGE)
+        new_player.age = float_value;
+    else if (state == TAG_PLAYER_PEAK_AGE)
+        new_player.peak_age = float_value;
+    else if (state == TAG_PLAYER_PEAK_REGION)
+        new_player.peak_region = float_value;
+    else if (state == TAG_PLAYER_CONTRACT)
+        new_player.contract = float_value;
+    else if (state == TAG_PLAYER_ETAL)
+        new_player.etal[etalidx] = float_value;
+    else if (state == TAG_PLAYER_GAMES_GOAL_CLID)
+        new_games_goals.clid = int_value;
+    else if (state == TAG_PLAYER_GAMES_GOAL_GAMES)
+        new_games_goals.games = int_value;
+    else if (state == TAG_PLAYER_GAMES_GOAL_GOALS)
+        new_games_goals.goals = int_value;
+    else if (state == TAG_PLAYER_GAMES_GOAL_SHOTS)
+        new_games_goals.shots = int_value;
+    else if (state == TAG_PLAYER_CARD_CLID)
+        new_card.clid = int_value;
+    else if (state == TAG_PLAYER_CARD_YELLOW)
+        new_card.yellow = int_value;
+    else if (state == TAG_PLAYER_CARD_RED)
+        new_card.red = int_value;
+    else if (state == TAG_PLAYER_CAREER)
+        new_player.career[careeridx] = int_value;
+    else if (state == TAG_PLAYER_STREAK)
+        new_player.streak = int_value;
+    else if (state == TAG_PLAYER_STREAK_COUNT)
+        new_player.streak_count = float_value;
+    else if (state == TAG_PLAYER_STREAK_PROB)
+        new_player.streak_prob = float_value;
 }
 
 void
-xml_loadsave_players_write(FILE *fil, const GArray *players)
-{
+xml_loadsave_players_write(FILE *fil, const GArray *players) {
 #ifdef DEBUG
     printf("xml_loadsave_players_write\n");
 #endif
@@ -249,16 +240,15 @@ xml_loadsave_players_write(FILE *fil, const GArray *players)
     gint i;
 
     fprintf(fil, "%s<_%d>\n", I1, TAG_PLAYERS);
-   
-    for(i=0;i<players->len;i++)
-	xml_loadsave_players_write_player(fil, &g_array_index(players, Player, i));
+
+    for (i = 0; i < players->len; i++)
+        xml_loadsave_players_write_player(fil, &g_array_index(players, Player, i));
 
     fprintf(fil, "%s</_%d>\n", I1, TAG_PLAYERS);
 }
 
 void
-xml_loadsave_players_write_player(FILE *fil, const Player *pl)
-{
+xml_loadsave_players_write_player(FILE *fil, const Player *pl) {
 #ifdef DEBUG
     printf("xml_loadsave_players_write_player\n");
 #endif
@@ -288,45 +278,43 @@ xml_loadsave_players_write_player(FILE *fil, const Player *pl)
     xml_write_float(fil, pl->peak_region, TAG_PLAYER_PEAK_REGION, I2);
     xml_write_float(fil, pl->contract, TAG_PLAYER_CONTRACT, I2);
 
-    for(i=0;i<4;i++)
-	xml_write_float(fil, pl->etal[i], TAG_PLAYER_ETAL, I3);
-    
-    for(i=0;i<PLAYER_VALUE_END;i++)
-	xml_write_int(fil, pl->career[i], TAG_PLAYER_CAREER, I2);
+    for (i = 0; i < 4; i++)
+        xml_write_float(fil, pl->etal[i], TAG_PLAYER_ETAL, I3);
+
+    for (i = 0; i < PLAYER_VALUE_END; i++)
+        xml_write_int(fil, pl->career[i], TAG_PLAYER_CAREER, I2);
 
     xml_write_int(fil, pl->streak, TAG_PLAYER_STREAK, I2);
     xml_write_float(fil, pl->streak_count, TAG_PLAYER_STREAK_COUNT, I2);
     xml_write_float(fil, pl->streak_prob, TAG_PLAYER_STREAK_PROB, I2);
 
-    for(i=0;i<pl->games_goals->len;i++)
-    {
-	fprintf(fil, "%s<_%d>\n", I2, TAG_PLAYER_GAMES_GOAL);
+    for (i = 0; i < pl->games_goals->len; i++) {
+        fprintf(fil, "%s<_%d>\n", I2, TAG_PLAYER_GAMES_GOAL);
 
-	xml_write_int(fil, g_array_index(pl->games_goals, PlayerGamesGoals, i).clid,
-		      TAG_PLAYER_GAMES_GOAL_CLID, I3);
-	xml_write_int(fil, g_array_index(pl->games_goals, PlayerGamesGoals, i).games,
-		      TAG_PLAYER_GAMES_GOAL_GAMES, I3);
-	xml_write_int(fil, g_array_index(pl->games_goals, PlayerGamesGoals, i).goals,
-		      TAG_PLAYER_GAMES_GOAL_GOALS, I3);
-	xml_write_int(fil, g_array_index(pl->games_goals, PlayerGamesGoals, i).shots,
-		      TAG_PLAYER_GAMES_GOAL_SHOTS, I3);
+        xml_write_int(fil, g_array_index(pl->games_goals, PlayerGamesGoals, i).clid,
+                      TAG_PLAYER_GAMES_GOAL_CLID, I3);
+        xml_write_int(fil, g_array_index(pl->games_goals, PlayerGamesGoals, i).games,
+                      TAG_PLAYER_GAMES_GOAL_GAMES, I3);
+        xml_write_int(fil, g_array_index(pl->games_goals, PlayerGamesGoals, i).goals,
+                      TAG_PLAYER_GAMES_GOAL_GOALS, I3);
+        xml_write_int(fil, g_array_index(pl->games_goals, PlayerGamesGoals, i).shots,
+                      TAG_PLAYER_GAMES_GOAL_SHOTS, I3);
 
-	fprintf(fil, "%s</_%d>\n", I2, TAG_PLAYER_GAMES_GOAL);
+        fprintf(fil, "%s</_%d>\n", I2, TAG_PLAYER_GAMES_GOAL);
     }
 
-    for(i=0;i<pl->cards->len;i++)
-    {
-	fprintf(fil, "%s<_%d>\n", I2, TAG_PLAYER_CARD);
+    for (i = 0; i < pl->cards->len; i++) {
+        fprintf(fil, "%s<_%d>\n", I2, TAG_PLAYER_CARD);
 
-	xml_write_int(fil, g_array_index(pl->cards, PlayerCard, i).clid,
-		      TAG_PLAYER_CARD_CLID, I3);
-	xml_write_int(fil, g_array_index(pl->cards, PlayerCard, i).yellow,
-		      TAG_PLAYER_CARD_YELLOW, I3);
-	xml_write_int(fil, g_array_index(pl->cards, PlayerCard, i).red,
-		      TAG_PLAYER_CARD_RED, I3);
-	
-	fprintf(fil, "%s</_%d>\n", I2, TAG_PLAYER_CARD);
-    }    
+        xml_write_int(fil, g_array_index(pl->cards, PlayerCard, i).clid,
+                      TAG_PLAYER_CARD_CLID, I3);
+        xml_write_int(fil, g_array_index(pl->cards, PlayerCard, i).yellow,
+                      TAG_PLAYER_CARD_YELLOW, I3);
+        xml_write_int(fil, g_array_index(pl->cards, PlayerCard, i).red,
+                      TAG_PLAYER_CARD_RED, I3);
+
+        fprintf(fil, "%s</_%d>\n", I2, TAG_PLAYER_CARD);
+    }
 
     fprintf(fil, "%s</_%d>\n", I1, TAG_PLAYER);
 }

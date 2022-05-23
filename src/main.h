@@ -39,8 +39,10 @@ void
 main_exit_program(gint exit_code, gchar *format, ...)
 __attribute__ ((noreturn, format (printf, 2, 3)));
 #else
+
 void
 main_exit_program(gint exit_code, gchar *format, ...);
+
 #endif
 
 void

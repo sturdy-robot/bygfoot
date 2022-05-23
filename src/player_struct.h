@@ -33,8 +33,7 @@
 /**
    Player positions.
 */
-enum PlayerPos
-{
+enum PlayerPos {
     PLAYER_POS_GOALIE = 0,
     PLAYER_POS_DEFENDER,
     PLAYER_POS_MIDFIELDER,
@@ -44,8 +43,7 @@ enum PlayerPos
 };
 
 /** Streaks a player can go on. */
-enum PlayerStreak
-{
+enum PlayerStreak {
     PLAYER_STREAK_COLD = -1,
     PLAYER_STREAK_NONE,
     PLAYER_STREAK_HOT
@@ -55,8 +53,7 @@ enum PlayerStreak
    Cards in different cups are counted separately for players;
    for each league or cup the cards are stored in such a struct.
 */
-typedef struct
-{
+typedef struct {
     /** Numerical id of the league or cup. */
     gint clid;
     /** Number of yellow cards. */
@@ -68,8 +65,7 @@ typedef struct
 /**
    Goals and games in different leagues and cups are counted separately for players.
 */
-typedef struct
-{
+typedef struct {
     /** Numerical id of the league or cup. */
     gint clid;
     /** Number of games the player played. */
@@ -80,8 +76,7 @@ typedef struct
     gint shots;
 } PlayerGamesGoals;
 
-enum PlayerInjury
-{
+enum PlayerInjury {
     PLAYER_INJURY_NONE = 0,
     PLAYER_INJURY_CONCUSSION,
     PLAYER_INJURY_PULLED_MUSCLE,
@@ -99,20 +94,18 @@ enum PlayerInjury
 };
 
 /** Enum for different player data. */
-enum PlayerValue
-{
+enum PlayerValue {
     PLAYER_VALUE_GAMES = 0,
     PLAYER_VALUE_GOALS,
     PLAYER_VALUE_SHOTS,
     PLAYER_VALUE_CARD_YELLOW,
-    PLAYER_VALUE_CARD_RED, 
+    PLAYER_VALUE_CARD_RED,
     PLAYER_VALUE_END
 };
 
 /** Enumeration for the yellow/red
     card status during the live game. */
-enum PlayerCardStatus
-{
+enum PlayerCardStatus {
     PLAYER_CARD_STATUS_NONE = 0,
     PLAYER_CARD_STATUS_YELLOW,
     PLAYER_CARD_STATUS_RED
@@ -122,39 +115,38 @@ enum PlayerCardStatus
    Representation of a player.
    @see #PlayerAttributes
 */
-typedef struct
-{
+typedef struct {
     gchar *name;
-    
+
     gint pos, /**< Position. @see #PlayerPos */
-	cpos, /**< Current position. @see #PlayerPos */
-	health, /**< Health. An integer signifying an injury or
+    cpos, /**< Current position. @see #PlayerPos */
+    health, /**< Health. An integer signifying an injury or
 		   good health. @see #PlayerInjury */
-	recovery, /**< Weeks until the player gets healthy. */
-	id, /**< Id of the player within the team. */
-	value, /**< Value of the player. */
-	wage, /**< Wage of the player. */
-	offers, /**< Number of times the player received a contract offer. */
-	streak, /**< The streak the player is on. */
-        card_status; /**< The card status of the player during a live game. */
-		
+    recovery, /**< Weeks until the player gets healthy. */
+    id, /**< Id of the player within the team. */
+    value, /**< Value of the player. */
+    wage, /**< Wage of the player. */
+    offers, /**< Number of times the player received a contract offer. */
+    streak, /**< The streak the player is on. */
+    card_status; /**< The card status of the player during a live game. */
+
     gfloat skill, /**< Skill. Between 0 and a constant
 		     (specified in the constants file). */
-	cskill, /**< Current Skill. */
-	talent, /**< Talent. The peak ability (which isn't always reached). */
-	etal[QUALITY_END], /**< Estimated talent (the user never sees the actual talent).
+    cskill, /**< Current Skill. */
+    talent, /**< Talent. The peak ability (which isn't always reached). */
+    etal[QUALITY_END], /**< Estimated talent (the user never sees the actual talent).
 			      Depends on scout quality. */
-	fitness, /**< Fitness. Between 0 and 1. */
-	lsu, /**< Last skill update. Number of weeks since the player
+    fitness, /**< Fitness. Between 0 and 1. */
+    lsu, /**< Last skill update. Number of weeks since the player
 		skill was last updated. */
-	age, /**< Age in years. */
-	peak_age, /**< Age at which the player reaches his peak ability. */
-	peak_region, /**< Region around the peak age during which the player's
+    age, /**< Age in years. */
+    peak_age, /**< Age at which the player reaches his peak ability. */
+    peak_region, /**< Region around the peak age during which the player's
 			ability is at the peak (in years). */
-	contract, /**< The years until the player's contract expires. */
-	streak_prob, /**< This number determines how probable it is that a player
+    contract, /**< The years until the player's contract expires. */
+    streak_prob, /**< This number determines how probable it is that a player
 			goes on a hot/cold streak. Between -1 and 1. */
-	streak_count; /**< How many weeks the streak goes (or how
+    streak_count; /**< How many weeks the streak goes (or how
 			 long a new streak may not begin if the value
 			 is negative). */
 
@@ -177,8 +169,7 @@ typedef struct
 } Player;
 
 /** Enum for player attributes that can be shown in a player list. */
-enum PlayerListAttributeValue
-{
+enum PlayerListAttributeValue {
     PLAYER_LIST_ATTRIBUTE_NAME = 0,
     PLAYER_LIST_ATTRIBUTE_CPOS,
     PLAYER_LIST_ATTRIBUTE_POS,
@@ -200,8 +191,7 @@ enum PlayerListAttributeValue
     PLAYER_LIST_ATTRIBUTE_END
 };
 
-enum PlayerInfoAttributeValue
-{
+enum PlayerInfoAttributeValue {
     PLAYER_INFO_ATTRIBUTE_NAME = 0,
     PLAYER_INFO_ATTRIBUTE_POS,
     PLAYER_INFO_ATTRIBUTE_CPOS,
@@ -225,8 +215,7 @@ enum PlayerInfoAttributeValue
 
 /** A struct telling us which player attributes to show in a player list.
     @see #PlayerListAttributeValue*/
-typedef struct
-{
+typedef struct {
     gboolean on_off[PLAYER_LIST_ATTRIBUTE_END];
 } PlayerListAttribute;
 

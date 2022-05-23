@@ -31,8 +31,7 @@
 
 /**  These are used to keep track of open windows.
      @see window_create() */
-enum Windows
-{
+enum Windows {
     WINDOW_MAIN = 0,
     WINDOW_STARTUP,
     WINDOW_LIVE,
@@ -67,18 +66,18 @@ window_show_help(gint page);
 void
 window_show_startup(Bygfoot *bygfoot);
 
-GtkWidget*
+GtkWidget *
 window_create(gint window_type);
 
-GtkWidget*
+GtkWidget *
 window_create_with_userdata(gint window_type, Bygfoot *bygfoot);
 
 void
 window_destroy(GtkWidget **wind);
 
 void
-window_show_digits(const gchar *text_main, const gchar* text1,
-		   gint value1, const gchar* text2, gint value2, gboolean show_alr);
+window_show_digits(const gchar *text_main, const gchar *text1,
+                   gint value1, const gchar *text2, gint value2, gboolean show_alr);
 
 void
 window_show_file_sel(Bygfoot *bygfoot);

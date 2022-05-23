@@ -30,8 +30,7 @@
 #include "bygfoot_struct.h"
 //#include "bygfoot.h"
 
-enum DebugOutput
-{
+enum DebugOutput {
     DEBUG_OUT_STDOUT = 0,
     DEBUG_OUT_LOGFILE,
     DEBUG_OUT_STDOUT_LOGFILE
@@ -48,9 +47,9 @@ debug_calibrate_betting_odds(gint skilldiffmax, gint matches_per_skilldiff, Bygf
 
 void
 debug_writer_out(const gchar *file_name,
-				 const gchar *method_name,
-			 	 const gchar *text,
-			 	 gint debuglevel);
+                 const gchar *method_name,
+                 const gchar *text,
+                 gint debuglevel);
 
 void
 debug_print_message(gchar *format, ...);

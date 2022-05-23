@@ -38,57 +38,52 @@
 #include "main.h"
 #include "support.h"
 
-GtkWidget*
-lookup_widget                          (GtkWidget       *widget,
-                                        const gchar     *widget_name)
-{
-  GtkWidget *parent, *found_widget;
+GtkWidget *
+lookup_widget(GtkWidget *widget,
+              const gchar *widget_name) {
+    GtkWidget *parent, *found_widget;
 
-  for (;;)
-    {
-      if (GTK_IS_MENU (widget))
-        parent = gtk_menu_get_attach_widget (GTK_MENU (widget));
-      else
-        parent = widget->parent;
-      if (!parent)
-        parent = (GtkWidget*) g_object_get_data (G_OBJECT (widget), "GladeParentKey");
-      if (parent == NULL)
-        break;
-      widget = parent;
+    for (;;) {
+        if (GTK_IS_MENU (widget))
+            parent = gtk_menu_get_attach_widget(GTK_MENU (widget));
+        else
+            parent = widget->parent;
+        if (!parent)
+            parent = (GtkWidget *) g_object_get_data(G_OBJECT (widget), "GladeParentKey");
+        if (parent == NULL)
+            break;
+        widget = parent;
     }
 
-  found_widget = (GtkWidget*) g_object_get_data (G_OBJECT (widget),
-                                                 widget_name);
-  if (!found_widget)
-    g_warning ("Widget not found: %s", widget_name);
-  return found_widget;
+    found_widget = (GtkWidget *) g_object_get_data(G_OBJECT (widget),
+                                                   widget_name);
+    if (!found_widget)
+        g_warning ("Widget not found: %s", widget_name);
+    return found_widget;
 }
 
 /** This will load the ui file, connect the signals and return the builder
 */
-GtkBuilder*
-load_ui (const gchar *filename)
-{
-  return load_ui_with_userdata(filename, NULL);
+GtkBuilder *
+load_ui(const gchar *filename) {
+    return load_ui_with_userdata(filename, NULL);
 }
 
-GtkBuilder*
-load_ui_with_userdata (const gchar *filename, Bygfoot *bygfoot)
-{
-  GtkBuilder *builder;
-  GError *error = NULL;
+GtkBuilder *
+load_ui_with_userdata(const gchar *filename, Bygfoot *bygfoot) {
+    GtkBuilder *builder;
+    GError *error = NULL;
 
-  builder = gtk_builder_new ();
+    builder = gtk_builder_new();
 
-  if (!gtk_builder_add_from_file (builder, filename, &error))
-  {
-     main_exit_program(EXIT_FILE_NOT_FOUND, 
-      ": Problems found in the glade file: %s\n", error->message);
-  }
+    if (!gtk_builder_add_from_file(builder, filename, &error)) {
+        main_exit_program(EXIT_FILE_NOT_FOUND,
+                          ": Problems found in the glade file: %s\n", error->message);
+    }
 
-  gtk_builder_connect_signals (builder, bygfoot);
+    gtk_builder_connect_signals(builder, bygfoot);
 
-  return builder;
+    return builder;
 }
 
 
@@ -96,12 +91,11 @@ static GList *pixmaps_directories = NULL;
 
 /* Use this function to set the directory containing installed pixmaps. */
 void
-add_pixmap_directory                   (const gchar     *directory)
-{
-  pixmaps_directories = g_list_prepend (pixmaps_directories,
-                                        g_strdup (directory));
-  GtkIconTheme *icon_theme;
-  icon_theme = gtk_icon_theme_get_default ();
+add_pixmap_directory(const gchar *directory) {
+    pixmaps_directories = g_list_prepend(pixmaps_directories,
+                                         g_strdup(directory));
+    GtkIconTheme *icon_theme;
+    icon_theme = gtk_icon_theme_get_default();
 
-  gtk_icon_theme_append_search_path (icon_theme, g_strdup(directory));
+    gtk_icon_theme_append_search_path(icon_theme, g_strdup(directory));
 }

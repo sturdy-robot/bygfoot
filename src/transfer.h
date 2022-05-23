@@ -48,7 +48,7 @@ transfer_evaluate_offers(void);
 void
 transfer_add_new_players(void);
 
-Player*
+Player *
 transfer_player_get_new(gboolean cup);
 
 void
@@ -75,7 +75,7 @@ transfer_offer_compare_func(gconstpointer a, gconstpointer b);
 void
 transfer_remove_player_ptr(const Player *pl);
 
-Team*
+Team *
 transfer_team_get_new(void);
 
 void
@@ -84,7 +84,7 @@ transfer_add_remove_user_player(Player *pl);
 void
 transfer_offers_notify(Transfer *trans, gboolean sort);
 
-const TransferOffer*
+const TransferOffer *
 transfer_player_has_offer(const Player *pl);
 
 gboolean

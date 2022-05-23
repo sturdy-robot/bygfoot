@@ -36,8 +36,7 @@
 #include "variables.h"
 
 void
-debug_print_message(gchar *format, ...)
-{
+debug_print_message(gchar *format, ...) {
     gchar text[SMALL];
     va_list args;
     gchar buf[SMALL];
@@ -49,19 +48,17 @@ debug_print_message(gchar *format, ...)
     GTimeVal logtime;
 #endif
     gchar *logtime_string;
-     
-    if(format != NULL)
-    {
-	va_start (args, format);
-	g_vsprintf(buf, format, args);
-	va_end (args);
+
+    if (format != NULL) {
+        va_start (args, format);
+        g_vsprintf(buf, format, args);
+        va_end (args);
     }
 
-    if(debug_output != DEBUG_OUT_LOGFILE)
+    if (debug_output != DEBUG_OUT_LOGFILE)
         g_warning("%s\n", buf);
 
-    if(debug_output != DEBUG_OUT_STDOUT)
-    {
+    if (debug_output != DEBUG_OUT_STDOUT) {
 #ifdef GLIB_VERSION_2_62
         gint64 current_time = g_get_real_time();
         logtime = g_date_time_new_from_unix_utc(current_time);
@@ -77,19 +74,17 @@ debug_print_message(gchar *format, ...)
 
         home = g_get_home_dir();
 
-        if(os_is_unix)
+        if (os_is_unix)
             sprintf(buf, "%s%s%s%sbygfoot.log", home, G_DIR_SEPARATOR_S,
                     HOMEDIRNAME, G_DIR_SEPARATOR_S);
-        else
-        {
+        else {
             gchar *pwd = g_get_current_dir();
             sprintf(buf, "%s%sbygfoot.log", pwd, G_DIR_SEPARATOR_S);
             g_free(pwd);
         }
-        
+
         fil = fopen(buf, "a");
-        if(fil == NULL)
-        {
+        if (fil == NULL) {
             g_warning("Couldn't open log file %s\n", buf);
             return;
         }
@@ -101,8 +96,7 @@ debug_print_message(gchar *format, ...)
 
 /** Take some debug action depending on the text. Text is a prefix and a number. */
 void
-debug_action(const gchar *text)
-{
+debug_action(const gchar *text) {
 #ifdef DEBUG
     printf("debug_action\n");
 #endif
@@ -115,107 +109,78 @@ debug_action(const gchar *text)
 
     sscanf(text, "%[^-0-9]%d", buf, &value);
 
-    if(g_str_has_prefix(text, "deb"))
-    {
-	debug_level = value;
-	game_gui_print_message("Debug value set to %d.", value);
-    }
-    else if(g_str_has_prefix(text, "cap"))
-    {
-	current_user.tm->stadium.capacity += value;
-	game_gui_print_message("Stadium capacity changed by %d. New: %d.", value,
+    if (g_str_has_prefix(text, "deb")) {
+        debug_level = value;
+        game_gui_print_message("Debug value set to %d.", value);
+    } else if (g_str_has_prefix(text, "cap")) {
+        current_user.tm->stadium.capacity += value;
+        game_gui_print_message("Stadium capacity changed by %d. New: %d.", value,
                                current_user.tm->stadium.capacity);
-    }
-    else if(g_str_has_prefix(text, "saf"))
-    {
-	current_user.tm->stadium.safety += ((gfloat)value / 100);
-	current_user.tm->stadium.safety = 
-	    CLAMP(current_user.tm->stadium.safety, 0, 1);
-	game_gui_print_message("Stadium safety changed by %d. New: %.2f", value,
+    } else if (g_str_has_prefix(text, "saf")) {
+        current_user.tm->stadium.safety += ((gfloat) value / 100);
+        current_user.tm->stadium.safety =
+                CLAMP(current_user.tm->stadium.safety, 0, 1);
+        game_gui_print_message("Stadium safety changed by %d. New: %.2f", value,
                                current_user.tm->stadium.safety);
-    }
-    else if(g_str_has_prefix(text, "mon"))
-    {
-	current_user.money += value;
-	game_gui_print_message("Money changed by %d. New: %d.", value,
+    } else if (g_str_has_prefix(text, "mon")) {
+        current_user.money += value;
+        game_gui_print_message("Money changed by %d. New: %d.", value,
                                current_user.money);
-    }
-    else if(g_str_has_prefix(text, "suc"))
-    {
-	current_user.counters[COUNT_USER_SUCCESS] += value;
-	game_gui_print_message("Success counter changed by %d. New: %d.", value,
+    } else if (g_str_has_prefix(text, "suc")) {
+        current_user.counters[COUNT_USER_SUCCESS] += value;
+        game_gui_print_message("Success counter changed by %d. New: %d.", value,
                                current_user.counters[COUNT_USER_SUCCESS]);
-    }
-    else if(g_str_has_prefix(text, "scout"))
-    {
-	current_user.scout = value;
-	game_gui_print_message("Scout changed to %d.", value);
-    }
-    else if(g_str_has_prefix(text, "phys"))
-    {
-	current_user.physio = value;
-	game_gui_print_message("Physio changed to %d.", value);
-    }
-    else if(g_str_has_prefix(text, "yc"))
-    {
-	current_user.youth_academy.coach = value;
-	game_gui_print_message("Youth coach changed to %d.", value);
-    }
-    else if(g_str_has_prefix(text, "pospref"))
-    {
-	current_user.youth_academy.pos_pref = value;
-	game_gui_print_message("Recruiting pref changed to %d.", value);
-    }
-    else if(g_str_has_prefix(text, "goto"))
-    {
-        if(debug < 50)
+    } else if (g_str_has_prefix(text, "scout")) {
+        current_user.scout = value;
+        game_gui_print_message("Scout changed to %d.", value);
+    } else if (g_str_has_prefix(text, "phys")) {
+        current_user.physio = value;
+        game_gui_print_message("Physio changed to %d.", value);
+    } else if (g_str_has_prefix(text, "yc")) {
+        current_user.youth_academy.coach = value;
+        game_gui_print_message("Youth coach changed to %d.", value);
+    } else if (g_str_has_prefix(text, "pospref")) {
+        current_user.youth_academy.pos_pref = value;
+        game_gui_print_message("Recruiting pref changed to %d.", value);
+    } else if (g_str_has_prefix(text, "goto")) {
+        if (debug < 50)
             debug_level = 50;
 
-        if(option_int("int_opt_user_show_live_game", &current_user.options))
+        if (option_int("int_opt_user_show_live_game", &current_user.options))
             option_set_int("int_opt_user_show_live_game", &current_user.options, 0);
 
         sett_set_int("int_opt_goto_mode", 1);
-        if(value < 100)
-            while(week < value)
-            {
+        if (value < 100)
+            while (week < value) {
                 on_button_new_week_clicked(NULL, NULL);
                 game_gui_set_main_window_header();
-                while (gtk_events_pending ())
-                    gtk_main_iteration ();
-            }        
+                while (gtk_events_pending())
+                    gtk_main_iteration();
+            }
         else
-            while(season < value - 100)
-            {
+            while (season < value - 100) {
                 on_button_new_week_clicked(NULL, NULL);
                 game_gui_set_main_window_header();
-                while (gtk_events_pending ())
-                    gtk_main_iteration ();
+                while (gtk_events_pending())
+                    gtk_main_iteration();
             }
         sett_set_int("int_opt_goto_mode", 0);
-    }
-    else if(g_str_has_prefix(text, "testcom") ||
-	    g_str_has_prefix(text, "tc"))
-    {
-	stat5 = -value - 1000;
-	game_gui_print_message("Commentary type displayed: %d.", value);
-    }
-    else if(g_str_has_prefix(text, "printweeks"))
-    {
-        for(i = 0; i < cps->len; i++)
-        {
-            if(cp(i).add_week != 1000)
-            {
+    } else if (g_str_has_prefix(text, "testcom") ||
+               g_str_has_prefix(text, "tc")) {
+        stat5 = -value - 1000;
+        game_gui_print_message("Commentary type displayed: %d.", value);
+    } else if (g_str_has_prefix(text, "printweeks")) {
+        for (i = 0; i < cps->len; i++) {
+            if (cp(i).add_week != 1000) {
                 g_print("Cup: %s\n", cp(i).name);
-                for(j = 0; j < cp(i).rounds->len; j++)
+                for (j = 0; j < cp(i).rounds->len; j++)
                     g_print("  Round %2d: Week %2d (w/o delay: %2d)\n",
                             j, cup_get_first_week_of_cup_round(&cp(i), j, TRUE),
-                            cup_get_first_week_of_cup_round(&cp(i), j, FALSE));                
+                            cup_get_first_week_of_cup_round(&cp(i), j, FALSE));
             }
         }
-    }
-    else if(g_str_has_prefix(text, "help"))
-    {
-	g_print("Debug options:\n"
+    } else if (g_str_has_prefix(text, "help")) {
+        g_print("Debug options:\n"
                 "deb \t set debug value\n"
                 "writer \t set debug-writer value\n"
                 "cap \t change stadium capacity\n"
@@ -240,8 +205,7 @@ debug_action(const gchar *text)
 }
 
 gboolean
-debug_reset_counter(gpointer data)
-{
+debug_reset_counter(gpointer data) {
 #ifdef DEBUG
     printf("debug_reset_counter\n");
 #endif
@@ -252,8 +216,7 @@ debug_reset_counter(gpointer data)
 }
 
 void
-debug_calibrate_betting_odds(gint skilldiffmax, gint matches_per_skilldiff, Bygfoot *bygfoot)
-{
+debug_calibrate_betting_odds(gint skilldiffmax, gint matches_per_skilldiff, Bygfoot *bygfoot) {
 #ifdef DEBUG
     printf("debug_calibrate_betting_odds\n");
 #endif
@@ -263,34 +226,31 @@ debug_calibrate_betting_odds(gint skilldiffmax, gint matches_per_skilldiff, Bygf
     LiveGame live_game;
 
     fix->home_advantage = FALSE;
-    
-    for(skilldiff=0;skilldiff<=skilldiffmax;skilldiff++)
-    {
-	gint res[3] = {0, 0, 0};
 
-	for(matches=0;matches<matches_per_skilldiff;matches++)
-	{
-	    fix->attendance = -1;
-	    fix->result[0][0] = fix->result[1][0] = 0;
-	    for(i=0;i<fix->teams[0]->players->len;i++)
-	    {
-		strategy_repair_player(&g_array_index(fix->teams[0]->players, Player, i));
-		strategy_repair_player(&g_array_index(fix->teams[1]->players, Player, i));
-		g_array_index(fix->teams[0]->players, Player, i).skill = 90;
-		g_array_index(fix->teams[1]->players, Player, i).skill = 90 - skilldiff;
-		g_array_index(fix->teams[0]->players, Player, i).fitness = 0.9;
-		g_array_index(fix->teams[1]->players, Player, i).fitness = 0.9;
-	    }
+    for (skilldiff = 0; skilldiff <= skilldiffmax; skilldiff++) {
+        gint res[3] = {0, 0, 0};
 
-	    live_game_calculate_fixture(fix, &live_game, bygfoot);
-	    if(fix->result[0][0] < fix->result[1][0])
-		res[2]++;
-	    else
-		res[(fix->result[0][0] == fix->result[1][0])]++;
-	}
+        for (matches = 0; matches < matches_per_skilldiff; matches++) {
+            fix->attendance = -1;
+            fix->result[0][0] = fix->result[1][0] = 0;
+            for (i = 0; i < fix->teams[0]->players->len; i++) {
+                strategy_repair_player(&g_array_index(fix->teams[0]->players, Player, i));
+                strategy_repair_player(&g_array_index(fix->teams[1]->players, Player, i));
+                g_array_index(fix->teams[0]->players, Player, i).skill = 90;
+                g_array_index(fix->teams[1]->players, Player, i).skill = 90 - skilldiff;
+                g_array_index(fix->teams[0]->players, Player, i).fitness = 0.9;
+                g_array_index(fix->teams[1]->players, Player, i).fitness = 0.9;
+            }
 
-	g_print("sd %3d res %3d %3d %3d prob %.2f %.2f %.2f\n", skilldiff,
-		res[0], res[1], res[2], (gfloat)res[0] / (gfloat)matches, 
-		(gfloat)res[1] / (gfloat)matches, (gfloat)res[2] / (gfloat)matches);
+            live_game_calculate_fixture(fix, &live_game, bygfoot);
+            if (fix->result[0][0] < fix->result[1][0])
+                res[2]++;
+            else
+                res[(fix->result[0][0] == fix->result[1][0])]++;
+        }
+
+        g_print("sd %3d res %3d %3d %3d prob %.2f %.2f %.2f\n", skilldiff,
+                res[0], res[1], res[2], (gfloat) res[0] / (gfloat) matches,
+                (gfloat) res[1] / (gfloat) matches, (gfloat) res[2] / (gfloat) matches);
     }
 }

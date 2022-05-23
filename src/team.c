@@ -48,18 +48,17 @@
    @return A new team.
 */
 Team
-team_new(gboolean new_id)
-{
+team_new(gboolean new_id) {
 #ifdef DEBUG
     printf("team_new\n");
 #endif
 
     Team new;
 
-    new.name = new.names_file = 
-	new.symbol = new.def_file = 
-	new.stadium.name = new.strategy_sid = NULL;
-    
+    new.name = new.names_file =
+    new.symbol = new.def_file =
+    new.stadium.name = new.strategy_sid = NULL;
+
     new.clid = -1;
     new.id = (new_id) ? team_id_new : -1;
     new.structure = 442;
@@ -79,68 +78,60 @@ team_new(gboolean new_id)
 /* Fill the players array of the team and the stadium.
    @param tm The team that gets filled. */
 void
-team_generate_players_stadium(Team *tm, gfloat av_talent)
-{
+team_generate_players_stadium(Team *tm, gfloat av_talent) {
 #ifdef DEBUG
     printf("team_generate_players_stadium\n");
 #endif
 
-    gint i;    
+    gint i;
     gfloat skill_factor = math_rnd(1 - const_float("float_team_skill_variance"),
-				   1 + const_float("float_team_skill_variance"));
+                                   1 + const_float("float_team_skill_variance"));
     Player new;
     gfloat wages = 0, average_talent, league_av_talent;
-    gchar *def_file = team_has_def_file(tm);    
+    gchar *def_file = team_has_def_file(tm);
 
     tm->strategy_sid = strategy_get_random();
 
     tm->stadium.average_attendance = tm->stadium.possible_attendance =
-	tm->stadium.games = 0;
-    tm->stadium.safety = 
-	math_rnd(const_float("float_team_stadium_safety_lower"),
-		 const_float("float_team_stadium_safety_upper"));
+    tm->stadium.games = 0;
+    tm->stadium.safety =
+            math_rnd(const_float("float_team_stadium_safety_lower"),
+                     const_float("float_team_stadium_safety_upper"));
     tm->stadium.ticket_price = const_int("int_team_stadium_ticket_price");
 
-    if(tm->clid < ID_CUP_START)
-    {
-	league_av_talent = (av_talent > 0) ?
-	    av_talent : league_from_clid(tm->clid)->average_talent;
-	average_talent = (tm->average_talent == 0) ?
-	    skill_factor * league_av_talent :
-	    tm->average_talent;
-    }
-    else
-    {
+    if (tm->clid < ID_CUP_START) {
+        league_av_talent = (av_talent > 0) ?
+                           av_talent : league_from_clid(tm->clid)->average_talent;
         average_talent = (tm->average_talent == 0) ?
-            team_get_average_talents(lig(0).teams) *
-            (1 + cup_from_clid(tm->clid)->talent_diff) :
-            tm->average_talent;
+                         skill_factor * league_av_talent :
+                         tm->average_talent;
+    } else {
+        average_talent = (tm->average_talent == 0) ?
+                         team_get_average_talents(lig(0).teams) *
+                         (1 + cup_from_clid(tm->clid)->talent_diff) :
+                         tm->average_talent;
         average_talent *= skill_factor;
     }
-	
+
     average_talent = CLAMP(average_talent, 0, const_float_fast(float_player_max_skill));
     tm->average_talent = average_talent;
 
-    if(def_file == NULL)
-    {
-	for(i=0;i<const_int("int_team_cpu_players");i++)
-	{
-	    new = player_new(tm, average_talent, TRUE);
-	    g_array_append_val(tm->players, new);
-	}
-    }
-    else
-    {
-	xml_team_read(tm, def_file);
-	g_free(def_file);
+    if (def_file == NULL) {
+        for (i = 0; i < const_int("int_team_cpu_players"); i++) {
+            new = player_new(tm, average_talent, TRUE);
+            g_array_append_val(tm->players, new);
+        }
+    } else {
+        xml_team_read(tm, def_file);
+        g_free(def_file);
     }
 
-    for(i=0;i<const_int("int_team_cpu_players") - 2;i++)
-	wages += g_array_index(tm->players, Player, i).wage;
+    for (i = 0; i < const_int("int_team_cpu_players") - 2; i++)
+        wages += g_array_index(tm->players, Player, i).wage;
 
-    tm->stadium.capacity = 
-	math_round_integer((gint)rint((wages / (gfloat)const_int("int_team_stadium_ticket_price")) *
-				      const_float("float_team_stadium_size_wage_factor")), 2);
+    tm->stadium.capacity =
+            math_round_integer((gint) rint((wages / (gfloat) const_int("int_team_stadium_ticket_price")) *
+                                           const_float("float_team_stadium_size_wage_factor")), 2);
 }
 
 /** Check whether the team is already part of an
@@ -151,29 +142,28 @@ team_generate_players_stadium(Team *tm, gfloat av_talent)
     @return TRUE if the team's already participating in a cup,
     FALSE otherwise. */
 gboolean
-query_team_is_in_cups(const Team *tm, gint group)
-{
+query_team_is_in_cups(const Team *tm, gint group) {
 #ifdef DEBUG
     printf("query_team_is_in_cups\n");
 #endif
 
     gint i, j;
 
-    if(group == -1)
-	return FALSE;
+    if (group == -1)
+        return FALSE;
 
-    for(i=0;i<cps->len;i++) {
+    for (i = 0; i < cps->len; i++) {
         const Cup *cup = &cp(i);
         if (cup->group != group)
             continue;
-	for(j=0;j<cup->teams->len;j++) {
+        for (j = 0; j < cup->teams->len; j++) {
             const Team *team = g_ptr_array_index(cup->teams, j);
             if (team == tm) {
-                if(debug > 90)
-                        g_print("team %s group %d found in %s (%s) \n", tm->name,
-				group, cp(i).name, cp(i).sid);
-		return TRUE;
-	    }
+                if (debug > 90)
+                    g_print("team %s group %d found in %s (%s) \n", tm->name,
+                            group, cp(i).name, cp(i).sid);
+                return TRUE;
+            }
         }
     }
     return FALSE;
@@ -184,17 +174,16 @@ query_team_is_in_cups(const Team *tm, gint group)
     @param cup The cup.
     @return TRUE or FALSE. */
 gboolean
-query_team_is_in_cup(const Team *tm, const Cup *cup)
-{
+query_team_is_in_cup(const Team *tm, const Cup *cup) {
 #ifdef DEBUG
     printf("query_team_is_in_cup\n");
 #endif
 
     gint i;
 
-    for(i=0;i<cup->teams->len;i++)
+    for (i = 0; i < cup->teams->len; i++)
         if (tm == g_ptr_array_index(cup->teams, i))
-	    return TRUE;
+            return TRUE;
 
     return FALSE;
 }
@@ -204,9 +193,8 @@ query_team_is_in_cup(const Team *tm, const Cup *cup)
     @param teams The teams array we use.
     @param team_ptrs NULL or a pointer array we append to
     @return A GPtrArray containing pointers to the teams. */
-GPtrArray*
-team_get_pointers_from_array(const GArray *teams, GPtrArray *team_ptrs)
-{
+GPtrArray *
+team_get_pointers_from_array(const GArray *teams, GPtrArray *team_ptrs) {
 #ifdef DEBUG
     printf("team_get_pointers_from_array\n");
 #endif
@@ -214,14 +202,13 @@ team_get_pointers_from_array(const GArray *teams, GPtrArray *team_ptrs)
     gint i;
     GPtrArray *team_pointers = g_ptr_array_new();
 
-    for(i=0;i<teams->len;i++)
-	g_ptr_array_add(team_pointers, (gpointer)&g_array_index(teams, Team, i));
+    for (i = 0; i < teams->len; i++)
+        g_ptr_array_add(team_pointers, (gpointer) &g_array_index(teams, Team, i));
 
-    if(team_ptrs != NULL)
-    {
-        for(i = 0; i < team_ptrs->len; i++)
+    if (team_ptrs != NULL) {
+        for (i = 0; i < team_ptrs->len; i++)
             g_ptr_array_add(team_pointers, g_ptr_array_index(team_ptrs, i));
-        
+
         g_ptr_array_free(team_ptrs, TRUE);
     }
 
@@ -230,60 +217,58 @@ team_get_pointers_from_array(const GArray *teams, GPtrArray *team_ptrs)
 
 /** Return the pointer to the team belonging to
     the id. */
-Team*
-team_of_id(gint id)
-{
+Team *
+team_of_id(gint id) {
 #ifdef DEBUG
     printf("team_of_id\n");
 #endif
 
     gint i, j, k;
 
-    for(i=0;i<ligs->len;i++)
-	for(j=0;j<lig(i).teams->len;j++) {
-	    Team *team = g_ptr_array_index(lig(i).teams, j);
-	    if(team->id == id)
-		return team;
-    }
+    for (i = 0; i < ligs->len; i++)
+        for (j = 0; j < lig(i).teams->len; j++) {
+            Team *team = g_ptr_array_index(lig(i).teams, j);
+            if (team->id == id)
+                return team;
+        }
 
     for (i = 0; i < country_list->len; i++) {
         Country *country = g_ptr_array_index(country_list, i);
-	for (j = 0; j < country->leagues->len; j++) {
-	    League *league = &g_array_index(country->leagues, League, j);
-	    for (k = 0; k < league->teams->len; k++) {
+        for (j = 0; j < country->leagues->len; j++) {
+            League *league = &g_array_index(country->leagues, League, j);
+            for (k = 0; k < league->teams->len; k++) {
                 Team *team = g_ptr_array_index(league->teams, k);
-		if (team->id == id)
-		    return team;
-	    }
+                if (team->id == id)
+                    return team;
+            }
         }
     }
 
-    main_exit_program(EXIT_POINTER_NOT_FOUND, 
-		      "team_of_id: team with id %d not found.", id);
+    main_exit_program(EXIT_POINTER_NOT_FOUND,
+                      "team_of_id: team with id %d not found.", id);
 
     return NULL;
 }
 
 /** Return the pointer to the team belonging to the sid. */
 Team *
-team_of_sid(const char *sid, const Country *country)
-{
+team_of_sid(const char *sid, const Country *country) {
     gint i, j, k;
     for (i = 0; i < country->leagues->len; i++) {
         const League *league = &g_array_index(country->leagues, League, i);
-        for (j = 0; j < league->teams->len; j++ ) {
+        for (j = 0; j < league->teams->len; j++) {
             Team *team = g_ptr_array_index(league->teams, j);
             if (!strcmp(team->name, sid))
                 return team;
         }
     }
 
-    for( i = 0; i < country->cups->len; i++) {
+    for (i = 0; i < country->cups->len; i++) {
         const Cup *cup = &g_array_index(country->cups, Cup, i);
         for (j = 0; j < cup->rounds->len; j++) {
             const CupRound *round = &g_array_index(cup->rounds, CupRound, j);
             for (k = 0; k < round->team_ptrs->len; k++) {
-                Team * team = g_ptr_array_index(round->team_ptrs, k);
+                Team *team = g_ptr_array_index(round->team_ptrs, k);
                 if (!strcmp(team->name, sid))
                     return team;
             }
@@ -291,7 +276,7 @@ team_of_sid(const char *sid, const Country *country)
     }
 
     main_exit_program(EXIT_POINTER_NOT_FOUND,
-		      "team_of_sid: team with sid %s not found.", sid);
+                      "team_of_sid: team with sid %s not found.", sid);
 
     return NULL;
 }
@@ -299,9 +284,8 @@ team_of_sid(const char *sid, const Country *country)
 /** Return a pointer to the next or last fixture the team participates in.
     @param tm The team we examine.
     @return The pointer to the fixture or NULL if none is found. */
-const Fixture*
-team_get_fixture(const Team *tm, gboolean last_fixture)
-{
+const Fixture *
+team_get_fixture(const Team *tm, gboolean last_fixture) {
 #ifdef DEBUG
     printf("team_get_fixture\n");
 #endif
@@ -309,95 +293,81 @@ team_get_fixture(const Team *tm, gboolean last_fixture)
     gint i, j;
     const Fixture *fix = NULL;
 
-    if(!last_fixture && 
-       (stat0 == STATUS_LIVE_GAME_PAUSE ||
-	stat0 == STATUS_SHOW_LIVE_GAME) &&
-       (tm == ((LiveGame*)statp)->fix->teams[0] ||
-	tm == ((LiveGame*)statp)->fix->teams[1]))
-	return ((LiveGame*)statp)->fix;
-    
-    if(!last_fixture)
-    {
-	if(tm->clid < ID_CUP_START)
-	    for(i=0;i<ligs->len;i++)
-	    {
-		if(!query_league_active(&lig(i)))
-		    continue;
+    if (!last_fixture &&
+        (stat0 == STATUS_LIVE_GAME_PAUSE ||
+         stat0 == STATUS_SHOW_LIVE_GAME) &&
+        (tm == ((LiveGame *) statp)->fix->teams[0] ||
+         tm == ((LiveGame *) statp)->fix->teams[1]))
+        return ((LiveGame *) statp)->fix;
 
-		if (!query_team_is_in_teams_array(tm, lig(i).teams))
-		    continue;
+    if (!last_fixture) {
+        if (tm->clid < ID_CUP_START)
+            for (i = 0; i < ligs->len; i++) {
+                if (!query_league_active(&lig(i)))
+                    continue;
 
-		for(j=0;j<lig(i).fixtures->len;j++) {
-		    const Fixture *current_fixture = &g_array_index(lig(i).fixtures, Fixture, j);
-		    if(current_fixture->attendance == -1 &&
-		       query_fixture_team_involved(current_fixture, tm->id) &&
-                       (fix == NULL ||
-                       query_fixture_is_earlier(current_fixture, fix)))
-		    {
+                if (!query_team_is_in_teams_array(tm, lig(i).teams))
+                    continue;
+
+                for (j = 0; j < lig(i).fixtures->len; j++) {
+                    const Fixture *current_fixture = &g_array_index(lig(i).fixtures, Fixture, j);
+                    if (current_fixture->attendance == -1 &&
+                        query_fixture_team_involved(current_fixture, tm->id) &&
+                        (fix == NULL ||
+                         query_fixture_is_earlier(current_fixture, fix))) {
                         fix = current_fixture;
                         break;
-		    }
-		}
-	    }
+                    }
+                }
+            }
 
-	for(i=0;i<acps->len;i++)
-	    if(fix == NULL ||
-	       fix->week_number != week ||
-	       fix->week_round_number != week_round)
-	    {
-		if(query_league_cup_has_property(acp(i)->id, "national") ||
-		   query_team_is_in_cup(tm, acp(i)))
-		{
-		    for(j=0;j<acp(i)->fixtures->len;j++)
-			if(g_array_index(acp(i)->fixtures, Fixture, j).attendance == -1 &&
-			   query_fixture_team_involved((&g_array_index(acp(i)->fixtures, Fixture, j)), tm->id) &&
-			   (fix == NULL ||
-			    query_fixture_is_earlier(&g_array_index(acp(i)->fixtures, Fixture, j), fix)))
-			{
-			    fix = &g_array_index(acp(i)->fixtures, Fixture, j);
-			    break;
-			}
-		}
-	    }
-    }
-    else
-    {
-	if(tm->clid < ID_CUP_START)
-	    for(i=0;i<ligs->len;i++)
-	    {
-		if(query_league_active(&lig(i)))
-		{
-		    for(j=lig(i).fixtures->len - 1;j>=0;j--)
-			if(g_array_index(lig(i).fixtures, Fixture, j).attendance != -1 &&
-			   query_fixture_team_involved((&g_array_index(lig(i).fixtures, Fixture, j)), tm->id) &&
-                           (fix == NULL ||
-                            query_fixture_is_later(&g_array_index(lig(i).fixtures, Fixture, j), fix)))
-			{
-			    fix = &g_array_index(lig(i).fixtures, Fixture, j);
-			    break;
-			}
-		}
-	    }
+        for (i = 0; i < acps->len; i++)
+            if (fix == NULL ||
+                fix->week_number != week ||
+                fix->week_round_number != week_round) {
+                if (query_league_cup_has_property(acp(i)->id, "national") ||
+                    query_team_is_in_cup(tm, acp(i))) {
+                    for (j = 0; j < acp(i)->fixtures->len; j++)
+                        if (g_array_index(acp(i)->fixtures, Fixture, j).attendance == -1 &&
+                            query_fixture_team_involved((&g_array_index(acp(i)->fixtures, Fixture, j)), tm->id) &&
+                            (fix == NULL ||
+                             query_fixture_is_earlier(&g_array_index(acp(i)->fixtures, Fixture, j), fix))) {
+                            fix = &g_array_index(acp(i)->fixtures, Fixture, j);
+                            break;
+                        }
+                }
+            }
+    } else {
+        if (tm->clid < ID_CUP_START)
+            for (i = 0; i < ligs->len; i++) {
+                if (query_league_active(&lig(i))) {
+                    for (j = lig(i).fixtures->len - 1; j >= 0; j--)
+                        if (g_array_index(lig(i).fixtures, Fixture, j).attendance != -1 &&
+                            query_fixture_team_involved((&g_array_index(lig(i).fixtures, Fixture, j)), tm->id) &&
+                            (fix == NULL ||
+                             query_fixture_is_later(&g_array_index(lig(i).fixtures, Fixture, j), fix))) {
+                            fix = &g_array_index(lig(i).fixtures, Fixture, j);
+                            break;
+                        }
+                }
+            }
 
-	for(i=0;i<acps->len;i++)
-	    if(fix == NULL ||
-	       fix->week_number != week ||
-	       fix->week_round_number != week_round - 1)
-	    {
-		if(query_league_cup_has_property(acp(i)->id, "national") ||
-		   query_team_is_in_cup(tm, acp(i)))
-		{
-		    for(j=acp(i)->fixtures->len - 1;j>=0;j--)
-			if(g_array_index(acp(i)->fixtures, Fixture, j).attendance != -1 &&
-			   query_fixture_team_involved((&g_array_index(acp(i)->fixtures, Fixture, j)), tm->id) &&
-			   (fix == NULL ||
-			    query_fixture_is_later(&g_array_index(acp(i)->fixtures, Fixture, j), fix)))
-			{
-			    fix = &g_array_index(acp(i)->fixtures, Fixture, j);
-			    break;
-			}
-		}
-	    }
+        for (i = 0; i < acps->len; i++)
+            if (fix == NULL ||
+                fix->week_number != week ||
+                fix->week_round_number != week_round - 1) {
+                if (query_league_cup_has_property(acp(i)->id, "national") ||
+                    query_team_is_in_cup(tm, acp(i))) {
+                    for (j = acp(i)->fixtures->len - 1; j >= 0; j--)
+                        if (g_array_index(acp(i)->fixtures, Fixture, j).attendance != -1 &&
+                            query_fixture_team_involved((&g_array_index(acp(i)->fixtures, Fixture, j)), tm->id) &&
+                            (fix == NULL ||
+                             query_fixture_is_later(&g_array_index(acp(i)->fixtures, Fixture, j), fix))) {
+                            fix = &g_array_index(acp(i)->fixtures, Fixture, j);
+                            break;
+                        }
+                }
+            }
     }
 
     return fix;
@@ -407,17 +377,16 @@ team_get_fixture(const Team *tm, gboolean last_fixture)
     @param tm The team we examine.
     @return The user's index in the #users array or -1.*/
 gint
-team_is_user(const Team *tm)
-{
+team_is_user(const Team *tm) {
 #ifdef DEBUG
     printf("team_is_user\n");
 #endif
 
     gint i;
 
-    for(i=0;i<users->len;i++)
-	if(usr(i).tm == tm)
-	    return i;
+    for (i = 0; i < users->len; i++)
+        if (usr(i).tm == tm)
+            return i;
 
     return -1;
 }
@@ -426,17 +395,16 @@ team_is_user(const Team *tm)
     @param team_name The team name we examine.
     @return The user's index in the #users array or -1.*/
 gint
-team_name_is_user(const gchar *team_name)
-{
+team_name_is_user(const gchar *team_name) {
 #ifdef DEBUG
     printf("team_name_is_user\n");
 #endif
 
     gint i;
 
-    for(i=0;i<users->len;i++)
-	if(strcmp(team_name, usr(i).tm->name) == 0)
-	    return i;
+    for (i = 0; i < users->len; i++)
+        if (strcmp(team_name, usr(i).tm->name) == 0)
+            return i;
 
     return -1;
 }
@@ -446,39 +414,33 @@ team_name_is_user(const gchar *team_name)
     @param tm The team we examine.
     @param cskill Whether to take into account all players. */
 gfloat
-team_get_average_skill(const Team *tm, gboolean cskill)
-{
+team_get_average_skill(const Team *tm, gboolean cskill) {
 #ifdef DEBUG
     printf("team_get_average_skill\n");
 #endif
 
     gint i, counter = 0;
     gfloat sum = 0;
-    
-    if(!cskill)
-    {
-	for(i=0;i<tm->players->len;i++)
-	    if(player_of_idx_team(tm, i)->cskill != 0)
-	    {
-		sum += player_of_idx_team(tm, i)->skill;
-		counter++;
-	    }
-    }
-    else
-	for(i=0;i<11;i++)
-	{
-	    sum += (player_get_game_skill(player_of_idx_team(tm, i), FALSE, FALSE));
-	    counter++;
-	}
 
-    return (counter > 0) ? sum / (gfloat)counter : 0;
+    if (!cskill) {
+        for (i = 0; i < tm->players->len; i++)
+            if (player_of_idx_team(tm, i)->cskill != 0) {
+                sum += player_of_idx_team(tm, i)->skill;
+                counter++;
+            }
+    } else
+        for (i = 0; i < 11; i++) {
+            sum += (player_get_game_skill(player_of_idx_team(tm, i), FALSE, FALSE));
+            counter++;
+        }
+
+    return (counter > 0) ? sum / (gfloat) counter : 0;
 }
 
 /** Return the overall average talent of the team's players.
     @param tm The team we examine. */
 gfloat
-team_get_average_talent(const Team *tm)
-{
+team_get_average_talent(const Team *tm) {
 #ifdef DEBUG
     printf("team_get_average_talent\n");
 #endif
@@ -486,51 +448,47 @@ team_get_average_talent(const Team *tm)
     gint i;
     gfloat sum = 0;
 
-    for(i=0;i<tm->players->len;i++)
-	sum += player_of_idx_team(tm, i)->talent;
+    for (i = 0; i < tm->players->len; i++)
+        sum += player_of_idx_team(tm, i)->talent;
 
-    return (tm->players->len > 0) ? sum / (gfloat)tm->players->len : 0;
+    return (tm->players->len > 0) ? sum / (gfloat) tm->players->len : 0;
 }
 
 
 /** Return the rank of the team in the league tables. */
 gint
-team_get_league_rank(const Team *tm, gint clid)
-{
+team_get_league_rank(const Team *tm, gint clid) {
 #ifdef DEBUG
     printf("team_get_league_rank\n");
 #endif
 
     gint i, clid_local, rank = 0;
     GArray *elements = NULL;
-    
+
     clid_local = (clid == -1) ? team_get_table_clid(tm) : clid;
 
-    if(clid_local < ID_CUP_START)
-    {
-	if(!query_league_active(league_from_clid(clid_local)))
-	    return 0;
-
-	elements = league_table(league_from_clid(clid_local))->elements;
-    }
-    else
-    {
-        if(cup_has_tables(clid_local) == -1)
+    if (clid_local < ID_CUP_START) {
+        if (!query_league_active(league_from_clid(clid_local)))
             return 0;
 
-	rank = team_get_cup_rank(
-	    tm, &g_array_index(cup_from_clid(clid_local)->rounds, CupRound,
-			       cup_has_tables(clid_local)), FALSE);
-	return (rank == -1) ? 0 : rank;
+        elements = league_table(league_from_clid(clid_local))->elements;
+    } else {
+        if (cup_has_tables(clid_local) == -1)
+            return 0;
+
+        rank = team_get_cup_rank(
+                tm, &g_array_index(cup_from_clid(clid_local)->rounds, CupRound,
+                                   cup_has_tables(clid_local)), FALSE);
+        return (rank == -1) ? 0 : rank;
     }
 
-    for(i=0;i<elements->len;i++)
-	if(g_array_index(elements, TableElement, i).team == tm)
-	    return i + 1;
-    
-    main_exit_program(EXIT_INT_NOT_FOUND, 
-		      "team_get_league_rank: no rank found for team %s in league %s. \n",
-		      tm->name, league_cup_get_name_string(tm->clid));
+    for (i = 0; i < elements->len; i++)
+        if (g_array_index(elements, TableElement, i).team == tm)
+            return i + 1;
+
+    main_exit_program(EXIT_INT_NOT_FOUND,
+                      "team_get_league_rank: no rank found for team %s in league %s. \n",
+                      tm->name, league_cup_get_name_string(tm->clid));
 
     return -1;
 }
@@ -538,25 +496,23 @@ team_get_league_rank(const Team *tm, gint clid)
 /** Return the rank of the team in the round robin stage.
     @param abort Whether to exit if no corresponding entry can be found. */
 gint
-team_get_cup_rank(const Team *tm, const CupRound *cupround, gboolean abort)
-{
+team_get_cup_rank(const Team *tm, const CupRound *cupround, gboolean abort) {
 #ifdef DEBUG
     printf("team_get_cup_rank\n");
 #endif
 
     gint i, j;
 
-    for(i=0;i<cupround->tables->len;i++)
-    {
-	for(j=0;j<g_array_index(cupround->tables, Table, i).elements->len;j++)
-	    if(g_array_index(g_array_index(cupround->tables, Table, i).elements, TableElement, j).team == tm)
-		return j + 1;
+    for (i = 0; i < cupround->tables->len; i++) {
+        for (j = 0; j < g_array_index(cupround->tables, Table, i).elements->len; j++)
+            if (g_array_index(g_array_index(cupround->tables, Table, i).elements, TableElement, j).team == tm)
+                return j + 1;
     }
 
-    if(abort)
-	main_exit_program(EXIT_INT_NOT_FOUND, 
-			  "team_get_cup_rank: no rank found for team %s. \n ", 
-			  tm->name);
+    if (abort)
+        main_exit_program(EXIT_INT_NOT_FOUND,
+                          "team_get_cup_rank: no rank found for team %s. \n ",
+                          tm->name);
 
     return -1;
 }
@@ -566,25 +522,23 @@ team_get_cup_rank(const Team *tm, const CupRound *cupround, gboolean abort)
     @param tm The team we examine.
     @return A new structure. */
 gint
-team_find_appropriate_structure(const Team *tm)
-{
+team_find_appropriate_structure(const Team *tm) {
 #ifdef DEBUG
     printf("team_find_appropriate_structure\n");
 #endif
 
-  gint i;
-  gint structure = 0;
+    gint i;
+    gint structure = 0;
 
-  for(i=0;i<11;i++)
-      if(player_of_idx_team(tm, i)->cskill > 0 && player_of_idx_team(tm, i)->cpos != 0)
-      {
-	  if(player_of_idx_team(tm, i)->pos != 0)
-	      structure += (gint)rint(powf(10, PLAYER_POS_FORWARD - player_of_idx_team(tm, i)->pos));
-	  else
-	      structure += (gint)rint(powf(10, PLAYER_POS_FORWARD - player_of_idx_team(tm, i)->cpos));
-      }
+    for (i = 0; i < 11; i++)
+        if (player_of_idx_team(tm, i)->cskill > 0 && player_of_idx_team(tm, i)->cpos != 0) {
+            if (player_of_idx_team(tm, i)->pos != 0)
+                structure += (gint) rint(powf(10, PLAYER_POS_FORWARD - player_of_idx_team(tm, i)->pos));
+            else
+                structure += (gint) rint(powf(10, PLAYER_POS_FORWARD - player_of_idx_team(tm, i)->cpos));
+        }
 
-  return structure;
+    return structure;
 }
 
 /** Change the structure of a team and the appropriate
@@ -592,24 +546,22 @@ team_find_appropriate_structure(const Team *tm)
     @param tm The team.
     @param new_structure The new structure value, e.g. 442. */
 void
-team_change_structure(Team *tm, gint new_structure)
-{
+team_change_structure(Team *tm, gint new_structure) {
 #ifdef DEBUG
     printf("team_change_structure\n");
 #endif
 
-  gint i;
+    gint i;
 
-  tm->structure = new_structure;
+    tm->structure = new_structure;
 
-  for(i=1;i<11;i++)
-    {
-	player_of_idx_team(tm, i)->cpos =
-	    player_get_position_from_structure(new_structure, i);
+    for (i = 1; i < 11; i++) {
+        player_of_idx_team(tm, i)->cpos =
+                player_get_position_from_structure(new_structure, i);
 
-	player_of_idx_team(tm, i)->cskill =
-	    player_get_cskill(player_of_idx_team(tm, i), 
-			      player_of_idx_team(tm, i)->cpos, TRUE);
+        player_of_idx_team(tm, i)->cskill =
+                player_get_cskill(player_of_idx_team(tm, i),
+                                  player_of_idx_team(tm, i)->cpos, TRUE);
     }
 }
 
@@ -617,34 +569,33 @@ team_change_structure(Team *tm, gint new_structure)
    favoured position and sort the substitutes by position.
    @param tm The team we rearrange. */
 void
-team_rearrange(Team *tm)
-{
+team_rearrange(Team *tm) {
 #ifdef DEBUG
     printf("team_rearrange\n");
 #endif
 
     gint i;
 
-    g_array_sort_with_data(tm->players, (GCompareDataFunc)player_compare_func,
-			   GINT_TO_POINTER(100 + PLAYER_COMPARE_ATTRIBUTE_POS));
+    g_array_sort_with_data(tm->players, (GCompareDataFunc) player_compare_func,
+                           GINT_TO_POINTER(100 + PLAYER_COMPARE_ATTRIBUTE_POS));
 
-    for(i=0;i<tm->players->len;i++)
-    {
-	player_of_idx_team(tm, i)->cpos = (i < 11) ?
-	    player_get_position_from_structure(tm->structure, i) : player_of_idx_team(tm, i)->pos;
-	if(player_of_idx_team(tm, i)->cskill > 0)
-	    player_of_idx_team(tm, i)->cskill = (i < 11) ?
-		player_get_cskill(player_of_idx_team(tm, i), 
-				  player_of_idx_team(tm, i)->cpos, TRUE) : player_of_idx_team(tm, i)->skill;
+    for (i = 0; i < tm->players->len; i++) {
+        player_of_idx_team(tm, i)->cpos = (i < 11) ?
+                                          player_get_position_from_structure(tm->structure, i) : player_of_idx_team(tm,
+                                                                                                                    i)->pos;
+        if (player_of_idx_team(tm, i)->cskill > 0)
+            player_of_idx_team(tm, i)->cskill = (i < 11) ?
+                                                player_get_cskill(player_of_idx_team(tm, i),
+                                                                  player_of_idx_team(tm, i)->cpos, TRUE)
+                                                         : player_of_idx_team(tm, i)->skill;
     }
 }
 
 /** Return the name of the current setting of a team attribute, e.g. style.
     @param  tm The team.
     @param attribute The attribute. */
-gchar*
-team_attribute_to_char(gint attribute, gint value)
-{
+gchar *
+team_attribute_to_char(gint attribute, gint value) {
 #ifdef DEBUG
     printf("team_attribute_to_char\n");
 #endif
@@ -653,42 +604,39 @@ team_attribute_to_char(gint attribute, gint value)
     printf("team_attribute_to_char\n");
 #endif
 
-    switch(attribute)
-    {
-	default:
-	    main_exit_program(EXIT_INT_NOT_FOUND, 
-			      "team_attribute_to_char: unknown attribute %d\n", 
-			      attribute);
-	    break;
-	case TEAM_ATTRIBUTE_STYLE:
-	    switch(value)
-	    {
-		case -2:
-		    return _("ALL OUT DEFEND");
-		case -1:
-		    return _("DEFEND");
-		case 0:
-		    return _("BALANCED");
-		case 1:
-		    return _("ATTACK");
-		case 2:
-		    return _("ALL OUT ATTACK");
-	    }
-	    break;
-	case TEAM_ATTRIBUTE_BOOST:
-	    switch(value)
-	    {
-		case -1:
-		    /* Boost value. */
-		    return _("ANTI");
-		case 0:
-		    /* Boost value. */
-		    return _("OFF");
-		case 1:
-		    /* Boost value. */
-		    return _("ON");
-	    }
-	    break;
+    switch (attribute) {
+        default:
+            main_exit_program(EXIT_INT_NOT_FOUND,
+                              "team_attribute_to_char: unknown attribute %d\n",
+                              attribute);
+            break;
+        case TEAM_ATTRIBUTE_STYLE:
+            switch (value) {
+                case -2:
+                    return _("ALL OUT DEFEND");
+                case -1:
+                    return _("DEFEND");
+                case 0:
+                    return _("BALANCED");
+                case 1:
+                    return _("ATTACK");
+                case 2:
+                    return _("ALL OUT ATTACK");
+            }
+            break;
+        case TEAM_ATTRIBUTE_BOOST:
+            switch (value) {
+                case -1:
+                    /* Boost value. */
+                    return _("ANTI");
+                case 0:
+                    /* Boost value. */
+                    return _("OFF");
+                case 1:
+                    /* Boost value. */
+                    return _("ON");
+            }
+            break;
     }
 
     return NULL;
@@ -698,117 +646,109 @@ team_attribute_to_char(gint attribute, gint value)
     @param attribute The attribute.
     @param new_value The new value. */
 void
-team_change_attribute_with_message(Team *tm, gint attribute, gint new_value)
-{
+team_change_attribute_with_message(Team *tm, gint attribute, gint new_value) {
 #ifdef DEBUG
     printf("team_change_attribute_with_message\n");
 #endif
 
-    switch(attribute)
-    {
-	default:
-	    debug_print_message("team_attribute_to_char: unknown attribute %d\n", attribute);
-	    break;
-	case TEAM_ATTRIBUTE_STYLE:
-	    current_user.tm->style = new_value;
-	    game_gui_print_message(_("Team style changed to %s."), 
-				   team_attribute_to_char(attribute, new_value));
-	    break;
-	case TEAM_ATTRIBUTE_BOOST:
-	    current_user.tm->boost = new_value;
-	    if(new_value == 1)
-		game_gui_print_message(
-		    _("Boost changed to %s (costs %d per minute)."), 
-		    team_attribute_to_char(attribute, new_value),
-		    (gint)rint(finance_wage_unit(current_user.tm) *
-			       const_float("float_boost_cost_factor")));
-	    else
-		game_gui_print_message(_("Boost changed to %s."), 
-				       team_attribute_to_char(attribute, new_value));
-	    break;
+    switch (attribute) {
+        default:
+            debug_print_message("team_attribute_to_char: unknown attribute %d\n", attribute);
+            break;
+        case TEAM_ATTRIBUTE_STYLE:
+            current_user.tm->style = new_value;
+            game_gui_print_message(_("Team style changed to %s."),
+                                   team_attribute_to_char(attribute, new_value));
+            break;
+        case TEAM_ATTRIBUTE_BOOST:
+            current_user.tm->boost = new_value;
+            if (new_value == 1)
+                game_gui_print_message(
+                        _("Boost changed to %s (costs %d per minute)."),
+                        team_attribute_to_char(attribute, new_value),
+                        (gint) rint(finance_wage_unit(current_user.tm) *
+                                    const_float("float_boost_cost_factor")));
+            else
+                game_gui_print_message(_("Boost changed to %s."),
+                                       team_attribute_to_char(attribute, new_value));
+            break;
     }
 }
 
 /** Replace some players by new ones in a team. */
 void
-team_update_cpu_new_players(Team *tm)
-{
+team_update_cpu_new_players(Team *tm) {
 #ifdef DEBUG
     printf("team_update_cpu_new_players\n");
 #endif
 
     gint i;
     gint number_of_new = math_rndi(const_int("int_team_new_players_lower"),
-				   const_int("int_team_new_players_upper"));
+                                   const_int("int_team_new_players_upper"));
     gint player_numbers[tm->players->len];
 
     math_generate_permutation(player_numbers, 0, tm->players->len - 1);
 
-    for(i=0;i<number_of_new;i++)
-    {
-	if(!query_transfer_player_is_on_list(player_of_idx_team(tm, player_numbers[i])))
-	    player_replace_by_new(player_of_idx_team(tm, player_numbers[i]), TRUE);
+    for (i = 0; i < number_of_new; i++) {
+        if (!query_transfer_player_is_on_list(player_of_idx_team(tm, player_numbers[i])))
+            player_replace_by_new(player_of_idx_team(tm, player_numbers[i]), TRUE);
     }
 }
 
 /** Increase player ages etc.
     @param tm The user team we examine. */
 void
-team_update_team_weekly(Team *tm)
-{
+team_update_team_weekly(Team *tm) {
 #ifdef DEBUG
     printf("team_update_team_weekly\n");
 #endif
 
     gint i;
 
-    for(i=tm->players->len - 1;i>=0;i--)
-	player_update_weekly(&g_array_index(tm->players, Player, i));
+    for (i = tm->players->len - 1; i >= 0; i--)
+        player_update_weekly(&g_array_index(tm->players, Player, i));
 
-    if(team_is_user(tm) == -1 &&
-       math_rnd(0, 1) < const_float("float_team_new_player_probability"))
-	team_update_cpu_new_players(tm);
+    if (team_is_user(tm) == -1 &&
+        math_rnd(0, 1) < const_float("float_team_new_player_probability"))
+        team_update_cpu_new_players(tm);
 }
 
 /** Regenerate player fitness etc. after a match. 
     @param tm The user team we examine.
     @param clid The fixture clid. */
 void
-team_update_post_match(Team *tm, const Fixture *fix)
-{
+team_update_post_match(Team *tm, const Fixture *fix) {
 #ifdef DEBUG
     printf("team_update_post_match\n");
 #endif
 
     gint i;
 
-    for(i=0;i<tm->players->len;i++)
-	player_update_post_match(player_of_idx_team(tm, i), fix);
+    for (i = 0; i < tm->players->len; i++)
+        player_update_post_match(player_of_idx_team(tm, i), fix);
 }
 
 /** Some updates each round.
     @param tm The user team we examine. */
 void
-team_update_team_week_roundly(Team *tm)
-{
+team_update_team_week_roundly(Team *tm) {
 #ifdef DEBUG
     printf("team_update_team_week_roundly\n");
 #endif
 
     gint i;
 
-    for(i=0;i<tm->players->len;i++)
-	player_update_week_roundly(tm, i);
+    for (i = 0; i < tm->players->len; i++)
+        player_update_week_roundly(tm, i);
 
-    if(team_is_user(tm) == -1)
-	strategy_update_team_pre_match(tm);
+    if (team_is_user(tm) == -1)
+        strategy_update_team_pre_match(tm);
 }
 
 /** Return a value from the league table element going with the team.
     @param type The type of the value. */
 gint
-team_get_table_value(const Team *tm, gint type)
-{
+team_get_table_value(const Team *tm, gint type) {
 #ifdef DEBUG
     printf("team_get_table_value\n");
 #endif
@@ -816,95 +756,88 @@ team_get_table_value(const Team *tm, gint type)
     gint i;
     const GArray *elements = NULL;
 
-    if(tm->clid >= ID_CUP_START)
-	main_exit_program(EXIT_INT_NOT_FOUND, 
-			  "team_get_table_value: team is not a league team: %s \n", 
-			  tm->name);
-    
+    if (tm->clid >= ID_CUP_START)
+        main_exit_program(EXIT_INT_NOT_FOUND,
+                          "team_get_table_value: team is not a league team: %s \n",
+                          tm->name);
+
     elements = league_table(league_from_clid(tm->clid))->elements;
 
-    for(i=0;i<elements->len;i++)
-	if(g_array_index(elements, TableElement, i).team == tm)
-	    break;
+    for (i = 0; i < elements->len; i++)
+        if (g_array_index(elements, TableElement, i).team == tm)
+            break;
 
-    if(i == elements->len)
-	main_exit_program(EXIT_INT_NOT_FOUND, 
-			  "team_get_table_value: table entry not found for team %s \n", 
-			  tm->name);
+    if (i == elements->len)
+        main_exit_program(EXIT_INT_NOT_FOUND,
+                          "team_get_table_value: table entry not found for team %s \n",
+                          tm->name);
 
     return g_array_index(elements, TableElement, i).values[type];
 }
 
 /** Compare function for team arrays or pointer arrays. */
 gint
-team_compare_func(gconstpointer a, gconstpointer b, gpointer data)
-{
+team_compare_func(gconstpointer a, gconstpointer b, gpointer data) {
 #ifdef DEBUG
     printf("team_compare_func\n");
 #endif
 
     gint type = GPOINTER_TO_INT(data) % 100;
-    const Team *tm1 = (GPOINTER_TO_INT(data) < 100) ? 
-	*(const Team**)a : (const Team*)a;
-    const Team *tm2 = (GPOINTER_TO_INT(data) < 100) ? 
-	*(const Team**)b : (const Team*)b;
+    const Team *tm1 = (GPOINTER_TO_INT(data) < 100) ?
+                      *(const Team **) a : (const Team *) a;
+    const Team *tm2 = (GPOINTER_TO_INT(data) < 100) ?
+                      *(const Team **) b : (const Team *) b;
     gint return_value = 0;
 
-    if(type == TEAM_COMPARE_LEAGUE_RANK)
-    {
-	if(tm1->clid == tm2->clid)
-	    return_value = misc_int_compare(team_get_league_rank(tm2, -1),
+    if (type == TEAM_COMPARE_LEAGUE_RANK) {
+        if (tm1->clid == tm2->clid)
+            return_value = misc_int_compare(team_get_league_rank(tm2, -1),
                                             team_get_league_rank(tm1, -1));
-	else
-	    return_value = misc_int_compare(league_from_clid(tm2->clid)->layer,
-					    league_from_clid(tm1->clid)->layer);
-    }
-    else if(type == TEAM_COMPARE_LEAGUE_LAYER)
-	return_value = 
-	    (tm1->clid >= ID_CUP_START || tm2->clid >= ID_CUP_START) ?
-	    0 : misc_int_compare(league_from_clid(tm2->clid)->layer,
-				 league_from_clid(tm1->clid)->layer);
-    else if(type == TEAM_COMPARE_OFFENSIVE)
-    {
-	gint gf1 = team_get_table_value(tm1, TABLE_GF),
-	    gf2 = team_get_table_value(tm2, TABLE_GF),
-	    ga1 = team_get_table_value(tm1, TABLE_GA),
-	    ga2 = team_get_table_value(tm2, TABLE_GA);
+        else
+            return_value = misc_int_compare(league_from_clid(tm2->clid)->layer,
+                                            league_from_clid(tm1->clid)->layer);
+    } else if (type == TEAM_COMPARE_LEAGUE_LAYER)
+        return_value =
+                (tm1->clid >= ID_CUP_START || tm2->clid >= ID_CUP_START) ?
+                0 : misc_int_compare(league_from_clid(tm2->clid)->layer,
+                                     league_from_clid(tm1->clid)->layer);
+    else if (type == TEAM_COMPARE_OFFENSIVE) {
+        gint gf1 = team_get_table_value(tm1, TABLE_GF),
+                gf2 = team_get_table_value(tm2, TABLE_GF),
+                ga1 = team_get_table_value(tm1, TABLE_GA),
+                ga2 = team_get_table_value(tm2, TABLE_GA);
 
-	if(gf1 > gf2)
-	    return_value = -1;
-	else if(gf1 < gf2)
-	    return_value = 1;
-	else if(ga1 < ga2)
-	    return_value =  -1;
-	else if(ga1 > ga2)
-	    return_value = 1;
-	else
-	    return_value = 0;
-    }
-    else if(type == TEAM_COMPARE_DEFENSE)
-    {
-	gint gf1 = team_get_table_value(tm1, TABLE_GF),
-	    gf2 = team_get_table_value(tm2, TABLE_GF),
-	    ga1 = team_get_table_value(tm1, TABLE_GA),
-	    ga2 = team_get_table_value(tm2, TABLE_GA);
+        if (gf1 > gf2)
+            return_value = -1;
+        else if (gf1 < gf2)
+            return_value = 1;
+        else if (ga1 < ga2)
+            return_value = -1;
+        else if (ga1 > ga2)
+            return_value = 1;
+        else
+            return_value = 0;
+    } else if (type == TEAM_COMPARE_DEFENSE) {
+        gint gf1 = team_get_table_value(tm1, TABLE_GF),
+                gf2 = team_get_table_value(tm2, TABLE_GF),
+                ga1 = team_get_table_value(tm1, TABLE_GA),
+                ga2 = team_get_table_value(tm2, TABLE_GA);
 
-	if(ga1 > ga2)
-	    return_value = 1;
-	else if(ga1 < ga2)
-	    return_value = -1;
-	else if(gf1 > gf2)
-	    return_value =  -1;
-	else if(gf1 < gf2)
-	    return_value = 1;
-	else
-	    return_value = 0;
-    }
-    else if(type == TEAM_COMPARE_UNSORTED)
-	return_value = 0;
-    else if(type == TEAM_COMPARE_AV_SKILL)
-	return_value = misc_float_compare(team_get_average_skill(tm1, FALSE),
-					  team_get_average_skill(tm2, FALSE));
+        if (ga1 > ga2)
+            return_value = 1;
+        else if (ga1 < ga2)
+            return_value = -1;
+        else if (gf1 > gf2)
+            return_value = -1;
+        else if (gf1 < gf2)
+            return_value = 1;
+        else
+            return_value = 0;
+    } else if (type == TEAM_COMPARE_UNSORTED)
+        return_value = 0;
+    else if (type == TEAM_COMPARE_AV_SKILL)
+        return_value = misc_float_compare(team_get_average_skill(tm1, FALSE),
+                                          team_get_average_skill(tm2, FALSE));
 
     return return_value;
 }
@@ -913,28 +846,24 @@ team_compare_func(gconstpointer a, gconstpointer b, gpointer data)
     specified function. 
     @param type The integer to pass to the compare function.
     @param cup Whether we return the international cup teams or league teams. */
-GPtrArray*
-team_get_sorted(GCompareDataFunc compare_function, gint type, gboolean cup)
-{
+GPtrArray *
+team_get_sorted(GCompareDataFunc compare_function, gint type, gboolean cup) {
 #ifdef DEBUG
     printf("team_get_sorted\n");
 #endif
 
-  
+
     gint i, j;
     GPtrArray *teams = g_ptr_array_new();
 
-    if(!cup)
-    {
-	for(i=0;i<ligs->len;i++)
-	    for(j=0;j<lig(i).teams->len;j++)
-		g_ptr_array_add(teams, g_ptr_array_index(lig(i).teams, j));
-    }
-    else
-    {
-	for(i=0;i<acps->len;i++)
-	    for(j=0;j<acp(i)->teams->len;j++)
-		g_ptr_array_add(teams, g_ptr_array_index(acp(i)->teams, j));
+    if (!cup) {
+        for (i = 0; i < ligs->len; i++)
+            for (j = 0; j < lig(i).teams->len; j++)
+                g_ptr_array_add(teams, g_ptr_array_index(lig(i).teams, j));
+    } else {
+        for (i = 0; i < acps->len; i++)
+            for (j = 0; j < acp(i)->teams->len; j++)
+                g_ptr_array_add(teams, g_ptr_array_index(acp(i)->teams, j));
     }
 
     g_ptr_array_sort_with_data(teams, compare_function, GINT_TO_POINTER(type));
@@ -944,9 +873,8 @@ team_get_sorted(GCompareDataFunc compare_function, gint type, gboolean cup)
 
 /** Find a new team for a user, depending on whether he's been
     fired or very successful. */
-Team*
-team_get_new(const Team *tm, gboolean fire)
-{
+Team *
+team_get_new(const Team *tm, gboolean fire) {
 #ifdef DEBUG
     printf("team_get_new\n");
 #endif
@@ -954,35 +882,34 @@ team_get_new(const Team *tm, gboolean fire)
     gint i;
     gint lower = 0, upper = 0;
     gint bound1 = (fire) ? const_int("int_team_new_bound_upper") :
-	const_int("int_team_new_bound_lower"),
-	bound2 = (fire) ? const_int("int_team_new_bound_lower") :
-	const_int("int_team_new_bound_upper");
+                  const_int("int_team_new_bound_lower"),
+            bound2 = (fire) ? const_int("int_team_new_bound_lower") :
+                     const_int("int_team_new_bound_upper");
     gint idx = -1;
-    GPtrArray *teams = 
-	team_get_sorted(team_compare_func, TEAM_COMPARE_LEAGUE_RANK, FALSE);
+    GPtrArray *teams =
+            team_get_sorted(team_compare_func, TEAM_COMPARE_LEAGUE_RANK, FALSE);
     Team *return_value;
 
-    for(i=0;i<teams->len;i++)
-	if((Team*)g_ptr_array_index(teams, i) != tm)
-	    upper++;
-	else
-	{
-	    idx = i;
-	    break;
-	}
+    for (i = 0; i < teams->len; i++)
+        if ((Team *) g_ptr_array_index(teams, i) != tm)
+            upper++;
+        else {
+            idx = i;
+            break;
+        }
 
-    for(i=teams->len - 1; i >= 0; i--)
-	if((Team*)g_ptr_array_index(teams, i) != tm)
-	    lower++;
-	else
-	    break;
-    
+    for (i = teams->len - 1; i >= 0; i--)
+        if ((Team *) g_ptr_array_index(teams, i) != tm)
+            lower++;
+        else
+            break;
+
     bound1 = MIN(bound1, upper);
     bound2 = MIN(bound2, lower);
 
-    return_value = (Team*)g_ptr_array_index(teams, math_rndi(i - bound1, i + bound2));
-    while(return_value == tm)
-	return_value = (Team*)g_ptr_array_index(teams, math_rndi(i - bound1, i + bound2));
+    return_value = (Team *) g_ptr_array_index(teams, math_rndi(i - bound1, i + bound2));
+    while (return_value == tm)
+        return_value = (Team *) g_ptr_array_index(teams, math_rndi(i - bound1, i + bound2));
 
     g_ptr_array_free(teams, TRUE);
 
@@ -991,8 +918,7 @@ team_get_new(const Team *tm, gboolean fire)
 
 /** Return the index of the team in the teams array. */
 gint
-team_get_index(const Team *tm)
-{
+team_get_index(const Team *tm) {
 #ifdef DEBUG
     printf("team_get_index\n");
 #endif
@@ -1000,20 +926,19 @@ team_get_index(const Team *tm)
     gint i;
     GPtrArray *teams = league_cup_get_teams(tm->clid);
 
-    for(i=0;i<teams->len;i++)
+    for (i = 0; i < teams->len; i++)
         if (g_ptr_array_index(teams, i) == tm)
             return i;
 
-    main_exit_program(EXIT_INT_NOT_FOUND, 
-		      "team_get_index: team %s not found.\n", tm->name);
+    main_exit_program(EXIT_INT_NOT_FOUND,
+                      "team_get_index: team %s not found.\n", tm->name);
 
     return -1;
 }
 
 /** Return the average of the average talents of the teams in the array. */
 gfloat
-team_get_average_talents(const GPtrArray *teams)
-{
+team_get_average_talents(const GPtrArray *teams) {
 #ifdef DEBUG
     printf("team_get_average_talents\n");
 #endif
@@ -1021,52 +946,50 @@ team_get_average_talents(const GPtrArray *teams)
     gint i, j, cnt = 0;
     gfloat sum = 0;
 
-    if(teams->len == 0)
-	return 0;
+    if (teams->len == 0)
+        return 0;
 
-    for(i=0;i<teams->len;i++) {
+    for (i = 0; i < teams->len; i++) {
         const Team *team = g_ptr_array_index(teams, i);
-	for(j=0;j<team->players->len;j++)
-	{
+        for (j = 0; j < team->players->len; j++) {
             const Player *player = &g_array_index(team->players, Player, j);
-	    sum += player->talent;
-	    cnt++;
-	}
+            sum += player->talent;
+            cnt++;
+        }
     }
 
-    return sum / (gfloat)cnt;
+    return sum / (gfloat) cnt;
 }
 
 /** Find out whether a team plays at a given date. */
 gboolean
-query_team_plays(const Team *tm, gint week_number, gint week_round_number)
-{
+query_team_plays(const Team *tm, gint week_number, gint week_round_number) {
 #ifdef DEBUG
     printf("query_team_plays\n");
 #endif
 
     gint i, j;
 
-    if(tm->clid < ID_CUP_START)
-	for(i=0;i<ligs->len;i++)
-	    if(lig(i).id == tm->clid)
-		for(j=0;j<lig(i).fixtures->len;j++)
-		    if(g_array_index(lig(i).fixtures, Fixture, j).week_number == week_number && 
-		       g_array_index(lig(i).fixtures, Fixture, j).week_round_number == week_round_number &&
-		       (g_array_index(lig(i).fixtures, Fixture, j).teams[0] == tm ||
-			g_array_index(lig(i).fixtures, Fixture, j).teams[1] == tm))
-			return TRUE;
-    
-    for(i=0;i<acps->len;i++)
-	if(query_league_cup_has_property(acp(i)->id, "national") ||
-	   query_team_is_in_cup(tm, acp(i)))
-	    for(j=0;j<acp(i)->fixtures->len;j++)
-		if(g_array_index(acp(i)->fixtures, Fixture, j).week_number == week_number && 
-		   g_array_index(acp(i)->fixtures, Fixture, j).week_round_number == week_round_number &&
-		   (g_array_index(acp(i)->fixtures, Fixture, j).teams[0] == tm ||
-		    g_array_index(acp(i)->fixtures, Fixture, j).teams[1] == tm))
-		    return TRUE;
-    
+    if (tm->clid < ID_CUP_START)
+        for (i = 0; i < ligs->len; i++)
+            if (lig(i).id == tm->clid)
+                for (j = 0; j < lig(i).fixtures->len; j++)
+                    if (g_array_index(lig(i).fixtures, Fixture, j).week_number == week_number &&
+                        g_array_index(lig(i).fixtures, Fixture, j).week_round_number == week_round_number &&
+                        (g_array_index(lig(i).fixtures, Fixture, j).teams[0] == tm ||
+                         g_array_index(lig(i).fixtures, Fixture, j).teams[1] == tm))
+                        return TRUE;
+
+    for (i = 0; i < acps->len; i++)
+        if (query_league_cup_has_property(acp(i)->id, "national") ||
+            query_team_is_in_cup(tm, acp(i)))
+            for (j = 0; j < acp(i)->fixtures->len; j++)
+                if (g_array_index(acp(i)->fixtures, Fixture, j).week_number == week_number &&
+                    g_array_index(acp(i)->fixtures, Fixture, j).week_round_number == week_round_number &&
+                    (g_array_index(acp(i)->fixtures, Fixture, j).teams[0] == tm ||
+                     g_array_index(acp(i)->fixtures, Fixture, j).teams[1] == tm))
+                    return TRUE;
+
     return FALSE;
 }
 
@@ -1075,8 +998,7 @@ query_team_plays(const Team *tm, gint week_number, gint week_round_number)
     @param sort Whether to sort the results according to home/away.
     @param cup_matches Whether to take cup matches into account as well. */
 void
-team_write_own_results(const Team *tm, gchar *buf, gboolean sort, gboolean cup_matches)
-{
+team_write_own_results(const Team *tm, gchar *buf, gboolean sort, gboolean cup_matches) {
 #ifdef DEBUG
     printf("team_write_own_results\n");
 #endif
@@ -1084,74 +1006,64 @@ team_write_own_results(const Team *tm, gchar *buf, gboolean sort, gboolean cup_m
     gint i, res[2];
     gchar buf2[SMALL], buf3[SMALL], buf4[SMALL], neutral[SMALL];
     gint place;
-    GPtrArray *matches = fixture_get_matches(current_user.tm, tm);        
+    GPtrArray *matches = fixture_get_matches(current_user.tm, tm);
 
     strcpy(buf4, "");
     strcpy(neutral, "");
 
-    for(i=0;i<matches->len;i++)
-	if(cup_matches || ((Fixture*)g_ptr_array_index(matches, i))->clid < ID_CUP_START)
-	{
-	    res[0] = math_sum_int_array(((Fixture*)g_ptr_array_index(matches, i))->result[0], 2);
-	    res[1] = math_sum_int_array(((Fixture*)g_ptr_array_index(matches, i))->result[1], 2);
-	
-	    if(res[((Fixture*)g_ptr_array_index(matches, i))->teams[0] != current_user.tm] >
-	       res[((Fixture*)g_ptr_array_index(matches, i))->teams[0] == current_user.tm])
-		/* a won match */
-		sprintf(buf2, _("W  %d : %d"), 
-			res[((Fixture*)g_ptr_array_index(matches, i))->teams[0] != current_user.tm],
-			res[((Fixture*)g_ptr_array_index(matches, i))->teams[0] == current_user.tm]);
-	    else if(res[((Fixture*)g_ptr_array_index(matches, i))->teams[0] != current_user.tm] <
-		    res[((Fixture*)g_ptr_array_index(matches, i))->teams[0] == current_user.tm])
-		/* a lost match */
-		sprintf(buf2, _("L  %d : %d"), 
-			res[((Fixture*)g_ptr_array_index(matches, i))->teams[0] != current_user.tm],
-			res[((Fixture*)g_ptr_array_index(matches, i))->teams[0] == current_user.tm]);
-	    else
-		/* a drawn match */
-		sprintf(buf2, _("Dw %d : %d"),
-			res[((Fixture*)g_ptr_array_index(matches, i))->teams[0] != current_user.tm],
-			res[((Fixture*)g_ptr_array_index(matches, i))->teams[0] == current_user.tm]);
-	
-	    if(((Fixture*)g_ptr_array_index(matches, i))->home_advantage)
-	    {
-	    
-		if(((Fixture*)g_ptr_array_index(matches, i))->teams[0] == current_user.tm)
-		{
-		    /* a match at home */
-		    sprintf(buf3, _("%s (H) "), buf2);
-		    place = 0;
-		}
-		else
-		{
-		    /* a match away */
-		    sprintf(buf3, _("<span background='%s' foreground='%s'>%s (A) </span> "), 
-			    const_app("string_treeview_live_game_commentary_away_bg"),
-			    const_app("string_treeview_live_game_commentary_away_fg"),
-			    buf2);
-		    place = 1;
-		}
-	    }
-	    else
-	    {
-		/* a match on neutral ground */
-		sprintf(buf3, _("%s (N) "), buf2);
-		place = -1;
-	    }
+    for (i = 0; i < matches->len; i++)
+        if (cup_matches || ((Fixture *) g_ptr_array_index(matches, i))->clid < ID_CUP_START) {
+            res[0] = math_sum_int_array(((Fixture *) g_ptr_array_index(matches, i))->result[0], 2);
+            res[1] = math_sum_int_array(((Fixture *) g_ptr_array_index(matches, i))->result[1], 2);
 
-	    if(!sort || place == 1)
-		strcat(buf4, buf3);
-	    else
-	    {
-		if(place == 0)
-		{
-		    strcpy(buf2, buf4);
-		    sprintf(buf4, "%s%s", buf3, buf2);
-		}
-		else if(place == -1)
-		    strcat(neutral, buf3);
-	    }
-	}
+            if (res[((Fixture *) g_ptr_array_index(matches, i))->teams[0] != current_user.tm] >
+                res[((Fixture *) g_ptr_array_index(matches, i))->teams[0] == current_user.tm])
+                /* a won match */
+                sprintf(buf2, _("W  %d : %d"),
+                        res[((Fixture *) g_ptr_array_index(matches, i))->teams[0] != current_user.tm],
+                        res[((Fixture *) g_ptr_array_index(matches, i))->teams[0] == current_user.tm]);
+            else if (res[((Fixture *) g_ptr_array_index(matches, i))->teams[0] != current_user.tm] <
+                     res[((Fixture *) g_ptr_array_index(matches, i))->teams[0] == current_user.tm])
+                /* a lost match */
+                sprintf(buf2, _("L  %d : %d"),
+                        res[((Fixture *) g_ptr_array_index(matches, i))->teams[0] != current_user.tm],
+                        res[((Fixture *) g_ptr_array_index(matches, i))->teams[0] == current_user.tm]);
+            else
+                /* a drawn match */
+                sprintf(buf2, _("Dw %d : %d"),
+                        res[((Fixture *) g_ptr_array_index(matches, i))->teams[0] != current_user.tm],
+                        res[((Fixture *) g_ptr_array_index(matches, i))->teams[0] == current_user.tm]);
+
+            if (((Fixture *) g_ptr_array_index(matches, i))->home_advantage) {
+
+                if (((Fixture *) g_ptr_array_index(matches, i))->teams[0] == current_user.tm) {
+                    /* a match at home */
+                    sprintf(buf3, _("%s (H) "), buf2);
+                    place = 0;
+                } else {
+                    /* a match away */
+                    sprintf(buf3, _("<span background='%s' foreground='%s'>%s (A) </span> "),
+                            const_app("string_treeview_live_game_commentary_away_bg"),
+                            const_app("string_treeview_live_game_commentary_away_fg"),
+                            buf2);
+                    place = 1;
+                }
+            } else {
+                /* a match on neutral ground */
+                sprintf(buf3, _("%s (N) "), buf2);
+                place = -1;
+            }
+
+            if (!sort || place == 1)
+                strcat(buf4, buf3);
+            else {
+                if (place == 0) {
+                    strcpy(buf2, buf4);
+                    sprintf(buf4, "%s%s", buf3, buf2);
+                } else if (place == -1)
+                    strcat(neutral, buf3);
+            }
+        }
 
     sprintf(buf, "%s%s", buf4, neutral);
 
@@ -1162,8 +1074,7 @@ team_write_own_results(const Team *tm, gchar *buf, gboolean sort, gboolean cup_m
     @param tm The team we find the results for.
     @param buf The buffer we print the results into. */
 void
-team_write_results(const Team *tm, gchar *result_buf, gchar *goals_buf)
-{
+team_write_results(const Team *tm, gchar *result_buf, gchar *goals_buf) {
 #ifdef DEBUG
     printf("team_write_results\n");
 #endif
@@ -1175,28 +1086,27 @@ team_write_results(const Team *tm, gchar *result_buf, gchar *goals_buf)
 
     strcpy(result_buf, "");
     end_idx = MAX(0, end_idx);
-    for(i=latest_fixtures->len - 1;i>=end_idx;i--)
-    {
-	res[0] = math_sum_int_array(((Fixture*)g_ptr_array_index(latest_fixtures, i))->result[0], 3);
-	res[1] = math_sum_int_array(((Fixture*)g_ptr_array_index(latest_fixtures, i))->result[1], 3);
-	goals[0] += 
-	    math_sum_int_array(((Fixture*)
-				g_ptr_array_index(latest_fixtures, i))->
-			       result[(((Fixture*)g_ptr_array_index(latest_fixtures, i))->teams[0] != tm)], 2);
-	goals[1] += 
-	    math_sum_int_array(((Fixture*)
-				g_ptr_array_index(latest_fixtures, i))->
-			       result[(((Fixture*)g_ptr_array_index(latest_fixtures, i))->teams[0] == tm)], 2);
-	if(res[0] == res[1])
-	    /* draw */
-	    strcat(result_buf, _("Dw "));
-	else if(res[(((Fixture*)g_ptr_array_index(latest_fixtures, i))->teams[0] == tm)] >
-		res[(((Fixture*)g_ptr_array_index(latest_fixtures, i))->teams[0] != tm)])
-	    /* lost */
-	    strcat(result_buf, _("L  "));
-	else
-	    /* won */
-	    strcat(result_buf, _("W  "));
+    for (i = latest_fixtures->len - 1; i >= end_idx; i--) {
+        res[0] = math_sum_int_array(((Fixture *) g_ptr_array_index(latest_fixtures, i))->result[0], 3);
+        res[1] = math_sum_int_array(((Fixture *) g_ptr_array_index(latest_fixtures, i))->result[1], 3);
+        goals[0] +=
+                math_sum_int_array(((Fixture *)
+                        g_ptr_array_index(latest_fixtures, i))->
+                        result[(((Fixture *) g_ptr_array_index(latest_fixtures, i))->teams[0] != tm)], 2);
+        goals[1] +=
+                math_sum_int_array(((Fixture *)
+                        g_ptr_array_index(latest_fixtures, i))->
+                        result[(((Fixture *) g_ptr_array_index(latest_fixtures, i))->teams[0] == tm)], 2);
+        if (res[0] == res[1])
+            /* draw */
+            strcat(result_buf, _("Dw "));
+        else if (res[(((Fixture *) g_ptr_array_index(latest_fixtures, i))->teams[0] == tm)] >
+                 res[(((Fixture *) g_ptr_array_index(latest_fixtures, i))->teams[0] != tm)])
+            /* lost */
+            strcat(result_buf, _("L  "));
+        else
+            /* won */
+            strcat(result_buf, _("W  "));
     }
 
     sprintf(goals_buf, "%d : %d", goals[0], goals[1]);
@@ -1205,17 +1115,16 @@ team_write_results(const Team *tm, gchar *result_buf, gchar *goals_buf)
 
 /** Find out whether the team is in the given pointer array. */
 gboolean
-query_team_is_in_teams_array(const Team *tm, const GPtrArray *teams)
-{
+query_team_is_in_teams_array(const Team *tm, const GPtrArray *teams) {
 #ifdef DEBUG
     printf("query_team_is_in_teams_array\n");
 #endif
 
     gint i;
 
-    for(i=0;i<teams->len;i++)
-	if((Team*)g_ptr_array_index(teams, i) == tm)
-	    return TRUE;
+    for (i = 0; i < teams->len; i++)
+        if ((Team *) g_ptr_array_index(teams, i) == tm)
+            return TRUE;
 
     return FALSE;
 }
@@ -1225,10 +1134,9 @@ query_team_is_in_teams_array(const Team *tm, const GPtrArray *teams)
  * for a team in a GArray without having to transform it into a GPtrArray.
  */
 gboolean
-query_team_id_is_in_teams_array(const Team *tm, const GArray *teams)
-{
+query_team_id_is_in_teams_array(const Team *tm, const GArray *teams) {
     gint i;
-    for (i = 0; i< teams->len; i++) {
+    for (i = 0; i < teams->len; i++) {
         const Team *t = &g_array_index(teams, Team, i);
         if (t->id == tm->id)
             return TRUE;
@@ -1238,9 +1146,8 @@ query_team_id_is_in_teams_array(const Team *tm, const GArray *teams)
 
 /** Check whether we find a definition file for the
     given team. */
-gchar*
-team_has_def_file(const Team *tm)
-{
+gchar *
+team_has_def_file(const Team *tm) {
 #ifdef DEBUG
     printf("team_has_def_file\n");
 #endif
@@ -1252,10 +1159,9 @@ team_has_def_file(const Team *tm)
     gchar *return_value = NULL;
     gchar buf[SMALL];
 
-    if(tm->def_file != NULL && opt_int("int_opt_load_defs") != 0)
-    {
-	sprintf(buf, "team_%s.xml", tm->def_file);
-	return_value = file_find_support_file(buf, FALSE);
+    if (tm->def_file != NULL && opt_int("int_opt_load_defs") != 0) {
+        sprintf(buf, "team_%s.xml", tm->def_file);
+        return_value = file_find_support_file(buf, FALSE);
     }
 
     return return_value;
@@ -1264,8 +1170,7 @@ team_has_def_file(const Team *tm)
 /** Complete the definition of the team (add players,
     calculate wages etc. Called after reading a team def file. */
 void
-team_complete_def(Team *tm)
-{
+team_complete_def(Team *tm) {
 #ifdef DEBUG
     printf("team_complete_def\n");
 #endif
@@ -1276,38 +1181,36 @@ team_complete_def(Team *tm)
     gint add = const_int("int_team_cpu_players") - tm->players->len;
     gboolean is_user = (team_is_user(tm) != -1);
 
-    for(i=0;i<tm->players->len;i++)
-    {
-	player_complete_def(&g_array_index(tm->players, Player, i), 
-			    tm->average_talent);
-	positions[g_array_index(tm->players, Player, i).pos]++;
+    for (i = 0; i < tm->players->len; i++) {
+        player_complete_def(&g_array_index(tm->players, Player, i),
+                            tm->average_talent);
+        positions[g_array_index(tm->players, Player, i).pos]++;
 
-	/** This is so we don't remove loaded players
-	    from the team at startup. */
-	if(is_user)
-	    g_array_index(tm->players, Player, i).recovery = 1;
+        /** This is so we don't remove loaded players
+            from the team at startup. */
+        if (is_user)
+            g_array_index(tm->players, Player, i).recovery = 1;
     }
 
-    for(i=0;i<add;i++)
-    {
-	pos_sum = math_sum_int_array(positions, 4);
-	new_player = player_new(tm, tm->average_talent, TRUE);
-	
-	if(positions[0] < 2)
-	    new_pos = 0;
-	else if((gfloat)positions[1] / (gfloat)pos_sum <
-		const_float("float_player_pos_bound1"))
-	    new_pos = 1;
-	else if((gfloat)positions[2] / (gfloat)pos_sum <
-		const_float("float_player_pos_bound1"))
-	    new_pos = 2;
-	else
-	    new_pos = 3;
+    for (i = 0; i < add; i++) {
+        pos_sum = math_sum_int_array(positions, 4);
+        new_player = player_new(tm, tm->average_talent, TRUE);
 
-	new_player.pos = new_player.cpos = new_pos;
-	positions[new_pos]++;
+        if (positions[0] < 2)
+            new_pos = 0;
+        else if ((gfloat) positions[1] / (gfloat) pos_sum <
+                 const_float("float_player_pos_bound1"))
+            new_pos = 1;
+        else if ((gfloat) positions[2] / (gfloat) pos_sum <
+                 const_float("float_player_pos_bound1"))
+            new_pos = 2;
+        else
+            new_pos = 3;
 
-	g_array_append_val(tm->players, new_player);
+        new_player.pos = new_player.cpos = new_pos;
+        positions[new_pos]++;
+
+        g_array_append_val(tm->players, new_player);
     }
 
     team_complete_def_sort(tm);
@@ -1316,91 +1219,82 @@ team_complete_def(Team *tm)
 /** Sort the players in the team according to the team structure
     and the player positions. */
 void
-team_complete_def_sort(Team *tm)
-{
+team_complete_def_sort(Team *tm) {
 #ifdef DEBUG
     printf("team_complete_def_sort\n");
 #endif
 
     gint i, j;
     gint positions[4] = {0, 0, 0, 0};
-    gint structure[4] = {1, 
-			 math_get_place(tm->structure, 3),
-			 math_get_place(tm->structure, 2),
-			 math_get_place(tm->structure, 1)};
+    gint structure[4] = {1,
+                         math_get_place(tm->structure, 3),
+                         math_get_place(tm->structure, 2),
+                         math_get_place(tm->structure, 1)};
     Player player_tmp, player_tmp2;
-    
-    for(i=0;i<11;i++)
-	positions[g_array_index(tm->players, Player, i).pos]++;
 
-    for(i=0;i<4;i++)
-    {
-	while(positions[i] > structure[i])
-	{
-	    for(j=0;j<11;j++)
-		if(g_array_index(tm->players, Player, j).pos == i)
-		{
-		    player_tmp = g_array_index(tm->players, Player, j);
-		    g_array_remove_index(tm->players, j);
-		    break;
-		}
+    for (i = 0; i < 11; i++)
+        positions[g_array_index(tm->players, Player, i).pos]++;
 
-	    for(j=10;j<tm->players->len;j++)
-	    {
-		if(g_array_index(tm->players, Player, j).pos != i)
-		{
-		    player_tmp2 = g_array_index(tm->players, Player, j);
-		    g_array_remove_index(tm->players, j);
-		    break;
-		}
-	    }
+    for (i = 0; i < 4; i++) {
+        while (positions[i] > structure[i]) {
+            for (j = 0; j < 11; j++)
+                if (g_array_index(tm->players, Player, j).pos == i) {
+                    player_tmp = g_array_index(tm->players, Player, j);
+                    g_array_remove_index(tm->players, j);
+                    break;
+                }
 
-	    if(j == tm->players->len)
-		main_exit_program(EXIT_DEF_SORT, 
-				  "team_complete_def_sort (1): cannot sort according to structure %d (team %s).",
-				  tm->structure, tm->name);
-	    
-	    positions[i]--;
-	    positions[player_tmp2.pos]++;
+            for (j = 10; j < tm->players->len; j++) {
+                if (g_array_index(tm->players, Player, j).pos != i) {
+                    player_tmp2 = g_array_index(tm->players, Player, j);
+                    g_array_remove_index(tm->players, j);
+                    break;
+                }
+            }
 
-	    g_array_append_val(tm->players, player_tmp);
-	    g_array_prepend_val(tm->players, player_tmp2);	    
-	}
+            if (j == tm->players->len)
+                main_exit_program(EXIT_DEF_SORT,
+                                  "team_complete_def_sort (1): cannot sort according to structure %d (team %s).",
+                                  tm->structure, tm->name);
 
-	while(positions[i] < structure[i])
-	{
-	    for(j=0;j<11;j++)
-		if(g_array_index(tm->players, Player, j).pos > i)
-		{
-		    player_tmp = g_array_index(tm->players, Player, j);
-		    g_array_remove_index(tm->players, j);
-		    break;
-		}
+            positions[i]--;
+            positions[player_tmp2.pos]++;
 
-	    if(j == 11)
-		main_exit_program(EXIT_DEF_SORT, 
-				  "team_complete_def_sort (2): cannot sort according to structure %d (team %s).",
-				  tm->structure, tm->name);
+            g_array_append_val(tm->players, player_tmp);
+            g_array_prepend_val(tm->players, player_tmp2);
+        }
 
-	    for(j=10;j<tm->players->len;j++)
-		if(g_array_index(tm->players, Player, j).pos == i)
-		{
-		    player_tmp2 = g_array_index(tm->players, Player, j);
-		    g_array_remove_index(tm->players, j);
-		    break;
-		}
+        while (positions[i] < structure[i]) {
+            for (j = 0; j < 11; j++)
+                if (g_array_index(tm->players, Player, j).pos > i) {
+                    player_tmp = g_array_index(tm->players, Player, j);
+                    g_array_remove_index(tm->players, j);
+                    break;
+                }
 
-	    if(j == tm->players->len)
-		main_exit_program(EXIT_DEF_SORT, 
-				  "team_complete_def_sort (3): cannot sort according to structure %d (team %s).",
-				  tm->structure, tm->name);
-	    
-	    positions[i]++;
-	    positions[player_tmp.pos]--;
+            if (j == 11)
+                main_exit_program(EXIT_DEF_SORT,
+                                  "team_complete_def_sort (2): cannot sort according to structure %d (team %s).",
+                                  tm->structure, tm->name);
 
-	    g_array_append_val(tm->players, player_tmp);
-	    g_array_prepend_val(tm->players, player_tmp2);
-	}
+            for (j = 10; j < tm->players->len; j++)
+                if (g_array_index(tm->players, Player, j).pos == i) {
+                    player_tmp2 = g_array_index(tm->players, Player, j);
+                    g_array_remove_index(tm->players, j);
+                    break;
+                }
+
+            if (j == tm->players->len)
+                main_exit_program(EXIT_DEF_SORT,
+                                  "team_complete_def_sort (3): cannot sort according to structure %d (team %s).",
+                                  tm->structure, tm->name);
+
+            positions[i]++;
+            positions[player_tmp.pos]--;
+
+            g_array_append_val(tm->players, player_tmp);
+            g_array_prepend_val(tm->players, player_tmp2);
+        }
     }
 
     team_rearrange(tm);
@@ -1409,21 +1303,19 @@ team_complete_def_sort(Team *tm)
 /** Find out which cup or league table the team
     belongs to. */
 gint
-team_get_table_clid(const Team *tm)
-{
+team_get_table_clid(const Team *tm) {
 #ifdef DEBUG
     printf("team_get_table_clid\n");
 #endif
 
     gint i;
 
-    if(tm->clid >= ID_CUP_START ||
-       (tm->clid < ID_CUP_START && !query_league_active(league_from_clid(tm->clid))))
-    {
-	for(i = acps->len - 1; i >= 0; i--)
-	    if(cup_has_tables(acp(i)->id) != -1 && 
-	       query_team_is_in_cup(tm, acp(i)))
-		return acp(i)->id;
+    if (tm->clid >= ID_CUP_START ||
+        (tm->clid < ID_CUP_START && !query_league_active(league_from_clid(tm->clid)))) {
+        for (i = acps->len - 1; i >= 0; i--)
+            if (cup_has_tables(acp(i)->id) != -1 &&
+                query_team_is_in_cup(tm, acp(i)))
+                return acp(i)->id;
     }
 
     return tm->clid;
@@ -1432,8 +1324,7 @@ team_get_table_clid(const Team *tm)
 /** Write a won/lost/draw, gf:ga stat about the team's results in the
     specified competition into the string. */
 void
-team_write_overall_results(const Team *tm, gint clid, gchar *results)
-{
+team_write_overall_results(const Team *tm, gint clid, gchar *results) {
     gint i, idx;
     gint won, lost, drawn, gf, ga;
     const GArray *fixtures = league_cup_get_fixtures(clid);
@@ -1441,20 +1332,19 @@ team_write_overall_results(const Team *tm, gint clid, gchar *results)
 
     won = lost = drawn = gf = ga = 0;
 
-    for(i = 0; i < fixtures->len; i++)
-    {
+    for (i = 0; i < fixtures->len; i++) {
         fix = &g_array_index(fixtures, Fixture, i);
-        if(fix->attendance == -1)
+        if (fix->attendance == -1)
             break;
 
-        if(fix->teams[0] != tm && fix->teams[1] != tm)
+        if (fix->teams[0] != tm && fix->teams[1] != tm)
             continue;
         else
             idx = (fix->teams[0] != tm);
 
-        if(fix->result[0][0] == fix->result[1][0])
+        if (fix->result[0][0] == fix->result[1][0])
             drawn++;
-        else if(fix->result[idx][0] > fix->result[!idx][0])
+        else if (fix->result[idx][0] > fix->result[!idx][0])
             won++;
         else
             lost++;
@@ -1467,7 +1357,6 @@ team_write_overall_results(const Team *tm, gint clid, gchar *results)
 }
 
 gboolean
-team_is_reserve_team(const Team *tm)
-{
+team_is_reserve_team(const Team *tm) {
     return tm->first_team_sid != NULL;
 }

@@ -32,8 +32,7 @@
 #include "live_game_struct.h"
 
 /** Player types. @see game_get_player() */
-enum GamePlayerType
-{
+enum GamePlayerType {
     GAME_PLAYER_TYPE_DEFEND = LIVE_GAME_UNIT_AREA_DEFEND,
     GAME_PLAYER_TYPE_MIDFIELD = LIVE_GAME_UNIT_AREA_MIDFIELD,
     GAME_PLAYER_TYPE_ATTACK = LIVE_GAME_UNIT_AREA_ATTACK,
@@ -43,15 +42,15 @@ enum GamePlayerType
 
 void
 game_get_values(const Fixture *fix, gfloat team_values[][GAME_TEAM_VALUE_END],
-		gfloat home_advantage);
+                gfloat home_advantage);
 
 gfloat
 game_get_player_contribution(const Player *pl, gboolean attack, gboolean special);
 
 gint
-game_get_player(const Team *tm, gint player_type, 
-		gint number_of_penalty, gint not_this_one,
-		gboolean skills);
+game_get_player(const Team *tm, gint player_type,
+                gint number_of_penalty, gint not_this_one,
+                gboolean skills);
 
 void
 game_get_player_probs(GArray *players, gfloat *probs, gfloat *weights, gboolean skills);
@@ -84,8 +83,9 @@ gint
 game_find_to_substitute(gint clid, const Team *tm);
 
 void
-game_substitute_player_send_off(gint clid, Team *tm, gint player_number, 
-				gint *to_substitute, gint *substitute);
+game_substitute_player_send_off(gint clid, Team *tm, gint player_number,
+                                gint *to_substitute, gint *substitute);
+
 void
 game_decrease_fitness(const Fixture *fix);
 

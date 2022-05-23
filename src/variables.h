@@ -132,12 +132,12 @@ GList *support_directories;
 
 /**
  * The list of root defintions directories found (ending in definitions)
- */ 
+ */
 GList *root_definitions_directories;
 
 /**
  * The list of defintions directories found
- */ 
+ */
 GList *definitions_directories;
 
 /** The name of the current save file (gets updated when a game is

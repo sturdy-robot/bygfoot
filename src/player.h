@@ -33,8 +33,7 @@
 #include "player_struct.h"
 #include "team_struct.h"
 
-enum PlayerCompareAttrib
-{
+enum PlayerCompareAttrib {
     PLAYER_COMPARE_ATTRIBUTE_GAME_SKILL = 0,
     PLAYER_COMPARE_ATTRIBUTE_POS,
     PLAYER_COMPARE_ATTRIBUTE_LEAGUE_GOALS,
@@ -73,10 +72,10 @@ player_all_games_goals(const Player *pl, gint type);
 gint
 player_all_cards(const Player *pl);
 
-Player*
+Player *
 player_of_idx_team(const Team *tm, gint number);
 
-Player*
+Player *
 player_of_id_team(const Team *tm, gint id);
 
 gint
@@ -151,7 +150,7 @@ player_update_injury(Player *pl);
 void
 player_copy(Player *pl, Team *tm, gint insert_at);
 
-gchar*
+gchar *
 player_injury_to_char(gint injury_type);
 
 gboolean
@@ -160,13 +159,13 @@ query_player_id_in_team(gint player_id, const Team *tm);
 void
 player_season_start(Player *pl, gfloat skill_change);
 
-gchar*
+gchar *
 player_get_last_name(const gchar *name);
 
 void
 player_complete_def(Player *pl, gfloat average_skill);
 
-GPtrArray*
+GPtrArray *
 player_get_pointers_from_array(const GArray *players);
 
 void

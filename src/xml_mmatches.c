@@ -32,8 +32,7 @@
 #include "xml_mmatches.h"
 #include "xml_loadsave_live_game.h"
 
-enum
-{
+enum {
     TAG_MMATCHES = 0,
     TAG_MMATCH,
     TAG_MMATCHES_COUNTRY_NAME,
@@ -53,13 +52,12 @@ gchar *dirname;
 GArray *mm_array;
 
 void
-xml_mmatches_start_element (GMarkupParseContext *context,
-			    const gchar         *element_name,
-			    const gchar        **attribute_names,
-			    const gchar        **attribute_values,
-			    gpointer             user_data,
-			    GError             **error)
-{
+xml_mmatches_start_element(GMarkupParseContext *context,
+                           const gchar *element_name,
+                           const gchar **attribute_names,
+                           const gchar **attribute_values,
+                           gpointer user_data,
+                           GError **error) {
 #ifdef DEBUG
     printf("xml_mmatches_start_element\n");
 #endif
@@ -68,56 +66,51 @@ xml_mmatches_start_element (GMarkupParseContext *context,
     gint tag = xml_get_tag_from_name(element_name);
     gboolean valid_tag = FALSE;
 
-    for(i=TAG_MMATCHES;i<TAG_END;i++)
-	if(tag == i)
-	{
-	    state = i;
-	    valid_tag = TRUE;
-	}
+    for (i = TAG_MMATCHES; i < TAG_END; i++)
+        if (tag == i) {
+            state = i;
+            valid_tag = TRUE;
+        }
 
-    if(tag == TAG_MMATCH)
-	new_match.country_name = NULL;
+    if (tag == TAG_MMATCH)
+        new_match.country_name = NULL;
 
-    if(!valid_tag)
-	debug_print_message("xml_loadsave_mmatches_start_element: unknown tag: %s; I'm in state %d\n",
-		  element_name, state);
+    if (!valid_tag)
+        debug_print_message("xml_loadsave_mmatches_start_element: unknown tag: %s; I'm in state %d\n",
+                            element_name, state);
 }
 
 void
-xml_mmatches_end_element    (GMarkupParseContext *context,
-			     const gchar         *element_name,
-			     gpointer             user_data,
-			     GError             **error)
-{
+xml_mmatches_end_element(GMarkupParseContext *context,
+                         const gchar *element_name,
+                         gpointer user_data,
+                         GError **error) {
 #ifdef DEBUG
     printf("xml_mmatches_end_element\n");
 #endif
 
     gint tag = xml_get_tag_from_name(element_name);
 
-    if(tag == TAG_MMATCH)
-    {
-	state = TAG_MMATCHES;
-	g_array_append_val(mm_array, new_match);
-    }
-    else if(tag == TAG_MMATCHES_COMP_NAME ||
-	    tag == TAG_MMATCHES_COUNTRY_NAME ||
-	    tag == TAG_MMATCHES_NEUTRAL ||
-	    tag == TAG_MMATCHES_USER_TEAM ||
-	    tag == TAG_MMATCHES_LG_FILE)
-	state = TAG_MMATCH;
-    else if(tag != TAG_MMATCHES)
-	debug_print_message("xml_loadsave_mmatches_end_element: unknown tag: %s; I'm in state %d\n",
-		  element_name, state);
+    if (tag == TAG_MMATCH) {
+        state = TAG_MMATCHES;
+        g_array_append_val(mm_array, new_match);
+    } else if (tag == TAG_MMATCHES_COMP_NAME ||
+               tag == TAG_MMATCHES_COUNTRY_NAME ||
+               tag == TAG_MMATCHES_NEUTRAL ||
+               tag == TAG_MMATCHES_USER_TEAM ||
+               tag == TAG_MMATCHES_LG_FILE)
+        state = TAG_MMATCH;
+    else if (tag != TAG_MMATCHES)
+        debug_print_message("xml_loadsave_mmatches_end_element: unknown tag: %s; I'm in state %d\n",
+                            element_name, state);
 }
 
 void
-xml_mmatches_text         (GMarkupParseContext *context,
-			   const gchar         *text,
-			   gsize                text_len,  
-			   gpointer             user_data,
-			   GError             **error)
-{
+xml_mmatches_text(GMarkupParseContext *context,
+                  const gchar *text,
+                  gsize text_len,
+                  gpointer user_data,
+                  GError **error) {
 #ifdef DEBUG
     printf("xml_mmatches_text\n");
 #endif
@@ -128,63 +121,57 @@ xml_mmatches_text         (GMarkupParseContext *context,
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
 
-    int_value = (gint)g_ascii_strtod(buf, NULL);
+    int_value = (gint) g_ascii_strtod(buf, NULL);
 
-    if(state == TAG_MMATCHES_COMP_NAME)
-	new_match.competition_name = g_string_new(buf);
-    else if(state == TAG_MMATCHES_COUNTRY_NAME)
-	misc_string_assign(&new_match.country_name, buf);
-    else if(state == TAG_MMATCHES_NEUTRAL)
-	new_match.neutral = int_value;
-    else if(state == TAG_MMATCHES_USER_TEAM)
-	new_match.user_team = int_value;
-    else if(state == TAG_MMATCHES_LG_FILE)
-    {
-	sprintf(lg_file, "%s%s%s", dirname, G_DIR_SEPARATOR_S, buf);
-	live_game_reset(&new_match.lg, NULL, FALSE);
-	xml_loadsave_live_game_read(lg_file, &new_match.lg);
-	new_match.lg.fix = NULL;
-	new_match.lg.fix_id = -1;
+    if (state == TAG_MMATCHES_COMP_NAME)
+        new_match.competition_name = g_string_new(buf);
+    else if (state == TAG_MMATCHES_COUNTRY_NAME)
+        misc_string_assign(&new_match.country_name, buf);
+    else if (state == TAG_MMATCHES_NEUTRAL)
+        new_match.neutral = int_value;
+    else if (state == TAG_MMATCHES_USER_TEAM)
+        new_match.user_team = int_value;
+    else if (state == TAG_MMATCHES_LG_FILE) {
+        sprintf(lg_file, "%s%s%s", dirname, G_DIR_SEPARATOR_S, buf);
+        live_game_reset(&new_match.lg, NULL, FALSE);
+        xml_loadsave_live_game_read(lg_file, &new_match.lg);
+        new_match.lg.fix = NULL;
+        new_match.lg.fix_id = -1;
     }
 }
 
 void
-xml_mmatches_read(const gchar *filename, GArray *mmatches)
-{
+xml_mmatches_read(const gchar *filename, GArray *mmatches) {
 #ifdef DEBUG
     printf("xml_mmatches_read\n");
 #endif
 
     GMarkupParser parser = {xml_mmatches_start_element,
-			    xml_mmatches_end_element,
-			    xml_mmatches_text, NULL, NULL};
+                            xml_mmatches_end_element,
+                            xml_mmatches_text, NULL, NULL};
     GMarkupParseContext *context;
     gchar *file_contents;
     gsize length;
     GError *error = NULL;
 
-    context = 
-	g_markup_parse_context_new(&parser, 0, NULL, NULL);
+    context =
+            g_markup_parse_context_new(&parser, 0, NULL, NULL);
 
-    if(!g_file_get_contents(filename, &file_contents, &length, &error))
-    {
-	debug_print_message("xml_loadsave_mmatches_read: error reading file %s\n", filename);
-	misc_print_error(&error, TRUE);
+    if (!g_file_get_contents(filename, &file_contents, &length, &error)) {
+        debug_print_message("xml_loadsave_mmatches_read: error reading file %s\n", filename);
+        misc_print_error(&error, TRUE);
     }
 
     dirname = g_path_get_dirname(filename);
     mm_array = mmatches;
 
-    if(g_markup_parse_context_parse(context, file_contents, length, &error))
-    {
-	g_markup_parse_context_end_parse(context, NULL);
-	g_markup_parse_context_free(context);
-	g_free(file_contents);
-    }
-    else
-    {
-	debug_print_message("xml_loadsave_mmatches_read: error parsing file %s\n", filename);
-	misc_print_error(&error, TRUE);
+    if (g_markup_parse_context_parse(context, file_contents, length, &error)) {
+        g_markup_parse_context_end_parse(context, NULL);
+        g_markup_parse_context_free(context);
+        g_free(file_contents);
+    } else {
+        debug_print_message("xml_loadsave_mmatches_read: error parsing file %s\n", filename);
+        misc_print_error(&error, TRUE);
     }
 }
 
@@ -192,8 +179,7 @@ xml_mmatches_read(const gchar *filename, GArray *mmatches)
 /** Write the current user's MMs to file. 
     @param prefix The prefix of the file (w/o ".bmm.zip"). */
 void
-xml_mmatches_write(const gchar *prefix, const GArray *mmatches)
-{
+xml_mmatches_write(const gchar *prefix, const GArray *mmatches) {
 #ifdef DEBUG
     printf("xml_mmatches_write\n");
 #endif
@@ -209,30 +195,29 @@ xml_mmatches_write(const gchar *prefix, const GArray *mmatches)
 
     fprintf(fil, "<_%d>\n", TAG_MMATCHES);
 
-    for(i=0;i<mmatches->len;i++)
-    {
-	fprintf(fil, "<_%d>\n", TAG_MMATCH);
+    for (i = 0; i < mmatches->len; i++) {
+        fprintf(fil, "<_%d>\n", TAG_MMATCH);
 
-	xml_write_g_string(fil, 
-			   g_array_index(mmatches, MemMatch, i).competition_name,
-			   TAG_MMATCHES_COMP_NAME, I1);
-	xml_write_string(fil,
-			 g_array_index(mmatches, MemMatch, i).country_name,
-			 TAG_MMATCHES_COUNTRY_NAME, I1);
-	xml_write_int(fil, 
-		      g_array_index(mmatches, MemMatch, i).neutral,
-		      TAG_MMATCHES_NEUTRAL, I1);
-	xml_write_int(fil, 
-		      g_array_index(mmatches, MemMatch, i).user_team,
-		      TAG_MMATCHES_USER_TEAM, I1);
-	
-	sprintf(buf, "%slg%03d", basename, i);
-	xml_write_string(fil, buf, TAG_MMATCHES_LG_FILE, I1);
-	sprintf(buf, "%slg%03d", prefix, i);
-	xml_loadsave_live_game_write(buf, 
-				     &g_array_index(mmatches, MemMatch, i).lg);
+        xml_write_g_string(fil,
+                           g_array_index(mmatches, MemMatch, i).competition_name,
+                           TAG_MMATCHES_COMP_NAME, I1);
+        xml_write_string(fil,
+                         g_array_index(mmatches, MemMatch, i).country_name,
+                         TAG_MMATCHES_COUNTRY_NAME, I1);
+        xml_write_int(fil,
+                      g_array_index(mmatches, MemMatch, i).neutral,
+                      TAG_MMATCHES_NEUTRAL, I1);
+        xml_write_int(fil,
+                      g_array_index(mmatches, MemMatch, i).user_team,
+                      TAG_MMATCHES_USER_TEAM, I1);
 
-	fprintf(fil, "</_%d>\n", TAG_MMATCH);
+        sprintf(buf, "%slg%03d", basename, i);
+        xml_write_string(fil, buf, TAG_MMATCHES_LG_FILE, I1);
+        sprintf(buf, "%slg%03d", prefix, i);
+        xml_loadsave_live_game_write(buf,
+                                     &g_array_index(mmatches, MemMatch, i).lg);
+
+        fprintf(fil, "</_%d>\n", TAG_MMATCH);
     }
 
     fprintf(fil, "</_%d>\n", TAG_MMATCHES);

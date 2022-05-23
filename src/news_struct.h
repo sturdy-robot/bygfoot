@@ -27,8 +27,7 @@
 #define NEWS_STRUCT_H
 
 /** Enumeration of news article types. */
-enum NewsArticleTypes
-{
+enum NewsArticleTypes {
     NEWS_ARTICLE_TYPE_MATCH = 0, /**< Article about a match. */
     NEWS_ARTICLE_TYPE_FINANCES, /**< Article about user finances. */
     NEWS_ARTICLE_TYPE_STAR_PLAYER_TRANSFER, /**< Article about good players appearing on the transfer list. */
@@ -39,8 +38,7 @@ enum NewsArticleTypes
 };
 
 /** Structure containing a news title or subtitle with tokens.  */
-typedef struct
-{
+typedef struct {
     gchar *text;
     /** Priority of the text (compared to
 	the other ones for the same article type).
@@ -57,8 +55,7 @@ typedef struct
 } NewsText;
 
 /** Structure describing a news paper article with tokens.  */
-typedef struct
-{
+typedef struct {
     /** Possible article titles (possibly containing tokens). */
     GArray *titles;
     /** Possible article subtitles (possibly containing tokens). */
@@ -74,8 +71,7 @@ typedef struct
 } NewsArticle;
 
 /** Structure holding an article without tokens (ie. the real deal that's displayed). */
-typedef struct
-{
+typedef struct {
     gint week_number, week_round_number;
     gint title_id, subtitle_id;
     gint clid, cup_round;
@@ -86,8 +82,7 @@ typedef struct
 } NewsPaperArticle;
 
 /** Structure holding the newspaper for the game. */
-typedef struct
-{
+typedef struct {
     /** The array of created articles. */
     GArray *articles;
 

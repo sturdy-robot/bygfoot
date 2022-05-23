@@ -30,13 +30,12 @@
 
 /** A list of first names and last names
     from a file. */
-typedef struct
-{
+typedef struct {
     /** The file id (the part between 'player_names_' and '.xml'). */
     gchar *sid;
     /** Arrays of strings holding the names. */
-    GPtrArray *first_names, 
-	*last_names;
+    GPtrArray *first_names,
+            *last_names;
 
 } NameList;
 

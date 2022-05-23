@@ -31,8 +31,7 @@
 #include "team_struct.h"
 
 /** Structure representing a player on the transfer list. */
-typedef struct
-{
+typedef struct {
     /** Team of the player. */
     Team *tm;
     /** Id of player in the team. */
@@ -45,8 +44,7 @@ typedef struct
     GArray *offers;
 } Transfer;
 
-typedef struct
-{
+typedef struct {
     /** The team that makes the offer. */
     Team *tm;
     /** Transfer fee and wage offer. */
@@ -55,8 +53,7 @@ typedef struct
     gint status;
 } TransferOffer;
 
-enum TransferOfferStatus
-{
+enum TransferOfferStatus {
     TRANSFER_OFFER_NOT_CONSIDERED = 0,
     TRANSFER_OFFER_ACCEPTED,
     TRANSFER_OFFER_REJECTED,

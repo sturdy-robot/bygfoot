@@ -28,8 +28,7 @@
 
 #include "bygfoot.h"
 
-enum
-{
+enum {
     TREEVIEW_MMATCH_COL_REPLAY = 6,
     TREEVIEW_MMATCH_COL_REMOVE,
     TREEVIEW_MMATCH_COL_EXPORT,
@@ -82,7 +81,7 @@ treeview2_set_up_news(GtkTreeView *treeview);
 void
 treeview2_show_news(void);
 
-GtkTreeModel*
+GtkTreeModel *
 treeview2_create_constants(const GPtrArray *list, gint type);
 
 void

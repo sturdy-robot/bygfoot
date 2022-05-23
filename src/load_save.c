@@ -53,8 +53,7 @@
 
 /** Save the game to the specified file. */
 void
-load_save_save_game(Bygfoot *bygfoot, const gchar *filename)
-{
+load_save_save_game(Bygfoot *bygfoot, const gchar *filename) {
 #ifdef DEBUG
     printf("load_save_save_game\n");
 #endif
@@ -65,110 +64,110 @@ load_save_save_game(Bygfoot *bygfoot, const gchar *filename)
                     g_strdup(filename);
     GString *fullname = g_string_new("");
 
-    g_string_append(fullname,(g_str_has_suffix(filename, const_str("string_fs_save_suffix"))) ?
-                    g_strdup(filename) :
-                    g_strdup_printf("%s%s", filename, const_str("string_fs_save_suffix")));
+    g_string_append(fullname, (g_str_has_suffix(filename, const_str("string_fs_save_suffix"))) ?
+                              g_strdup(filename) :
+                              g_strdup_printf("%s%s", filename, const_str("string_fs_save_suffix")));
 
     misc_string_assign(&save_file, fullname->str);
 
-    if(g_file_test(fullname->str, G_FILE_TEST_EXISTS))
+    if (g_file_test(fullname->str, G_FILE_TEST_EXISTS))
         g_remove(fullname->str);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_save options\n");
 
     bygfoot_show_progress(bygfoot, 0, _("Saving options..."),
-                      PIC_TYPE_SAVE);
+                          PIC_TYPE_SAVE);
 
     sprintf(buf, "%s___options", prefix);
     file_save_opt_file(buf, &options);
     sprintf(buf, "%s___settings", prefix);
     file_save_opt_file(buf, &settings);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_save leagues/cups \n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        _("Saving leagues and cups..."),
-        PIC_TYPE_SAVE);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+                          _("Saving leagues and cups..."),
+                          PIC_TYPE_SAVE);
 
     xml_loadsave_leagues_cups_write(prefix);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_save users \n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        _("Saving users..."),
-        PIC_TYPE_SAVE);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+                          _("Saving users..."),
+                          PIC_TYPE_SAVE);
 
     xml_loadsave_users_write(prefix);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_save transfers \n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        _("Saving transfer list..."),
-        PIC_TYPE_SAVE);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+                          _("Saving transfer list..."),
+                          PIC_TYPE_SAVE);
 
     xml_loadsave_transfers_write(prefix);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_save stats \n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        _("Saving season stats..."),
-        PIC_TYPE_SAVE);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+                          _("Saving season stats..."),
+                          PIC_TYPE_SAVE);
 
     xml_loadsave_season_stats_write(prefix);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_save jobs \n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        /* The 'job exchange' is a list of teams looking for a manager. */
-        _("Saving job exchange..."),
-        PIC_TYPE_SAVE);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+            /* The 'job exchange' is a list of teams looking for a manager. */
+                          _("Saving job exchange..."),
+                          PIC_TYPE_SAVE);
 
     xml_loadsave_jobs_write(prefix);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_save newspaper \n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        _("Saving newspaper..."),
-        PIC_TYPE_SAVE);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+                          _("Saving newspaper..."),
+                          PIC_TYPE_SAVE);
 
     xml_loadsave_newspaper_write(prefix);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_save misc \n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        _("Saving miscellaneous..."),
-        PIC_TYPE_SAVE);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+                          _("Saving miscellaneous..."),
+                          PIC_TYPE_SAVE);
 
     xml_loadsave_misc_write(prefix);
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        _("Compressing savegame..."),
-        PIC_TYPE_SAVE);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+                          _("Compressing savegame..."),
+                          PIC_TYPE_SAVE);
 
     sprintf(buf, "%s___", prefix);
     file_compress_files(fullname->str, buf);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_save done \n");
 
     bygfoot_show_progress(bygfoot, 1, _("Done."),
-                      PIC_TYPE_SAVE);
+                          PIC_TYPE_SAVE);
 
     file_store_text_in_saves("last_save", fullname->str);
 
@@ -176,7 +175,7 @@ load_save_save_game(Bygfoot *bygfoot, const gchar *filename)
     g_string_free(fullname, TRUE);
 
     bygfoot_show_progress(bygfoot, -1, "",
-                      PIC_TYPE_SAVE);
+                          PIC_TYPE_SAVE);
     if (bygfoot->frontend == BYGFOOT_FRONTEND_GTK2) {
         setsav1;
     }
@@ -185,8 +184,7 @@ load_save_save_game(Bygfoot *bygfoot, const gchar *filename)
 /** Load the game from the specified file.
     @param create_main_window Whether to create and show the main window. */
 gboolean
-load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_main_window)
-{
+load_save_load_game(Bygfoot *bygfoot, const gchar *filename, gboolean create_main_window) {
 #ifdef DEBUG
     printf("load_save_load_game\n");
 #endif
@@ -196,14 +194,13 @@ load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_mai
                       g_strdup(filename) :
                       g_strdup_printf("%s%s", filename, const_str("string_fs_save_suffix"));
     gchar *basename = g_path_get_basename(fullname),
-                      *dirname = g_path_get_dirname(fullname);
+            *dirname = g_path_get_dirname(fullname);
     gchar *prefix = (g_str_has_suffix(basename, const_str("string_fs_save_suffix"))) ?
                     g_strndup(basename, strlen(basename) - strlen(const_str("string_fs_save_suffix"))) :
                     g_strdup(basename);
     gchar *pwd = g_get_current_dir();
 
-    if(g_str_has_suffix(filename, "last_save"))
-    {
+    if (g_str_has_suffix(filename, "last_save")) {
         g_free(basename);
         g_free(dirname);
         g_free(prefix);
@@ -211,34 +208,31 @@ load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_mai
 
         basename = file_load_text_from_saves("last_save");
 
-        if(basename != NULL)
-        {
+        if (basename != NULL) {
             load_save_load_game(bygfoot, basename, create_main_window);
             g_free(basename);
             return TRUE;
-        }
-        else
-        {
+        } else {
             game_gui_show_warning(_("Last save file not found."));
             return FALSE;
         }
     }
 
-    if(window.main != NULL)
+    if (window.main != NULL)
         gtk_widget_hide(window.main);
 
     bygfoot_show_progress(bygfoot, 0, _("Uncompressing savegame..."),
-                      PIC_TYPE_LOAD);
+                          PIC_TYPE_LOAD);
 
     file_decompress(fullname);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_load options\n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        _("Loading options..."),
-        PIC_TYPE_LOAD);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+                          _("Loading options..."),
+                          PIC_TYPE_LOAD);
 
     g_string_sprintf(buf, "%s%s%s___options", dirname, G_DIR_SEPARATOR_S, prefix);
     file_load_opt_file(buf->str, &options, FALSE);
@@ -246,23 +240,23 @@ load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_mai
     file_load_opt_file(buf->str, &settings, FALSE);
     language_set(language_get_code_index(opt_str("string_opt_language_code")) + 1);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_load leagues \n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        _("Loading leagues and cups..."),
-        PIC_TYPE_LOAD);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+                          _("Loading leagues and cups..."),
+                          PIC_TYPE_LOAD);
 
     xml_loadsave_leagues_cups_read(bygfoot, dirname, prefix);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_load misc \n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        _("Loading miscellaneous..."),
-        PIC_TYPE_LOAD);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+                          _("Loading miscellaneous..."),
+                          PIC_TYPE_LOAD);
 
     xml_loadsave_misc_read(bygfoot, dirname, prefix);
 
@@ -271,71 +265,69 @@ load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_mai
     xml_loadsave_leagues_cups_adjust_team_ptrs();
 
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_load users \n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        _("Loading users..."),
-        PIC_TYPE_LOAD);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+                          _("Loading users..."),
+                          PIC_TYPE_LOAD);
 
     xml_load_users(dirname, prefix);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_load transfers \n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        _("Loading transfer list..."),
-        PIC_TYPE_LOAD);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+                          _("Loading transfer list..."),
+                          PIC_TYPE_LOAD);
 
     xml_load_transfers(dirname, prefix);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_load stats \n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        _("Loading season stats..."),
-        PIC_TYPE_LOAD);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+                          _("Loading season stats..."),
+                          PIC_TYPE_LOAD);
 
     xml_loadsave_season_stats_read(dirname, prefix);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_load jobs \n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        /* The 'job exchange' is a list of teams looking for a manager. */
-        _("Loading job exchange..."),
-        PIC_TYPE_LOAD);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+            /* The 'job exchange' is a list of teams looking for a manager. */
+                          _("Loading job exchange..."),
+                          PIC_TYPE_LOAD);
 
     xml_loadsave_jobs_read(dirname, prefix);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_load newspaper \n");
 
     bygfoot_show_progress(bygfoot,
-        ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
-        _("Loading newspaper..."),
-        PIC_TYPE_LOAD);
+                          ((PROGRESS_MAX * bygfoot_get_progress_bar_fraction(bygfoot)) + 1) / PROGRESS_MAX,
+                          _("Loading newspaper..."),
+                          PIC_TYPE_LOAD);
 
     xml_loadsave_newspaper_read(dirname, prefix);
 
-    if(debug > 60)
+    if (debug > 60)
         g_print("load_save_load done \n");
 
     bygfoot_show_progress(bygfoot, 1, _("Done."),
-                      PIC_TYPE_LOAD);
+                          PIC_TYPE_LOAD);
 
     chdir(dirname);
     GPtrArray *files = file_dir_get_contents(dirname, prefix, "");
     // Remove the zipfile from the list
     gint i;
-    for(i=0; i<files->len; i++)
-    {
-        if (g_strcmp0((gchar*)g_ptr_array_index(files, i),basename)==0)
-        {
+    for (i = 0; i < files->len; i++) {
+        if (g_strcmp0((gchar *) g_ptr_array_index(files, i), basename) == 0) {
             g_ptr_array_remove_index_fast(files, i);
         }
     }
@@ -350,15 +342,12 @@ load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_mai
     file_store_text_in_saves("last_save", fullname);
 
     bygfoot_show_progress(bygfoot, -1, "",
-                      PIC_TYPE_LOAD);
+                          PIC_TYPE_LOAD);
 
-    if(create_main_window)
-    {
+    if (create_main_window) {
         window_create_with_userdata(WINDOW_MAIN, bygfoot);
         on_button_back_to_main_clicked(NULL, NULL);
-    }
-    else if(window.main != NULL)
-    {
+    } else if (window.main != NULL) {
         gtk_widget_show(window.main);
         window_main_load_geometry();
     }
@@ -376,8 +365,7 @@ load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_mai
 
 /** Write an autosave. */
 void
-load_save_autosave(Bygfoot *bygfoot)
-{
+load_save_autosave(Bygfoot *bygfoot) {
 #ifdef DEBUG
     printf("load_save_autosave\n");
 #endif
@@ -387,27 +375,26 @@ load_save_autosave(Bygfoot *bygfoot)
     FILE *fil = NULL;
     gchar *pwd = g_get_current_dir();
 
-    if(!opt_int("int_opt_autosave"))
+    if (!opt_int("int_opt_autosave"))
         return;
 
     counters[COUNT_AUTOSAVE] = (counters[COUNT_AUTOSAVE] + 1) % opt_int("int_opt_autosave_interval");
 
-    if(counters[COUNT_AUTOSAVE] != 0)
+    if (counters[COUNT_AUTOSAVE] != 0)
         return;
 
     load_save_write_autosave_name(name);
 
-    if(os_is_unix)
+    if (os_is_unix)
         sprintf(directory, "%s%s%s%ssaves", home, G_DIR_SEPARATOR_S, HOMEDIRNAME, G_DIR_SEPARATOR_S);
-    else
-    {
+    else {
         sprintf(directory, "%s%ssaves", pwd, G_DIR_SEPARATOR_S);
         g_free(pwd);
     }
     sprintf(name, "%s.zip", name);
     sprintf(buf, "%s%s%s", directory, G_DIR_SEPARATOR_S, name);
 
-    if(!file_my_fopen(buf, "w", &fil, FALSE))
+    if (!file_my_fopen(buf, "w", &fil, FALSE))
         return;
 
     fclose(fil);
@@ -417,10 +404,8 @@ load_save_autosave(Bygfoot *bygfoot)
     GPtrArray *files = file_dir_get_contents(directory, prefix, ".zip");
     // Remove the zipfile from the list
     gint i;
-    for(i=0; i<files->len; i++)
-    {
-        if (g_strcmp0((gchar*)g_ptr_array_index(files, i),name)==0)
-        {
+    for (i = 0; i < files->len; i++) {
+        if (g_strcmp0((gchar *) g_ptr_array_index(files, i), name) == 0) {
             g_ptr_array_remove_index_fast(files, i);
         }
     }
@@ -436,13 +421,11 @@ load_save_autosave(Bygfoot *bygfoot)
 /** Write the autosave file name which is put together from
     the user name, team name etc. into the parameter string. */
 void
-load_save_write_autosave_name(gchar *filename)
-{
+load_save_write_autosave_name(gchar *filename) {
     gchar teamname[SMALL];
     gint i = 0;
 
-    while(usr(0).tm->name[i] != '\0')
-    {
+    while (usr(0).tm->name[i] != '\0') {
         teamname[i] = (isspace(usr(0).tm->name[i]) == 0) ?
                       usr(0).tm->name[i] : '_';
         i++;
@@ -456,44 +439,37 @@ load_save_write_autosave_name(gchar *filename)
 
 /** Try to load a savegame given on the command line. */
 gboolean
-load_game_from_command_line(Bygfoot *bygfoot, const gchar *filename)
-{
+load_game_from_command_line(Bygfoot *bygfoot, const gchar *filename) {
 #ifdef DEBUG
     printf("load_game_from_command_line\n");
 #endif
 
     gchar *fullname = NULL,
-                      *support_file_name = NULL;
+            *support_file_name = NULL;
 
-    if(strcmp(filename, "last_save") == 0)
+    if (strcmp(filename, "last_save") == 0)
         return load_save_load_game(bygfoot, filename, TRUE);
 
     fullname = (g_str_has_suffix(filename, const_str("string_fs_save_suffix"))) ?
                g_strdup(filename) :
                g_strdup_printf("%s%s", filename, const_str("string_fs_save_suffix"));
 
-    if(g_file_test(fullname, G_FILE_TEST_EXISTS))
-    {
-        if(load_save_load_game(bygfoot, fullname, TRUE))
-        {
+    if (g_file_test(fullname, G_FILE_TEST_EXISTS)) {
+        if (load_save_load_game(bygfoot, fullname, TRUE)) {
             g_free(fullname);
             return TRUE;
-        }
-        else
+        } else
             return FALSE;
     }
 
     support_file_name = file_find_support_file(fullname, FALSE);
 
-    if(g_file_test(support_file_name, G_FILE_TEST_EXISTS))
-    {
-        if(load_save_load_game(bygfoot, support_file_name, TRUE))
-        {
+    if (g_file_test(support_file_name, G_FILE_TEST_EXISTS)) {
+        if (load_save_load_game(bygfoot, support_file_name, TRUE)) {
             g_free(fullname);
             g_free(support_file_name);
             return TRUE;
-        }
-        else
+        } else
             return FALSE;
     }
 

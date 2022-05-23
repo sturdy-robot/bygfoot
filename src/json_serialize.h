@@ -38,14 +38,14 @@ bygfoot_json_serialize_prom_rel_elements(const GArray *garry);
 json_object *
 bygfoot_json_serialize_prom_rel_element(const PromRelElement *element);
 
-json_object*
+json_object *
 bygfoot_json_serialize_prom_games_array(const GArray *garry);
 
-json_object*
+json_object *
 bygfoot_json_serialize_prom_games(const PromGames *prom_games);
 
 json_object *
-bygfoot_json_serialize_two_match_weeks(GArray * const *two_match_weeks);
+bygfoot_json_serialize_two_match_weeks(GArray *const *two_match_weeks);
 
 json_object *
 bygfoot_json_serialize_joined_leagues(const GArray *garray);
@@ -75,7 +75,7 @@ json_object *
 bygfoot_json_serialize_user(const User *user);
 
 json_object *
-bygfoot_json_serialize_user_bets(GArray * const *bets);
+bygfoot_json_serialize_user_bets(GArray *const *bets);
 
 json_object *
 bygfoot_json_serialize_user_sponsor(UserSponsor sponsor);
@@ -114,6 +114,7 @@ bygfoot_json_serialize_teams(const GPtrArray *teams);
 json_object *
 bygfoot_json_serialize_team_ptrs(GPtrArray *team_ptrs,
                                  GHashTable *fields);
+
 json_object *
 bygfoot_json_serialize_team_ptr(const Team *team);
 
@@ -199,7 +200,7 @@ bygfoot_json_serialize_transfer_offer(const TransferOffer *offer);
 
 /** @name Fixtures */
 /* @{ */
-json_object*
+json_object *
 bygfoot_json_serialize_fixture_ptr(const Fixture *fixture);
 /* @} */
 
@@ -227,7 +228,7 @@ json_object *
 bygfoot_json_serialize_live_game_stats_values(gint (*values)[9]);
 
 json_object *
-bygfoot_json_serialize_live_game_stats_players(GPtrArray * (*players)[5]);
+bygfoot_json_serialize_live_game_stats_players(GPtrArray *(*players)[5]);
 
 json_object *
 bygfoot_json_serialize_live_game_team_state_array(LiveGameTeamState *team_states);
@@ -241,7 +242,7 @@ bygfoot_json_serialize_live_game_action_ids(GArray **action_ids);
 
 /** @name Stats */
 /* @{ */
-json_object*
+json_object *
 bygfoot_json_serialize_season_stats(const GArray *stats);
 
 json_object *
@@ -299,7 +300,7 @@ json_object *
 bygfoot_json_serialize_fixture(const Fixture *fixture);
 
 json_object *
-bygfoot_json_serialize_fixture_teams(Team * const *teams);
+bygfoot_json_serialize_fixture_teams(Team *const *teams);
 
 json_object *
 bygfoot_json_serialize_fixture_result(const gint (*result)[3]);

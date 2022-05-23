@@ -29,10 +29,10 @@
 #include "bygfoot.h"
 
 void
-load_save_save_game(Bygfoot *bygfoot, const gchar* filename);
+load_save_save_game(Bygfoot *bygfoot, const gchar *filename);
 
 gboolean
-load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_main_window);
+load_save_load_game(Bygfoot *bygfoot, const gchar *filename, gboolean create_main_window);
 
 void
 load_save_autosave(Bygfoot *bygfoot);

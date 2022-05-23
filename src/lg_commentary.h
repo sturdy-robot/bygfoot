@@ -59,10 +59,10 @@ void
 lg_commentary_set_stats_tokens(const LiveGameStats *stats, GPtrArray **token_arrays);
 
 void
-lg_commentary_generate(const LiveGame *live_game, LiveGameUnit *unit, 
-		       const gchar *event_name, gint ev_type);
+lg_commentary_generate(const LiveGame *live_game, LiveGameUnit *unit,
+                       const gchar *event_name, gint ev_type);
 
-gchar*
+gchar *
 lg_commentary_get_extra_data(const LiveGameUnit *unit, const Fixture *fix);
 
 void
@@ -75,8 +75,8 @@ void
 lg_commentary_test_load_token_file(const gchar *token_file);
 
 void
-lg_commentary_test(const gchar *commentary_file, const gchar* token_file,
-		   const gchar *event_name, gint number_of_passes);
+lg_commentary_test(const gchar *commentary_file, const gchar *token_file,
+                   const gchar *event_name, gint number_of_passes);
 
 gint
 lg_commentary_select(const GArray *commentaries, gchar *buf);

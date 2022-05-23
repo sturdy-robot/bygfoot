@@ -27,16 +27,18 @@
  * Standard gettext macros.
  */
 #ifndef G_OS_UNIX
-  #define ENABLE_NLS 
+#define ENABLE_NLS
 #endif
- 
+
 #ifdef ENABLE_NLS
 #  ifndef G_OS_UNIX
 #    define PACKAGE "bygfoot"
 #    define GETTEXT_PACKAGE "bygfoot"
 #    define PACKAGE_LOCALE_DIR "./locale"
 #  endif
+
 #  include <libintl.h>
+
 #  undef _
 #  define _(String) dgettext (PACKAGE, String)
 #  ifdef gettext_noop

@@ -33,9 +33,8 @@
     @param name The name of the option.
     @return The string_value of the option.
     @see #Option */
-gchar*
-option_string(const gchar *name, OptionList *optionlist)
-{
+gchar *
+option_string(const gchar *name, OptionList *optionlist) {
 #ifdef DEBUG
     printf("option_string\n");
 #endif
@@ -46,28 +45,29 @@ option_string(const gchar *name, OptionList *optionlist)
 
     GQuark quark = g_quark_from_string(name);
     gpointer element = g_datalist_id_get_data(&optionlist->datalist, quark);
-    
-    if(element != NULL)
-	return ((Option*)element)->string_value;
 
-    main_exit_program(EXIT_OPTION_NOT_FOUND, 
-		      "option_string: option named %s not found\nMaybe you should delete the .bygfoot directory from your home dir", name);
+    if (element != NULL)
+        return ((Option *) element)->string_value;
+
+    main_exit_program(EXIT_OPTION_NOT_FOUND,
+                      "option_string: option named %s not found\nMaybe you should delete the .bygfoot directory from your home dir",
+                      name);
 
     return NULL;
 }
 
 /** Return the GString pointer going with the option. */
-gchar**
-option_string_pointer(const gchar *name, OptionList *optionlist)
-{
+gchar **
+option_string_pointer(const gchar *name, OptionList *optionlist) {
     GQuark quark = g_quark_from_string(name);
     gpointer element = g_datalist_id_get_data(&optionlist->datalist, quark);
-    
-    if(element != NULL)
-	return &((Option*)element)->string_value;
 
-    main_exit_program(EXIT_OPTION_NOT_FOUND, 
-		      "option_string: option named %s not found\nMaybe you should delete the .bygfoot directory from your home dir", name);
+    if (element != NULL)
+        return &((Option *) element)->string_value;
+
+    main_exit_program(EXIT_OPTION_NOT_FOUND,
+                      "option_string: option named %s not found\nMaybe you should delete the .bygfoot directory from your home dir",
+                      name);
 
     return NULL;
 }
@@ -78,40 +78,40 @@ option_string_pointer(const gchar *name, OptionList *optionlist)
     @return The value of the option.
     @see #Option */
 gint
-option_int(const gchar *name, OptionList *optionlist)
-{
+option_int(const gchar *name, OptionList *optionlist) {
 #ifdef DEBUG
     printf("option_int\n");
 #endif
 
     GQuark quark = g_quark_from_string(name);
     gpointer element = g_datalist_id_get_data(&optionlist->datalist, quark);
-    
-    if(element != NULL)
-	return ((Option*)element)->value;
 
-    main_exit_program(EXIT_OPTION_NOT_FOUND, 
-		      "option_int: option named %s not found\nMaybe you should delete the .bygfoot directory from your home dir", name);
+    if (element != NULL)
+        return ((Option *) element)->value;
+
+    main_exit_program(EXIT_OPTION_NOT_FOUND,
+                      "option_int: option named %s not found\nMaybe you should delete the .bygfoot directory from your home dir",
+                      name);
 
     return -1;
 }
 
 /** Return the address of an options variable. */
-gint*
-option_int_pointer(const gchar *name, OptionList *optionlist)
-{
+gint *
+option_int_pointer(const gchar *name, OptionList *optionlist) {
 #ifdef DEBUG
     printf("option_int_pointer\n");
 #endif
 
     GQuark quark = g_quark_from_string(name);
     gpointer element = g_datalist_id_get_data(&optionlist->datalist, quark);
-    
-    if(element != NULL)
-	return &((Option*)element)->value;
 
-    main_exit_program(EXIT_OPTION_NOT_FOUND, 
-		      "option_int: option named %s not found\nMaybe you should delete the .bygfoot directory from your home dir", name);
+    if (element != NULL)
+        return &((Option *) element)->value;
+
+    main_exit_program(EXIT_OPTION_NOT_FOUND,
+                      "option_int: option named %s not found\nMaybe you should delete the .bygfoot directory from your home dir",
+                      name);
 
     return NULL;
 }
@@ -122,16 +122,16 @@ option_int_pointer(const gchar *name, OptionList *optionlist)
     @return The value of the option cast to float and divided by 1000.
     @see #Option */
 gfloat
-option_float(const gchar *name, OptionList *optionlist)
-{
+option_float(const gchar *name, OptionList *optionlist) {
     GQuark quark = g_quark_from_string(name);
     gpointer element = g_datalist_id_get_data(&optionlist->datalist, quark);
-    
-    if(element != NULL)
-	return (gfloat)((Option*)element)->value / OPTION_FLOAT_DIVISOR;
 
-    main_exit_program(EXIT_OPTION_NOT_FOUND, 
-		      "option_float: option named %s not found\nMaybe you should delete the .bygfoot directory from your home dir", name);
+    if (element != NULL)
+        return (gfloat) ((Option *) element)->value / OPTION_FLOAT_DIVISOR;
+
+    main_exit_program(EXIT_OPTION_NOT_FOUND,
+                      "option_float: option named %s not found\nMaybe you should delete the .bygfoot directory from your home dir",
+                      name);
 
     return -1;
 }
@@ -141,19 +141,20 @@ option_float(const gchar *name, OptionList *optionlist)
     @param option_array The option array.
     @param new_value The value we set. */
 void
-option_set_string(const gchar *name, OptionList *optionlist, const gchar *new_value)
-{
+option_set_string(const gchar *name, OptionList *optionlist, const gchar *new_value) {
 #ifdef DEBUG
     printf("option_set_string\n");
 #endif
 
     GQuark quark = g_quark_from_string(name);
     gpointer element = g_datalist_id_get_data(&optionlist->datalist, quark);
-    
-    if(element == NULL)
-	debug_print_message("option_set_string: option named %s not found\nMaybe you should delete the .bygfoot directory from your home dir", name);
+
+    if (element == NULL)
+        debug_print_message(
+                "option_set_string: option named %s not found\nMaybe you should delete the .bygfoot directory from your home dir",
+                name);
     else
-	misc_string_assign(&((Option*)element)->string_value, new_value);
+        misc_string_assign(&((Option *) element)->string_value, new_value);
 }
 
 /** Change the value of an int option in the array.
@@ -161,27 +162,27 @@ option_set_string(const gchar *name, OptionList *optionlist, const gchar *new_va
     @param option_array The option array.
     @param new_value The value we set. */
 void
-option_set_int(const gchar *name, OptionList *optionlist, gint new_value)
-{
+option_set_int(const gchar *name, OptionList *optionlist, gint new_value) {
 #ifdef DEBUG
     printf("option_set_int\n");
 #endif
 
     GQuark quark = g_quark_from_string(name);
     gpointer element = g_datalist_id_get_data(&optionlist->datalist, quark);
-    
-    if(element == NULL)
-	debug_print_message("option_set_int: option named %s not found\nMaybe you should delete the .bygfoot directory from your home dir", name);
+
+    if (element == NULL)
+        debug_print_message(
+                "option_set_int: option named %s not found\nMaybe you should delete the .bygfoot directory from your home dir",
+                name);
     else
-	((Option*)element)->value = new_value;
+        ((Option *) element)->value = new_value;
 }
 
 
 /** Add an option to the optionlist with the given values. */
 void
-option_add(OptionList *optionlist, const gchar *name, 
-	   gint int_value, const gchar *string_value)
-{
+option_add(OptionList *optionlist, const gchar *name,
+           gint int_value, const gchar *string_value) {
 #ifdef DEBUG
     printf("option_add\n");
 #endif
@@ -190,17 +191,16 @@ option_add(OptionList *optionlist, const gchar *name,
     Option new;
     gpointer element = NULL;
 
-    if(optionlist->list != NULL) {
+    if (optionlist->list != NULL) {
         GQuark quark = g_quark_from_string(name);
         element = g_datalist_id_get_data(&optionlist->datalist, quark);
     }
-    
-    if(element != NULL)
-    {
-        if(debug > 0)
+
+    if (element != NULL) {
+        if (debug > 0)
             debug_print_message("Option %s already in optionlist\n", name);
-        ((Option*)element)->value = int_value;
-        ((Option*)element)->string_value = (string_value == NULL) ? NULL : g_strdup(string_value);
+        ((Option *) element)->value = int_value;
+        ((Option *) element)->string_value = (string_value == NULL) ? NULL : g_strdup(string_value);
         return;
     }
 
@@ -208,22 +208,20 @@ option_add(OptionList *optionlist, const gchar *name,
     new.value = int_value;
     new.string_value = (string_value == NULL) ? NULL : g_strdup(string_value);
 
-    if(optionlist->list == NULL)
-    {
-	optionlist->list = g_array_new(FALSE, FALSE, sizeof(Option));
-	g_datalist_init(&optionlist->datalist);
+    if (optionlist->list == NULL) {
+        optionlist->list = g_array_new(FALSE, FALSE, sizeof(Option));
+        g_datalist_init(&optionlist->datalist);
     }
 
     g_array_append_val(optionlist->list, new);
-    
-    for(i=0;i<optionlist->list->len;i++)
-	g_datalist_set_data(&optionlist->datalist, 
-			    g_array_index(optionlist->list, Option, i).name,
-			    &g_array_index(optionlist->list, Option, i));
+
+    for (i = 0; i < optionlist->list->len; i++)
+        g_datalist_set_data(&optionlist->datalist,
+                            g_array_index(optionlist->list, Option, i).name,
+                            &g_array_index(optionlist->list, Option, i));
 }
 
 gint
-option_compare_func(gconstpointer a, gconstpointer b)
-{
-    return misc_alphabetic_compare(((const Option*)a)->name, ((const Option*)b)->name);
+option_compare_func(gconstpointer a, gconstpointer b) {
+    return misc_alphabetic_compare(((const Option *) a)->name, ((const Option *) b)->name);
 }

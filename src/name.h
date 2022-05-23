@@ -40,13 +40,13 @@
 void
 name_shorten_list(NameList *namelist);
 
-gchar*
+gchar *
 name_get(const gchar *names_file);
 
-gchar*
+gchar *
 name_get_from_list(const NameList *namelist);
 
-NameList*
+NameList *
 name_get_list_from_sid(const gchar *sid);
 
 #endif

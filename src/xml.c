@@ -47,8 +47,7 @@
 #include "xml_loadsave_users.h"
 
 void
-xml_load_users(const gchar *dirname, const gchar *basename)
-{
+xml_load_users(const gchar *dirname, const gchar *basename) {
 #ifdef DEBUG
     printf("xml_load_users\n");
 #endif
@@ -60,21 +59,19 @@ xml_load_users(const gchar *dirname, const gchar *basename)
 
     xml_loadsave_users_read(dirname, basename);
 
-    for(i=0;i<users->len;i++)
-    {
-	sprintf(buf, "%s%s%s___user_%02d_options", 
-		dirname, G_DIR_SEPARATOR_S, basename, i);
-	file_load_opt_file(buf, &usr(i).options, FALSE);
+    for (i = 0; i < users->len; i++) {
+        sprintf(buf, "%s%s%s___user_%02d_options",
+                dirname, G_DIR_SEPARATOR_S, basename, i);
+        file_load_opt_file(buf, &usr(i).options, FALSE);
 
-	sprintf(buf, "%s%s%s___user_%02d_live_game.xml", 
-		dirname, G_DIR_SEPARATOR_S, basename, i);
-	xml_loadsave_live_game_read(buf, &usr(i).live_game);
+        sprintf(buf, "%s%s%s___user_%02d_live_game.xml",
+                dirname, G_DIR_SEPARATOR_S, basename, i);
+        xml_loadsave_live_game_read(buf, &usr(i).live_game);
     }
 }
 
 void
-xml_load_league(Bygfoot *bygfoot, GArray *league_list, const gchar *dirname, const gchar *basename)
-{
+xml_load_league(Bygfoot *bygfoot, GArray *league_list, const gchar *dirname, const gchar *basename) {
 #ifdef DEBUG
     printf("xml_load_league\n");
 #endif
@@ -94,10 +91,10 @@ xml_load_league(Bygfoot *bygfoot, GArray *league_list, const gchar *dirname, con
     sprintf(buf, _("Loading league: %s"), league->name);
 
     bygfoot_show_progress(bygfoot, bygfoot_get_progress_bar_fraction(bygfoot), buf,
-                      PIC_TYPE_LOAD);
+                          PIC_TYPE_LOAD);
 
-    if(debug > 80)
-	g_print("%s\n", buf);
+    if (debug > 80)
+        g_print("%s\n", buf);
 
     sprintf(buf, "%s%s%s_fixtures.xml", dirname, G_DIR_SEPARATOR_S, prefix);
     xml_loadsave_fixtures_read(buf, league->fixtures);
@@ -109,8 +106,7 @@ xml_load_league(Bygfoot *bygfoot, GArray *league_list, const gchar *dirname, con
 }
 
 void
-xml_load_cup(Bygfoot *bygfoot, Cup *cup, const gchar *dirname, const gchar *basename)
-{
+xml_load_cup(Bygfoot *bygfoot, Cup *cup, const gchar *dirname, const gchar *basename) {
 #ifdef DEBUG
     printf("xml_load_cup\n");
 #endif
@@ -122,12 +118,12 @@ xml_load_cup(Bygfoot *bygfoot, Cup *cup, const gchar *dirname, const gchar *base
     xml_loadsave_cup_read(buf, cup);
 
     sprintf(buf, _("Loading cup: %s"),
-	    cup->name);
+            cup->name);
     bygfoot_show_progress(bygfoot, bygfoot_get_progress_bar_fraction(bygfoot), buf,
-                      PIC_TYPE_LOAD);
+                          PIC_TYPE_LOAD);
 
-    if(debug > 80)
-	g_print("%s\n", buf);
+    if (debug > 80)
+        g_print("%s\n", buf);
 
     sprintf(buf, "%s%s%s_fixtures.xml", dirname, G_DIR_SEPARATOR_S, prefix);
     xml_loadsave_fixtures_read(buf, cup->fixtures);
@@ -136,8 +132,7 @@ xml_load_cup(Bygfoot *bygfoot, Cup *cup, const gchar *dirname, const gchar *base
 }
 
 void
-xml_load_transfers(const gchar *dirname, const gchar *basename)
-{
+xml_load_transfers(const gchar *dirname, const gchar *basename) {
 #ifdef DEBUG
     printf("xml_load_transfers\n");
 #endif
@@ -153,14 +148,13 @@ xml_load_transfers(const gchar *dirname, const gchar *basename)
 }
 
 void
-xml_write_string(FILE *fil, const gchar *string, gint tag, const gchar* indent)
-{
+xml_write_string(FILE *fil, const gchar *string, gint tag, const gchar *indent) {
 #ifdef DEBUG
     printf("xml_write_string\n");
 #endif
 
-    if(string == NULL)
-	return;
+    if (string == NULL)
+        return;
 
     fprintf(fil, "%s<_%d>%s</_%d>\n", indent, tag, string, tag);
 }

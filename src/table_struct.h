@@ -34,8 +34,7 @@
    @see TableElement
    @see Table
 */
-enum TableElementValues
-{
+enum TableElementValues {
     TABLE_PLAYED = 0,
     TABLE_WON,
     TABLE_DRAW,
@@ -52,8 +51,7 @@ enum TableElementValues
    @see Table
    @see #TableElementValues
 */
-typedef struct
-{
+typedef struct {
     Team *team;
     /** The rank of the element before the last update. 
 	Used to display an arrow if the rank changed. */
@@ -65,8 +63,7 @@ typedef struct
    A table belonging to a league or a cup with round robin.
    @see TableElement
 */
-typedef struct
-{
+typedef struct {
     gchar *name;
     gint clid;
     /** The cup round (or -1 if it's a league). */

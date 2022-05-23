@@ -37,29 +37,30 @@ strategy_update_team_pre_match(Team *tm);
 
 gint
 strategy_compare_players(gconstpointer a,
-			 gconstpointer b,
-			 gpointer user_data);
-gchar*
+                         gconstpointer b,
+                         gpointer user_data);
+
+gchar *
 strategy_get_random(void);
 
-Strategy*
+Strategy *
 strategy_from_sid(const gchar *sid);
 
 gboolean
-query_strategy_formation_possible(const GPtrArray *players, 
-				  const StrategyPrematch *prematch,
-				  gint formation);
+query_strategy_formation_possible(const GPtrArray *players,
+                                  const StrategyPrematch *prematch,
+                                  gint formation);
 
 void
 strategy_update_lineup(Team *tm, const GPtrArray *players,
-		       const StrategyPrematch *prematch, gint formation);
+                       const StrategyPrematch *prematch, gint formation);
 
 void
 strategy_repair_player(Player *pl);
 
 void
-strategy_repair_players(GPtrArray *players, 
-			const StrategyPrematch *prematch);
+strategy_repair_players(GPtrArray *players,
+                        const StrategyPrematch *prematch);
 
 void
 strategy_set_tokens(const Team *tm, const Fixture *fix);
@@ -78,19 +79,20 @@ strategy_live_game_check(LiveGame *match, gint team_idx);
 
 void
 strategy_live_game_apply_action(LiveGame *match, gint team_idx,
-				const StrategyMatchAction *action);
+                                const StrategyMatchAction *action);
 
 gint
 strategy_compare_players_sub(gconstpointer a,
-			     gconstpointer b,
-			     gpointer user_data);
+                             gconstpointer b,
+                             gpointer user_data);
 
 gint
-strategy_get_sub(const Team *tm, gint position, 
-		 gint property, gboolean sub_in);
+strategy_get_sub(const Team *tm, gint position,
+                 gint property, gboolean sub_in);
 
 gint
 strategy_compare_positions(gconstpointer a,
-			   gconstpointer b,
-			   gpointer user_data);
+                           gconstpointer b,
+                           gpointer user_data);
+
 #endif

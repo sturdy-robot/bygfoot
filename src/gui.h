@@ -29,8 +29,7 @@
 #include "bygfoot.h"
 
 /** What kind of pictures we on top of the progress bar. */
-enum PicType
-{
+enum PicType {
     PIC_TYPE_NONE = 0,
     PIC_TYPE_SAVE,
     PIC_TYPE_LOAD,

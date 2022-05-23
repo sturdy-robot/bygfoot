@@ -30,7 +30,7 @@
 #include "bygfoot.h"
 #include "fixture_struct.h"
 
-BetMatch*
+BetMatch *
 bet_from_fixture(gint fix_id);
 
 void
@@ -45,7 +45,7 @@ bet_update(void);
 gfloat
 bet_round_odd(gfloat odd);
 
-BetUser*
+BetUser *
 bet_is_user(const BetMatch *bet);
 
 gboolean

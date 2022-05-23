@@ -29,8 +29,7 @@
 #include "bygfoot.h"
 
 /** @see team_return_league_cup_value_int() */
-enum LeagueCupValue
-{
+enum LeagueCupValue {
     LEAGUE_CUP_VALUE_NAME = 0,
     LEAGUE_CUP_VALUE_SHORT_NAME,
     LEAGUE_CUP_VALUE_SID,
@@ -47,23 +46,21 @@ enum LeagueCupValue
 };
 
 /** Some team attributes. */
-enum TeamAttribute
-{
+enum TeamAttribute {
     TEAM_ATTRIBUTE_STYLE = 0,
     TEAM_ATTRIBUTE_BOOST,
     TEAM_ATTRIBUTE_END
 };
 
 /** The stadium of a team. */
-typedef struct
-{    
+typedef struct {
     gchar *name;
     gint capacity, /**< How many people fit in. Default: -1 (depends on league). */
-	average_attendance, /**< How many people watched on average. Default: 0. */
-	possible_attendance, /**< How many people would've watched if every game had been
+    average_attendance, /**< How many people watched on average. Default: 0. */
+    possible_attendance, /**< How many people would've watched if every game had been
 				sold out. We need this only to compute the average attendance in percentage
 				of the capacity. Default: 0. */
-	games; /**< Number of games. Default: 0. */
+    games; /**< Number of games. Default: 0. */
     gfloat safety; /**< Safety percentage between 0 and 100. Default: randomized. */
     gfloat ticket_price;
 
@@ -71,8 +68,7 @@ typedef struct
 
 /** Structure representing a team.
     @see Player */
-typedef struct
-{
+typedef struct {
     gchar *name, *symbol;
     /** File the team takes the 
 	player names from. */
@@ -82,10 +78,10 @@ typedef struct
     gchar *strategy_sid;
 
     gint clid, /**< Numerical id of the league or cup the team belongs to. */
-	id, /**< Id of the team. */
-	structure, /**< Playing structure. @see team_assign_playing_structure() */
-	style, /**< Playing style. @see team_assign_playing_style() */
-	boost; /**< Whether player boost or anti-boost is switched on. */
+    id, /**< Id of the team. */
+    structure, /**< Playing structure. @see team_assign_playing_structure() */
+    style, /**< Playing style. @see team_assign_playing_style() */
+    boost; /**< Whether player boost or anti-boost is switched on. */
 
     /** Average talent of the players at generation. */
     gfloat average_talent;
@@ -93,7 +89,7 @@ typedef struct
     /** A value that influences scoring chances etc.
      If > 1, the team's lucky, if < 1, it's unlucky.
      Only used for users' teams. */
-    gfloat luck;    
+    gfloat luck;
 
     Stadium stadium;
     /**

@@ -33,8 +33,8 @@
 /**
    Macros for random number generation.
 */
-#define math_rnd(lower,upper) g_rand_double_range(rand_generator, lower, upper)
-#define math_rndi(lower,upper) g_rand_int_range(rand_generator, lower, upper + 1)
+#define math_rnd(lower, upper) g_rand_double_range(rand_generator, lower, upper)
+#define math_rndi(lower, upper) g_rand_int_range(rand_generator, lower, upper + 1)
 #define math_gauss_disti(lower, upper) ((gint)rint( math_gauss_dist((gfloat)lower - 0.499, (gfloat)upper + 0.499)))
 
 gdouble

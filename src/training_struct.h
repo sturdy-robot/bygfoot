@@ -32,8 +32,7 @@
 #define CAMP_SCALE_MAX 10
 #define CAMP_SCALE_STEP 1
 
-enum TrainingCampHotel
-{
+enum TrainingCampHotel {
     TRAINING_CAMP_HOTEL_GOOD = 1,
     TRAINING_CAMP_HOTEL_FIRST,
     TRAINING_CAMP_HOTEL_PREMIUM,

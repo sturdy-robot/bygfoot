@@ -28,8 +28,7 @@
 
 /** Lineup types for a CPU team (ie. which players
     are preferred when putting together the first 11). */
-enum StratLineupType
-{
+enum StratLineupType {
     STRAT_LINEUP_BEST = 1,
     STRAT_LINEUP_WEAKEST,
     STRAT_LINEUP_FITTEST,
@@ -55,8 +54,7 @@ enum StratCondToken {
     STRAT_CON_LAST
 };
 
-typedef struct
-{
+typedef struct {
     enum StratCondToken token;
     const gchar *value;
     gint len;
@@ -64,8 +62,7 @@ typedef struct
 
 /** A struct describing the pre-match strategy settings 
     of a CPU team. */
-typedef struct
-{
+typedef struct {
     /** A condition describing when the strategy should be applied. */
     gchar *condition;
     /** Array of possible formations, sorted by preference. */
@@ -77,8 +74,7 @@ typedef struct
     gfloat min_fitness;
 } StrategyPrematch;
 
-typedef struct
-{
+typedef struct {
     /** A condition describing when the action should be taken. */
     gchar *condition, *sub_condition;
     /** A lexed version of condition for faster processing. */
@@ -88,15 +84,14 @@ typedef struct
     /** Substitution specifiers (position and property).
 	Property is taken from #StratLineupType. */
     gint sub_in_pos, sub_in_prop,
-	sub_out_pos, sub_out_prop;
+            sub_out_pos, sub_out_prop;
     /** An id to prevent actions from being applied again and
 	again during a match. */
     gint id;
 } StrategyMatchAction;
 
 /** A CPU strategy. */
-typedef struct
-{
+typedef struct {
     /** String id and description of the strategy. */
     gchar *sid, *desc;
     /** How often this strategy gets picked, relative

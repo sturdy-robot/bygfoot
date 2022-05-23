@@ -30,8 +30,7 @@
 #include "stat_struct.h"
 #include "table_struct.h"
 
-enum PromRelType
-{
+enum PromRelType {
     PROM_REL_PROMOTION = 0,
     PROM_REL_RELEGATION,
     PROM_REL_NONE
@@ -43,8 +42,7 @@ enum PromRelType
    that get promoted or relegated to a given league.
    @see PromRel
 */
-typedef struct
-{
+typedef struct {
     gint ranks[2]; /**< The range of teams; default 0 and 0 */
     gint from_table; /**< From which table to pick the teams in case there are several. Default: 0. */
     gchar *dest_sid; /**< The id of the destination league. Default "" */
@@ -61,8 +59,7 @@ typedef struct
 /**
    An struct representing promotion/relegation games.
 */
-typedef struct
-{
+typedef struct {
     gint ranks[2]; /**< The range of teams; default 0 and 0.  This is only valid
                         loser_sid == NULL. */
     /** The id of the league the promotion games winner gets promoted to. Default "" */
@@ -70,7 +67,7 @@ typedef struct
     /** The id of the league the promotion games losers get moved to. Default "" */
     gchar *loser_sid;
     /** Number of teams that advance from the promotion games. Default: 1. */
-    gint number_of_advance;    
+    gint number_of_advance;
     /** The cup determining how the promotion games are handled. */
     gchar *cup_sid;
 
@@ -82,8 +79,7 @@ typedef struct
    a rule about promotion games to be played.
    @see PromRelElement
 */
-typedef struct
-{
+typedef struct {
     /** Array with promotion/relegation rules.
 	@see PromRelElement
     */
@@ -101,8 +97,7 @@ typedef struct
    in the sense that there are matches played between teams from both leagues
    like in the US conference system.
 */
-typedef struct
-{
+typedef struct {
     /** Sid of the joined league. */
     gchar *sid;
     /** How many round robins to schedule. */
@@ -114,8 +109,7 @@ typedef struct
    gets created with nullified values for the league;
    older tables get stored.
 */
-typedef struct
-{
+typedef struct {
     gint add_week;
     gchar *name;
 } NewTable;
@@ -124,8 +118,7 @@ typedef struct
    A structure describing a custom break in the fixtures
    schedule occuring at a particular week.
 */
-typedef struct
-{
+typedef struct {
     /** In which week the break occurs. */
     gint week_number;
     /** Length of break in weeks. */
@@ -137,8 +130,7 @@ typedef struct
    @see PromRel
    @see Table
 */
-typedef struct
-{
+typedef struct {
     /** Default value "" */
     gchar *name, *short_name, *sid, *symbol;
     /** The sid of the player names file the 

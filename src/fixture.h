@@ -31,8 +31,7 @@
 #include "fixture_struct.h"
 #include "league_struct.h"
 
-enum FixtureCompare
-{
+enum FixtureCompare {
     FIXTURE_COMPARE_DATE = 0,
     FIXTURE_COMPARE_END
 };
@@ -50,23 +49,23 @@ void
 fixture_write_cup_round_robin(Cup *cup, gint cup_round, GPtrArray *teams);
 
 void
-fixture_write_round_robin(gpointer league_cup, gint cup_round, 
-			  GPtrArray *teams, gboolean one_round, 
+fixture_write_round_robin(gpointer league_cup, gint cup_round,
+                          GPtrArray *teams, gboolean one_round,
                           gint first_week, GArray *rr_breaks,
                           gint rr_break_idx);
 
 void
 fixture_write_round_robin_matchday(GArray *fixtures, gint cup_round, GPtrArray *teams,
-				   gint special, gint week_number,
-				   gint clid, gboolean home_advantage);
+                                   gint special, gint week_number,
+                                   gint clid, gboolean home_advantage);
 
 void
 fixture_write_knockout_round(Cup *cup, gint cup_round, GPtrArray *teams);
 
 void
 fixture_write(GArray *fixtures, Team *home_team, Team *away_team, gint week_number,
-	      gint week_round_number, gint clid, gint cup_round, gint replay_number,
-	      gboolean home_advantage, gboolean second_leg, gboolean decisive);
+              gint week_round_number, gint clid, gint cup_round, gint replay_number,
+              gboolean home_advantage, gboolean second_leg, gboolean decisive);
 
 void
 fixture_update(Cup *cup);
@@ -74,18 +73,18 @@ fixture_update(Cup *cup);
 gboolean
 fixture_update_write_replays(Cup *cup);
 
-GPtrArray*
+GPtrArray *
 fixture_get_cup_round_winners(const Cup *cup);
 
-GPtrArray*
+GPtrArray *
 fixture_get_round_robin_advance(const Cup *cup, gint round);
 
 gpointer
 fixture_winner_of(const Fixture *fix, gboolean team_id);
 
 gint
-fixture_get_free_round(gint week_number, const GPtrArray *teams, 
-		       gint team_id1, gint team_id2);
+fixture_get_free_round(gint week_number, const GPtrArray *teams,
+                       gint team_id1, gint team_id2);
 
 gboolean
 query_fixture_is_earlier(const Fixture *fix1, const Fixture *fix2);
@@ -105,10 +104,10 @@ query_fixture_has_tables(const Fixture *fix);
 gboolean
 query_fixture_in_week_round(gint clid, gint week_number, gint week_round_number);
 
-Fixture*
+Fixture *
 fixture_get_first_leg(const Fixture *fix, gboolean silent);
 
-GPtrArray*
+GPtrArray *
 fixture_get_week_list_clid(gint clid, gint week_number, gint week_round_number);
 
 void
@@ -117,28 +116,28 @@ fixture_result_to_buf(const Fixture *fix, gchar *buf, gboolean swap);
 gint
 fixture_get_number_of_matches(gint week_number, gint week_round_number);
 
-const Fixture*
+const Fixture *
 fixture_get(gint type, gint clid, gint week_number, gint week_round_number, const Team *tm);
 
-Fixture*
+Fixture *
 fixture_get_next(gint clid, gint week_number, gint week_round_number);
 
-Fixture*
+Fixture *
 fixture_get_previous(gint clid, gint week_number, gint week_round_number);
 
-GPtrArray*
+GPtrArray *
 fixture_get_latest(const Team *tm, gboolean with_cups);
 
 gint
 fixture_compare_func(gconstpointer a, gconstpointer b, gpointer data);
 
-GPtrArray*
+GPtrArray *
 fixture_get_matches(const Team *tm1, const Team *tm2);
 
-GPtrArray*
+GPtrArray *
 fixture_get_coming(const Team *tm);
 
-Fixture*
+Fixture *
 fixture_from_id(gint id, gboolean abort_program);
 
 gint
@@ -150,10 +149,10 @@ fixture_get_next_week(gint *week_number, gint *week_round_number);
 void
 fixture_get_previous_week(gint *week_number, gint *week_round_number);
 
-GPtrArray*
+GPtrArray *
 fixture_get_week_list(gint week_number, gint week_round_number);
 
-GPtrArray*
+GPtrArray *
 fixture_get_season_results(void);
 
 gint

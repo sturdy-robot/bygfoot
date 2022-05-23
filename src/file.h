@@ -39,10 +39,10 @@
 #endif
 
 void
-file_add_support_directory_recursive(Bygfoot *bygfoot, const gchar     *directory);
+file_add_support_directory_recursive(Bygfoot *bygfoot, const gchar *directory);
 
-gchar*
-file_find_support_file                       (const gchar     *filename, gboolean warning);
+gchar *
+file_find_support_file(const gchar *filename, gboolean warning);
 
 gboolean
 file_get_next_opt_line(FILE *fil, gchar *opt_name, gchar *opt_value);
@@ -53,13 +53,13 @@ file_load_opt_file(const gchar *filename, OptionList *optionlist, gboolean sort)
 void
 file_save_opt_file(const gchar *filename, OptionList *optionlist);
 
-GPtrArray*
+GPtrArray *
 file_dir_get_contents(const gchar *dir_name, const gchar *prefix, const gchar *suffix);
 
 gboolean
 file_my_fopen(const gchar *filename, gchar *bits, FILE **fil, gboolean abort_program);
 
-GPtrArray*
+GPtrArray *
 file_get_country_files(void);
 
 void
@@ -82,7 +82,7 @@ file_check_home_dir_get_definition_files(GPtrArray **files_to_copy);
 
 void
 file_check_home_dir_get_definition_dir(const gchar *dirname, const gchar *basename,
-				       GPtrArray **files_to_copy);
+                                       GPtrArray **files_to_copy);
 
 void
 file_check_home_dir_copy_files(GPtrArray **files_to_copy);
@@ -90,10 +90,10 @@ file_check_home_dir_copy_files(GPtrArray **files_to_copy);
 gboolean
 file_my_system(const GString *command);
 
-const gchar*
+const gchar *
 file_get_first_support_dir(void);
 
-const gchar*
+const gchar *
 file_get_first_support_dir_suffix(const gchar *suffix);
 
 void
@@ -114,7 +114,7 @@ file_get_bygfoot_dir(gchar *dir);
 void
 file_load_hints_file(void);
 
-gchar*
+gchar *
 file_load_text_from_saves(const gchar *filename);
 
 void
@@ -124,9 +124,9 @@ int
 do_extract_currentfile(unzFile uf, gchar *extracted_file);
 
 int
-do_compress_currentfile(zipFile zf, char* fileToZip);
+do_compress_currentfile(zipFile zf, char *fileToZip);
 
-gchar*
+gchar *
 file_get_mac_resource_path(const gchar *resource);
 
 uLong

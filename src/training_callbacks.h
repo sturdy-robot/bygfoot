@@ -27,46 +27,46 @@
 
 
 void
-on_b_cancel_clicked                    (GtkButton       *button,
-                                        gpointer         user_data);
+on_b_cancel_clicked(GtkButton *button,
+                    gpointer user_data);
 
 void
-on_b_ok_clicked                        (GtkButton       *button,
-                                        gpointer         user_data);
+on_b_ok_clicked(GtkButton *button,
+                gpointer user_data);
 
 void
-on_rb_camp3_clicked                    (GtkButton       *button,
-                                        gpointer         user_data);
+on_rb_camp3_clicked(GtkButton *button,
+                    gpointer user_data);
 
 void
-on_rb_camp2_clicked                    (GtkButton       *button,
-                                        gpointer         user_data);
+on_rb_camp2_clicked(GtkButton *button,
+                    gpointer user_data);
 
 void
-on_rb_camp1_clicked                    (GtkButton       *button,
-										gpointer         user_data);
+on_rb_camp1_clicked(GtkButton *button,
+                    gpointer user_data);
 
 void
-on_b_dec_recreation_clicked            (GtkButton       *button,
-                                        gpointer         user_data);
+on_b_dec_recreation_clicked(GtkButton *button,
+                            gpointer user_data);
 
 void
-on_b_inc_recreation_clicked            (GtkButton       *button,
-                                        gpointer         user_data);
+on_b_inc_recreation_clicked(GtkButton *button,
+                            gpointer user_data);
 
 void
-on_b_dec_training_clicked              (GtkButton       *button,
-                                        gpointer         user_data);
+on_b_dec_training_clicked(GtkButton *button,
+                          gpointer user_data);
 
 void
-on_b_inc_training_clicked              (GtkButton       *button,
-                                        gpointer         user_data);
+on_b_inc_training_clicked(GtkButton *button,
+                          gpointer user_data);
 
 gboolean
-on_window_training_camp_delete_event   (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+on_window_training_camp_delete_event(GtkWidget *widget,
+                                     GdkEvent *event,
+                                     gpointer user_data);
 
 void
-on_hs_recreation_value_changed         (GtkRange        *range,
-                                        gpointer         user_data);
+on_hs_recreation_value_changed(GtkRange *range,
+                               gpointer user_data);

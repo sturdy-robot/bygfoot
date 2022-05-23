@@ -60,7 +60,7 @@ cup_load_choose_team_from_league(Cup *cup, const League *league,
                                  GPtrArray *teams, const CupChooseTeam *ct);
 
 void
-cup_load_choose_team_from_cup(Cup *cup, const Cup *cup_team, GPtrArray *teams, 
+cup_load_choose_team_from_cup(Cup *cup, const Cup *cup_team, GPtrArray *teams,
                               const CupChooseTeam *ct);
 
 gint
@@ -78,16 +78,16 @@ cup_round_get_byes(const Cup *cup, gint round);
 gint
 cup_round_get_new_teams(const CupRound *cup_round);
 
-Cup*
+Cup *
 cup_from_clid(gint clid);
 
-Cup*
-cup_from_sid(const gchar* sid);
+Cup *
+cup_from_sid(const gchar *sid);
 
 void
 cup_round_get_name(const Fixture *fix, gchar *buf);
 
-GPtrArray*
+GPtrArray *
 cup_get_teams_sorted(const Cup *cup);
 
 gint
@@ -115,8 +115,8 @@ gint
 cup_choose_team_compute_end_idx(const CupChooseTeam *ct, gint num_teams);
 
 void
-cup_get_choose_team_league_cup(const CupChooseTeam *ct, 
-			       const League **league, const Cup **cup);
+cup_get_choose_team_league_cup(const CupChooseTeam *ct,
+                               const League **league, const Cup **cup);
 
 gint
 cup_get_last_week_from_first(const Cup *cup, gint first_week);
@@ -127,13 +127,13 @@ cup_get_round_name(const Cup *cup, gint round, gchar *buf);
 gint
 cup_has_tables(gint clid);
 
-Team*
+Team *
 cup_get_winner(const Cup *cup);
 
 gboolean
 query_cup_transfer(void);
 
-gchar*
+gchar *
 cup_get_highlight_colour(const Cup *cup);
 
 gboolean
