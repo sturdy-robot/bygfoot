@@ -26,17 +26,6 @@ bygfoot_init(Bygfoot *bygfoot, enum BygfootFrontend frontend)
     }
 }
 
-void
-bygfoot_load_bygfoot(Bygfoot *bygfoot, const gchar *id)
-{
-    char save_dir[256];
-    char save_path[256];
-    /* FIXME: This is not secure */
-    file_get_bygfoot_dir(save_dir);
-    /* FIXME: There should be a helper function for this */
-    sprintf(save_path, "%s%ssaves%s%s", save_dir, G_DIR_SEPARATOR_S, G_DIR_SEPARATOR_S, id);
-}
-
 Country *bygfoot_load_country(Bygfoot *bygfoot, const gchar *country_name)
 {
     xml_country_read(country_name, NULL);
