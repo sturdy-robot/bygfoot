@@ -728,12 +728,12 @@ callback_show_team(gint type)
 
         if(stat2 < ID_CUP_START)
         {
-            teams = (GArray*)league_cup_get_teams(stat2);
+            teams = league_cup_get_teams(stat2);
             len = teams->len;
         }
         else
         {
-            teamsp = (GPtrArray*)league_cup_get_teams(stat2);
+            teamsp = league_cup_get_teams(stat2);
             len = teamsp->len;
         }
 
