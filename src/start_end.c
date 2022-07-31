@@ -100,7 +100,7 @@ start_new_game(void)
 /** callback function for start_load_other_countries to load countries and
  * add them to the country_list.
  */
-static load_country(gpointer country_file, gpointer user_data)
+static void load_country(gpointer country_file, gpointer user_data)
 {
 
     GPtrArray *country_list = (GPtrArray*)user_data;
