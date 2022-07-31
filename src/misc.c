@@ -245,7 +245,7 @@ misc_print_grouped_int(gint number, gchar *buf)
 #endif
 
     gint i;
-    gchar buf2[SMALL];
+    gchar buf2[GROUPED_INT_SIZE];
     gint length = 0;
     gfloat copy = (gfloat)(abs(number));
     gint number2 = abs(number);

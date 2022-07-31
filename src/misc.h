@@ -28,6 +28,9 @@
 
 #include "bygfoot.h"
 
+/* Max amount of bytes written to bu by misc_print_grouped_int. */
+#define GROUPED_INT_SIZE 64 
+
 #define misc_int_to_char(number) g_strdup_printf("%d", number)
 #define query_misc_string_contains(haystack, needle) (g_strstr_len(haystack, strlen(haystack), needle) != NULL)
 

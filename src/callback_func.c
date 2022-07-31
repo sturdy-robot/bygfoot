@@ -424,7 +424,7 @@ callback_get_loan(void)
     printf("callback_get_loan\n");
 #endif
 
-    gchar buf[SMALL], buf2[SMALL];
+    gchar buf[SMALL], buf2[64];
     gint max_loan =
         finance_team_drawing_credit_loan(current_user.tm, TRUE) + current_user.debt;
 
@@ -449,7 +449,7 @@ callback_pay_loan(void)
     printf("callback_pay_loan\n");
 #endif
 
-    gchar buf[SMALL], buf2[SMALL];
+    gchar buf[SMALL], buf2[GROUPED_INT_SIZE];
     gint max_payback = MIN(BUDGET(cur_user), -current_user.debt);
 
     if(current_user.debt == 0)
@@ -483,7 +483,7 @@ callback_transfer_list_user(gint button, gint idx)
 #endif
 
     gchar buf[SMALL],
-    buf2[SMALL], buf3[SMALL];
+    buf2[GROUPED_INT_SIZE], buf3[GROUPED_INT_SIZE];
 
     if(button == 3 ||
             (button == 1 && trans(idx).offers->len == 0))
@@ -528,7 +528,7 @@ callback_transfer_list_cpu(gint button, gint idx)
     printf("callback_transfer_list_cpu\n");
 #endif
 
-    gchar buf[SMALL], buf2[SMALL], buf3[SMALL];
+    gchar buf[SMALL], buf2[GROUPED_INT_SIZE], buf3[GROUPED_INT_SIZE];
 
     if(button == 2)
         return;
@@ -803,7 +803,7 @@ callback_fire_player(gint idx)
     printf("callback_fire_player\n");
 #endif
 
-    gchar buf[SMALL], buf2[SMALL];
+    gchar buf[SMALL], buf2[GROUPED_INT_SIZE];
     Player *pl = player_of_idx_team(current_user.tm, idx);
 
     stat1 = STATUS_FIRE_PLAYER;
