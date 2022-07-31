@@ -19,6 +19,10 @@ bygfoot_init(Bygfoot *bygfoot, enum BygfootFrontend frontend)
         bygfoot->show_progress = gui_show_progress;
         bygfoot->get_progress_bar_fraction = gui_get_progress_bar_fraction;
         break;
+    case BYGFOOT_FRONTEND_CONSOLE:
+        bygfoot->show_progress = NULL;
+        bygfoot->get_progress_bar_fraction = NULL;
+        break;
     }
 }
 
