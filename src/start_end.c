@@ -49,6 +49,7 @@
 #include "transfer.h"
 #include "user.h"
 #include "variables.h"
+#include "xml_country.h"
 #include "xml_name.h"
 #include "youth_academy.h"
 
