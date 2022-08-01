@@ -1398,9 +1398,6 @@ query_cup_hidden(const Cup *cup)
 GPtrArray *
 cup_get_last_season_results(const Cup *cup)
 {
-    gint i, j, k;
-    GPtrArray *history;
-
     return g_ptr_array_index(cup->history, cup->history->len - 1);
 }
 
