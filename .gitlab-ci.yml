@@ -130,6 +130,29 @@ build-fedora-36:
   variables:
     OS_NAME: fedora-36
 
+build-mingw:
+  stage: build
+  interruptible: true
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH
+  image: registry.fedoraproject.org/fedora:36
+  variables:
+    OS_NAME: mingw
+    BYGFOOT_MINGW: 1
+  before_script:
+    - |
+      dnf install -y cmake ninja-build mingw64-gcc mingw64-gtk2 mingw64-zlib git bzip2
+  script:
+    - |
+      ./scripts/package.sh . bygfoot-$BYGFOOT_VERSION-mingw
+      echo `ls *.tar.bz2` > $OS_NAME.pkg
+  artifacts:
+    name: $OS_NAME-package
+    paths:
+      - "*.tar.bz2"
+
 .test-ubuntu:
   stage: test
   interruptible: true
