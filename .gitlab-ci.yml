@@ -27,6 +27,7 @@ set-vars:
 
 .build-pkg:
   stage: build
+  interruptible: true
   rules:
     - if: $CI_MERGE_REQUEST_IID
     - if: $CI_COMMIT_TAG
@@ -131,6 +132,7 @@ build-fedora-36:
 
 .test-ubuntu:
   stage: test
+  interruptible: true
   only:
     - merge_requests
   before_script:
