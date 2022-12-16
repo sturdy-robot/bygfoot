@@ -851,10 +851,10 @@ live_game_event_general(gboolean create_new)
     live_game_finish_unit();
 
     /** First, check whether CPU strategy changes are made. */
-    if(team_is_user(tm0) == -1)
+    if(!show || team_is_user(tm0) == -1)
 	strategy_live_game_check(match, 0);
 
-    if(team_is_user(tm1) == -1)
+    if(!show || team_is_user(tm1) == -1)
 	strategy_live_game_check(match, 1);
 
     if(last_unit.event.type >= LIVE_GAME_EVENT_STRUCTURE_CHANGE &&
