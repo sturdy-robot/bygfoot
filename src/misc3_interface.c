@@ -102,3 +102,18 @@ create_window_news (void)
   return window_news;
 }
 
+GtkWidget*
+create_window_strategy (Bygfoot *bygfoot)
+{
+  GtkWidget *window_strategy;
+  GtkBuilder *builder;
+  builder = load_ui_with_userdata(file_find_support_file("bygfoot_misc3.glade", TRUE),
+		                  bygfoot);
+  window_strategy = GTK_WIDGET (gtk_builder_get_object (builder, "window_strategy"));
+  GTK_HOOKUP_OBJECT (window_strategy, builder, "combo_strategy");
+  gtk_widget_show (window_strategy);
+
+  g_object_unref (G_OBJECT (builder));
+
+  return window_strategy;
+}

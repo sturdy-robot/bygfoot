@@ -121,4 +121,17 @@ on_window_news_destroy_event           (GtkWidget       *widget,
 void
 on_button_news_close_clicked           (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_button_strategy_ok_clicked          (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_button_strategy_cancel_clicked      (GtkButton       *button,
+                                        gpointer         user_data);
+
+gboolean
+on_window_strategy_delete_event        (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
 #endif

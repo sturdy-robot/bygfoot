@@ -637,6 +637,14 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkImageMenuItem" id="menu_strategy">
+                        <property name="label" translatable="yes">Select team strategy</property>
+                        <property name="visible">True</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_menu_strategy_activate"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkImageMenuItem" id="menu_rearrange_team">
                         <property name="label" translatable="yes">Rearrange team</property>
                         <property name="visible">True</property>

@@ -209,7 +209,8 @@ typedef struct
 	*splash,
 	*training_camp,
 	*news,
-        *alr;
+        *alr,
+        *strategy;
     
     /** The position of the horizontal divider is stored here. */
     gint paned_pos;

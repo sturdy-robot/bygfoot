@@ -399,3 +399,43 @@ on_button_news_close_clicked           (GtkButton       *button,
 {
     window_destroy(&window.news);
 }
+
+G_MODULE_EXPORT void
+on_button_strategy_ok_clicked          (GtkButton       *button,
+                                        gpointer         user_data)
+{
+    GtkComboBox *combo_strategy =
+            GTK_COMBO_BOX(lookup_widget(window.strategy, "combo_strategy"));
+    GtkTreeModel *model;
+    GtkTreeIter iter;
+    gchar *sid;
+
+    if (!gtk_combo_box_get_active_iter(combo_strategy, &iter))
+       return;
+
+    model = gtk_combo_box_get_model(combo_strategy);
+    gtk_tree_model_get(model, &iter, 0, &current_user.tm->strategy_sid, -1);
+    
+    window_destroy(&window.strategy);
+}
+
+G_MODULE_EXPORT void
+on_button_strategy_cancel_clicked           (GtkButton       *button,
+                                             gpointer         user_data)
+{
+    window_destroy(&window.strategy);
+}
+
+G_MODULE_EXPORT gboolean
+on_window_strategy_delete_event            (GtkWidget       *widget,
+                                            GdkEvent        *event,
+                                            gpointer         user_data)
+{
+#ifdef DEBUG
+    printf("on_window_alr_delete_event\n");
+#endif
+
+    on_button_strategy_cancel_clicked(NULL, NULL);
+    
+    return TRUE;
+}

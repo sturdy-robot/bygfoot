@@ -46,6 +46,7 @@
 #include "option.h"
 #include "option_gui.h"
 #include "options_interface.h"
+#include "strategy_struct.h"
 #include "support.h"
 #include "training.h"
 #include "training_interface.h"
@@ -638,6 +639,41 @@ window_show_transfer_dialog(const gchar *text)
     gtk_label_set_text(GTK_LABEL(lookup_widget(window.transfer_dialog, "label_transfer_dialog")), text);
 }
 
+void
+window_show_strategy(void)
+{
+    GtkWidget *window_strategy = window_create(WINDOW_STRATEGY);
+    GtkComboBox *combo_strategy =
+	GTK_COMBO_BOX(lookup_widget(window_strategy, "combo_strategy"));
+    GtkListStore *ls = gtk_list_store_new(1, G_TYPE_STRING);
+    GtkTreeIter iter;
+    GtkTreeModel *model;
+    GtkCellRenderer *renderer = NULL;
+
+    gint i, current_sid = -1;
+
+    for (i = 0; i < strategies->len; i++) {
+        const Strategy *strategy = &g_array_index(strategies, Strategy, i);
+        if (!strcmp(strategy->sid, current_user.tm->strategy_sid)) {
+            current_sid = i;
+        }
+        gtk_list_store_append(ls, &iter);
+        gtk_list_store_set(ls, &iter, 0, strategy->sid, -1);
+    }
+
+    model = GTK_TREE_MODEL(ls);
+    gtk_combo_box_set_model(combo_strategy, model);
+    g_object_unref(model);
+
+    gtk_cell_layout_clear(GTK_CELL_LAYOUT(combo_strategy));
+
+    renderer = treeview_helper_cell_renderer_text_new();
+    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combo_strategy), renderer, FALSE);
+    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combo_strategy), renderer, "text", 0, NULL);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(combo_strategy), current_sid);
+}
+
+
 /** Set up the spinbuttons and boost/style images in the
     live window. */
 void
@@ -974,6 +1010,13 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
         wind = window.constants;
         strcpy(buf, _("Bygfoot constants"));
         break;
+    case WINDOW_STRATEGY:
+        if(window.strategy != NULL)
+            debug_print_message("window_create: called on already existing window\n");
+        else
+            window.strategy = create_window_strategy(bygfoot);
+        wind = window.strategy;
+        strcpy(buf, _("Team Strategy"));
     }
 
     if(window_type != WINDOW_FILE_CHOOSER)

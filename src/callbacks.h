@@ -153,6 +153,10 @@ void
 on_menu_custom_structure_activate      (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
+void
+on_menu_strategy_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
 gboolean
 on_player_list1_button_press_event     (GtkWidget       *widget,
                                         GdkEventButton  *event,

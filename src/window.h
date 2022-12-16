@@ -58,7 +58,8 @@ enum Windows
     WINDOW_END,
     WINDOW_TRAINING_CAMP,
     WINDOW_NEWS,
-    WINDOW_ALR
+    WINDOW_ALR,
+    WINDOW_STRATEGY
 };
 
 void
@@ -103,6 +104,9 @@ window_live_set_up(void);
 
 void
 window_show_transfer_dialog(const gchar *text);
+
+void
+window_show_strategy(void);
 
 void
 window_show_mmatches(Bygfoot *bygfoot);

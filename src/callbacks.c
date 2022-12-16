@@ -983,6 +983,16 @@ on_menu_custom_structure_activate      (GtkMenuItem     *menuitem,
 }
 
 G_MODULE_EXPORT void
+on_menu_strategy_activate      (GtkMenuItem     *menuitem,
+                                gpointer         user_data)
+{
+#ifdef DEBUG
+    printf("on_menu_custom_structure_activate\n");
+#endif
+    window_show_strategy();
+}
+
+G_MODULE_EXPORT void
 on_menu_browse_teams_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
