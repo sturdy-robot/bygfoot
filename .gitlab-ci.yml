@@ -101,14 +101,14 @@ build-generic-deb:
   extends: .build-ubuntu-deb
   image: docker.io/ubuntu:18.04
   variables:
-    OS_NAME: Linux
+    OS_NAME: Linux-Deb
     BUILD_DEPENDENCIES: $UBUNTU_GENERIC_BUILD_DEPENDENCIES
 
 build-generic-rpm:
   extends: .build-pkg
   image: registry.fedoraproject.org/fedora:35
   variables:
-    OS_NAME: Linux
+    OS_NAME: Linux-RPM
     PKG_TYPE: RPM
     PKG_SUFFIX: .rpm
   before_script:
