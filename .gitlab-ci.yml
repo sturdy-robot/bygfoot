@@ -152,6 +152,7 @@ build-mingw:
     name: $OS_NAME-package
     paths:
       - "*.tar.bz2"
+      - "*.pkg"
 
 .test-ubuntu:
   stage: test
