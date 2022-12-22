@@ -47,21 +47,24 @@ gboolean
 fixture_write_cup_fixtures(Cup *cup);
 
 void
-fixture_write_cup_round_robin(Cup *cup, gint cup_round, GPtrArray *teams);
+fixture_write_cup_round_robin(Cup *cup, gint cup_round, GPtrArray *teams,
+                              gboolean can_sched_current_round);
 
 void
 fixture_write_round_robin(gpointer league_cup, gint cup_round, 
 			  GPtrArray *teams, gboolean one_round, 
                           gint first_week, GArray *rr_breaks,
-                          gint rr_break_idx);
+                          gint rr_break_idx, gboolean can_sched_current_round);
 
 void
 fixture_write_round_robin_matchday(GArray *fixtures, gint cup_round, GPtrArray *teams,
 				   gint special, gint week_number,
-				   gint clid, gboolean home_advantage);
+				   gint clid, gboolean home_advantage,
+                                   gboolean can_sched_current_round);
 
 void
-fixture_write_knockout_round(Cup *cup, gint cup_round, GPtrArray *teams);
+fixture_write_knockout_round(Cup *cup, gint cup_round, GPtrArray *teams,
+                             gboolean can_sched_current_round);
 
 void
 fixture_write(GArray *fixtures, Team *home_team, Team *away_team, gint week_number,
@@ -85,7 +88,8 @@ fixture_winner_of(const Fixture *fix, gboolean team_id);
 
 gint
 fixture_get_free_round(gint week_number, const GPtrArray *teams, 
-		       gint team_id1, gint team_id2);
+		       gint team_id1, gint team_id2,
+                       gboolean is_current_round_free);
 
 gboolean
 query_fixture_is_earlier(const Fixture *fix1, const Fixture *fix2);
