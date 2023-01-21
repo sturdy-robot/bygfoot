@@ -56,8 +56,6 @@ callback_show_next_live_game(Bygfoot *bygfoot)
 
     gint i, j;
     gint user_team_involved;
-    GArray *user_teams_played;
-    user_teams_played = g_array_new (FALSE, FALSE, sizeof (gint));
 
     for(i=0; i<users->len; i++)
     {
@@ -76,9 +74,6 @@ callback_show_next_live_game(Bygfoot *bygfoot)
                     g_array_index(lig(i).fixtures, Fixture, j).week_round_number == week_round &&
                     fixture_user_team_involved(&g_array_index(lig(i).fixtures, Fixture, j)) != -1)
             {
-                // Add user teams that played
-                g_array_append_val(user_teams_played, user_team_involved);
-
                 if(g_array_index(lig(i).fixtures, Fixture, j).attendance == -1 )
                 {
                     // Store the player order before the live match: get the team that is involved, if it's a user team
@@ -109,8 +104,6 @@ callback_show_next_live_game(Bygfoot *bygfoot)
                     g_array_index(acp(i)->fixtures, Fixture, j).week_round_number == week_round &&
                     fixture_user_team_involved(&g_array_index(acp(i)->fixtures, Fixture, j)) != -1)
             {
-                // Add user teams that played
-                g_array_append_val(user_teams_played, user_team_involved);
                 if (g_array_index(acp(i)->fixtures, Fixture, j).attendance == -1)
                 {
 
@@ -135,20 +128,6 @@ callback_show_next_live_game(Bygfoot *bygfoot)
     }
 
     window_destroy(&window.live);
-    // Restore the default team of all user teams that played
-    gint user_team_to_restore;
-
-    for(i=0; i<user_teams_played->len; i++)
-    {
-        user_team_to_restore = g_array_index (user_teams_played, gint, i);
-        if (usr(user_team_to_restore).default_team->len!=0 && option_int("int_opt_user_store_restore_default_team",
-                &usr(user_team_to_restore).options))
-        {
-            restore_default_team(&usr(user_team_to_restore));
-        }
-    }
-
-    g_array_free (user_teams_played, TRUE);
     treeview_show_user_player_list();
     /* no more user games to show: end round. */
     end_week_round(bygfoot);

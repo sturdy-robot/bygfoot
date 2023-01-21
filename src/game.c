@@ -1111,6 +1111,10 @@ game_post_match(Fixture *fix)
     for(i=0;i<2;i++)
 	team_update_post_match(fix->teams[i], fix);
     
+    if (usr_idx != -1) {
+        restore_default_team(&usr(usr_idx));
+    }
+
     if(fix->clid < ID_CUP_START)
 	return;
 
