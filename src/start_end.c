@@ -376,19 +376,20 @@ start_new_season(Bygfoot *bygfoot)
     /* Loop backwards because the national cup is usually
        the first the results are often still 
        needed for the international cups. */
-    for(i=cps->len - 1; i >= 0; i--)
-    {
-        if(cp(i).add_week == 0)
-            fixture_write_cup_fixtures(&cp(i));
-        else if(!query_cup_self_referential(&cp(i)))
-            cup_reset(&cp(i));
-    }
     for (i = bygfoot->international_cups->len - 1; i >=0; i--) {
         Cup *cup = &g_array_index(bygfoot->international_cups, Cup, i);
         if (cup->add_week == 0)
             fixture_write_cup_fixtures(cup);
         else if (!query_cup_self_referential(cup))
             cup_reset(cup);
+    }
+
+    for(i=cps->len - 1; i >= 0; i--)
+    {
+        if(cp(i).add_week == 0)
+            fixture_write_cup_fixtures(&cp(i));
+        else if(!query_cup_self_referential(&cp(i)))
+            cup_reset(&cp(i));
     }
 
     for(i = acps->len - 1; i >= 0; i--)
