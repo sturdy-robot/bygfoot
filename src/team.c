@@ -1483,3 +1483,15 @@ team_is_reserve_team(const Team *tm)
 {
     return tm->first_team_sid != NULL;
 }
+
+gint
+team_get_weekly_wages(const Team *tm)
+{
+    gint i, wages = 0;
+
+    for(i=0; i<tm->players->len; i++) {
+        const Player *player = &g_array_index(tm->players, Player, i);
+        wages += player->wage;
+    }
+    return wages;
+}

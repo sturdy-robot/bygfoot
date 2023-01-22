@@ -166,4 +166,7 @@ team_get_table_clid(const Team *tm);
 gboolean
 team_is_reserve_team(const Team *tm);
 
+gint
+team_get_weekly_wages(const Team *tm);
+
 #endif

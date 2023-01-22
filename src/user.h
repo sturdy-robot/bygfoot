@@ -151,4 +151,13 @@ store_default_team(User *user);
 void
 restore_default_team(User *user);
 
+gint
+user_get_scout_cost(const User *user);
+
+gint
+user_get_youth_coach_cost(const User *user);
+
+gint
+user_get_youth_academy_cost(const User *user);
+
 #endif

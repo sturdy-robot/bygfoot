@@ -1505,6 +1505,15 @@ treeview_create_stadium_summary(GtkListStore *ls)
     }
 }
 
+static void
+treeview_expense_to_string(gint expense, gchar *buf)
+{
+    gchar expense_buf[GROUPED_INT_SIZE];
+    misc_print_grouped_int(expense, expense_buf);
+    sprintf(buf, "<span foreground='%s'>-%s</span>",
+                 const_app("string_treeview_finances_expenses_fg"), expense_buf);
+}
+
 GtkTreeModel*
 treeview_create_finances(const User *user)
 {
@@ -1513,6 +1522,7 @@ treeview_create_finances(const User *user)
 #endif
 
     gint i, balance = 0;
+    gint wages, avg_ticket, scout_cost, youth_cost, youth_coach_cost, youth_academy_cost;
     gchar buf[SMALL], buf2[SMALL], buf3[SMALL];
     const gint *in = user->money_in[0],
 	*out = user->money_out[0];
@@ -1687,6 +1697,62 @@ treeview_create_finances(const User *user)
     gtk_list_store_set(ls, &iter, 0, "", 1, "", 2, "", -1);
 
     treeview_create_stadium_summary(ls);
+
+    gtk_list_store_append(ls, &iter);
+    gtk_list_store_set(ls, &iter, 0, "", 1, "", 2, "", -1);
+   
+    /* Weekly buget estimate */ 
+    gtk_list_store_append(ls, &iter);
+    gtk_list_store_set(ls, &iter, 0, _("Weekly Budget Estimate"), 1, "", 2, "", -1);
+    balance = 0;
+
+    gtk_list_store_append(ls, &iter);
+    misc_print_grouped_int(user->sponsor.benefit, buf);
+    balance += user->sponsor.benefit;
+    gtk_list_store_set(ls, &iter, 0, _("Sponsorship"), 1, buf, 2, "", -1);
+    
+    gtk_list_store_append(ls, &iter);
+    /* Divide by two since on average there is one home game a week. */
+    avg_ticket = (user->tm->stadium.average_attendance ? user->tm->stadium.average_attendance : (user->tm->stadium.capacity * user->tm->stadium.safety)) * user->tm->stadium.ticket_price / 2.0f;
+    misc_print_grouped_int(avg_ticket, buf);
+    balance += avg_ticket;
+    gtk_list_store_set(ls, &iter, 0, _("Ticket income"), 1, buf, 2, "", -1);
+
+    gtk_list_store_append(ls, &iter);
+    wages = team_get_weekly_wages(user->tm);
+    treeview_expense_to_string(wages, buf);
+    balance -= wages;
+    gtk_list_store_set(ls, &iter, 0, _("Wages"), 1, "", 2, buf, -1);
+
+    gtk_list_store_append(ls, &iter);
+    scout_cost = user_get_scout_cost(user);
+    treeview_expense_to_string(scout_cost, buf);
+    balance -= scout_cost;
+    gtk_list_store_set(ls, &iter, 0, _("Scout"), 1, "", 2, buf, -1);
+
+    gtk_list_store_append(ls, &iter);
+    youth_coach_cost = user_get_youth_coach_cost(user);
+    treeview_expense_to_string(youth_coach_cost, buf);
+    gtk_list_store_set(ls, &iter, 0, _("Youth coach"), 1, "", 2, buf, -1);
+    balance -= youth_coach_cost;
+
+    gtk_list_store_append(ls, &iter);
+    youth_academy_cost = user_get_youth_academy_cost(user);
+    treeview_expense_to_string(youth_academy_cost, buf);
+    gtk_list_store_set(ls, &iter, 0, _("Youth academy"), 1, "", 2, buf, -1);
+    balance -= youth_academy_cost;
+
+    gtk_list_store_append(ls, &iter);
+    gtk_list_store_set(ls, &iter, 0, _("Balance"), -1);
+
+    if (balance >=0) {
+        misc_print_grouped_int(balance, buf);
+        gtk_list_store_set(ls, &iter, 1, buf, 2, "", -1);
+    } else {
+        /* treeview_expense_to_string assumes positive values. */
+        treeview_expense_to_string(-1 * balance, buf);
+        gtk_list_store_set(ls, &iter, 1, "", 2, buf, -1);
+    }
 
     return GTK_TREE_MODEL(ls);
 }

@@ -51,16 +51,6 @@ finance_update_user_weekly(User *user)
 	 const_float("float_finance_physio_factor2"),
 	 const_float("float_finance_physio_factor3"),
 	 const_float("float_finance_physio_factor4")};
-    gfloat scout_factor[4] =
-	{const_float("float_finance_scout_factor1"),
-	 const_float("float_finance_scout_factor2"),
-	 const_float("float_finance_scout_factor3"),
-	 const_float("float_finance_scout_factor4")};
-    gfloat yc_factor[4] =
-	{const_float("float_finance_yc_factor1"),
-	 const_float("float_finance_yc_factor2"),
-	 const_float("float_finance_yc_factor3"),
-	 const_float("float_finance_yc_factor4")};
 
     if(user->money > G_MAXINT - 50000000)
     {
@@ -87,10 +77,8 @@ finance_update_user_weekly(User *user)
     user->money_in[1][MON_IN_SPONSOR] += user->sponsor.benefit;
     user->sponsor.contract = MAX(user->sponsor.contract - 1, 0);
 
-    user->money -= (gint)rint((gfloat)user->sponsor.benefit * 
-			      (gfloat)user->youth_academy.percentage / 100);
-    user->money_out[1][MON_OUT_YA] -= (gint)rint((gfloat)user->sponsor.benefit * 
-						 (gfloat)user->youth_academy.percentage / 100);
+    user->money -= user_get_youth_academy_cost(user);
+    user->money_out[1][MON_OUT_YA] -= user_get_youth_academy_cost(user);
     
     if(user->counters[COUNT_USER_NEW_SPONSOR] > 1)
 	user->counters[COUNT_USER_NEW_SPONSOR]--;
@@ -117,14 +105,11 @@ finance_update_user_weekly(User *user)
 	    }
 	}
     
-    user->money_out[1][MON_OUT_SCOUT] -= (gint)(finance_wage_unit(tm) * scout_factor[user->scout % 10]);
-    user->money -=  (gint)(finance_wage_unit(tm) * scout_factor[user->scout % 10]);
+    user->money_out[1][MON_OUT_SCOUT] -= user_get_scout_cost(user);
+    user->money -= user_get_scout_cost(user);
 
-    if(user->youth_academy.players->len > 0)
-    {
-	user->money_out[1][MON_OUT_YC] -= (gint)(finance_wage_unit(tm) * yc_factor[user->youth_academy.coach % 10]);
-	user->money -=  (gint)(finance_wage_unit(tm) * yc_factor[user->youth_academy.coach % 10]);
-    }
+    user->money_out[1][MON_OUT_YC] -= user_get_youth_coach_cost(user);
+    user->money -= user_get_youth_coach_cost(user);
 
     user->debt = (gint)rint((gfloat)user->debt * (1 + user->debt_interest));
 

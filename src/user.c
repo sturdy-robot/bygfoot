@@ -1379,3 +1379,36 @@ restore_default_team(User *user)
     game_gui_write_meters(current_user.tm);
     game_gui_write_radio_items();
 }
+
+gint
+user_get_scout_cost(const User *user)
+{
+    gfloat scout_factor[4] =
+        {const_float("float_finance_scout_factor1"),
+         const_float("float_finance_scout_factor2"),
+         const_float("float_finance_scout_factor3"),
+         const_float("float_finance_scout_factor4")};
+    return (gint)(finance_wage_unit(user->tm) * scout_factor[user->scout % 10]);
+}
+
+gint
+user_get_youth_coach_cost(const User *user)
+{
+    gfloat yc_factor[4] =
+        {const_float("float_finance_yc_factor1"),
+         const_float("float_finance_yc_factor2"),
+         const_float("float_finance_yc_factor3"),
+         const_float("float_finance_yc_factor4")};
+    if (user->youth_academy.players->len == 0)
+        return 0;
+
+    return (gint)(finance_wage_unit(user->tm) * yc_factor[user->youth_academy.coach % 10]);
+}
+
+gint
+user_get_youth_academy_cost(const User *user)
+{
+    return (gint)rint((gfloat)user->sponsor.benefit *
+			      (gfloat)user->youth_academy.percentage / 100);
+
+}
