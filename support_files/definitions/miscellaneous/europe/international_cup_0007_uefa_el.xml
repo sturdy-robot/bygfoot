@@ -1416,7 +1416,7 @@
 				<choose_team>
 					<choose_team_sid>uefa_cl</choose_team_sid>
 					<skip_group_check>1</skip_group_check>
-					<wait_for_cup round="6">uefa_cl</wait_for_cup>
+					<wait_for_cup round="3">uefa_cl</wait_for_cup>
 					<preload>0</preload>
 					<number_of_teams>6</number_of_teams>
 					<start_idx>33</start_idx>
@@ -1699,7 +1699,7 @@
 
 				<!-- 3rd-placed teams in the UCL group stage -->
 				<choose_team>
-					<wait_for_cup round="6">uefa_cl</wait_for_cup>
+					<wait_for_cup round="4">uefa_cl</wait_for_cup>
 					<choose_team_sid>uefa_cl</choose_team_sid>
 					<skip_group_check>1</skip_group_check>
 					<preload>0</preload>
