@@ -1732,10 +1732,16 @@ live_game_injury_get_player(void)
 		(player_of_idx_team(tms[j], i)->cskill != 0) * (1 + tms[j]->boost * boost_factor);
 	}
     }
-    
+
+    /* math_rnd is a wrapper around g_rand_double_range().  This function will
+     * return a double value less than probs[21].  However, because we are
+     * casting the result to a float it's possible due to rounding that our
+     * converted float value will equal probs[21].  So, we cannot assume rndom
+     * will always be less than probs[21].
+     */
     rndom = math_rnd(0, probs[21]);
 
-    if(rndom < probs[0])
+    if(rndom <= probs[0])
     {
 	last_unit.event.player = 
 	    player_of_idx_team(tm0, 0)->id;
@@ -1743,7 +1749,7 @@ live_game_injury_get_player(void)
     }
     else
 	for(i=1;i<22;i++)
-	    if(probs[i - 1] <= rndom && rndom < probs[i])
+	    if(probs[i - 1] < rndom && rndom <= probs[i])
 	    {
 		last_unit.event.player = 
 		    player_of_idx_team(tms[(i > 10)], i % 11)->id;
