@@ -143,7 +143,7 @@ static int bygfoot_json_do_commands(Bygfoot *bygfoot, const json_object *command
             if (!response) {
                 response = bygfoot_json_response_error("commands", "command not recognized");
             }
-            fprintf(stderr, "%s\n", json_object_to_json_string_ext(response, JSON_C_TO_STRING_PRETTY));
+            fprintf(stdout, "%s\n", json_object_to_json_string_ext(response, JSON_C_TO_STRING_PRETTY));
             json_object_put(response);
         }
     }
