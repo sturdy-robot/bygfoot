@@ -163,7 +163,7 @@ xml_cup_read_start_element (GMarkupParseContext *context,
 
     if(strcmp(element_name, TAG_CUP) == 0)
     {
-	new_cup = cup_new(FALSE, (Bygfoot*)user_data);
+	new_cup = cup_new(TRUE, (Bygfoot*)user_data);
 	state = STATE_CUP;
     }
     else if(strcmp(element_name, TAG_DEF_NAME) == 0)
@@ -554,7 +554,6 @@ xml_cup_read(const gchar *cup_name, GArray *cups, Bygfoot *bygfoot)
 	misc_print_error(&error, TRUE);
     }
 
-    new_cup.id = cup_id_new;
     league_cup_adjust_week_breaks(new_cup.week_breaks, new_cup.week_gap);
 
     for(i = 0; i < new_cup.rounds->len; i++)
