@@ -187,17 +187,19 @@ xml_loadsave_leagues_cups_write(const gchar *prefix)
 
     fprintf(fil, "%s<_%d>\n", I0, TAG_LEAGUES_CUPS);
 
-    for(i=0;i<ligs->len;i++)
+    for(i=0;i<country.leagues->len;i++)
     {
-	xml_loadsave_league_write(prefix, &lig(i));
-	sprintf(buf, "%s___league_%d.xml", basename, lig(i).id);
+	League *league = &g_array_index(country.leagues, League, i);
+	xml_loadsave_league_write(prefix, league);
+	sprintf(buf, "%s___league_%d.xml", basename, league->id);
 	xml_write_string(fil, buf, TAG_LEAGUE_FILE, I1);
     }
 
-    for(i=0;i<cps->len;i++)
+    for(i=0;i<country.cups->len;i++)
     {
-	xml_loadsave_cup_write(prefix, &cp(i));
-	sprintf(buf, "%s___cup_%d.xml", basename, cp(i).id);
+	Cup *cup = &g_array_index(country.cups, Cup, i);
+	xml_loadsave_cup_write(prefix, cup);
+	sprintf(buf, "%s___cup_%d.xml", basename, cup->id);
 	xml_write_string(fil, buf, TAG_CUP_FILE, I1);
     }
 
@@ -258,13 +260,14 @@ xml_loadsave_leagues_cups_adjust_team_ptrs(void)
 {
     gint i, j;
 
-    for(i = 0; i < ligs->len; i++)
+    for(i = 0; i < country.leagues->len; i++)
     {
-        fixture_refresh_team_pointers(lig(i).fixtures);
+	League *league = &g_array_index(country.leagues, League, i);
+        fixture_refresh_team_pointers(league->fixtures);
 
-        for(j = 0; j < lig(i).tables->len; j++)
-            table_refresh_team_pointers(&g_array_index(lig(i).tables, Table, j));
+        for(j = 0; j < league->tables->len; j++)
+            table_refresh_team_pointers(&g_array_index(league->tables, Table, j));
     }
 
-    xml_loadsave_leagues_cups_adjust_team_ptrs_cups(cps);
+    xml_loadsave_leagues_cups_adjust_team_ptrs_cups(country.cups);
 }

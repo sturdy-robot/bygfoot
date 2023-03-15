@@ -409,7 +409,7 @@ game_assign_attendance_neutral(Fixture *fix)
     gfloat av_att = (fix->clid >= ID_CUP_START && 
 		     query_league_cup_has_property(fix->clid, "international") && teamsp->len > 0) ?
 	(gfloat)league_cup_average_capacity(fix->clid) :
-	(gfloat)league_cup_average_capacity(lig(0).id);
+	(gfloat)league_cup_average_capacity(g_array_index(country.leagues, League, 0).id);
 
     fix->attendance = (gint)rint(av_att * 
 				 math_rnd(const_float("float_game_stadium_attendance_neutral_lower"),

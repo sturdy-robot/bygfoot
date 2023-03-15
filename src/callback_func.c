@@ -65,16 +65,17 @@ callback_show_next_live_game(Bygfoot *bygfoot)
     counters[COUNT_NEWS_SHOWN] =
         counters[COUNT_NEW_NEWS] = 0;
 
-    for(i=0; i<ligs->len; i++)
+    for(i=0; i<country.leagues->len; i++)
     {
-        for(j=0; j<lig(i).fixtures->len; j++)
+        League *league = &g_array_index(country.leagues, League, i);
+        for(j=0; j<league->fixtures->len; j++)
         {
-            user_team_involved = fixture_user_team_involved(&g_array_index(lig(i).fixtures, Fixture, j));
-            if(g_array_index(lig(i).fixtures, Fixture, j).week_number == week &&
-                    g_array_index(lig(i).fixtures, Fixture, j).week_round_number == week_round &&
-                    fixture_user_team_involved(&g_array_index(lig(i).fixtures, Fixture, j)) != -1)
+            user_team_involved = fixture_user_team_involved(&g_array_index(league->fixtures, Fixture, j));
+            if(g_array_index(league->fixtures, Fixture, j).week_number == week &&
+                    g_array_index(league->fixtures, Fixture, j).week_round_number == week_round &&
+                    fixture_user_team_involved(&g_array_index(league->fixtures, Fixture, j)) != -1)
             {
-                if(g_array_index(lig(i).fixtures, Fixture, j).attendance == -1 )
+                if(g_array_index(league->fixtures, Fixture, j).attendance == -1 )
                 {
                     // Store the player order before the live match: get the team that is involved, if it's a user team
                     // and that user has the option to always store the default team checked, store it
@@ -83,11 +84,11 @@ callback_show_next_live_game(Bygfoot *bygfoot)
                         store_default_team(&usr(user_team_involved));
                     }
                     if (option_int("int_opt_user_show_live_game",
-                                   &usr(fixture_user_team_involved(&g_array_index(lig(i).fixtures, Fixture, j))).
+                                   &usr(fixture_user_team_involved(&g_array_index(league->fixtures, Fixture, j))).
                                    options))
                     {
-                        live_game_calculate_fixture(&g_array_index(lig(i).fixtures, Fixture, j),
-                                                    &usr(fixture_user_team_involved(&g_array_index(lig(i).fixtures, Fixture, j))).live_game, bygfoot);
+                        live_game_calculate_fixture(&g_array_index(league->fixtures, Fixture, j),
+                                                    &usr(fixture_user_team_involved(&g_array_index(league->fixtures, Fixture, j))).live_game, bygfoot);
                         return;
                     }
                 }
@@ -95,16 +96,17 @@ callback_show_next_live_game(Bygfoot *bygfoot)
         }
     }
 
-    for(i=0; i<acps->len; i++)
+    for(i=0; i<country.allcups->len; i++)
     {
-        for(j=0; j<acp(i)->fixtures->len; j++)
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+        for(j=0; j<cup->fixtures->len; j++)
         {
-            user_team_involved = fixture_user_team_involved(&g_array_index(acp(i)->fixtures, Fixture, j));
-            if(g_array_index(acp(i)->fixtures, Fixture, j).week_number == week &&
-                    g_array_index(acp(i)->fixtures, Fixture, j).week_round_number == week_round &&
-                    fixture_user_team_involved(&g_array_index(acp(i)->fixtures, Fixture, j)) != -1)
+            user_team_involved = fixture_user_team_involved(&g_array_index(cup->fixtures, Fixture, j));
+            if(g_array_index(cup->fixtures, Fixture, j).week_number == week &&
+                    g_array_index(cup->fixtures, Fixture, j).week_round_number == week_round &&
+                    fixture_user_team_involved(&g_array_index(cup->fixtures, Fixture, j)) != -1)
             {
-                if (g_array_index(acp(i)->fixtures, Fixture, j).attendance == -1)
+                if (g_array_index(cup->fixtures, Fixture, j).attendance == -1)
                 {
 
 
@@ -115,11 +117,11 @@ callback_show_next_live_game(Bygfoot *bygfoot)
                         store_default_team(&usr(user_team_involved));
                     }
                     if (option_int("int_opt_user_show_live_game",
-                                   &usr(fixture_user_team_involved(&g_array_index(acp(i)->fixtures, Fixture, j))).
+                                   &usr(fixture_user_team_involved(&g_array_index(cup->fixtures, Fixture, j))).
                                    options))
                     {
-                        live_game_calculate_fixture(&g_array_index(acp(i)->fixtures, Fixture, j),
-                                                    &usr(fixture_user_team_involved(&g_array_index(acp(i)->fixtures, Fixture, j))).live_game, bygfoot);
+                        live_game_calculate_fixture(&g_array_index(cup->fixtures, Fixture, j),
+                                                    &usr(fixture_user_team_involved(&g_array_index(cup->fixtures, Fixture, j))).live_game, bygfoot);
                         return;
                     }
                 }

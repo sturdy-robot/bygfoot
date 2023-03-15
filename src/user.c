@@ -112,11 +112,12 @@ user_set_up_team_new_game(User *user)
     else
     {
         Team *team = NULL;
-	rndom = math_rndi(0, lig(user->scout).teams->len - 1);
-	while(team_is_user(g_ptr_array_index(lig(user->scout).teams, rndom)) != -1)
-	    rndom = math_rndi(0, lig(user->scout).teams->len - 1);
+        League *league = &g_array_index(country.leagues, League, user->scout);
+	rndom = math_rndi(0, league->teams->len - 1);
+	while(team_is_user(g_ptr_array_index(league->teams, rndom)) != -1)
+	    rndom = math_rndi(0, league->teams->len - 1);
       
-        team = g_ptr_array_index(lig(user->scout).teams, rndom);
+        team = g_ptr_array_index(league->teams, rndom);
 	sprintf(buf, "%s", team->name);
 	misc_string_assign(&team->name,
 			   user->tm->name);
@@ -324,19 +325,23 @@ query_user_game_in_week_round(gint usr_idx, gint week_number, gint week_round_nu
 
     gint i, j;
 
-    for(i=0;i<ligs->len;i++)
-	for(j=0;j<lig(i).fixtures->len;j++)
-	    if(fixture_user_team_involved(&g_array_index(lig(i).fixtures, Fixture, j)) == usr_idx &&
-	       g_array_index(lig(i).fixtures, Fixture, j).week_number == week_number &&
-	       g_array_index(lig(i).fixtures, Fixture, j).week_round_number == week_round_number)
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	for(j=0;j<league->fixtures->len;j++)
+	    if(fixture_user_team_involved(&g_array_index(league->fixtures, Fixture, j)) == usr_idx &&
+	       g_array_index(league->fixtures, Fixture, j).week_number == week_number &&
+	       g_array_index(league->fixtures, Fixture, j).week_round_number == week_round_number)
 		return TRUE;
+    }
 
-    for(i=0;i<acps->len;i++)
-	for(j=0;j<acp(i)->fixtures->len;j++)
-	    if(fixture_user_team_involved(&g_array_index(acp(i)->fixtures, Fixture, j)) == usr_idx &&
-	       g_array_index(acp(i)->fixtures, Fixture, j).week_number == week_number &&
-	       g_array_index(acp(i)->fixtures, Fixture, j).week_round_number == week_round_number)
+    for(i=0;i<country.allcups->len;i++) {
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+	for(j=0;j<cup->fixtures->len;j++)
+	    if(fixture_user_team_involved(&g_array_index(cup->fixtures, Fixture, j)) == usr_idx &&
+	       g_array_index(cup->fixtures, Fixture, j).week_number == week_number &&
+	       g_array_index(cup->fixtures, Fixture, j).week_round_number == week_round_number)
 		return TRUE;
+    }
 
     return FALSE;
 }

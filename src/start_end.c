@@ -284,41 +284,46 @@ start_new_season(Bygfoot *bygfoot)
 
     if(season == 1)
     {
-        for(i=0;i<ligs->len;i++)
+        for(i=0;i<country.leagues->len;i++)
         {
-            league_add_table(&lig(i));
-            league_check_new_tables(&lig(i));
+            League *league = &g_array_index(country.leagues, League, i);
+            league_add_table(league);
+            league_check_new_tables(league);
         }
 
-	for(i=0;i<cps->len;i++)
-	    if(cp(i).add_week <= 0)
-		g_ptr_array_add(acps, &cp(i));
+	for(i=0;i<country.cups->len;i++) {
+            Cup *cup = &g_array_index(country.cups, Cup, i);
+	    if(cup->add_week <= 0)
+		g_ptr_array_add(country.allcups, cup);
+        }
 
         for(i = 0; i < bygfoot->international_cups->len; i++) {
             Cup *cup = &g_array_index(bygfoot->international_cups, Cup, i);
             if (cup->add_week <= 0)
-                g_ptr_array_add(acps, cup);
+                g_ptr_array_add(country.allcups, cup);
         }
     }
 
     /* Remove cups that don't start at the beginning of season. */
-    for(i = acps->len - 1; i >= 0; i--)
+    for(i = country.allcups->len - 1; i >= 0; i--)
     {
-	if(acp(i)->add_week > 0)
-	    g_ptr_array_remove_index(acps, i);
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+	if(cup->add_week > 0)
+	    g_ptr_array_remove_index(country.allcups, i);
     }
 
-    for(i=cps->len - 1; i >= 0; i--) {
+    for(i=country.cups->len - 1; i >= 0; i--) {
+        Cup *cup = &g_array_index(country.cups, Cup, i);
         /* Reset all cups.  We need to make sure all cups get reset
 	 * before the start of the next season.  Otherwise, the fixtures
 	 * from last year's cup will interfere with scheduling the league
 	 * fixtures.  Also, cup_reset() saves this season's results in the
 	 * history list. */
-	cup_reset(&cp(i));
+	cup_reset(cup);
 
         /* Deal with cups that have to take place before promotion/relegation. */
-	if(cp(i).add_week == -1)
-	    fixture_write_cup_fixtures(&cp(i));
+	if(cup->add_week == -1)
+	    fixture_write_cup_fixtures(cup);
     }
 
     for (i = bygfoot->international_cups->len - 1; i >=0; i--) {
@@ -362,16 +367,20 @@ start_new_season(Bygfoot *bygfoot)
     
     /* We have to reset all fixture arrays beforehand because
        of interleague scheduling (see joined_league). */
-    for(i=0;i<ligs->len;i++)
-	if(query_league_active(&lig(i)))
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	if(query_league_active(league))
         {
-            g_array_free(lig(i).fixtures, TRUE);
-            lig(i).fixtures = g_array_new(FALSE, FALSE, sizeof(Fixture));            
+            g_array_free(league->fixtures, TRUE);
+            league->fixtures = g_array_new(FALSE, FALSE, sizeof(Fixture));            
         }
+    }
 
-    for(i=0;i<ligs->len;i++)
-	if(query_league_active(&lig(i)))
-	    fixture_write_league_fixtures(&lig(i));
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);    
+	if(query_league_active(league))
+	    fixture_write_league_fixtures(league);
+    }
 
     /* Loop backwards because the national cup is usually
        the first the results are often still 
@@ -384,20 +393,23 @@ start_new_season(Bygfoot *bygfoot)
             cup_reset(cup);
     }
 
-    for(i=cps->len - 1; i >= 0; i--)
+    for(i=country.cups->len - 1; i >= 0; i--)
     {
-        if(cp(i).add_week == 0)
-            fixture_write_cup_fixtures(&cp(i));
-        else if(!query_cup_self_referential(&cp(i)))
-            cup_reset(&cp(i));
+        Cup *cup = &g_array_index(country.cups, Cup, i);
+        if(cup->add_week == 0)
+            fixture_write_cup_fixtures(cup);
+        else if(!query_cup_self_referential(cup))
+            cup_reset(cup);
     }
 
-    for(i = acps->len - 1; i >= 0; i--)
-        if(!cup_check_fixtures(acp(i)))
+    for(i = country.allcups->len - 1; i >= 0; i--) {
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+        if(!cup_check_fixtures(cup))
         {
-            cup_reset(acp(i));
-            g_ptr_array_remove_index(acps, i);
+            cup_reset(cup);
+            g_ptr_array_remove_index(country.allcups, i);
         }
+    }
 
     stat5 = -1;
 
@@ -438,13 +450,15 @@ start_generate_league_teams(void)
 
     stat5 = STATUS_GENERATE_TEAMS;
 
-    if(ligs->len == 0)
+    if(country.leagues->len == 0)
 	main_exit_program(EXIT_NO_LEAGUES,
 			  "start_generate_league_teams: no leagues found. There must be at least one league in the game.\n");
 
-    for(i=0;i<ligs->len;i++)
-	for(j=0;j<lig(i).teams->len;j++)
-	    team_generate_players_stadium(g_ptr_array_index(lig(i).teams, j), 0);
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	for(j=0;j<league->teams->len;j++)
+	    team_generate_players_stadium(g_ptr_array_index(league->teams, j), 0);
+    }
 
     country_lookup_first_team_ids(&country);
     stat5 = -1;
@@ -463,16 +477,20 @@ start_new_season_reset_ids(void)
     gint i, max;
 
     max = -1;
-    for(i=0;i<ligs->len;i++)
-	if(lig(i).id > max)
-	    max = lig(i).id;
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	if(league->id > max)
+	    max = league->id;
+    }
 
     counters[COUNT_LEAGUE_ID] = max + 1;
 
     max = -1;
-    for(i=0;i<cps->len;i++)
-	if(cp(i).id > max)
-	    max = cp(i).id;
+    for(i=0;i<country.cups->len;i++) {
+        Cup *cup = &g_array_index(country.cups, Cup, i);
+	if(cup->id > max)
+	    max = cup->id;
+    }
 
     for (i = 0; i < country.bygfoot->international_cups->len; i++) {
         Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
@@ -505,19 +523,23 @@ end_week_round(Bygfoot *bygfoot)
 
     week_round++;
 
-    for(i=0;i<ligs->len;i++)
-	if(query_fixture_in_week_round(lig(i).id, week, week_round))
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	if(query_fixture_in_week_round(league->id, week, week_round))
 	{
 	    new_week = FALSE;
 	    break;
 	}
+    }
 
-    for(i=0;i<acps->len;i++)
-	if(query_fixture_in_week_round(acp(i)->id, week, week_round))
+    for(i=0;i<country.allcups->len;i++) {
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+	if(query_fixture_in_week_round(cup->id, week, week_round))
 	{
 	    new_week = FALSE;
 	    break;
 	}
+    }
 
     if(new_week)
     {
@@ -563,32 +585,33 @@ end_week_round_results(Bygfoot *bygfoot)
     g_array_free(live_games, TRUE);
     live_games = g_array_new(FALSE, FALSE, sizeof(LiveGame));
     
-    for(i=0;i<ligs->len;i++)
+    for(i=0;i<country.leagues->len;i++)
     {
-	for(j=0;j<lig(i).fixtures->len;j++)
-	    if(g_array_index(lig(i).fixtures, Fixture, j).week_number == week &&
-	       g_array_index(lig(i).fixtures, Fixture, j).week_round_number == week_round &&
-	       g_array_index(lig(i).fixtures, Fixture, j).attendance == -1)
+        League *league = &g_array_index(country.leagues, League, i);
+	for(j=0;j<league->fixtures->len;j++)
+	    if(g_array_index(league->fixtures, Fixture, j).week_number == week &&
+	       g_array_index(league->fixtures, Fixture, j).week_round_number == week_round &&
+	       g_array_index(league->fixtures, Fixture, j).attendance == -1)
 	    {                
-                usr_idx = fixture_user_team_involved(&g_array_index(lig(i).fixtures, Fixture, j));
+                usr_idx = fixture_user_team_involved(&g_array_index(league->fixtures, Fixture, j));
 
                 if(usr_idx == -1)
                 {
                     g_array_append_val(live_games, live_game);
-                    live_game_calculate_fixture(&g_array_index(lig(i).fixtures, Fixture, j),
+                    live_game_calculate_fixture(&g_array_index(league->fixtures, Fixture, j),
                                                 &g_array_index(live_games, LiveGame, live_games->len - 1), bygfoot);
                 }
                 else
-                    live_game_calculate_fixture(&g_array_index(lig(i).fixtures, Fixture, j),
+                    live_game_calculate_fixture(&g_array_index(league->fixtures, Fixture, j),
                                                 &usr(usr_idx).live_game, bygfoot);
 
 		done++;
-		fixture_result_to_buf(&g_array_index(lig(i).fixtures, Fixture, j),
+		fixture_result_to_buf(&g_array_index(league->fixtures, Fixture, j),
 				      buf, FALSE);
 		sprintf(buf2, "%s %s %s",
-			g_array_index(lig(i).fixtures, Fixture, j).teams[0]->name,
+			g_array_index(league->fixtures, Fixture, j).teams[0]->name,
 			buf,
-			g_array_index(lig(i).fixtures, Fixture, j).teams[1]->name);
+			g_array_index(league->fixtures, Fixture, j).teams[1]->name);
 		bygfoot_show_progress(bygfoot, (gfloat)done / num_matches, buf2,
 				  PIC_TYPE_MATCHPIC);
 
@@ -597,34 +620,35 @@ end_week_round_results(Bygfoot *bygfoot)
 	    }
     }
 
-    for(i=0;i<acps->len;i++)
+    for(i=0;i<country.allcups->len;i++)
     {
-	for(j=0;j<acp(i)->fixtures->len;j++)
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+	for(j=0;j<cup->fixtures->len;j++)
 	{
-	    if(g_array_index(acp(i)->fixtures, Fixture, j).week_number == week &&
-	       g_array_index(acp(i)->fixtures, Fixture, j).week_round_number == week_round &&
-	       g_array_index(acp(i)->fixtures, Fixture, j).attendance == -1)
+	    if(g_array_index(cup->fixtures, Fixture, j).week_number == week &&
+	       g_array_index(cup->fixtures, Fixture, j).week_round_number == week_round &&
+	       g_array_index(cup->fixtures, Fixture, j).attendance == -1)
 	    {
 
-                usr_idx = fixture_user_team_involved(&g_array_index(acp(i)->fixtures, Fixture, j));
+                usr_idx = fixture_user_team_involved(&g_array_index(cup->fixtures, Fixture, j));
 
                 if(usr_idx == -1)
                 {
                     g_array_append_val(live_games, live_game);
-                    live_game_calculate_fixture(&g_array_index(acp(i)->fixtures, Fixture, j),
+                    live_game_calculate_fixture(&g_array_index(cup->fixtures, Fixture, j),
                                                 &g_array_index(live_games, LiveGame, live_games->len - 1), bygfoot);
                 }
                 else
-                    live_game_calculate_fixture(&g_array_index(acp(i)->fixtures, Fixture, j),
+                    live_game_calculate_fixture(&g_array_index(cup->fixtures, Fixture, j),
                                                 &usr(usr_idx).live_game, bygfoot);
 
 		done++;
-		fixture_result_to_buf(&g_array_index(acp(i)->fixtures, Fixture, j), 
+		fixture_result_to_buf(&g_array_index(cup->fixtures, Fixture, j), 
 				      buf, FALSE);
 		sprintf(buf2, "%s %s %s",
-			g_array_index(acp(i)->fixtures, Fixture, j).teams[0]->name,
+			g_array_index(cup->fixtures, Fixture, j).teams[0]->name,
 			buf,
-			g_array_index(acp(i)->fixtures, Fixture, j).teams[1]->name);
+			g_array_index(cup->fixtures, Fixture, j).teams[1]->name);
 		bygfoot_show_progress(bygfoot, (gfloat)done / num_matches, buf2,
 				  PIC_TYPE_MATCHPIC);
 		if(debug > 120)
@@ -646,36 +670,40 @@ end_week_round_sort_tables(Bygfoot *bygfoot)
 
     gint i, j, k;
 
-    for(i=0;i<ligs->len;i++)
-	if(query_fixture_in_week_round(lig(i).id, week, week_round))
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	if(query_fixture_in_week_round(league->id, week, week_round))
 	{
-            for(k = 0; k < lig(i).tables->len; k++)
+            for(k = 0; k < league->tables->len; k++)
             {
-                for(j=0;j<g_array_index(lig(i).tables, Table, k).elements->len;j++)
-                    g_array_index(g_array_index(lig(i).tables, Table, k).elements, TableElement, j).old_rank = j;
+                for(j=0;j<g_array_index(league->tables, Table, k).elements->len;j++)
+                    g_array_index(g_array_index(league->tables, Table, k).elements, TableElement, j).old_rank = j;
                 
-                g_array_sort_with_data(g_array_index(lig(i).tables, Table, k).elements,
+                g_array_sort_with_data(g_array_index(league->tables, Table, k).elements,
                                        (GCompareDataFunc)table_element_compare_func,
-                                       GINT_TO_POINTER(lig(i).id));
+                                       GINT_TO_POINTER(league->id));
             }
 	}
+    }
 
-    for(i=0;i<acps->len;i++)
-	if(query_fixture_in_week_round(acp(i)->id, week, week_round) &&
-	   g_array_index(acp(i)->fixtures, Fixture, acp(i)->fixtures->len - 1).round ==
-	   cup_has_tables(acp(i)->id))
-	    for(j=0;j<cup_get_last_tables(acp(i)->id)->len;j++)
+    for(i=0;i<country.allcups->len;i++) {
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+	if(query_fixture_in_week_round(cup->id, week, week_round) &&
+	   g_array_index(cup->fixtures, Fixture, cup->fixtures->len - 1).round ==
+	   cup_has_tables(cup->id))
+	    for(j=0;j<cup_get_last_tables(cup->id)->len;j++)
 	    {
-		for(k=0;k<g_array_index(cup_get_last_tables(acp(i)->id), Table, j).elements->len;k++)
+		for(k=0;k<g_array_index(cup_get_last_tables(cup->id), Table, j).elements->len;k++)
 		    g_array_index(
-			g_array_index(cup_get_last_tables(acp(i)->id), Table, j).elements,
+			g_array_index(cup_get_last_tables(cup->id), Table, j).elements,
 			TableElement, k).old_rank = k;
 
 		g_array_sort_with_data(
-		    g_array_index(cup_get_last_tables(acp(i)->id), Table, j).elements,
+		    g_array_index(cup_get_last_tables(cup->id), Table, j).elements,
 		    (GCompareDataFunc)table_element_compare_func,
-		    GINT_TO_POINTER(acp(i)->id));
+		    GINT_TO_POINTER(cup->id));
 	    }
+    }
 }
 
 /** Update cup fixtures. */
@@ -688,34 +716,39 @@ end_week_round_update_fixtures(Bygfoot *bygfoot)
 
     gint i;
 
-    for(i=0;i<acps->len;i++)
-	if(acp(i)->next_fixture_update_week <= week &&
-	   acp(i)->next_fixture_update_week_round <= week_round)
-	    fixture_update(acp(i));            
+    for(i=0;i<country.allcups->len;i++) {
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+	if(cup->next_fixture_update_week <= week &&
+	   cup->next_fixture_update_week_round <= week_round)
+	    fixture_update(cup);
+    }      
 
-    for(i=0;i<ligs->len;i++)
-	if(query_league_active(&lig(i)) && week == 
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	if(query_league_active(league) && week == 
 	   g_array_index(
-	       lig(i).fixtures, Fixture, lig(i).fixtures->len - 1).week_number && 
+	       league->fixtures, Fixture, league->fixtures->len - 1).week_number && 
 	   week_round == 1 &&
-	   team_is_user(g_array_index(league_table((&lig(i)))->elements, TableElement, 0).team) != -1)
-           user_history_add(&usr(team_is_user(g_array_index(league_table((&lig(i)))->elements, TableElement, 0).team)),
+	   team_is_user(g_array_index(league_table((league))->elements, TableElement, 0).team) != -1)
+           user_history_add(&usr(team_is_user(g_array_index(league_table((league))->elements, TableElement, 0).team)),
                             USER_HISTORY_CHAMPION, 
-                            g_array_index(league_table((&lig(i)))->elements, 
+                            g_array_index(league_table((league))->elements, 
                                           TableElement, 0).team->name,
-                            league_cup_get_name_string(lig(i).id),
+                            league_cup_get_name_string(league->id),
                             NULL, NULL);
+    }
     
-    for(i=0;i<cps->len;i++)
+    for(i=0;i<country.cups->len;i++)
     {
-	if(cp(i).add_week == 1000 && 
-	   query_cup_hidden(&cp(i)) &&
-	   query_cup_begins(&cp(i)))
+        Cup *cup = &g_array_index(country.cups, Cup, i);
+	if(cup->add_week == 1000 && 
+	   query_cup_hidden(cup) &&
+	   query_cup_begins(cup))
 	{
-	    cp(i).last_week = cup_get_last_week_from_first(&cp(i), week + 1);
+	    cup->last_week = cup_get_last_week_from_first(cup, week + 1);
             
-	    if(fixture_write_cup_fixtures(&cp(i)))
-                g_ptr_array_add(acps, &cp(i));
+	    if(fixture_write_cup_fixtures(cup))
+                g_ptr_array_add(country.allcups, cup);
 	}
     }
     for (i = 0; i < bygfoot->international_cups->len; i++) {
@@ -726,7 +759,7 @@ end_week_round_update_fixtures(Bygfoot *bygfoot)
         {
             cup->last_week = cup_get_last_week_from_first(cup, week + 1);
 	        if(fixture_write_cup_fixtures(cup)) {
-                g_ptr_array_add(acps, cup);
+                g_ptr_array_add(country.allcups, cup);
             }
         }
     }
@@ -843,10 +876,12 @@ end_week_hide_cups(void)
 
     gint i;
 
-    for(i=acps->len - 1; i >= 0; i--)
-	if(query_league_cup_has_property(acp(i)->id, "hide") &&
-	   g_array_index(acp(i)->fixtures, Fixture, acp(i)->fixtures->len - 1).attendance > 0)
-	    g_ptr_array_remove_index(acps, i);
+    for(i=country.allcups->len - 1; i >= 0; i--) {
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+	if(query_league_cup_has_property(cup->id, "hide") &&
+	   g_array_index(cup->fixtures, Fixture, cup->fixtures->len - 1).attendance > 0)
+	    g_ptr_array_remove_index(country.allcups, i);
+    }
 }
 
 /** Add the cups that begin later in the season to the acps array. */
@@ -859,18 +894,20 @@ start_week_add_cups(Bygfoot *bygfoot)
 
     gint i;
 
-    for(i=0;i<cps->len;i++)
-	if(cp(i).add_week == week)
+    for(i=0;i<country.cups->len;i++) {
+        Cup *cup = &g_array_index(country.cups, Cup, i);
+	if(cup->add_week == week)
 	{
-	    if(fixture_write_cup_fixtures(&cp(i)))
-                g_ptr_array_add(acps, &cp(i));            
+	    if(fixture_write_cup_fixtures(cup))
+                g_ptr_array_add(country.allcups, cup);            
 	}
+    }
 
     for (i = 0; i < country.bygfoot->international_cups->len; i++) {
         Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
         if (cup->add_week == week) {
             if (fixture_write_cup_fixtures(cup))
-                g_ptr_array_add(acps, cup);
+                g_ptr_array_add(country.allcups, cup);
         }
     }
 }
@@ -881,8 +918,8 @@ update_teams(void (*update_func)(Team*))
     gint i, j;
     GHashTable *visited = g_hash_table_new(g_direct_hash, g_direct_equal);
 
-    for(i=0;i<ligs->len;i++) {
-        League *league = &lig(i);
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
 	for(j=0;j<league->teams->len;j++) {
             Team *team = g_ptr_array_index(league->teams, j);
 	    update_func(team);
@@ -983,8 +1020,10 @@ start_week_update_leagues(Bygfoot *bygfoot)
 
     gint i;
 
-    for(i = 0; i < ligs->len; i++)
-        league_check_new_tables(&lig(i));
+    for(i = 0; i < country.leagues->len; i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+        league_check_new_tables(league);
+    }
 }
 
 /** Check whether the season has ended. */
@@ -997,15 +1036,19 @@ query_start_end_season_end(void)
 
     gint i, j;
 
-    for(i=0;i<ligs->len;i++)
-	for(j=0;j<lig(i).fixtures->len;j++)
-	    if(g_array_index(lig(i).fixtures, Fixture, j).week_number > week - 1)
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	for(j=0;j<league->fixtures->len;j++)
+	    if(g_array_index(league->fixtures, Fixture, j).week_number > week - 1)
 		return FALSE;
+    }
 
-    for(i=0;i<acps->len;i++)
-	for(j=0;j<acp(i)->fixtures->len;j++)
-	    if(g_array_index(acp(i)->fixtures, Fixture, j).week_number > week - 1)
+    for(i=0;i<country.allcups->len;i++) {
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+	for(j=0;j<cup->fixtures->len;j++)
+	    if(g_array_index(cup->fixtures, Fixture, j).week_number > week - 1)
 		return FALSE;
+    }
 
     return TRUE;
 }
@@ -1019,17 +1062,21 @@ start_new_season_league_changes(void)
 #endif
 
     gint i, j, k;
-    gint league_size[ligs->len];
+    gint league_size[country.leagues->len];
     GArray *team_movements = g_array_new(FALSE, FALSE, sizeof(TeamMove));
 
-    for(i=0;i<ligs->len;i++)
-	league_get_team_movements(&lig(i), team_movements);
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	league_get_team_movements(league, team_movements);
+    }
 
     if (country.reserve_promotion_rules)
         country_apply_reserve_prom_rules(&country, team_movements);
 
-    for(i=0;i<ligs->len;i++)
-	league_size[i] = lig(i).teams->len;
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	league_size[i] = league->teams->len;
+    }
 
     for(i=0;i<team_movements->len;i++)
 	league_remove_team_with_id(
@@ -1038,37 +1085,38 @@ start_new_season_league_changes(void)
 
     league_team_movements_destinations(team_movements, league_size);
 
-    for(i = team_movements->len - 1; i >= 0; i--)
-	if(g_array_index(team_movements, TeamMove, i).prom_rel_type == PROM_REL_RELEGATION)
-	    misc_g_ptr_array_insert(
-		lig(g_array_index(
-			g_array_index(team_movements, TeamMove, i).dest_idcs, 
-			gint, 0)).teams, 0,
-		g_array_index(team_movements, TeamMove, i).tm);
+    for(i = team_movements->len - 1; i >= 0; i--) {
+        TeamMove *move = &g_array_index(team_movements, TeamMove, i);
+	if(move->prom_rel_type == PROM_REL_RELEGATION) {
+            League *league = &g_array_index(country.leagues, League, g_array_index(move->dest_idcs, gint, 0));
+	    misc_g_ptr_array_insert(league->teams, 0, move->tm);
+        }
+    }
     
-    for(i=1;i<team_movements->len;i++)
-	if(g_array_index(team_movements, TeamMove, i).prom_rel_type != PROM_REL_RELEGATION)
-	    g_ptr_array_add(
-		lig(g_array_index(
-			g_array_index(team_movements, TeamMove, i).dest_idcs, 
-			gint, 0)).teams,
-		g_array_index(team_movements, TeamMove, i).tm);
-    
+    for(i=1;i<team_movements->len;i++) {
+        TeamMove *move = &g_array_index(team_movements, TeamMove, i);
+	if(move->prom_rel_type != PROM_REL_RELEGATION) {
+            League *league = &g_array_index(country.leagues, League, g_array_index(move->dest_idcs, gint, 0));
+	    g_ptr_array_add(league->teams, move->tm);
+        }
+    }
+
     for(i=0;i<team_movements->len;i++)
 	g_array_free(g_array_index(team_movements, TeamMove, i).dest_idcs, TRUE);
     g_array_free(team_movements, TRUE);
     
-    for(i=0;i<ligs->len;i++)
+    for(i=0;i<country.leagues->len;i++)
     {
-	for(j=0;j<lig(i).teams->len;j++)
+	League *league = &g_array_index(country.leagues, League, i);
+	for(j=0;j<league->teams->len;j++)
 	{
-            Team *team = g_ptr_array_index(lig(i).teams, j);
-	    team->clid = lig(i).id;
+            Team *team = g_ptr_array_index(league->teams, j);
+	    team->clid = league->id;
 	    for(k=0;k<team->players->len;k++)
 		g_array_index(team->players, Player, k).team = team;
 	}
 
-	league_season_start(&lig(i));
+	league_season_start(league);
     }
 }
 

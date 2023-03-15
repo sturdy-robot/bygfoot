@@ -188,11 +188,11 @@ update_all_cups(void)
 {
     gint i;
     GPtrArray *new_acps = g_ptr_array_new();
-    for (i = 0; i < acps->len; i++) {
-        g_ptr_array_add(new_acps, cup_from_clid(GPOINTER_TO_INT(g_ptr_array_index(acps, i))));
+    for (i = 0; i < country.allcups->len; i++) {
+        g_ptr_array_add(new_acps, cup_from_clid(GPOINTER_TO_INT(g_ptr_array_index(country.allcups, i))));
     }
-    g_ptr_array_free(acps, TRUE);
-    acps = new_acps;
+    g_ptr_array_free(country.allcups, TRUE);
+    country.allcups = new_acps;
 }
 
 /** Load the game from the specified file.

@@ -61,20 +61,22 @@ stat_update_leagues(void)
 
     gint i;
 
-    for(i=0;i<ligs->len;i++)
-	if(query_league_active(&lig(i)) && 
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	if(query_league_active(league) && 
 	   g_array_index(
-	       lig(i).fixtures, Fixture, lig(i).fixtures->len - 1).week_number >= week)
+	       league->fixtures, Fixture, league->fixtures->len - 1).week_number >= week)
 	{
-	    free_league_stats(&lig(i).stats);
-	    lig(i).stats.league_name = g_strdup(lig(i).name);
-	    lig(i).stats.league_symbol = g_strdup(lig(i).symbol);
-	    lig(i).stats.teams_off = 
-		stat_update_league_teams(lig(i).teams, TEAM_COMPARE_OFFENSIVE);
-	    lig(i).stats.teams_def = 
-		stat_update_league_teams(lig(i).teams, TEAM_COMPARE_DEFENSE);
-	    stat_update_league_players(&lig(i));
+	    free_league_stats(&league->stats);
+	    league->stats.league_name = g_strdup(league->name);
+	    league->stats.league_symbol = g_strdup(league->symbol);
+	    league->stats.teams_off = 
+		stat_update_league_teams(league->teams, TEAM_COMPARE_OFFENSIVE);
+	    league->stats.teams_def = 
+		stat_update_league_teams(league->teams, TEAM_COMPARE_DEFENSE);
+	    stat_update_league_players(league);
 	}
+    }
 }
 
 /** Update the league player stats. */
@@ -204,32 +206,34 @@ stat_create_season_stat(void)
     SeasonStat new = stat_season_stat_new(season);
     ChampStat new_champ;
 
-    for(i=0;i<ligs->len;i++)
+    for(i=0;i<country.leagues->len;i++)
     {
-        if(!query_league_cup_has_property(lig(i).id, "omit_from_history") &&
-           !query_league_cup_has_property(lig(i).id, "inactive"))
+        League *league = &g_array_index(country.leagues, League, i);
+        if(!query_league_cup_has_property(league->id, "omit_from_history") &&
+           !query_league_cup_has_property(league->id, "inactive"))
         {
-            for(j = 0; j < lig(i).tables->len; j++)
+            for(j = 0; j < league->tables->len; j++)
             {
-                new_champ.cl_name = g_strdup(g_array_index(lig(i).tables, Table, j).name);
+                new_champ.cl_name = g_strdup(g_array_index(league->tables, Table, j).name);
                 new_champ.team_name = 
-                    g_strdup(g_array_index(g_array_index(lig(i).tables, Table, j).elements, TableElement, 0).team->name);
+                    g_strdup(g_array_index(g_array_index(league->tables, Table, j).elements, TableElement, 0).team->name);
                 g_array_append_val(new.league_champs, new_champ);
 
             }
 
-            g_array_append_val(new.league_stats, lig(i).stats);
-            lig(i).stats = stat_league_new(lig(i).name, lig(i).symbol);     
+            g_array_append_val(new.league_stats, league->stats);
+            league->stats = stat_league_new(league->name, league->symbol);     
         }
     }
 
-    for(i=0;i<acps->len;i++)
+    for(i=0;i<country.allcups->len;i++)
     {
-        if(!query_league_cup_has_property(acp(i)->id, "omit_from_history"))
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+        if(!query_league_cup_has_property(cup->id, "omit_from_history"))
         {
-            new_champ.cl_name = g_strdup(acp(i)->name);
+            new_champ.cl_name = g_strdup(cup->name);
             new_champ.team_name = 
-                g_strdup(cup_get_winner(acp(i))->name);
+                g_strdup(cup_get_winner(cup)->name);
             g_array_append_val(new.cup_champs, new_champ);
         }
     }
@@ -297,6 +301,8 @@ stat_show_av_league_goals(void)
     gint i;
 
     g_print("\n\n");
-    for(i=0;i<ligs->len;i++)
-	stat_show_av_goals(league_cup_get_fixtures(lig(i).id));
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	stat_show_av_goals(league_cup_get_fixtures(league->id));
+    }
 }

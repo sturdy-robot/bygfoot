@@ -522,14 +522,15 @@ treeview_helper_get_table_element_colour_cups(const League *league, gint table_i
 
     sprintf(buf, "LEAGUE%d", league_idx);
 
-    for(i=0;i<cps->len;i++)
+    for(i=0;i<country.cups->len;i++)
     {
-	cup_highlight_colour = cup_get_highlight_colour(&cp(i));
+        Cup *cup = &g_array_index(country.cups, Cup, i);
+	cup_highlight_colour = cup_get_highlight_colour(cup);
 
 	if(cup_highlight_colour != NULL)
-	    for(k=0;k<cp(i).rounds->len;k++)
+	    for(k=0;k<cup->rounds->len;k++)
 	    {
-		cup_round = &g_array_index(cp(i).rounds, CupRound, k);
+		cup_round = &g_array_index(cup->rounds, CupRound, k);
 		for(j=0;j<cup_round->choose_teams->len;j++)
 		    if((strcmp(g_array_index(cup_round->choose_teams, CupChooseTeam, j).sid, buf) == 0 ||
                         (strcmp(g_array_index(cup_round->choose_teams, CupChooseTeam, j).sid, league->sid) == 0 &&
@@ -585,14 +586,15 @@ treeview_helper_get_table_element_colour_cups_cup(const Cup *cup,
 	    break;
 	}
 
-    for(i=0;i<cps->len;i++)
+    for(i=0;i<country.cups->len;i++)
     {
-	cup_highlight_colour = cup_get_highlight_colour(&cp(i));
+        Cup *cup = &g_array_index(country.cups, Cup, i);
+	cup_highlight_colour = cup_get_highlight_colour(cup);
 
 	if(cup_highlight_colour != NULL)
-	    for(k=0;k<cp(i).rounds->len;k++)
+	    for(k=0;k<cup->rounds->len;k++)
 	    {
-		cup_round = &g_array_index(cp(i).rounds, CupRound, k);
+		cup_round = &g_array_index(cup->rounds, CupRound, k);
 		for(j=0;j<cup_round->choose_teams->len;j++)
 		    if(strcmp(g_array_index(
 				  cup_round->choose_teams, CupChooseTeam, j).sid,

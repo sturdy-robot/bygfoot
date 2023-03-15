@@ -285,9 +285,9 @@ main_init_variables(void)
 
     gint i;
 
-    ligs = g_array_new(FALSE, FALSE, sizeof(League));
-    cps = g_array_new(FALSE, FALSE, sizeof(Cup));;
-    acps = g_ptr_array_new();
+    country.leagues = g_array_new(FALSE, FALSE, sizeof(League));
+    country.cups = g_array_new(FALSE, FALSE, sizeof(Cup));;
+    country.allcups = g_ptr_array_new();
     country_list = NULL;
     country.name = NULL;
     country.symbol = NULL;

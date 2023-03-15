@@ -199,15 +199,16 @@ debug_action(const gchar *text)
     }
     else if(g_str_has_prefix(text, "printweeks"))
     {
-        for(i = 0; i < cps->len; i++)
+        for(i = 0; i < country.cups->len; i++)
         {
-            if(cp(i).add_week != 1000)
+            Cup *cup = &g_array_index(country.cups, Cup, i);
+            if(cup->add_week != 1000)
             {
-                g_print("Cup: %s\n", cp(i).name);
-                for(j = 0; j < cp(i).rounds->len; j++)
+                g_print("Cup: %s\n", cup->name);
+                for(j = 0; j < cup->rounds->len; j++)
                     g_print("  Round %2d: Week %2d (w/o delay: %2d)\n",
-                            j, cup_get_first_week_of_cup_round(&cp(i), j, TRUE),
-                            cup_get_first_week_of_cup_round(&cp(i), j, FALSE));                
+                            j, cup_get_first_week_of_cup_round(cup, j, TRUE),
+                            cup_get_first_week_of_cup_round(cup, j, FALSE));                
             }
         }
     }
@@ -257,7 +258,8 @@ debug_calibrate_betting_odds(gint skilldiffmax, gint matches_per_skilldiff, Bygf
 #endif
 
     gint i, skilldiff, matches;
-    Fixture *fix = &g_array_index(lig(0).fixtures, Fixture, 0);
+    League *league = &g_array_index(country.leagues, League, 0);
+    Fixture *fix = &g_array_index(league->fixtures, Fixture, 0);
     LiveGame live_game;
 
     fix->home_advantage = FALSE;

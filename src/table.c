@@ -273,13 +273,17 @@ query_tables_in_country(void)
 
     gint i;
 
-    for(i=0;i<ligs->len;i++)
-	if(query_league_active(&lig(i)))
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	if(query_league_active(league))
 	    return TRUE;
+    }
 
-    for(i=0;i<cps->len;i++)
-	if(cup_has_tables(cp(i).id) != -1)
+    for(i=0;i<country.cups->len;i++) {
+        Cup *cup = &g_array_index(country.cups, Cup, i);
+	if(cup_has_tables(cup->id) != -1)
 	    return TRUE;
+    }
 
     return FALSE;
 }

@@ -393,15 +393,19 @@ transfer_get_deadline(void)
     gint i;
     gint length = 0;
 
-    for(i=0;i<ligs->len;i++)
-	if(query_league_active(&lig(i)))
+   for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	if(query_league_active(league))
 	    length = 
 		MAX(length, g_array_index(
-			lig(i).fixtures, Fixture, lig(i).fixtures->len - 1).week_number);
+			league->fixtures, Fixture, league->fixtures->len - 1).week_number);
+    }
 
     if(length == 0)
-	for(i=0;i<cps->len;i++)
-	    length = MAX(length, cp(i).last_week);
+	for(i=0;i<country.cups->len;i++) {
+            Cup *cup = &g_array_index(country.cups, Cup, i);
+	    length = MAX(length, cup->last_week);
+        }
 
     return (length > 0) ? 
 	(gint)rint((gfloat)length * const_float("float_transfer_deadline_percentage")) :

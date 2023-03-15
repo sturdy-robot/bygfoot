@@ -196,9 +196,11 @@ query_cup_choose_team_is_league(const gchar *sid)
 
     gint i;
 
-    for(i=0;i<ligs->len;i++)
-	if(strcmp(lig(i).sid, sid) == 0)
+    for(i=0;i<country.leagues->len;i++) {
+        const League *league = &g_array_index(country.leagues, League, i);
+	if(strcmp(league->sid, sid) == 0)
 	    return TRUE;
+    }
 
     return FALSE;
 }
@@ -258,14 +260,14 @@ cup_get_choose_team_league_cup(const CupChooseTeam *ct,
 
     sscanf(ct->sid, "%[^0-9]%d", trash, &idx);
 
-    if(g_str_has_prefix(ct->sid, "LEAGUE") && idx >=0 && idx <= ligs->len)
+    if(g_str_has_prefix(ct->sid, "LEAGUE") && idx >=0 && idx <= country.leagues->len)
     {
-	*league = &lig(idx - 1);
+	*league = &g_array_index(country.leagues, League, idx - 1);
 	*cup = NULL;
     }
-    else if(g_str_has_prefix(ct->sid, "CUP") && idx >=0 && idx <= cps->len)
+    else if(g_str_has_prefix(ct->sid, "CUP") && idx >=0 && idx <= country.cups->len)
     {
-	*cup = &cp(idx - 1);
+	*cup = &g_array_index(country.cups, Cup, idx - 1);
 	*league = NULL;
     }
     else
@@ -275,23 +277,25 @@ cup_get_choose_team_league_cup(const CupChooseTeam *ct,
         else
             strcpy(prefix, "NONAME");
 
-	for(i=0;i<ligs->len;i++)
+	for(i=0;i<country.leagues->len;i++)
 	{
-	    if(strcmp(lig(i).sid, ct->sid) == 0 ||
-               g_str_has_prefix(lig(i).sid, prefix))
+            League *l = &g_array_index(country.leagues, League, i);
+	    if(strcmp(l->sid, ct->sid) == 0 ||
+               g_str_has_prefix(l->sid, prefix))
 	    {
-		*league = &lig(i);
+		*league = l;
 		*cup = NULL;
 		break;
 	    }
 	}
 
-	for(i=0;i<cps->len;i++)
+	for(i=0;i<country.cups->len;i++)
 	{
-	    if(strcmp(cp(i).sid, ct->sid) == 0 ||
-               g_str_has_prefix(cp(i).sid, prefix))
+            Cup *c = &g_array_index(country.cups, Cup, i);
+	    if(strcmp(c->sid, ct->sid) == 0 ||
+               g_str_has_prefix(c->sid, prefix))
 	    {
-		*cup = &cp(i);
+		*cup = c;
 		*league = NULL;
 		break;
 	    }
@@ -1104,9 +1108,11 @@ cup_from_clid(gint clid)
 
     gint i;
 
-    for(i=0;i<cps->len;i++)
-	if(cp(i).id == clid)
-	    return &cp(i);
+    for(i=0;i<country.cups->len;i++) {
+        Cup *cup = &g_array_index(country.cups, Cup, i);
+	if(cup->id == clid)
+	    return cup;
+    }
 
     for (i = 0; i < country.bygfoot->international_cups->len; i++) {
         Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
@@ -1129,9 +1135,11 @@ cup_from_sid(const gchar *sid)
 
     gint i;
 
-    for(i=0;i<cps->len;i++)
-	if(strcmp(cp(i).sid, sid) == 0)
-	    return &cp(i);
+    for(i=0;i<country.cups->len;i++) {
+        Cup *cup = &g_array_index(country.cups, Cup, i);
+	if(strcmp(cup->sid, sid) == 0)
+	    return cup;
+    }
 
     main_exit_program(EXIT_POINTER_NOT_FOUND, 
 		      "cup_from_sid: didn't find cup with sid %s \n", sid);
@@ -1335,28 +1343,29 @@ cup_round_check_waits(const CupRound *cup_round)
         else
             strcpy(prefix, "NONAME");        
 
-        for(j = 0; j < acps->len; j++)
+        for(j = 0; j < country.allcups->len; j++)
         {
-            if(strcmp(acp(j)->sid, g_array_index(cup_round->waits, CupRoundWait, i).cup_sid) == 0 ||
-               g_str_has_prefix(acp(j)->sid, prefix))
+            Cup *cup = g_ptr_array_index(country.allcups, j);
+            if(strcmp(cup->sid, g_array_index(cup_round->waits, CupRoundWait, i).cup_sid) == 0 ||
+               g_str_has_prefix(cup->sid, prefix))
             {
                 /* Cup round we're waiting for isn't even reached. */
-                if(g_array_index(acp(j)->fixtures, Fixture, acp(j)->fixtures->len - 1).round < 
+                if(g_array_index(cup->fixtures, Fixture, cup->fixtures->len - 1).round < 
                    g_array_index(cup_round->waits, CupRoundWait, i).cup_round)
                     return TRUE;
 
-                for(k = acp(j)->fixtures->len - 1; k >= 0; k--)
+                for(k = cup->fixtures->len - 1; k >= 0; k--)
                 {
                     /* Cup round we've been waiting for is finished,
                        we're not waiting anymore. */
-                    if(g_array_index(acp(j)->fixtures, Fixture, k).round > 
+                    if(g_array_index(cup->fixtures, Fixture, k).round > 
                        g_array_index(cup_round->waits, CupRoundWait, i).cup_round)
                         break;
 
                     /* Still waiting for matches to be calculated. */
-                    if(g_array_index(acp(j)->fixtures, Fixture, k).round ==
+                    if(g_array_index(cup->fixtures, Fixture, k).round ==
                        g_array_index(cup_round->waits, CupRoundWait, i).cup_round &&
-                       g_array_index(acp(j)->fixtures, Fixture, k).attendance == -1)
+                       g_array_index(cup->fixtures, Fixture, k).attendance == -1)
                         return TRUE;
                 }
 
@@ -1390,9 +1399,11 @@ query_cup_hidden(const Cup *cup)
 {
     gint i;
 
-    for(i = 0; i < acps->len; i++)
-        if(acp(i) == cup)
+    for(i = 0; i < country.allcups->len; i++) {
+        const Cup *c = g_ptr_array_index(country.allcups, i);
+        if(c == cup)
             return FALSE;
+    }
 
     return TRUE;
 }

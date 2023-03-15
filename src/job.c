@@ -267,12 +267,13 @@ job_team_is_in_cup(const gchar *team_name)
 
     gint i, j;
 
-    for(i=0;i<acps->len;i++)
-	for(j=0;j<acp(i)->teams->len;j++)
+    for(i=0;i<country.allcups->len;i++) {
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+	for(j=0;j<cup->teams->len;j++)
 	    if(strcmp(team_name, 
-		      ((Team*)g_ptr_array_index(acp(i)->teams, j))->name) == 0)
-		return ((Team*)g_ptr_array_index(acp(i)->teams, j))->id;
-
+		      ((Team*)g_ptr_array_index(cup->teams, j))->name) == 0)
+		return ((Team*)g_ptr_array_index(cup->teams, j))->id;
+    }
     return -1;
 }
 
@@ -291,11 +292,13 @@ job_get_team(const Job *job)
     }
     else
     {
-	for(i=0;i<acps->len;i++)
-	    for(j=0;j<acp(i)->teams->len;j++)
-		if(((Team*)g_ptr_array_index(acp(i)->teams, j))->id ==
+	for(i=0;i<country.allcups->len;i++) {
+            Cup *cup = g_ptr_array_index(country.allcups, i);
+	    for(j=0;j<cup->teams->len;j++)
+		if(((Team*)g_ptr_array_index(cup->teams, j))->id ==
 		   job->team_id)
-		    return (Team*)g_ptr_array_index(acp(i)->teams, j);
+		    return (Team*)g_ptr_array_index(cup->teams, j);
+	}
     }
 
     main_exit_program(EXIT_POINTER_NOT_FOUND,
@@ -393,9 +396,10 @@ job_change_country(Job *job, Bygfoot *bygfoot)
     xml_country_read(job->country_file, &country, bygfoot);
 
     stat5 = STATUS_GENERATE_TEAMS;
-    for(i=0;i<ligs->len;i++)
-	for(j=0;j<lig(i).teams->len;j++) {
-	    Team *new_team = g_ptr_array_index(lig(i).teams, j);
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+	for(j=0;j<league->teams->len;j++) {
+	    Team *new_team = g_ptr_array_index(league->teams, j);
 	    if(strcmp(new_team->name, tm.name) != 0)
 		team_generate_players_stadium(new_team, 0);
 	    else
@@ -410,6 +414,7 @@ job_change_country(Job *job, Bygfoot *bygfoot)
 		    g_array_index(new_team->players, Player, k).team = new_team;
 	    }
 	}
+    }
     country_lookup_first_team_ids(&country);
     stat5 = -1;
 

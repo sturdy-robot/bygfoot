@@ -755,9 +755,10 @@ treeview_create_users(void)
 	    if(usr(i).scout == -1)
 		gtk_list_store_set(ls, &iter, 3,
 				   league_cup_get_name_string(usr(i).tm->clid), -1);
-	    else
-		gtk_list_store_set(ls, &iter, 3,
-				   lig(usr(i).scout).name, -1);
+	    else {
+                League *league = &g_array_index(country.leagues, League, usr(i).scout);
+		gtk_list_store_set(ls, &iter, 3, league->name, -1);
+            }
 	}
 	else
 	    gtk_list_store_set(ls, &iter, 3,
@@ -2899,10 +2900,11 @@ treeview_create_league_list(void)
     gtk_list_store_append(ls, &iter);
     gtk_list_store_set(ls, &iter, 0, _("Current league"), -1);
 
-    for(i=0;i<ligs->len;i++)
+    for(i=0;i<country.leagues->len;i++)
     {
+        League *league = &g_array_index(country.leagues, League, i);
 	gtk_list_store_append(ls, &iter);
-	gtk_list_store_set(ls, &iter, 0, lig(i).name, -1);
+	gtk_list_store_set(ls, &iter, 0, league->name, -1);
     }
 
     return GTK_TREE_MODEL(ls);

@@ -152,7 +152,7 @@ misc_callback_add_player(Bygfoot *bygfoot)
     
     gtk_entry_set_text(entry_player_name, "");
     
-    new_user->scout = (start_league == 0 || tm->clid == lig(start_league - 1).id) ? -1 : start_league - 1;
+    new_user->scout = (start_league == 0 || tm->clid == g_array_index(country.leagues, League, start_league - 1).id) ? -1 : start_league - 1;
     
 
     treeview_show_users(treeview_users);

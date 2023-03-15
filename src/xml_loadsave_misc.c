@@ -223,7 +223,7 @@ xml_loadsave_misc_text         (GMarkupParseContext *context,
     else if(state == TAG_MISC_COUNTER)
 	counters[countidx] = xml_read_int(buf);
     else if(state == TAG_MISC_ALLCUP)
-	g_ptr_array_add(acps, GINT_TO_POINTER(xml_read_int(buf)));
+	g_ptr_array_add(country.allcups, GINT_TO_POINTER(xml_read_int(buf)));
     else if(state == TAG_MISC_BET_ODD)
 	new_bet.odds[oddidx] = xml_read_float(buf);
     else if(state == TAG_MISC_BET_FIX_ID)
@@ -272,8 +272,8 @@ xml_loadsave_misc_read(Bygfoot *bygfoot, const gchar *dirname, const gchar *base
 	misc_print_error(&error, TRUE);
     }
 
-    g_ptr_array_free(acps, TRUE);
-    acps = g_ptr_array_new();
+    g_ptr_array_free(country.allcups, TRUE);
+    country.allcups = g_ptr_array_new();
 
     if (country_list)
         g_ptr_array_free(country_list, TRUE);
@@ -329,8 +329,10 @@ xml_loadsave_misc_write(Bygfoot *bygfoot, const gchar *prefix)
     for(i=0;i<COUNT_END;i++)
 	xml_write_int(fil, counters[i], TAG_MISC_COUNTER, I0);
 
-    for(i=0;i<acps->len;i++)
-	xml_write_int(fil, acp(i)->id, TAG_MISC_ALLCUP, I0);
+    for(i=0;i<country.allcups->len;i++) {
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+	xml_write_int(fil, cup->id, TAG_MISC_ALLCUP, I0);
+    }
 
     xml_loadsave_misc_write_bets(fil);
 

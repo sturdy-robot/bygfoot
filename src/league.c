@@ -146,20 +146,25 @@ league_cup_get_index_from_clid(gint clid)
 
     if(clid < ID_CUP_START)
     {
-    for(i=0;i<ligs->len;i++)
-        if(lig(i).id == clid)
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+        if(league->id == clid)
         {
         index = i;
         break;
         }
     }
-    else
-    for(i=0;i<cps->len;i++)
-        if(cp(i).id == clid)
-        {
-        index = i;
-        break;
+    }
+    else {
+        for(i=0;i<country.cups->len;i++) {
+            Cup *cup = &g_array_index(country.cups, Cup, i);
+            if(cup->id == clid)
+            {
+                index = i;
+                break;
+            }
         }
+    }
 
     if(index == -1)
     main_exit_program(EXIT_POINTER_NOT_FOUND, 
@@ -181,9 +186,11 @@ league_from_clid(gint clid)
 
     gint i;
 
-    for(i=0;i<ligs->len;i++)
-    if(lig(i).id == clid)
-        return &lig(i);
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+        if(league->id == clid)
+            return league;
+    }
 
     main_exit_program(EXIT_POINTER_NOT_FOUND, 
               "league_from_clid: didn't find league with id %d\n", 
@@ -207,41 +214,48 @@ league_cup_get_next_clid(gint clid, gboolean count_inactive)
 
     if(clid < ID_CUP_START)
     {
-    for(i=0;i<ligs->len;i++)
-        if(lig(i).id == clid)
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+        if(league->id == clid)
         break;
+    }
 
-    if(i != ligs->len - 1)
+    if(i != country.leagues->len - 1)
     {
-        if(query_league_active(&lig(i + 1)) || count_inactive)
-        return_value = lig(i + 1).id;
+        League *league = &g_array_index(country.leagues, League, i + i);
+        if(query_league_active(league) || count_inactive)
+        return_value = league->id;
         else
-        return_value = league_cup_get_next_clid(lig(i + 1).id, count_inactive);
+        return_value = league_cup_get_next_clid(league->id, count_inactive);
     }
-    else if(acps->len > 0)
-        return_value = acp(0)->id;
+    else if(country.allcups->len > 0)
+        return_value = ((Cup*)g_ptr_array_index(country.allcups, 0))->id;
     else
     {
-        if(query_league_active(&lig(0)) || count_inactive)
-        return_value = lig(0).id;
+        League *league = &g_array_index(country.leagues, League, 0);
+        if(query_league_active(league) || count_inactive)
+        return_value = league->id;
         else
-        return_value = league_cup_get_next_clid(lig(0).id, count_inactive);
+        return_value = league_cup_get_next_clid(league->id, count_inactive);
     }
     }
     else
     {
-    for(i=0;i<acps->len;i++)
-        if(acp(i)->id == clid)
-        break;    
+    for(i=0;i<country.allcups->len;i++) {
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+        if(cup->id == clid)
+        break;
+    }
 
-    if(i != acps->len - 1)
-        return_value = acp(i + 1)->id;
+    if(i != country.allcups->len - 1)
+        return_value = ((Cup*)g_ptr_array_index(country.allcups, i + 1))->id;
     else
     {
-        if(query_league_active(&lig(0)) || count_inactive)
-        return_value = lig(0).id;
+        League *league = &g_array_index(country.leagues, League, 0);
+        if(query_league_active(league) || count_inactive)
+        return_value = league->id;
         else
-        return_value = league_cup_get_next_clid(lig(0).id, count_inactive);
+        return_value = league_cup_get_next_clid(league->id, count_inactive);
     }
     }
 
@@ -263,41 +277,47 @@ league_cup_get_previous_clid(gint clid, gboolean count_inactive)
 
     if(clid < ID_CUP_START)
     {
-    for(i=ligs->len - 1;i>=0;i--)
-        if(lig(i).id == clid)
+    for(i=country.leagues->len - 1;i>=0;i--) {
+        League *league = &g_array_index(country.leagues, League, i);
+        if(league->id == clid)
         break;
+    }
 
     if(i != 0)
-    {
-        if(query_league_active(&lig(i - 1)) || count_inactive)
-        return_value = lig(i - 1).id;
+    {   League *league = &g_array_index(country.leagues, League, i - 1);
+        if(query_league_active(league) || count_inactive)
+        return_value = league->id;
         else
-        return_value = league_cup_get_previous_clid(lig(i - 1).id, count_inactive);
+        return_value = league_cup_get_previous_clid(league->id, count_inactive);
     }
-    else if(acps->len > 0)
-        return_value = acp(acps->len - 1)->id;
+    else if(country.allcups->len > 0)
+        return_value = ((Cup*)g_ptr_array_index(country.allcups, country.allcups->len - 1))->id;
     else
     {
-        if(query_league_active(&lig(ligs->len - 1)) || count_inactive)
-        return_value = lig(ligs->len - 1).id;
+        League *league = &g_array_index(country.leagues, League, country.leagues->len - 1);
+        if(query_league_active(league) || count_inactive)
+        return_value = league->id;
         else
-        return_value = league_cup_get_previous_clid(lig(ligs->len - 1).id, count_inactive);
+        return_value = league_cup_get_previous_clid(league->id, count_inactive);
     }
     }
     else
     {
-    for(i=acps->len - 1;i>=0;i--)
-        if(acp(i)->id == clid)
+    for(i=country.allcups->len - 1;i>=0;i--) {
+        Cup *cup = g_ptr_array_index(country.allcups, i);
+        if(cup->id == clid)
         break;
+    }
 
     if(i != 0)
-        return_value = acp(i - 1)->id;
+        return_value = ((Cup*)g_ptr_array_index(country.allcups, i - 1))->id;
     else
     {
-        if(query_league_active(&lig(ligs->len - 1)) || count_inactive)
-        return_value = lig(ligs->len - 1).id;
+        League *league = &g_array_index(country.leagues, League, country.leagues->len - 1);
+        if(query_league_active(league) || count_inactive)
+        return_value = league->id;
         else
-        return_value = league_cup_get_previous_clid(lig(ligs->len - 1).id, count_inactive);
+        return_value = league_cup_get_previous_clid(league->id, count_inactive);
     }
     }
 
@@ -410,9 +430,11 @@ league_index_from_sid(const gchar *sid)
 
     gint i;
 
-    for(i=0;i<ligs->len;i++)
-    if(strcmp(lig(i).sid, sid) == 0)
-        return i;
+    for(i=0;i<country.leagues->len;i++) {
+        const League *league = &g_array_index(country.leagues, League, i);
+        if(strcmp(league->sid, sid) == 0)
+            return i;
+    }
 
     main_exit_program(EXIT_INT_NOT_FOUND, 
               "league_index_from_sid: no index found for sid '%s'.\n", sid);
@@ -534,7 +556,7 @@ league_season_start(League *league)
     gint idx = league_index_from_sid(league->sid);
     gboolean user_champ = 
     (team_is_user(
-        g_array_index(league_table((&lig(0)))->elements, TableElement, 0).team) != -1);
+        g_array_index(league_table((&g_array_index(country.leagues, League, 0)))->elements, TableElement, 0).team) != -1);
     gboolean league_above_talent =
     (team_get_average_talents(league->teams) > league->average_talent *
      const_float("float_season_end_league_above_talent_factor") && !user_champ);
@@ -557,8 +579,8 @@ league_season_start(League *league)
 
     if(user_champ)
     {
-    tm = g_array_index(league_table((&lig(0)))->elements, TableElement, 0).team;
-    tm->luck = MAX(tm->luck * const_float("float_season_end_user_champ_luck_factor"),
+        tm = g_array_index(league_table((&g_array_index(country.leagues, League, 0)))->elements, TableElement, 0).team;
+        tm->luck = MAX(tm->luck * const_float("float_season_end_user_champ_luck_factor"),
                const_float("float_luck_limit"));
     }
     else
@@ -624,12 +646,13 @@ query_league_rank_in_prom_games(const League *league, gint rank)
     const Cup *cup = NULL;
     const CupRound *cup_round = NULL;
 
-    for(i=0;i<ligs->len;i++)
-    if(query_league_has_prom_games((&lig(i))))
-    {
-            for(l = 0; l < lig(i).prom_rel.prom_games->len; l++)
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+        if(query_league_has_prom_games(league))
+        {
+            for(l = 0; l < league->prom_rel.prom_games->len; l++)
             {
-                cup = cup_from_sid(g_array_index(lig(i).prom_rel.prom_games, PromGames, l).cup_sid);
+                cup = cup_from_sid(g_array_index(league->prom_rel.prom_games, PromGames, l).cup_sid);
                 for(k=0;k<cup->rounds->len;k++)
                 {
                     cup_round = &g_array_index(cup->rounds, CupRound, k);
@@ -655,6 +678,7 @@ query_league_rank_in_prom_games(const League *league, gint rank)
                     }
                 }                
             }
+        }
     }
 
     return FALSE;
@@ -1285,7 +1309,7 @@ league_team_movements_print(const GArray *team_movements,
     if(tmove->dest_assigned)
         g_print("%-25s (%d) %s \t\t", tmove->tm->name,
            league_from_clid(tmove->tm->clid)->layer,
-           lig(g_array_index(tmove->dest_idcs, gint, 0)).name);
+           g_array_index(country.leagues, League, g_array_index(tmove->dest_idcs, gint, 0)).name);
     else
         g_print("%-25s (%d) UNASSIGNED \t\t", tmove->tm->name,
            league_from_clid(tmove->tm->clid)->layer);
@@ -1295,9 +1319,11 @@ league_team_movements_print(const GArray *team_movements,
     }
 
     g_print("%-20s Size Cursize\n", "League");
-    for(i=0;i<ligs->len;i++)
-    g_print("%-20s %d %d\n", lig(i).name, league_size[i],
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+        g_print("%-20s %d %d\n", league->name, league_size[i],
            league_cur_size[i]);
+    }
 }
 
 /** Compare two leagues when doing promotion/relegation. The league
@@ -1354,14 +1380,15 @@ league_team_movements_assign_dest(GArray *team_movements, gint idx,
     if(league_cur_size[dest_idx] > league_size[dest_idx])
     main_exit_program(EXIT_PROM_REL, 
               "league_team_movements_assign_dest: no room in league %s for team %s.",
-              lig(dest_idx).name, tmove->tm->name);
+              g_array_index(country.leagues, League, dest_idx).name, tmove->tm->name);
 
     tmove->dest_assigned = TRUE;
 
     if(debug > 60)
     g_print("%s  %d -> %d\n", tmove->tm->name,
-        league_from_clid(tmove->tm->clid)->layer,
-        league_from_clid(lig(dest_idx).id)->layer);
+
+    league_from_clid(tmove->tm->clid)->layer,
+    league_from_clid(g_array_index(country.leagues, League, dest_idx).id)->layer);
 
     if(league_cur_size[dest_idx] == league_size[dest_idx])
     for(i=0;i<team_movements->len;i++)
@@ -1385,12 +1412,12 @@ league_team_movements_assign_dest(GArray *team_movements, gint idx,
     if(tmove->prom_rel_type == PROM_REL_PROMOTION)
         user_history_add(&usr(team_is_user(tmove->tm)),
                  USER_HISTORY_PROMOTED, tmove->tm->name,
-                 lig(g_array_index(tmove->dest_idcs, gint, 0)).name,
+                 g_array_index(country.leagues, League, g_array_index(tmove->dest_idcs, gint, 0)).name,
                  NULL, NULL);
     else
         user_history_add(&usr(team_is_user(tmove->tm)),
                  USER_HISTORY_RELEGATED, tmove->tm->name,
-                 lig(g_array_index(tmove->dest_idcs, gint, 0)).name,
+                 g_array_index(country.leagues, League, g_array_index(tmove->dest_idcs, gint, 0)).name,
                  NULL, NULL);
     }
 }
@@ -1436,13 +1463,15 @@ league_team_movements_destinations(GArray *team_movements, const gint *league_si
 #endif
 
     gint i;
-    gint league_cur_size[ligs->len];
+    gint league_cur_size[country.leagues->len];
 
     if(debug > 60)
     g_print("league_team_movements_destinations\n");
 
-    for(i=0;i<ligs->len;i++)
-    league_cur_size[i] = lig(i).teams->len;
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+        league_cur_size[i] = league->teams->len;
+    }
 
     if(debug > 65)
     league_team_movements_print(team_movements, league_size, league_cur_size);
@@ -1470,10 +1499,11 @@ query_leagues_active_in_country(void)
 
     gint i;
 
-    for(i=0;i<ligs->len;i++)
-    if(query_league_active(&lig(i)))
-        return TRUE;
-
+    for(i=0;i<country.leagues->len;i++) {
+        League *league = &g_array_index(country.leagues, League, i);
+        if(query_league_active(league))
+            return TRUE;
+    }
     return FALSE;
 }
 
@@ -1757,5 +1787,5 @@ league_allows_reserve_teams(const League *league)
 gboolean
 league_allows_multiple_reserve_teams(const League *league)
 {
-    return lig(ligs->len - 1).layer == league->layer;
+    return g_array_index(country.leagues, League, country.leagues->len - 1).layer == league->layer;
 }

@@ -87,21 +87,6 @@
 #define news_subtitle_id_new (counters[COUNT_NEWS_SUBTITLE_ID]++)
 #define news_article_id_new (counters[COUNT_NEWS_ARTICLE_ID]++)
 
-/** Convenience abbreviation. */
-#define ligs country.leagues
-/** Convenience abbreviation. */
-#define lig(i) g_array_index(country.leagues, League, i)
-
-/** Convenience abbreviation. */
-#define cps country.cups
-/** Convenience abbreviation. */
-#define cp(i) g_array_index(country.cups, Cup, i)
-
-/** Convenience abbreviation. */
-#define acps country.allcups
-/** Convenience abbreviation. */
-#define acp(i) ((Cup*)g_ptr_array_index(country.allcups, i))
-
 /** Convenience abbrevs. */
 #define stat0 status[0]
 #define stat1 status[1]
