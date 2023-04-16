@@ -140,9 +140,6 @@ cup_has_tables(gint clid);
 Team*
 cup_get_winner(const Cup *cup);
 
-gboolean
-query_cup_transfer(void);
-
 gchar*
 cup_get_highlight_colour(const Cup *cup);
 

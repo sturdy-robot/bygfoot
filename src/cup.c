@@ -1267,23 +1267,6 @@ query_cup_begins(const Cup *cup)
     return TRUE;
 }
 
-/** Return the number of international cups in the country. */
-gboolean
-query_cup_transfer(void)
-{
-#ifdef DEBUG
-    printf("query_cup_transfer\n");
-#endif
-
-    gint i;
-
-    for(i=0;i<acps->len;i++)
-	if(acp(i)->teams->len > 0)
-	    return TRUE;
-
-    return FALSE;
-}
-
 /** Find out whether the cup has a highlight property
     and return the highlight colour. */
 gchar*

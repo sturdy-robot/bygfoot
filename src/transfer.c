@@ -315,7 +315,7 @@ transfer_add_new_players(void)
 	transfer_add_player(
 	    transfer_player_get_new(
 		(math_rnd(0, 1) < const_float("float_transfer_cup_percentage") &&
-		 query_cup_transfer())),
+                 country.allcups->len)),
 	    math_rndi(const_int("int_transfer_time_lower"),
 		      const_int("int_transfer_time_upper")));
 }
