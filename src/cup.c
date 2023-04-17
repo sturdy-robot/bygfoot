@@ -1441,4 +1441,3 @@ cup_is_international(const Cup *cup)
 {
     return query_league_cup_has_property(cup->c.id, "international");
 }
-

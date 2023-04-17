@@ -61,6 +61,8 @@ add_executable(bygfoot WIN32
     src/callback_func.c src/callback_func.h
     src/callbacks.c src/callbacks.h
     src/competition_struct.h
+    src/competition.c src/competition.h
+    src/country.c src/country.h
     src/cup.c src/cup.h src/cup_struct.h
     src/debug.c src/debug.h
     src/enums.h

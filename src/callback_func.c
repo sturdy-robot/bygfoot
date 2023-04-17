@@ -25,6 +25,8 @@
 
 #include "callback_func.h"
 #include "callbacks.h"
+#include "country.h"
+#include "competition.h"
 #include "cup.h"
 #include "finance.h"
 #include "fixture.h"
@@ -683,6 +685,7 @@ callback_show_team(gint type)
         GTK_TREE_VIEW(lookup_widget(window.main, "treeview_right"));
     const Team *tm;
     const GPtrArray *teams = NULL;
+    Competition *comp;
 
     if(type == SHOW_CURRENT)
     {
@@ -694,15 +697,18 @@ callback_show_team(gint type)
     {
         if(type == SHOW_NEXT_LEAGUE)
         {
-            stat2 = league_cup_get_next_clid(stat2, TRUE);
-            while(stat2 >= ID_CUP_START && !cup_is_international(cup_from_clid(stat2)))
-                stat2 = league_cup_get_next_clid(stat2, TRUE);
+            /* Find the next league or international cup. */
+            do {
+               comp = country_get_next_competition(&country, stat2, TRUE);
+               stat2 = comp->id;
+            } while (competition_is_cup(comp) && !cup_is_international((Cup*)comp));
         }
         else if(type == SHOW_PREVIOUS_LEAGUE)
         {
-            stat2 = league_cup_get_previous_clid(stat2, TRUE);
-            while(stat2 >= ID_CUP_START && !cup_is_international(cup_from_clid(stat2)))
-                stat2 = league_cup_get_previous_clid(stat2, TRUE);
+            do {
+                comp = country_get_previous_competition(&country, stat2, TRUE);
+                stat2 = comp->id;
+            } while (competition_is_cup(comp) && !cup_is_international((Cup*)comp));
         }
 
         teams = league_cup_get_teams(stat2);

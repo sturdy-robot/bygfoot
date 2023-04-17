@@ -167,4 +167,7 @@ cup_has_property(const Cup *cup, const gchar *property);
 gboolean
 cup_is_international(const Cup *cup);
 
+Cup *
+cup_get_next_cup(gint clid);
+
 #endif
