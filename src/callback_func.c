@@ -695,13 +695,13 @@ callback_show_team(gint type)
         if(type == SHOW_NEXT_LEAGUE)
         {
             stat2 = league_cup_get_next_clid(stat2, TRUE);
-            while(stat2 >= ID_CUP_START && cup_from_clid(stat2)->teams->len == 0)
+            while(stat2 >= ID_CUP_START && !cup_is_international(cup_from_clid(stat2)))
                 stat2 = league_cup_get_next_clid(stat2, TRUE);
         }
         else if(type == SHOW_PREVIOUS_LEAGUE)
         {
             stat2 = league_cup_get_previous_clid(stat2, TRUE);
-            while(stat2 >= ID_CUP_START && cup_from_clid(stat2)->teams->len == 0)
+            while(stat2 >= ID_CUP_START && !cup_is_international(cup_from_clid(stat2)))
                 stat2 = league_cup_get_previous_clid(stat2, TRUE);
         }
 
