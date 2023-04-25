@@ -281,7 +281,7 @@ query_tables_in_country(void)
 
     for(i=0;i<country.cups->len;i++) {
         Cup *cup = &g_array_index(country.cups, Cup, i);
-	if(cup_has_tables(cup->id) != -1)
+	if(cup_has_tables(cup->c.id) != -1)
 	    return TRUE;
     }
 

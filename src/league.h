@@ -39,7 +39,7 @@
 #define league_table(league) (&g_array_index((league)->tables, Table, league->tables->len - 1))
 
 #define query_league_has_prom_games(league) (league->prom_rel.prom_games->len > 0)
-#define query_league_active(league) (!query_league_cup_has_property((league)->id, "inactive"))
+#define query_league_active(league) (!query_league_cup_has_property((league)->c.id, "inactive"))
 
 /** A struct needed when managing promotions
     and relegations. */

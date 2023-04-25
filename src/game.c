@@ -366,7 +366,7 @@ game_assign_attendance(Fixture *fix)
 
     if(fix->clid < ID_CUP_START && 
        team_get_league_rank(tm[1], fix->clid) <
-       (gint)rint((gfloat)league_from_clid(fix->clid)->teams->len *
+       (gint)rint((gfloat)league_from_clid(fix->clid)->c.teams->len *
 		  const_float("float_game_stadium_attendance_rank_percentage")))
 	factor *= const_float("float_game_stadium_attendance_rank_factor");
 
@@ -409,7 +409,7 @@ game_assign_attendance_neutral(Fixture *fix)
     gfloat av_att = (fix->clid >= ID_CUP_START && 
 		     query_league_cup_has_property(fix->clid, "international") && teamsp->len > 0) ?
 	(gfloat)league_cup_average_capacity(fix->clid) :
-	(gfloat)league_cup_average_capacity(g_array_index(country.leagues, League, 0).id);
+	(gfloat)league_cup_average_capacity(g_array_index(country.leagues, League, 0).c.id);
 
     fix->attendance = (gint)rint(av_att * 
 				 math_rnd(const_float("float_game_stadium_attendance_neutral_lower"),

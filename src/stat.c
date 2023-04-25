@@ -71,9 +71,9 @@ stat_update_leagues(void)
 	    league->stats.league_name = g_strdup(league->name);
 	    league->stats.league_symbol = g_strdup(league->symbol);
 	    league->stats.teams_off = 
-		stat_update_league_teams(league->teams, TEAM_COMPARE_OFFENSIVE);
+		stat_update_league_teams(league->c.teams, TEAM_COMPARE_OFFENSIVE);
 	    league->stats.teams_def = 
-		stat_update_league_teams(league->teams, TEAM_COMPARE_DEFENSE);
+		stat_update_league_teams(league->c.teams, TEAM_COMPARE_DEFENSE);
 	    stat_update_league_players(league);
 	}
     }
@@ -96,8 +96,8 @@ stat_update_league_players(League *league)
     gint maxlen = const_int("int_stat_players_len");
     Stat new_stat;
 
-    for(i=0;i<league->teams->len;i++) {
-        Team *team = g_ptr_array_index(league->teams, i);
+    for(i=0;i<league->c.teams->len;i++) {
+        Team *team = g_ptr_array_index(league->c.teams, i);
 	for(j=0;j<team->players->len;j++)
 	{
 	    pl = &g_array_index(team->players, Player, j);
@@ -209,8 +209,8 @@ stat_create_season_stat(void)
     for(i=0;i<country.leagues->len;i++)
     {
         League *league = &g_array_index(country.leagues, League, i);
-        if(!query_league_cup_has_property(league->id, "omit_from_history") &&
-           !query_league_cup_has_property(league->id, "inactive"))
+        if(!query_league_cup_has_property(league->c.id, "omit_from_history") &&
+           !query_league_cup_has_property(league->c.id, "inactive"))
         {
             for(j = 0; j < league->tables->len; j++)
             {
@@ -229,7 +229,7 @@ stat_create_season_stat(void)
     for(i=0;i<country.allcups->len;i++)
     {
         Cup *cup = g_ptr_array_index(country.allcups, i);
-        if(!query_league_cup_has_property(cup->id, "omit_from_history"))
+        if(!query_league_cup_has_property(cup->c.id, "omit_from_history"))
         {
             new_champ.cl_name = g_strdup(cup->name);
             new_champ.team_name = 
@@ -303,6 +303,6 @@ stat_show_av_league_goals(void)
     g_print("\n\n");
     for(i=0;i<country.leagues->len;i++) {
         League *league = &g_array_index(country.leagues, League, i);
-	stat_show_av_goals(league_cup_get_fixtures(league->id));
+	stat_show_av_goals(league_cup_get_fixtures(league->c.id));
     }
 }

@@ -77,9 +77,9 @@ treeview_create_team_selection_list(const Country *country,
     for(i=0;i<country->leagues->len;i++)
     {
         const League *league = &g_array_index(country->leagues, League, i);
-        for(j=0;j<league->teams->len;j++)
+        for(j=0;j<league->c.teams->len;j++)
         {
-            const Team *team = g_ptr_array_index(league->teams, j);
+            const Team *team = g_ptr_array_index(league->c.teams, j);
             if(team_is_user(team) == -1)
             {
                 gtk_list_store_append(ls, &iter);
@@ -100,9 +100,9 @@ treeview_create_team_selection_list(const Country *country,
     for(i=0;i<country->cups->len;i++)
     {
     	const Cup *cup = &g_array_index(country->cups, Cup, i);
-	for(j=0;j<cup->teams->len;j++)
+	for(j=0;j<cup->c.teams->len;j++)
 	{
-	    const Team *team = g_ptr_array_index(cup->teams, j);
+	    const Team *team = g_ptr_array_index(cup->c.teams, j);
 	    gtk_list_store_append(ls, &iter);
 	    treeview_helper_insert_icon((GtkTreeModel*)ls, &iter, 1, team->symbol); 
 	    gtk_list_store_set(ls, &iter,

@@ -113,11 +113,11 @@ user_set_up_team_new_game(User *user)
     {
         Team *team = NULL;
         League *league = &g_array_index(country.leagues, League, user->scout);
-	rndom = math_rndi(0, league->teams->len - 1);
-	while(team_is_user(g_ptr_array_index(league->teams, rndom)) != -1)
-	    rndom = math_rndi(0, league->teams->len - 1);
+	rndom = math_rndi(0, league->c.teams->len - 1);
+	while(team_is_user(g_ptr_array_index(league->c.teams, rndom)) != -1)
+	    rndom = math_rndi(0, league->c.teams->len - 1);
       
-        team = g_ptr_array_index(league->teams, rndom);
+        team = g_ptr_array_index(league->c.teams, rndom);
 	sprintf(buf, "%s", team->name);
 	misc_string_assign(&team->name,
 			   user->tm->name);
@@ -911,8 +911,8 @@ user_add_cup_success(User *user, const Cup *cup, gint round, gint type)
 
     gboolean international, national;
 
-    international = query_league_cup_has_property(cup->id, "international");
-    national = query_league_cup_has_property(cup->id, "national");
+    international = query_league_cup_has_property(cup->c.id, "international");
+    national = query_league_cup_has_property(cup->c.id, "national");
 
     if(type == USER_HISTORY_WIN_FINAL)
     {
@@ -935,7 +935,7 @@ user_add_cup_success(User *user, const Cup *cup, gint round, gint type)
     }
     else if(type == USER_HISTORY_REACH_CUP_ROUND)
     {
-	if(round == cup_from_clid(cup->id)->rounds->len - 2)
+	if(round == cup_from_clid(cup->c.id)->rounds->len - 2)
 	{
 	    if(international)
 		user->counters[COUNT_USER_SUCCESS] +=
@@ -944,7 +944,7 @@ user_add_cup_success(User *user, const Cup *cup, gint round, gint type)
 		user->counters[COUNT_USER_SUCCESS] +=
 		    const_int("int_user_success_national_semis");
 	}
-	else if(round == cup_from_clid(cup->id)->rounds->len - 3)
+	else if(round == cup_from_clid(cup->c.id)->rounds->len - 3)
 	{
 	    if(international)
 		user->counters[COUNT_USER_SUCCESS] +=

@@ -237,7 +237,7 @@ xml_loadsave_league_text         (GMarkupParseContext *context,
     else if(state == TAG_SID)
 	misc_string_assign(&new_league->sid, buf);
     else if(state == TAG_ID)
-	new_league->id = xml_read_int(buf);
+	new_league->c.id = xml_read_int(buf);
     else if(state == TAG_LEAGUE_LAYER)
 	new_league->layer = xml_read_int(buf);
     else if(state == TAG_LEAGUE_FIRST_WEEK)
@@ -341,7 +341,7 @@ xml_loadsave_league_read(const gchar *filename, const gchar *team_file, League *
     new_league = league;
     dirname = g_path_get_dirname(filename);
 
-    xml_loadsave_teams_read(team_file, league->country, new_league->teams);
+    xml_loadsave_teams_read(team_file, league->country, new_league->c.teams);
 
     if(g_markup_parse_context_parse(context, file_contents, length, &error))
     {
@@ -370,16 +370,16 @@ xml_loadsave_league_write(const gchar *prefix, const League *league)
     FILE *fil = NULL;
     gchar *basename = g_path_get_basename(prefix);
 
-    sprintf(buf, "%s___league_%d_teams.xml", prefix, league->id);
-    xml_loadsave_teams_write(buf, league->teams);
+    sprintf(buf, "%s___league_%d_teams.xml", prefix, league->c.id);
+    xml_loadsave_teams_write(buf, league->c.teams);
 
-    sprintf(buf, "%s___league_%d_fixtures.xml", prefix, league->id);
+    sprintf(buf, "%s___league_%d_fixtures.xml", prefix, league->c.id);
     xml_loadsave_fixtures_write(buf, league->fixtures);
 
-    sprintf(buf, "%s___league_%d_stat.xml", prefix, league->id);
+    sprintf(buf, "%s___league_%d_stat.xml", prefix, league->c.id);
     xml_loadsave_league_stat_write(buf, &league->stats);
 
-    sprintf(buf, "%s___league_%d.xml", prefix, league->id);
+    sprintf(buf, "%s___league_%d.xml", prefix, league->c.id);
     file_my_fopen(buf, "w", &fil, TRUE);
 
     fprintf(fil, "%s<_%d>\n", I0, TAG_LEAGUE);
@@ -398,7 +398,7 @@ xml_loadsave_league_write(const gchar *prefix, const League *league)
 	xml_write_string(fil, (gchar*)g_ptr_array_index(league->skip_weeks_with, i),
 			 TAG_SKIP_WEEKS_WITH, I0);
 
-    xml_write_int(fil, league->id, TAG_ID, I0);
+    xml_write_int(fil, league->c.id, TAG_ID, I0);
     xml_write_int(fil, league->layer, TAG_LEAGUE_LAYER, I0);
     xml_write_int(fil, league->first_week, TAG_LEAGUE_FIRST_WEEK, I0);
     xml_write_int(fil, league->round_robins, TAG_LEAGUE_ROUND_ROBINS, I0);
@@ -416,10 +416,10 @@ xml_loadsave_league_write(const gchar *prefix, const League *league)
 
     for(i=0;i<league->tables->len;i++)
     {
-	sprintf(buf, "%s___league_%d_table_%02d.xml", basename, league->id, i);
+	sprintf(buf, "%s___league_%d_table_%02d.xml", basename, league->c.id, i);
 	xml_write_string(fil, buf, TAG_LEAGUE_TABLE_FILE, I1);
 
-	sprintf(buf, "%s___league_%d_table_%02d.xml", prefix, league->id, i);
+	sprintf(buf, "%s___league_%d_table_%02d.xml", prefix, league->c.id, i);
 	xml_loadsave_table_write(buf, &g_array_index(league->tables, Table, i));
     }
 

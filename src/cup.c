@@ -55,7 +55,7 @@ cup_new(gboolean new_id, Bygfoot *bygfoot)
     new.symbol = NULL;
     new.sid = NULL;
 
-    new.id = (new_id) ? cup_id_new : -1;
+    new.c.id = (new_id) ? cup_id_new : -1;
     new.group = -1;
     new.add_week = 0;
     new.last_week = -1;
@@ -65,7 +65,7 @@ cup_new(gboolean new_id, Bygfoot *bygfoot)
     new.talent_diff = 0;
 
     new.rounds = g_array_new(FALSE, FALSE, sizeof(CupRound));
-    new.teams = g_ptr_array_new();
+    new.c.teams = g_ptr_array_new();
     new.fixtures = g_array_new(FALSE, FALSE, sizeof(Fixture));
     new.week_breaks = g_array_new(FALSE, FALSE, sizeof(WeekBreak));
     new.skip_weeks_with = g_ptr_array_new();
@@ -153,7 +153,7 @@ cup_reset(Cup *cup)
 
     gint i;
     
-    if(cup->teams->len > 0)
+    if(cup->c.teams->len > 0)
     {
         /* Save this season's results.  If there are no fixtures then
          * it means we have generated this cups results, so we have
@@ -162,8 +162,8 @@ cup_reset(Cup *cup)
             GPtrArray *sorted_teams = cup_get_teams_sorted(cup);
             g_ptr_array_add(cup->history, sorted_teams);
         }
-	g_ptr_array_free(cup->teams, TRUE);
-	cup->teams = g_ptr_array_new();
+	g_ptr_array_free(cup->c.teams, TRUE);
+	cup->c.teams = g_ptr_array_new();
     }
 
     g_array_free(cup->fixtures, TRUE);
@@ -357,7 +357,7 @@ cup_get_team_pointers(Cup *cup, gint round, gboolean preload)
     for(i=existing_teams;i<cup_round->team_ptrs->len;i++)
     {
         Team *team = g_ptr_array_index(cup_round->team_ptrs, i);
-	g_ptr_array_add(cup->teams, team);
+	g_ptr_array_add(cup->c.teams, team);
     }
 
     country_lookup_first_team_ids(&country);
@@ -487,7 +487,7 @@ cup_load_choose_team_from_league(Cup *cup, const League *league,
         {
 	    Team *team = g_array_index(table->elements, TableElement, j).team;
 	    if (team_is_reserve_team(team) &&
-	        !query_league_cup_has_property(cup->id, "include_reserve_teams"))
+	        !query_league_cup_has_property(cup->c.id, "include_reserve_teams"))
 		continue;
             g_ptr_array_add(teams, team);
         }
@@ -510,7 +510,7 @@ cup_load_choose_team_from_league(Cup *cup, const League *league,
             if (query_team_is_in_cup(team, cup) || misc_g_ptr_array_find(teams, team, NULL))
                 continue;
 	    if (team_is_reserve_team(team) &&
-	        !query_league_cup_has_property(cup->id, "include_reserve_teams"))
+	        !query_league_cup_has_property(cup->c.id, "include_reserve_teams"))
 		continue;
             if(debug > 80)
                 g_print("j %d order %d team %s isinint %d numteams %d\n",
@@ -576,8 +576,8 @@ cup_generate_team_list(const Cup *cup, GPtrArray *teams, gboolean league_talents
     if (!top_league)
         return;
 
-    for (i = 0; i < top_league->teams->len; i++) {
-        Team *team = g_ptr_array_index(top_league->teams, i);
+    for (i = 0; i < top_league->c.teams->len; i++) {
+        Team *team = g_ptr_array_index(top_league->c.teams, i);
 	if (league_talents)
             team->average_talent = top_league->average_talent;
         g_ptr_array_add(teams, team);
@@ -610,7 +610,7 @@ cup_load_choose_team_generate(Cup *cup, GPtrArray *teams, const CupChooseTeam *c
         Cup *generate_cup = bygfoot_get_cup_sid(sid);
         if (generate_cup) {
             cup_generate_team_list(generate_cup, teams_local,
-                                   query_league_cup_has_property(cup->id, "league_talents"));
+                                   query_league_cup_has_property(cup->c.id, "league_talents"));
             continue;
         }
 
@@ -623,10 +623,10 @@ cup_load_choose_team_generate(Cup *cup, GPtrArray *teams, const CupChooseTeam *c
                 continue;
             }
 
-	    for(k=0; k < league->teams->len; k++)
+	    for(k=0; k < league->c.teams->len; k++)
             {
-                Team *team = g_ptr_array_index(league->teams, k);
-                if(query_league_cup_has_property(cup->id, "league_talents"))
+                Team *team = g_ptr_array_index(league->c.teams, k);
+                if(query_league_cup_has_property(cup->c.id, "league_talents"))
                 {        
                     team->average_talent = league->average_talent;
                 }
@@ -688,8 +688,8 @@ cup_load_choose_team_generate(Cup *cup, GPtrArray *teams, const CupChooseTeam *c
            !query_team_is_in_cups(team, cup->group))
 	{
 	    //g_array_append_val(cup_round->teams, g_array_index(teams_local, Team, permutation[j]));
-	    //g_array_index(cup_round->teams, Team, cup_round->teams->len - 1).clid = cup->id;
-	    team->clid = cup->id;
+	    //g_array_index(cup_round->teams, Team, cup_round->teams->len - 1).clid = cup->c.id;
+	    team->clid = cup->c.id;
 	    g_ptr_array_add(teams, team);
 
 	    number_of_teams++;
@@ -845,7 +845,7 @@ cup_compare_success_tables(const Team *tm1, const Team *tm2, const Cup *cup, gin
 		else if(g_array_index(g_array_index(cupround->tables, Table, i).elements, TableElement, j).team == tm2)
 		    elem2 = &g_array_index(g_array_index(cupround->tables, Table, i).elements, TableElement, j);
 
-	return_value = table_element_compare_func(elem1, elem2, GINT_TO_POINTER(cup->id));
+	return_value = table_element_compare_func(elem1, elem2, GINT_TO_POINTER(cup->c.id));
     }
 
     return return_value;
@@ -1082,7 +1082,7 @@ cup_round_get_new_teams(const CupRound *cup_round)
 		    &g_array_index(cup_round->choose_teams, CupChooseTeam, i),
 		    &league, &cup_temp);
 		if(cup_temp == NULL)
-		    new_teams += league->teams->len;
+		    new_teams += league->c.teams->len;
 		else
 		{
 		    teams_sorted = cup_get_teams_sorted(cup_temp);
@@ -1110,13 +1110,13 @@ cup_from_clid(gint clid)
 
     for(i=0;i<country.cups->len;i++) {
         Cup *cup = &g_array_index(country.cups, Cup, i);
-	if(cup->id == clid)
+	if(cup->c.id == clid)
 	    return cup;
     }
 
     for (i = 0; i < country.bygfoot->international_cups->len; i++) {
         Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
-        if (cup->id == clid)
+        if (cup->c.id == clid)
             return cup;
     }
     main_exit_program(EXIT_POINTER_NOT_FOUND, 
@@ -1317,7 +1317,7 @@ cup_check_fixtures(const Cup *cup)
         if(g_array_index(cup->fixtures, Fixture, i).teams[0] ==
            g_array_index(cup->fixtures, Fixture, i).teams[1])
         {
-            if(!query_league_cup_has_property(cup->id, "silent_on_fixture_error"))
+            if(!query_league_cup_has_property(cup->c.id, "silent_on_fixture_error"))
                 debug_print_message("cup_check_fixture: bad fixture found in cup %s; cup will be disabled\n", cup->name);
 
             return FALSE;
@@ -1439,6 +1439,6 @@ cup_has_property(const Cup *cup, const gchar *property)
 gboolean
 cup_is_international(const Cup *cup)
 {
-    return query_league_cup_has_property(cup->id, "international");
+    return query_league_cup_has_property(cup->c.id, "international");
 }
 

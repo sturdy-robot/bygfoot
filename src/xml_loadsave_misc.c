@@ -331,7 +331,7 @@ xml_loadsave_misc_write(Bygfoot *bygfoot, const gchar *prefix)
 
     for(i=0;i<country.allcups->len;i++) {
         Cup *cup = g_ptr_array_index(country.allcups, i);
-	xml_write_int(fil, cup->id, TAG_MISC_ALLCUP, I0);
+	xml_write_int(fil, cup->c.id, TAG_MISC_ALLCUP, I0);
     }
 
     xml_loadsave_misc_write_bets(fil);
@@ -386,14 +386,14 @@ xml_loadsave_misc_write_country(const Country *country, FILE *fil,
     for (i = 0; i < country->leagues->len; i++) {
         const League *league = &g_array_index(country->leagues, League, i);
 	xml_loadsave_league_write(prefix, league);
-	sprintf(buf, "%s___league_%d.xml", basename, league->id);
+	sprintf(buf, "%s___league_%d.xml", basename, league->c.id);
 	xml_write_string(fil, buf, TAG_LEAGUE_FILE, I3);
     }
 
     for (i = 0; i < country->cups->len; i++) {
         const Cup *cup = &g_array_index(country->cups, Cup, i);
 	xml_loadsave_cup_write(prefix, cup);
-	sprintf(buf, "%s___cup_%d.xml", basename, cup->id);
+	sprintf(buf, "%s___cup_%d.xml", basename, cup->c.id);
 	xml_write_string(fil, buf, TAG_CUP_FILE, I3);
     }
 
@@ -430,7 +430,7 @@ xml_loadsave_misc_write_international_cups(FILE *fil, Bygfoot *bygfoot,
     for (i = 0; i < bygfoot->international_cups->len; i++) {
         const Cup *cup = &g_array_index(bygfoot->international_cups, Cup, i);
 	xml_loadsave_cup_write(prefix, cup);
-	sprintf(buf, "%s___cup_%d.xml", basename, cup->id);
+	sprintf(buf, "%s___cup_%d.xml", basename, cup->c.id);
 	xml_write_string(fil, buf, TAG_CUP_FILE, I3);
     }
     fprintf(fil, "%s</_%d>\n", I2, TAG_INTERNATIONAL_CUPS);

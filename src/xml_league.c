@@ -282,8 +282,8 @@ xml_league_read_start_element (GMarkupParseContext *context,
 	*league_user_data->new_team = team_new(TRUE, league_user_data->country);
 	misc_string_assign(&(league_user_data->new_team->symbol), new_league.symbol);
 	misc_string_assign(&(league_user_data->new_team->names_file), new_league.names_file);
-	league_user_data->new_team->clid = new_league.id;
-	g_ptr_array_add(new_league.teams, league_user_data->new_team);
+	league_user_data->new_team->clid = new_league.c.id;
+	g_ptr_array_add(new_league.c.teams, league_user_data->new_team);
 	state = STATE_TEAM;
     }
     else if(strcmp(element_name, TAG_TEAM_NAME) == 0)

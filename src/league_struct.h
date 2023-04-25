@@ -27,6 +27,7 @@
 #define LEAGUE_STRUCT_H
 
 #include "bygfoot_typedefs.h"
+#include "competition_struct.h"
 #include "stat_struct.h"
 #include "table_struct.h"
 
@@ -139,6 +140,8 @@ typedef struct
 */
 typedef struct
 {
+    /** Parent Object */
+    Competition c;
     /** Default value "" */
     gchar *name, *short_name, *sid, *symbol;
     /** The sid of the player names file the 
@@ -147,8 +150,6 @@ typedef struct
     gchar *names_file;
     /** @see PromRel */
     PromRel prom_rel;
-    /** Numerical id, as opposed to the string id 'sid'. */
-    gint id;
     /** Layer of the league; this specifies which leagues are
 	parallel. */
     gint layer;
@@ -169,9 +170,6 @@ typedef struct
     gint yellow_red;
     /** Average talent for the first season. Default: -1. */
     gfloat average_talent;
-    /** Array of pointers for teams in the league.
-	@see Team */
-    GPtrArray *teams;
     /** List of leagues joined fixture-wise to this one.
 	@see JoinedLeague */
     GArray *joined_leagues;

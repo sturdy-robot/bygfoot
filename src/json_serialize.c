@@ -426,7 +426,7 @@ bygfoot_json_serialize_league(const League *league)
     SERIALIZE(symbol, serialize_string);
     SERIALIZE(names_file, serialize_string);
     SERIALIZE(prom_rel, bygfoot_json_serialize_prom_rel);
-    SERIALIZE(id, json_object_new_int64);
+    json_object_object_add(league_obj, "id", json_object_new_int64(league->c.id));
     SERIALIZE(layer, json_object_new_int64);
     SERIALIZE(first_week, json_object_new_int64);
     SERIALIZE(week_gap, json_object_new_int64);
@@ -435,7 +435,7 @@ bygfoot_json_serialize_league(const League *league)
     SERIALIZE(rr_breaks, serialize_int_garray);
     SERIALIZE(yellow_red, json_object_new_int64);
     SERIALIZE(average_talent, json_object_new_double);
-    SERIALIZE(teams, bygfoot_json_serialize_teams);
+    json_object_object_add(league_obj, "teams", bygfoot_json_serialize_teams(league->c.teams));
     SERIALIZE(joined_leagues, bygfoot_json_serialize_joined_leagues);
     SERIALIZE(tables, bygfoot_json_serialize_tables);
     SERIALIZE(new_tables, bygfoot_json_serialize_new_tables);
@@ -885,7 +885,7 @@ bygfoot_json_serialize_cup(const Cup *cup)
     SERIALIZE_CUP_FIELD(short_name, serialize_string);
     SERIALIZE_CUP_FIELD(symbol, serialize_string);
     SERIALIZE_CUP_FIELD(sid, serialize_string);
-    SERIALIZE_CUP_FIELD(id, json_object_new_int64);
+    json_object_object_add(cup_obj, "id", json_object_new_int64(cup->c.id));
     SERIALIZE_CUP_FIELD(group, json_object_new_int64);
     SERIALIZE_CUP_FIELD(last_week, json_object_new_int64);
     SERIALIZE_CUP_FIELD(week_gap, json_object_new_int64);
@@ -897,7 +897,7 @@ bygfoot_json_serialize_cup(const Cup *cup)
     SERIALIZE_CUP_FIELD(properties, serialize_gchar_ptr_array);
     SERIALIZE_CUP_FIELD_STRUCT(rounds, bygfoot_json_serialize_cup_rounds);
     SERIALIZE_CUP_FIELD_STRUCT(bye, bygfoot_json_serialize_team_ptrs);
-    SERIALIZE_CUP_FIELD_STRUCT(teams, bygfoot_json_serialize_team_ptrs);
+    json_object_object_add(cup_obj, "teams", bygfoot_json_serialize_team_ptrs(cup->c.teams, NULL));
     SERIALIZE_CUP_FIELD(fixtures, bygfoot_json_serialize_fixtures);
     SERIALIZE_CUP_FIELD(week_breaks, bygfoot_json_serialize_week_breaks);
     SERIALIZE_CUP_FIELD(skip_weeks_with, serialize_gchar_ptr_array);
@@ -924,7 +924,7 @@ bygfoot_json_serialize_cup_ptr(const Cup *cup)
     struct json_object *cup_obj = json_object_new_object();
 
     json_object_object_add(cup_obj, "sid", serialize_string(cup->sid));
-    json_object_object_add(cup_obj, "id", json_object_new_int64(cup->id));
+    json_object_object_add(cup_obj, "id", json_object_new_int64(cup->c.id));
     return cup_obj;
 }
 

@@ -27,6 +27,7 @@
 #define CUP_STRUCT_H
 
 #include "bygfoot.h"
+#include "competition_struct.h"
 #include "table_struct.h"
 
 /** Information about what cup another cup has to wait for
@@ -161,12 +162,12 @@ typedef struct CupChooseTeam
 /** Structure representing a cup. */
 typedef struct
 {
+    /** Parent Object */
+    Competition c;
     /** Name and short name of the cup, a pixmap path,
 	and the string id (e.g. england_fa or so).
 	Default: "". */
     gchar *name, *short_name, *symbol, *sid;
-    /** Numerical id. */
-    gint id;
     /** An integer specifying which cups are mutually exclusive for
 	league teams, e.g. the same team can't participate in the UEFA Cup and
 	the Champions' League. */
@@ -199,10 +200,6 @@ typedef struct
     GArray *rounds;
     /** Pointer array containing teams that got a bye for a round of the cup. */
     GPtrArray *bye;
-    /** The teams belonging to the cup (stored in the cup rounds,
-	these are only pointers).
-	Relevant only if it's an international one. */
-    GPtrArray *teams;
     /** The fixtures of a season for the cup. */
     GArray *fixtures;
     /** Array of custom breaks in schedule. */

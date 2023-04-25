@@ -57,7 +57,7 @@ league_new(gboolean new_id, Country *country)
     new.short_name = NULL;
     new.symbol = NULL;
 
-    new.id = (new_id) ? league_id_new : -1;
+    new.c.id = (new_id) ? league_id_new : -1;
     new.layer = -1;
 
     new.average_talent = 0;
@@ -65,7 +65,7 @@ league_new(gboolean new_id, Country *country)
     new.prom_rel.elements = g_array_new(FALSE, FALSE, sizeof(PromRelElement));
     new.prom_rel.prom_games = g_array_new(FALSE, FALSE, sizeof(PromGames));
 
-    new.teams = g_ptr_array_new();
+    new.c.teams = g_ptr_array_new();
     new.fixtures = g_array_new(FALSE, FALSE, sizeof(Fixture));
     new.joined_leagues = g_array_new(FALSE, FALSE, sizeof(JoinedLeague));
     new.new_tables = g_array_new(FALSE, FALSE, sizeof(NewTable));
@@ -148,7 +148,7 @@ league_cup_get_index_from_clid(gint clid)
     {
     for(i=0;i<country.leagues->len;i++) {
         League *league = &g_array_index(country.leagues, League, i);
-        if(league->id == clid)
+        if(league->c.id == clid)
         {
         index = i;
         break;
@@ -158,7 +158,7 @@ league_cup_get_index_from_clid(gint clid)
     else {
         for(i=0;i<country.cups->len;i++) {
             Cup *cup = &g_array_index(country.cups, Cup, i);
-            if(cup->id == clid)
+            if(cup->c.id == clid)
             {
                 index = i;
                 break;
@@ -188,7 +188,7 @@ league_from_clid(gint clid)
 
     for(i=0;i<country.leagues->len;i++) {
         League *league = &g_array_index(country.leagues, League, i);
-        if(league->id == clid)
+        if(league->c.id == clid)
             return league;
     }
 
@@ -216,7 +216,7 @@ league_cup_get_next_clid(gint clid, gboolean count_inactive)
     {
     for(i=0;i<country.leagues->len;i++) {
         League *league = &g_array_index(country.leagues, League, i);
-        if(league->id == clid)
+        if(league->c.id == clid)
         break;
     }
 
@@ -224,38 +224,38 @@ league_cup_get_next_clid(gint clid, gboolean count_inactive)
     {
         League *league = &g_array_index(country.leagues, League, i + i);
         if(query_league_active(league) || count_inactive)
-        return_value = league->id;
+        return_value = league->c.id;
         else
-        return_value = league_cup_get_next_clid(league->id, count_inactive);
+        return_value = league_cup_get_next_clid(league->c.id, count_inactive);
     }
     else if(country.allcups->len > 0)
-        return_value = ((Cup*)g_ptr_array_index(country.allcups, 0))->id;
+        return_value = ((Cup*)g_ptr_array_index(country.allcups, 0))->c.id;
     else
     {
         League *league = &g_array_index(country.leagues, League, 0);
         if(query_league_active(league) || count_inactive)
-        return_value = league->id;
+        return_value = league->c.id;
         else
-        return_value = league_cup_get_next_clid(league->id, count_inactive);
+        return_value = league_cup_get_next_clid(league->c.id, count_inactive);
     }
     }
     else
     {
     for(i=0;i<country.allcups->len;i++) {
         Cup *cup = g_ptr_array_index(country.allcups, i);
-        if(cup->id == clid)
+        if(cup->c.id == clid)
         break;
     }
 
     if(i != country.allcups->len - 1)
-        return_value = ((Cup*)g_ptr_array_index(country.allcups, i + 1))->id;
+        return_value = ((Cup*)g_ptr_array_index(country.allcups, i + 1))->c.id;
     else
     {
         League *league = &g_array_index(country.leagues, League, 0);
         if(query_league_active(league) || count_inactive)
-        return_value = league->id;
+        return_value = league->c.id;
         else
-        return_value = league_cup_get_next_clid(league->id, count_inactive);
+        return_value = league_cup_get_next_clid(league->c.id, count_inactive);
     }
     }
 
@@ -279,45 +279,45 @@ league_cup_get_previous_clid(gint clid, gboolean count_inactive)
     {
     for(i=country.leagues->len - 1;i>=0;i--) {
         League *league = &g_array_index(country.leagues, League, i);
-        if(league->id == clid)
+        if(league->c.id == clid)
         break;
     }
 
     if(i != 0)
     {   League *league = &g_array_index(country.leagues, League, i - 1);
         if(query_league_active(league) || count_inactive)
-        return_value = league->id;
+        return_value = league->c.id;
         else
-        return_value = league_cup_get_previous_clid(league->id, count_inactive);
+        return_value = league_cup_get_previous_clid(league->c.id, count_inactive);
     }
     else if(country.allcups->len > 0)
-        return_value = ((Cup*)g_ptr_array_index(country.allcups, country.allcups->len - 1))->id;
+        return_value = ((Cup*)g_ptr_array_index(country.allcups, country.allcups->len - 1))->c.id;
     else
     {
         League *league = &g_array_index(country.leagues, League, country.leagues->len - 1);
         if(query_league_active(league) || count_inactive)
-        return_value = league->id;
+        return_value = league->c.id;
         else
-        return_value = league_cup_get_previous_clid(league->id, count_inactive);
+        return_value = league_cup_get_previous_clid(league->c.id, count_inactive);
     }
     }
     else
     {
     for(i=country.allcups->len - 1;i>=0;i--) {
         Cup *cup = g_ptr_array_index(country.allcups, i);
-        if(cup->id == clid)
+        if(cup->c.id == clid)
         break;
     }
 
     if(i != 0)
-        return_value = ((Cup*)g_ptr_array_index(country.allcups, i - 1))->id;
+        return_value = ((Cup*)g_ptr_array_index(country.allcups, i - 1))->c.id;
     else
     {
         League *league = &g_array_index(country.leagues, League, country.leagues->len - 1);
         if(query_league_active(league) || count_inactive)
-        return_value = league->id;
+        return_value = league->c.id;
         else
-        return_value = league_cup_get_previous_clid(league->id, count_inactive);
+        return_value = league_cup_get_previous_clid(league->c.id, count_inactive);
     }
     }
 
@@ -530,10 +530,10 @@ league_remove_team_with_id(League *league, gint id)
 
     gint i;
 
-    for(i=0;i<league->teams->len;i++)
-    if(((Team*)g_ptr_array_index(league->teams, i))->id == id)
+    for(i=0;i<league->c.teams->len;i++)
+    if(((Team*)g_ptr_array_index(league->c.teams, i))->id == id)
     {
-        g_ptr_array_remove_index(league->teams, i);
+        g_ptr_array_remove_index(league->c.teams, i);
         return;
     }
 
@@ -558,7 +558,7 @@ league_season_start(League *league)
     (team_is_user(
         g_array_index(league_table((&g_array_index(country.leagues, League, 0)))->elements, TableElement, 0).team) != -1);
     gboolean league_above_talent =
-    (team_get_average_talents(league->teams) > league->average_talent *
+    (team_get_average_talents(league->c.teams) > league->average_talent *
      const_float("float_season_end_league_above_talent_factor") && !user_champ);
     gboolean team_is_top = FALSE;
     Team *tm = NULL;
@@ -600,12 +600,12 @@ league_season_start(League *league)
     /*d*/
 /*     if(league == &lig(0)) */
 /*     printf("league %s av %.2f ab %d\n", league->name, */
-/*            team_get_average_talents(league->teams), league_above_talent); */
+/*            team_get_average_talents(league->c.teams), league_above_talent); */
 
-    for(i=0;i<league->teams->len;i++)
+    for(i=0;i<league->c.teams->len;i++)
     {
 
-    Team *team = g_ptr_array_index(league->teams, i);
+    Team *team = g_ptr_array_index(league->c.teams, i);
     team_is_top = 
         (team_get_league_rank(team, -1) <=
          user_champ_best_teams_limit && idx == 0 && user_champ);
@@ -630,7 +630,7 @@ league_season_start(League *league)
 
 /*     if(league == &lig(0)) */
 /*     printf("2 league %s av %.2f\n", league->name, */
-/*            team_get_average_talents(league->teams)); */
+/*            team_get_average_talents(league->c.teams)); */
 }
 
 /** Find out whether the team with specified rank in the league
@@ -769,10 +769,10 @@ handle_required_reserve_relegation(const TeamMove *move, GArray *team_movements)
         /* Search through the destination league (League 2 in example above)
          * to see if there are any teams with the same first team of the
          * team (Green in the example above) we are relegating. */
-        for (j = 0; j < dest_league->teams->len; j++) {
+        for (j = 0; j < dest_league->c.teams->len; j++) {
             gint k;
             TeamMove new_move;
-            Team *reserve_team = g_ptr_array_index(dest_league->teams, j);
+            Team *reserve_team = g_ptr_array_index(dest_league->c.teams, j);
             if (move->tm->first_team_id != reserve_team->first_team_id)
                 continue; /* Teams do not share the same first team. */
 
@@ -854,9 +854,9 @@ league_team_is_top_reserve_team(const League *league, const Team *team)
 {
     gint reserve_level, i;
 
-    for (i = 0; i < league->teams->len; i++) {
+    for (i = 0; i < league->c.teams->len; i++) {
         gint other_level;
-        const Team *other_team = g_ptr_array_index(league->teams, i);
+        const Team *other_team = g_ptr_array_index(league->c.teams, i);
         if (team->first_team_id != other_team->first_team_id)
             continue;
 
@@ -1250,7 +1250,7 @@ league_get_team_movements(League *league, GArray *team_movements)
         }
     }
 
-    g_ptr_array_sort_with_data(league->teams, team_compare_func,
+    g_ptr_array_sort_with_data(league->c.teams, team_compare_func,
                GINT_TO_POINTER(TEAM_COMPARE_LEAGUE_RANK));
 }
 
@@ -1388,7 +1388,7 @@ league_team_movements_assign_dest(GArray *team_movements, gint idx,
     g_print("%s  %d -> %d\n", tmove->tm->name,
 
     league_from_clid(tmove->tm->clid)->layer,
-    league_from_clid(g_array_index(country.leagues, League, dest_idx).id)->layer);
+    league_from_clid(g_array_index(country.leagues, League, dest_idx).c.id)->layer);
 
     if(league_cur_size[dest_idx] == league_size[dest_idx])
     for(i=0;i<team_movements->len;i++)
@@ -1470,7 +1470,7 @@ league_team_movements_destinations(GArray *team_movements, const gint *league_si
 
     for(i=0;i<country.leagues->len;i++) {
         League *league = &g_array_index(country.leagues, League, i);
-        league_cur_size[i] = league->teams->len;
+        league_cur_size[i] = league->c.teams->len;
     }
 
     if(debug > 65)
@@ -1570,14 +1570,14 @@ league_add_table(League *league)
     TableElement new_table_element;
  
     new_table = table_new();
-    new_table.clid = league->id;
+    new_table.clid = league->c.id;
     new_table.name = g_strdup(league->name);
 
-    for(i = 0; i < league->teams->len; i++)
+    for(i = 0; i < league->c.teams->len; i++)
     {
         new_table_element = 
             table_element_new(
-                g_ptr_array_index(league->teams, i), i);
+                g_ptr_array_index(league->c.teams, i), i);
         g_array_append_val(new_table.elements, new_table_element);
     }
 
@@ -1595,8 +1595,8 @@ GPtrArray*
 league_cup_get_teams(gint clid)
 {
     return (clid < ID_CUP_START) ?
-    (GPtrArray*)league_from_clid(clid)->teams :
-    cup_from_clid(clid)->teams;
+    (GPtrArray*)league_from_clid(clid)->c.teams :
+    cup_from_clid(clid)->c.teams;
 }
 
 GPtrArray*
@@ -1696,8 +1696,8 @@ country_lookup_first_team_ids(const Country *country)
     gint i,j;
     for (i = 0; i < country->leagues->len; i++) {
         const League *league = &g_array_index(country->leagues, League, i);
-        for (j = 0; j < league->teams->len; j++) {
-            Team *team = g_ptr_array_index(league->teams, j);
+        for (j = 0; j < league->c.teams->len; j++) {
+            Team *team = g_ptr_array_index(league->c.teams, j);
             if (!team_is_reserve_team(team)) {
                 team->first_team_id = team->id;
                 continue;
@@ -1730,9 +1730,9 @@ league_can_accept_promoted_team(const League *league, const Team *tm,
     /* If the first team or a higher reserve team is in the league, then we
      * can't promote the reserve team.
      */
-    for (i = 0; i < league->teams->len; i++) {
+    for (i = 0; i < league->c.teams->len; i++) {
         gboolean upper_team_promoted = FALSE;
-        const Team *upper_team = g_ptr_array_index(league->teams, i);
+        const Team *upper_team = g_ptr_array_index(league->c.teams, i);
         if (tm->first_team_id != upper_team->first_team_id)
             continue;
 
@@ -1769,7 +1769,7 @@ league_can_accept_promoted_team(const League *league, const Team *tm,
             gint idx = g_array_index(move->dest_idcs, gint, j);
             const League *dest_league = &g_array_index(country.leagues,
                                                        League, idx);
-            if(dest_league->id == league->id)
+            if(dest_league->c.id == league->c.id)
                 return FALSE;
         }
     }

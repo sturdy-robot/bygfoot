@@ -264,7 +264,7 @@ xml_loadsave_cup_text         (GMarkupParseContext *context,
     else if(state == TAG_SID)
 	misc_string_assign(&new_cup->sid, buf);
     else if(state == TAG_ID)
-	new_cup->id = xml_read_int(buf);
+	new_cup->c.id = xml_read_int(buf);
     else if(state == TAG_WEEK_GAP)
 	new_cup->week_gap = xml_read_int(buf);
     else if(state == TAG_WEEK_BREAK)
@@ -426,10 +426,10 @@ xml_loadsave_cup_write(const gchar *prefix, const Cup *cup)
     gchar buf[SMALL];
     FILE *fil = NULL;
 
-    sprintf(buf, "%s___cup_%d_fixtures.xml", prefix, cup->id);
+    sprintf(buf, "%s___cup_%d_fixtures.xml", prefix, cup->c.id);
     xml_loadsave_fixtures_write(buf, cup->fixtures);
 
-    sprintf(buf, "%s___cup_%d.xml", prefix, cup->id);
+    sprintf(buf, "%s___cup_%d.xml", prefix, cup->c.id);
     file_my_fopen(buf, "w", &fil, TRUE);
 
     fprintf(fil, "<_%d>\n", TAG_CUP);
@@ -439,7 +439,7 @@ xml_loadsave_cup_write(const gchar *prefix, const Cup *cup)
     xml_write_string(fil, cup->sid, TAG_SID, I0);
     xml_write_string(fil, cup->symbol, TAG_SYMBOL, I0);
 
-    xml_write_int(fil, cup->id, TAG_ID, I0);
+    xml_write_int(fil, cup->c.id, TAG_ID, I0);
     xml_write_int(fil, cup->last_week, TAG_CUP_LAST_WEEK, I0);
     xml_write_int(fil, cup->add_week, TAG_CUP_ADD_WEEK, I0);
     xml_write_int(fil, cup->group, TAG_CUP_GROUP, I0);
@@ -556,10 +556,10 @@ xml_loadsave_cup_write_round(FILE *fil, const gchar *prefix, const Cup *cup, gin
 
     for(i=0;i<cup_round->tables->len;i++)
     {
-	sprintf(buf, "%s___cup_%d_round_%02d_table_%02d.xml", basename, cup->id, round, i);
+	sprintf(buf, "%s___cup_%d_round_%02d_table_%02d.xml", basename, cup->c.id, round, i);
 	xml_write_string(fil, buf, TAG_CUP_ROUND_TABLE_FILE, I1);
 
-	sprintf(buf, "%s___cup_%d_round_%02d_table_%02d.xml", prefix, cup->id, round, i);
+	sprintf(buf, "%s___cup_%d_round_%02d_table_%02d.xml", prefix, cup->c.id, round, i);
 	xml_loadsave_table_write(buf, &g_array_index(cup_round->tables, Table, i));
     }
 

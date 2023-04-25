@@ -114,7 +114,7 @@ team_generate_players_stadium(Team *tm, gfloat av_talent)
     {
         League *league = &g_array_index(country.leagues, League, 0);
         average_talent = (tm->average_talent == 0) ?
-            team_get_average_talents(league->teams) *
+            team_get_average_talents(league->c.teams) *
             (1 + cup_from_clid(tm->clid)->talent_diff) :
             tm->average_talent;
         average_talent *= skill_factor;
@@ -169,8 +169,8 @@ query_team_is_in_cups(const Team *tm, gint group)
         const Cup *cup = &g_array_index(country.cups, Cup, i);
         if (cup->group != group)
             continue;
-	for(j=0;j<cup->teams->len;j++) {
-            const Team *team = g_ptr_array_index(cup->teams, j);
+	for(j=0;j<cup->c.teams->len;j++) {
+            const Team *team = g_ptr_array_index(cup->c.teams, j);
             if (team == tm) {
                 if(debug > 90)
                         g_print("team %s group %d found in %s (%s) \n", tm->name,
@@ -183,8 +183,8 @@ query_team_is_in_cups(const Team *tm, gint group)
         const Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
         if (cup->group != group)
             continue;
-        for (j = 0; j < cup->teams->len; j++) {
-            const Team *team = g_ptr_array_index(cup->teams, j);
+        for (j = 0; j < cup->c.teams->len; j++) {
+            const Team *team = g_ptr_array_index(cup->c.teams, j);
             if (team == tm)
                 return TRUE;
         }
@@ -205,8 +205,8 @@ query_team_is_in_cup(const Team *tm, const Cup *cup)
 
     gint i;
 
-    for(i=0;i<cup->teams->len;i++)
-        if (tm == g_ptr_array_index(cup->teams, i))
+    for(i=0;i<cup->c.teams->len;i++)
+        if (tm == g_ptr_array_index(cup->c.teams, i))
 	    return TRUE;
 
     return FALSE;
@@ -254,8 +254,8 @@ team_of_id(gint id)
 
     for(i=0;i<country.leagues->len;i++) {
         League *league = &g_array_index(country.leagues, League, i);
-	for(j=0;j<league->teams->len;j++) {
-	    Team *team = g_ptr_array_index(league->teams, j);
+	for(j=0;j<league->c.teams->len;j++) {
+	    Team *team = g_ptr_array_index(league->c.teams, j);
 	    if(team->id == id)
 		return team;
         }
@@ -265,8 +265,8 @@ team_of_id(gint id)
         Country *country = g_ptr_array_index(country_list, i);
 	for (j = 0; j < country->leagues->len; j++) {
 	    League *league = &g_array_index(country->leagues, League, j);
-	    for (k = 0; k < league->teams->len; k++) {
-                Team *team = g_ptr_array_index(league->teams, k);
+	    for (k = 0; k < league->c.teams->len; k++) {
+                Team *team = g_ptr_array_index(league->c.teams, k);
 		if (team->id == id)
 		    return team;
 	    }
@@ -286,8 +286,8 @@ team_of_sid(const char *sid, const Country *country)
     gint i, j, k;
     for (i = 0; i < country->leagues->len; i++) {
         const League *league = &g_array_index(country->leagues, League, i);
-        for (j = 0; j < league->teams->len; j++ ) {
-            Team *team = g_ptr_array_index(league->teams, j);
+        for (j = 0; j < league->c.teams->len; j++ ) {
+            Team *team = g_ptr_array_index(league->c.teams, j);
             if (!strcmp(team->name, sid))
                 return team;
         }
@@ -340,7 +340,7 @@ team_get_fixture(const Team *tm, gboolean last_fixture)
 		if(!query_league_active(league))
 		    continue;
 
-		if (!query_team_is_in_teams_array(tm, league->teams))
+		if (!query_team_is_in_teams_array(tm, league->c.teams))
 		    continue;
 
 		for(j=0;j<league->fixtures->len;j++) {
@@ -362,7 +362,7 @@ team_get_fixture(const Team *tm, gboolean last_fixture)
 	       fix->week_number != week ||
 	       fix->week_round_number != week_round)
 	    {
-		if(query_league_cup_has_property(cup->id, "national") ||
+		if(query_league_cup_has_property(cup->c.id, "national") ||
 		   query_team_is_in_cup(tm, cup))
 		{
 		    for(j=0;j<cup->fixtures->len;j++)
@@ -404,7 +404,7 @@ team_get_fixture(const Team *tm, gboolean last_fixture)
 	       fix->week_number != week ||
 	       fix->week_round_number != week_round - 1)
 	    {
-		if(query_league_cup_has_property(cup->id, "national") ||
+		if(query_league_cup_has_property(cup->c.id, "national") ||
 		   query_team_is_in_cup(tm, cup))
 		{
 		    for(j=cup->fixtures->len - 1;j>=0;j--)
@@ -949,16 +949,16 @@ team_get_sorted(GCompareDataFunc compare_function, gint type, gboolean cup)
     {
 	for(i=0;i<country.leagues->len;i++) {
             League *league = &g_array_index(country.leagues, League, i);
-	    for(j=0;j<league->teams->len;j++)
-		g_ptr_array_add(teams, g_ptr_array_index(league->teams, j));
+	    for(j=0;j<league->c.teams->len;j++)
+		g_ptr_array_add(teams, g_ptr_array_index(league->c.teams, j));
         }
     }
     else
     {
 	for(i=0;i<country.allcups->len;i++) {
             Cup *cup = g_ptr_array_index(country.allcups, i);
-	    for(j=0;j<cup->teams->len;j++)
-		g_ptr_array_add(teams, g_ptr_array_index(cup->teams, j));
+	    for(j=0;j<cup->c.teams->len;j++)
+		g_ptr_array_add(teams, g_ptr_array_index(cup->c.teams, j));
         }
     }
 
@@ -1075,7 +1075,7 @@ query_team_plays(const Team *tm, gint week_number, gint week_round_number)
     if(tm->clid < ID_CUP_START)
 	for(i=0;i<country.leagues->len;i++) {
             League *league = &g_array_index(country.leagues, League, i);
-	    if(league->id == tm->clid)
+	    if(league->c.id == tm->clid)
 		for(j=0;j<league->fixtures->len;j++)
 		    if(g_array_index(league->fixtures, Fixture, j).week_number == week_number && 
 		       g_array_index(league->fixtures, Fixture, j).week_round_number == week_round_number &&
@@ -1086,7 +1086,7 @@ query_team_plays(const Team *tm, gint week_number, gint week_round_number)
     
     for(i=0;i<country.allcups->len;i++) {
         Cup *cup = g_ptr_array_index(country.allcups, i);
-	if(query_league_cup_has_property(cup->id, "national") ||
+	if(query_league_cup_has_property(cup->c.id, "national") ||
 	   query_team_is_in_cup(tm, cup))
 	    for(j=0;j<cup->fixtures->len;j++)
 		if(g_array_index(cup->fixtures, Fixture, j).week_number == week_number && 
@@ -1451,9 +1451,9 @@ team_get_table_clid(const Team *tm)
     {
 	for(i = country.allcups->len - 1; i >= 0; i--) {
             Cup *cup = g_ptr_array_index(country.allcups, i);
-	    if(cup_has_tables(cup->id) != -1 && 
+	    if(cup_has_tables(cup->c.id) != -1 && 
 	       query_team_is_in_cup(tm, cup))
-		return cup->id;
+		return cup->c.id;
         }
     }
 

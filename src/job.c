@@ -64,7 +64,7 @@ job_update(Bygfoot *bygfoot)
 	return;
 
     for (i = 0; i < country.leagues->len; i++) {
-        national_teams += g_array_index(country.leagues, League, i).teams->len;
+        national_teams += g_array_index(country.leagues, League, i).c.teams->len;
     }
 
     /* Limit the total number of jobs to the number of national teams.
@@ -208,11 +208,11 @@ job_pick_team_from_country(const Country *cntry, Team **tm, League **league)
     gint i, rndom;
     gint team_lens[cntry->leagues->len];
 
-    team_lens[0] = g_array_index(cntry->leagues, League, 0).teams->len;
+    team_lens[0] = g_array_index(cntry->leagues, League, 0).c.teams->len;
 
     for(i=1;i<cntry->leagues->len;i++)
 	team_lens[i] = team_lens[i - 1] + 
-	    g_array_index(cntry->leagues, League, i).teams->len;
+	    g_array_index(cntry->leagues, League, i).c.teams->len;
 
     do
     {
@@ -223,10 +223,10 @@ job_pick_team_from_country(const Country *cntry, Team **tm, League **league)
 	    {
 		*tm = (i > 0) ?
 		    g_ptr_array_index(g_array_index(
-				       cntry->leagues, League, i).teams, 
+				       cntry->leagues, League, i).c.teams, 
 				   rndom - team_lens[i - 1]) :
 		    g_ptr_array_index(g_array_index(
-				       cntry->leagues, League, i).teams, 
+				       cntry->leagues, League, i).c.teams, 
 				   rndom);				
 		*league = &g_array_index(cntry->leagues, League, i);
 		break;
@@ -269,10 +269,10 @@ job_team_is_in_cup(const gchar *team_name)
 
     for(i=0;i<country.allcups->len;i++) {
         Cup *cup = g_ptr_array_index(country.allcups, i);
-	for(j=0;j<cup->teams->len;j++)
+	for(j=0;j<cup->c.teams->len;j++)
 	    if(strcmp(team_name, 
-		      ((Team*)g_ptr_array_index(cup->teams, j))->name) == 0)
-		return ((Team*)g_ptr_array_index(cup->teams, j))->id;
+		      ((Team*)g_ptr_array_index(cup->c.teams, j))->name) == 0)
+		return ((Team*)g_ptr_array_index(cup->c.teams, j))->id;
     }
     return -1;
 }
@@ -294,10 +294,10 @@ job_get_team(const Job *job)
     {
 	for(i=0;i<country.allcups->len;i++) {
             Cup *cup = g_ptr_array_index(country.allcups, i);
-	    for(j=0;j<cup->teams->len;j++)
-		if(((Team*)g_ptr_array_index(cup->teams, j))->id ==
+	    for(j=0;j<cup->c.teams->len;j++)
+		if(((Team*)g_ptr_array_index(cup->c.teams, j))->id ==
 		   job->team_id)
-		    return (Team*)g_ptr_array_index(cup->teams, j);
+		    return (Team*)g_ptr_array_index(cup->c.teams, j);
 	}
     }
 
@@ -398,8 +398,8 @@ job_change_country(Job *job, Bygfoot *bygfoot)
     stat5 = STATUS_GENERATE_TEAMS;
     for(i=0;i<country.leagues->len;i++) {
         League *league = &g_array_index(country.leagues, League, i);
-	for(j=0;j<league->teams->len;j++) {
-	    Team *new_team = g_ptr_array_index(league->teams, j);
+	for(j=0;j<league->c.teams->len;j++) {
+	    Team *new_team = g_ptr_array_index(league->c.teams, j);
 	    if(strcmp(new_team->name, tm.name) != 0)
 		team_generate_players_stadium(new_team, 0);
 	    else

@@ -586,7 +586,7 @@ news_set_league_cup_tokens(const Fixture *fix)
         cup = cup_from_clid(fix->clid);
         cupround = &g_array_index(cup->rounds, CupRound, fix->round);
 
-        if(query_league_cup_has_property(cup->id, "international"))
+        if(query_league_cup_has_property(cup->c.id, "international"))
             misc_token_add(token_rep_news,
                            option_int("string_token_team_layerdiff", &tokens),
                            misc_int_to_char(0));
@@ -638,17 +638,17 @@ news_set_league_cup_tokens(const Fixture *fix)
         
         misc_token_add_bool(token_rep_news,
                             option_int("string_token_bool_cup_national", &tokens),
-                            query_league_cup_has_property(cup->id, "national"));
+                            query_league_cup_has_property(cup->c.id, "national"));
         misc_token_add_bool(token_rep_news,
                             option_int("string_token_bool_cup_international", &tokens),
-                            query_league_cup_has_property(cup->id, "international"));
+                            query_league_cup_has_property(cup->c.id, "international"));
         misc_token_add_bool(token_rep_news,
                             option_int("string_token_bool_cup_promrel", &tokens),
-                            query_league_cup_has_property(cup->id, "promotion"));
+                            query_league_cup_has_property(cup->c.id, "promotion"));
         misc_token_add_bool(token_rep_news,
                             option_int("string_token_bool_cup_aux", &tokens),
-                            query_league_cup_has_property(cup->id, "hide") ||
-                            query_league_cup_has_property(cup->id, "omit_from_history"));
+                            query_league_cup_has_property(cup->c.id, "hide") ||
+                            query_league_cup_has_property(cup->c.id, "omit_from_history"));
     }
     else
     {

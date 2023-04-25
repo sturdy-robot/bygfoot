@@ -191,7 +191,7 @@ xml_loadsave_leagues_cups_write(const gchar *prefix)
     {
 	League *league = &g_array_index(country.leagues, League, i);
 	xml_loadsave_league_write(prefix, league);
-	sprintf(buf, "%s___league_%d.xml", basename, league->id);
+	sprintf(buf, "%s___league_%d.xml", basename, league->c.id);
 	xml_write_string(fil, buf, TAG_LEAGUE_FILE, I1);
     }
 
@@ -199,7 +199,7 @@ xml_loadsave_leagues_cups_write(const gchar *prefix)
     {
 	Cup *cup = &g_array_index(country.cups, Cup, i);
 	xml_loadsave_cup_write(prefix, cup);
-	sprintf(buf, "%s___cup_%d.xml", basename, cup->id);
+	sprintf(buf, "%s___cup_%d.xml", basename, cup->c.id);
 	xml_write_string(fil, buf, TAG_CUP_FILE, I1);
     }
 
@@ -229,7 +229,7 @@ xml_loadsave_leagues_cups_adjust_team_ptrs_cups(GArray *cups)
             for(k = 0; k < round->team_ptrs->len; k++) {
                 Team *team = team_of_id(GPOINTER_TO_INT(g_ptr_array_index(round->team_ptrs, k)));
                 g_ptr_array_add(team_ptrs, team);
-                g_ptr_array_add(cup->teams, team);
+                g_ptr_array_add(cup->c.teams, team);
             }
 
             g_ptr_array_free(g_array_index(cup->rounds, CupRound, j).team_ptrs, TRUE);

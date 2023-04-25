@@ -516,7 +516,7 @@ treeview_helper_get_table_element_colour_cups(const League *league, gint table_i
 
     gint i, j, k;
     const CupRound *cup_round = NULL;
-    gint league_idx = league_cup_get_index_from_clid(league->id) + 1;
+    gint league_idx = league_cup_get_index_from_clid(league->c.id) + 1;
     gchar buf[SMALL];
     gchar *cup_highlight_colour = NULL;
 

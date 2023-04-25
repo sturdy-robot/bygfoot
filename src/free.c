@@ -385,13 +385,13 @@ free_league(League *league)
  
     free_gchar_array(&league->skip_weeks_with);
 
-    if(league->teams != NULL)
-	free_g_ptr_array(&league->teams);
+    if(league->c.teams != NULL)
+	free_g_ptr_array(&league->c.teams);
 
     free_joined_leagues(&league->joined_leagues);
     free_prom_rel(&league->prom_rel);
 
-    free_g_ptr_array(&league->teams);
+    free_g_ptr_array(&league->c.teams);
     
     free_tables(&league->tables);
     free_new_tables(&league->new_tables);
@@ -655,7 +655,7 @@ free_cup(Cup *cup)
     free_g_array(&cup->week_breaks);
 
     free_g_ptr_array(&cup->bye);
-    free_g_ptr_array(&cup->teams);
+    free_g_ptr_array(&cup->c.teams);
     free_gchar_array(&cup->properties);
 }
 
