@@ -683,8 +683,6 @@ callback_show_team(gint type)
         GTK_TREE_VIEW(lookup_widget(window.main, "treeview_right"));
     const Team *tm;
     const GPtrArray *teams = NULL;
-    const GPtrArray *teamsp = NULL;
-    gint len = -1;
 
     if(type == SHOW_CURRENT)
     {
@@ -707,28 +705,16 @@ callback_show_team(gint type)
                 stat2 = league_cup_get_previous_clid(stat2, TRUE);
         }
 
-        if(stat2 < ID_CUP_START)
-        {
-            teams = league_cup_get_teams(stat2);
-            len = teams->len;
-        }
-        else
-        {
-            teamsp = league_cup_get_teams(stat2);
-            len = teamsp->len;
-        }
+        teams = league_cup_get_teams(stat2);
 
         if(type == SHOW_NEXT)
-            stat1 = (stat1 == len - 1) ? 0 : stat1 + 1;
+            stat1 = (stat1 == teams->len - 1) ? 0 : stat1 + 1;
         else if(type == SHOW_PREVIOUS)
-            stat1 = (stat1 == 0) ? len - 1 : stat1 - 1;
+            stat1 = (stat1 == 0) ? teams->len - 1 : stat1 - 1;
         else
             stat1 = 0;
 
-        if(stat2 < ID_CUP_START)
-            tm = g_ptr_array_index(teams, stat1);
-        else
-            tm = (Team*)g_ptr_array_index(teamsp, stat1);
+        tm = g_ptr_array_index(teams, stat1);
     }
 
     stat0 = STATUS_BROWSE_TEAMS;
