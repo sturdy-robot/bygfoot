@@ -133,7 +133,7 @@ live_game_initialize(Fixture *fix, LiveGame *live_game, Bygfoot *bygfoot)
 	else
 	    gtk_window_set_title(
 		GTK_WINDOW(window.live),
-		league_cup_get_name_string(match->fix->clid));
+		league_cup_get_name_string(match->fix->competition->id));
 	window_live_set_up();
 	game_gui_live_game_show_opponent();
     }
@@ -407,7 +407,7 @@ live_game_event_foul(void)
     {
 	type = LIVE_GAME_EVENT_FOUL_YELLOW;
 	player_card_set(player_of_id_team(tms[foul_team], foul_player),
-			match->fix->clid, PLAYER_VALUE_CARD_YELLOW, 1, TRUE);
+			match->fix->competition->id, PLAYER_VALUE_CARD_YELLOW, 1, TRUE);
 	player_of_id_team(tms[foul_team], foul_player)->career[PLAYER_VALUE_CARD_YELLOW]++;
         player_of_id_team(tms[foul_team], foul_player)->card_status = PLAYER_CARD_STATUS_YELLOW;
     }
@@ -985,9 +985,9 @@ live_game_event_send_off(gint team, gint player, gboolean second_yellow)
     player_of_id_team(tms[team], player)->cskill = 0;
 
     if(second_yellow)
-	player_card_set(player_of_id_team(tms[team], player), match->fix->clid, PLAYER_VALUE_CARD_RED, 2, FALSE);
+	player_card_set(player_of_id_team(tms[team], player), match->fix->competition->id, PLAYER_VALUE_CARD_RED, 2, FALSE);
     else
-	player_card_set(player_of_id_team(tms[team], player), match->fix->clid, PLAYER_VALUE_CARD_RED, 
+	player_card_set(player_of_id_team(tms[team], player), match->fix->competition->id, PLAYER_VALUE_CARD_RED, 
 			game_player_get_ban_duration(), FALSE);
 
     player_of_id_team(tms[team], player)->career[PLAYER_VALUE_CARD_RED]++;
@@ -1010,7 +1010,7 @@ live_game_event_send_off(gint team, gint player, gboolean second_yellow)
 	    misc_callback_pause_live_game();
 	else if(tms[team]->players->len > 11)
 	{
-	    game_substitute_player_send_off(match->fix->clid,
+	    game_substitute_player_send_off(match->fix->competition->id,
 					    tms[team], player_id_index(tms[team], player, TRUE),
 					    &to_substitute, &substitute);
 
@@ -1070,7 +1070,7 @@ live_game_event_substitution(gint team_number, gint sub_in, gint sub_out)
 	    const_float("float_player_streak_add_sub_in"));	
 
 	player_games_goals_set(player_of_id_team(tms[team_number], sub_in),
-			       match->fix->clid, PLAYER_VALUE_GAMES, 1);
+			       match->fix->competition->id, PLAYER_VALUE_GAMES, 1);
 	player_of_id_team(tms[team_number], sub_in)->career[PLAYER_VALUE_GAMES]++;
 	player_of_id_team(tms[team_number], sub_in)->participation = TRUE;
 
@@ -1168,7 +1168,7 @@ live_game_event_duel(void)
 
     if(new.time != LIVE_GAME_UNIT_TIME_PENALTIES)
     {
-	player_games_goals_set(attacker, match->fix->clid, PLAYER_VALUE_SHOTS, 1);
+	player_games_goals_set(attacker, match->fix->competition->id, PLAYER_VALUE_SHOTS, 1);
 	attacker->career[PLAYER_VALUE_SHOTS]++;
     }
 
@@ -1180,8 +1180,8 @@ live_game_event_duel(void)
 
 	if(new.time != LIVE_GAME_UNIT_TIME_PENALTIES)
 	{
-	    player_games_goals_set(attacker, match->fix->clid, PLAYER_VALUE_GOALS, 1);
-	    player_games_goals_set(goalie, match->fix->clid, PLAYER_VALUE_GOALS, 1);
+	    player_games_goals_set(attacker, match->fix->competition->id, PLAYER_VALUE_GOALS, 1);
+	    player_games_goals_set(goalie, match->fix->competition->id, PLAYER_VALUE_GOALS, 1);
 	    attacker->career[PLAYER_VALUE_GOALS]++;
 	    goalie->career[PLAYER_VALUE_GOALS]++;
 
@@ -1211,7 +1211,7 @@ live_game_event_duel(void)
         new.event.type == LIVE_GAME_EVENT_KEEPER_PUSHED_IN_CORNER ||
 	new.event.type == LIVE_GAME_EVENT_GOAL))
     {
-	player_games_goals_set(goalie, match->fix->clid, PLAYER_VALUE_SHOTS, 1);
+	player_games_goals_set(goalie, match->fix->competition->id, PLAYER_VALUE_SHOTS, 1);
 	goalie->career[PLAYER_VALUE_SHOTS]++;
 
 	if(new.event.type == LIVE_GAME_EVENT_SAVE || new.event.type == LIVE_GAME_EVENT_KEEPER_PUSHED_IN_CORNER )

@@ -375,7 +375,7 @@ strategy_set_tokens(const Team *tm, const Fixture *fixture)
 
     misc_token_add(token_strat,
 		   option_int("string_token_cup", &tokens),
-		   misc_int_to_char(fix->clid >= ID_CUP_START));
+		   misc_int_to_char(fix->competition->id >= ID_CUP_START));
 
     misc_token_add(token_strat,
 		   option_int("string_token_avskilldiff", &tokens),

@@ -354,8 +354,8 @@ callback_show_fixtures(gint type)
                                      current_user.tm);
 
     treeview_show_fixtures(GTK_TREE_VIEW(lookup_widget(window.main, "treeview_right")),
-                           fix->clid, fix->week_number, fix->week_round_number);
-    stat1 = fix->clid;
+                           fix->competition->id, fix->week_number, fix->week_round_number);
+    stat1 = fix->competition->id;
     stat2 = fix->week_number;
     stat3 = fix->week_round_number;
 }

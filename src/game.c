@@ -312,7 +312,7 @@ game_initialize(Fixture *fix)
 		if(g_array_index(fix->teams[i]->players, Player, j).cskill > 0)
 		{
 		    player_games_goals_set(&g_array_index(fix->teams[i]->players,
-							  Player, j), fix->clid,
+							  Player, j), fix->competition->id,
 					   PLAYER_VALUE_GAMES, 1);
 		    g_array_index(fix->teams[i]->players, Player, j).
 			career[PLAYER_VALUE_GAMES]++;
@@ -364,18 +364,18 @@ game_assign_attendance(Fixture *fix)
 				  math_rnd(0.9, 1.1)),
 		       tm[0]->stadium.capacity);
 
-    if(fix->clid < ID_CUP_START && 
-       team_get_league_rank(tm[1], fix->clid) <
-       (gint)rint((gfloat)league_from_clid(fix->clid)->c.teams->len *
+    if(fix->competition->id < ID_CUP_START && 
+       team_get_league_rank(tm[1], fix->competition->id) <
+       (gint)rint((gfloat)league_from_clid(fix->competition->id)->c.teams->len *
 		  const_float("float_game_stadium_attendance_rank_percentage")))
 	factor *= const_float("float_game_stadium_attendance_rank_factor");
 
-    if(fix->clid >= ID_CUP_START)
+    if(fix->competition->id >= ID_CUP_START)
     {
-	if(cup_from_clid(fix->clid)->rounds->len - fix->round <=
+	if(cup_from_clid(fix->competition->id)->rounds->len - fix->round <=
 	   const_int("int_game_stadium_attendance_cup_rounds_full_house"))
 	    factor = 1;
-	else if(query_league_cup_has_property(fix->clid, "national"))
+	else if(query_league_cup_has_property(fix->competition->id, "national"))
 	    factor *= const_float("float_game_stadium_attendance_cup_national_factor");
 	else
 	    factor *= const_float("float_game_stadium_attendance_cup_international_factor");
@@ -406,10 +406,10 @@ game_assign_attendance_neutral(Fixture *fix)
 
     const League *first_league = g_ptr_array_index(country.leagues, 0);
     const GPtrArray *teamsp = 
-	(GPtrArray*)league_cup_get_teams(fix->clid);
-    gfloat av_att = (fix->clid >= ID_CUP_START && 
-		     query_league_cup_has_property(fix->clid, "international") && teamsp->len > 0) ?
-	(gfloat)league_cup_average_capacity(fix->clid) :
+	(GPtrArray*)league_cup_get_teams(fix->competition->id);
+    gfloat av_att = (fix->competition->id >= ID_CUP_START && 
+		     query_league_cup_has_property(fix->competition->id, "international") && teamsp->len > 0) ?
+	(gfloat)league_cup_average_capacity(fix->competition->id) :
 	(gfloat)league_cup_average_capacity(first_league->c.id);
 
     fix->attendance = (gint)rint(av_att * 
@@ -1116,10 +1116,10 @@ game_post_match(Fixture *fix)
         restore_default_team(&usr(usr_idx));
     }
 
-    if(fix->clid < ID_CUP_START)
+    if(fix->competition->id < ID_CUP_START)
 	return;
 
-    cup = cup_from_clid(fix->clid);
+    cup = cup_from_clid(fix->competition->id);
 
     if(fix->round == cup->rounds->len - 1 &&
        fix == &g_array_index(cup->fixtures, Fixture, cup->fixtures->len - 1))
@@ -1131,7 +1131,7 @@ game_post_match(Fixture *fix)
 	    user_history_add(&usr(team_is_user((Team*)g_ptr_array_index(teams, 0))),
 			     USER_HISTORY_WIN_FINAL, 
 			     ((Team*)g_ptr_array_index(teams, 0))->name,
-			     league_cup_get_name_string(fix->clid),
+			     league_cup_get_name_string(fix->competition->id),
 			     ((Team*)g_ptr_array_index(teams, 1))->name, NULL);
 	    user_add_cup_success(&usr(team_is_user((Team*)g_ptr_array_index(teams, 0))),
 				 cup, fix->round, USER_HISTORY_WIN_FINAL);
@@ -1141,7 +1141,7 @@ game_post_match(Fixture *fix)
 	    user_history_add(&usr(team_is_user((Team*)g_ptr_array_index(teams, 1))),
 			     USER_HISTORY_LOSE_FINAL, 
 			     ((Team*)g_ptr_array_index(teams, 1))->name,
-			     league_cup_get_name_string(fix->clid),
+			     league_cup_get_name_string(fix->competition->id),
 			     ((Team*)g_ptr_array_index(teams, 0))->name, NULL);
 	    user_add_cup_success(&usr(team_is_user((Team*)g_ptr_array_index(teams, 1))),
 				 cup, fix->round, USER_HISTORY_LOSE_FINAL);
@@ -1150,13 +1150,13 @@ game_post_match(Fixture *fix)
     }
     else if(usr_idx != -1)
     {
-	cup_get_round_name(cup_from_clid(fix->clid), fix->round, buf);
+	cup_get_round_name(cup_from_clid(fix->competition->id), fix->round, buf);
 	sprintf(buf2, "%d", fix->round + 1);
 
 	user_history_add(&usr(usr_idx),
 			 USER_HISTORY_REACH_CUP_ROUND,
 			 usr(usr_idx).tm->name,
-			 league_cup_get_name_string(fix->clid),
+			 league_cup_get_name_string(fix->competition->id),
 			 buf, buf2);
 	user_add_cup_success(&usr(usr_idx),
 			     cup, fix->round, USER_HISTORY_REACH_CUP_ROUND);

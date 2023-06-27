@@ -27,6 +27,7 @@
 #define FIXTURE_STRUCT_H
 
 #include "bygfoot.h"
+#include "competition_struct.h"
 #include "team_struct.h"
 
 /** Structure representing a fixture, or, in other words,
@@ -34,7 +35,7 @@
 typedef struct
 {
     /** The cup or league the fixture belongs to. */
-    gint clid;
+    Competition *competition;
     /** The unique id of the fixture. */
     gint id;
     /** The round (in a cup) the fixture belongs to. */

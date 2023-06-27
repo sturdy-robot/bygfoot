@@ -283,7 +283,7 @@ stat_show_av_goals(GArray *fixtures)
 
     g_print("------------------------------------ \n");
     g_print("%s\nGoals/G HomeG/G AwayG/G Away %% GD/G \n",
-	   league_cup_get_name_string(g_array_index(fixtures, Fixture, 0).clid));
+	   league_cup_get_name_string(g_array_index(fixtures, Fixture, 0).competition->id));
     g_print("%.2f \t %.2f \t %.2f \t %.2f \t %.2f \n", allgoals/games, homegoals/games, awaygoals/games,
 	   awaygoals / allgoals, goaldiff/games);
     g_print("Home win %%: %.2f Loss %%: %.2f Draw %%: %.2f \n",

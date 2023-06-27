@@ -550,7 +550,7 @@ bygfoot_json_fixture_to_json(const Fixture *fixture)
     struct json_object *home_team_obj = json_object_new_object();
     struct json_object *away_team_obj = json_object_new_object();
     json_object_object_add(fixture_obj, "id", json_object_new_int64(fixture->id));
-    json_object_object_add(fixture_obj, "league_id", json_object_new_int64(fixture->clid));
+    json_object_object_add(fixture_obj, "league_id", json_object_new_int64(fixture->competition->id));
     json_object_object_add(fixture_obj, "round", json_object_new_int64(fixture->round));
     json_object_object_add(fixture_obj, "replay_number", json_object_new_int64(fixture->replay_number));
     json_object_object_add(fixture_obj, "week", json_object_new_int64(fixture->week_number));

@@ -83,7 +83,7 @@ news_generate_match(const LiveGame *live_game)
         new_article.title_id = title_id;
         new_article.subtitle_id = subtitle_id;
         new_article.user_idx = fixture_user_team_involved(live_game->fix);
-        new_article.clid = live_game->fix->clid;
+        new_article.clid = live_game->fix->competition->id;
         new_article.cup_round = live_game->fix->round;
 
         if(counters[COUNT_NEW_NEWS] == 0)
@@ -348,7 +348,7 @@ news_set_match_tokens(const LiveGame *live_game)
     news_set_streak_tokens(live_game->fix);
     news_set_scorer_tokens(&live_game->stats);
 
-    if(live_game->fix->clid < ID_CUP_START)
+    if(live_game->fix->competition->id < ID_CUP_START)
         news_set_rank_tokens(live_game->fix);
 }
 
@@ -575,15 +575,15 @@ news_set_league_cup_tokens(const Fixture *fix)
 
     misc_token_add(token_rep_news,
 		   option_int("string_token_league_cup_name", &tokens),
-		   g_strdup(league_cup_get_name_string(fix->clid)));
+		   g_strdup(league_cup_get_name_string(fix->competition->id)));
 
     misc_token_add_bool(token_rep_news,
                         option_int("string_token_bool_cup", &tokens),
-                        (fix->clid >= ID_CUP_START));
+                        (fix->competition->id >= ID_CUP_START));
 
-    if(fix->clid >= ID_CUP_START)
+    if(fix->competition->id >= ID_CUP_START)
     {
-        cup = cup_from_clid(fix->clid);
+        cup = cup_from_clid(fix->competition->id);
         cupround = &g_array_index(cup->rounds, CupRound, fix->round);
 
         if(query_league_cup_has_property(cup->c.id, "international"))
@@ -738,7 +738,7 @@ news_set_fixture_tokens(const Fixture *fix)
 		   option_int("string_token_goal_diff", &tokens), 
 		   misc_int_to_char(goaldiffaggr));
 
-    if(fix->clid >= ID_CUP_START)
+    if(fix->competition->id >= ID_CUP_START)
     {
         first_leg = fixture_get_first_leg(fix, TRUE);
 
@@ -896,7 +896,7 @@ news_check_match_relevant(const LiveGame *live_game)
        opt_int("int_opt_news_create_user"))
         return TRUE;
 
-    if(live_game->fix->clid >= ID_CUP_START &&
+    if(live_game->fix->competition->id >= ID_CUP_START &&
        opt_int("int_opt_news_create_cup"))
         return TRUE;
 
@@ -906,7 +906,7 @@ news_check_match_relevant(const LiveGame *live_game)
         if(!query_misc_integer_is_in_g_array(usr(i).tm->clid, user_leagues))
             g_array_append_val(user_leagues, usr(i).tm->clid);
 
-    if(query_misc_integer_is_in_g_array(live_game->fix->clid, user_leagues) &&
+    if(query_misc_integer_is_in_g_array(live_game->fix->competition->id, user_leagues) &&
        opt_int("int_opt_news_create_league"))
     {
         g_array_free(user_leagues, TRUE);

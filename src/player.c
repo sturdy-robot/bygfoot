@@ -795,7 +795,7 @@ player_is_banned(const Player *pl)
      * for this player. */
     for (i = 0; i < cards->len; i++) {
         PlayerCard *card = g_ptr_array_index(cards, i);
-        if (card->clid != fix->clid)
+        if (card->clid != fix->competition->id)
             continue;
         if (card->red > 0) {
             result = card->red;
@@ -1343,18 +1343,18 @@ player_update_post_match(Player *pl, const Fixture *fix)
     printf("player_update_post_match\n");
 #endif
 
-    gint yellow_red = league_cup_get_yellow_red(fix->clid);
+    gint yellow_red = league_cup_get_yellow_red(fix->competition->id);
     gint winner = -1;
 
-    if(player_card_get(pl, fix->clid, PLAYER_VALUE_CARD_RED) > 0)
-	player_card_set(pl, fix->clid, PLAYER_VALUE_CARD_RED, -1, TRUE);
+    if(player_card_get(pl, fix->competition->id, PLAYER_VALUE_CARD_RED) > 0)
+	player_card_set(pl, fix->competition->id, PLAYER_VALUE_CARD_RED, -1, TRUE);
 
-    if(player_card_get(pl, fix->clid, PLAYER_VALUE_CARD_YELLOW) >= yellow_red)
+    if(player_card_get(pl, fix->competition->id, PLAYER_VALUE_CARD_YELLOW) >= yellow_red)
     {
-	player_card_set(pl, fix->clid, PLAYER_VALUE_CARD_YELLOW, 0, FALSE);
+	player_card_set(pl, fix->competition->id, PLAYER_VALUE_CARD_YELLOW, 0, FALSE);
 	
-	if(player_card_get(pl, fix->clid, PLAYER_VALUE_CARD_RED) == 0 && debug < 50)
-	    player_card_set(pl, fix->clid, PLAYER_VALUE_CARD_RED, 1, FALSE);
+	if(player_card_get(pl, fix->competition->id, PLAYER_VALUE_CARD_RED) == 0 && debug < 50)
+	    player_card_set(pl, fix->competition->id, PLAYER_VALUE_CARD_RED, 1, FALSE);
     }
 
     pl->card_status = PLAYER_CARD_STATUS_NONE;

@@ -1207,14 +1207,14 @@ user_mm_add_last_match(gboolean load_file, gboolean save_file)
     const Fixture *fix = current_user.live_game.fix;
     gchar buf[SMALL];
 
-    if(fix->clid < ID_CUP_START)
-	new.competition_name = g_string_new(league_cup_get_name_string(fix->clid));
+    if(fix->competition->id < ID_CUP_START)
+	new.competition_name = g_string_new(league_cup_get_name_string(fix->competition->id));
     else
     {
 	fixture_get_cup_round_name(fix, buf);
 	new.competition_name = g_string_new("");
 	g_string_printf(new.competition_name, "%s %s", 
-			league_cup_get_name_string(fix->clid), buf);
+			league_cup_get_name_string(fix->competition->id), buf);
     }
 
     new.country_name = g_strdup(country.name);

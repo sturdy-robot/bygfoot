@@ -85,7 +85,7 @@ table_update(const Fixture *fix)
     gint idx = (fix->result[0][0] < fix->result[1][0]);
     TableElement *elements[2];
 
-    end = (fix->clid < ID_CUP_START) ? 2 : 1;
+    end = (fix->competition->id < ID_CUP_START) ? 2 : 1;
 
     for(j = 0; j < end; j++)
     {        
@@ -144,7 +144,7 @@ table_update_get_elements(TableElement **elements, const Fixture *fix, gboolean 
     gint i, j;
     Table *table;
 
-    if(fix->clid < ID_CUP_START)
+    if(fix->competition->id < ID_CUP_START)
     {
         for(j = 0; j < 2; j++)
         {
@@ -167,9 +167,9 @@ table_update_get_elements(TableElement **elements, const Fixture *fix, gboolean 
         }
     }
     else
-	for(i=0;i<cup_get_last_tables(fix->clid)->len;i++)
+	for(i=0;i<cup_get_last_tables(fix->competition->id)->len;i++)
 	{
-	    table = &g_array_index(cup_get_last_tables(fix->clid), Table, i);
+	    table = &g_array_index(cup_get_last_tables(fix->competition->id), Table, i);
 
 	    if(elements[0] == NULL || elements[1] == NULL)
 		for(j=0;j<table->elements->len;j++)

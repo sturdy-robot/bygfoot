@@ -1305,7 +1305,7 @@ treeview_helper_player_cards_to_cell(gchar *buf, const Player *pl)
 	return;
     }
 
-    yellow = player_card_get(pl, fix->clid, PLAYER_VALUE_CARD_YELLOW);
+    yellow = player_card_get(pl, fix->competition->id, PLAYER_VALUE_CARD_YELLOW);
 
     if(yellow != -1)
     {
@@ -1441,7 +1441,7 @@ treeview_helper_player_games_goals_to_cell(gchar *buf, const Player *pl, gint ty
     }
 
     if(fix != NULL)
-	clid = fix->clid;
+	clid = fix->competition->id;
 
     if(opt_user_int("int_opt_user_show_overall"))
 	sprintf(buf, "%d(%d)", player_games_goals_get(pl, clid, type),

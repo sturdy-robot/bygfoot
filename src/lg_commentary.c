@@ -484,7 +484,7 @@ lg_commentary_set_player_tokens(const LiveGameUnit *unit, const Fixture *fix)
 	misc_token_add(token_rep,
 		       option_int("string_token_player_goals0", &tokens), 
 		       misc_int_to_char(player_games_goals_get(
-					    pl1, fix->clid, PLAYER_VALUE_GOALS)));
+					    pl1, fix->competition->id, PLAYER_VALUE_GOALS)));
 	misc_token_add(token_rep,
 		       option_int("string_token_player_goals_all0", &tokens), 
 		       misc_int_to_char(player_all_games_goals(pl1, PLAYER_VALUE_GOALS)));
@@ -497,13 +497,13 @@ lg_commentary_set_player_tokens(const LiveGameUnit *unit, const Fixture *fix)
 		       player_get_last_name(pl2->name));
 	misc_token_add(token_rep,
 		       option_int("string_token_player_goals1", &tokens), 
-		       misc_int_to_char(player_games_goals_get(pl2, fix->clid, PLAYER_VALUE_GOALS)));
+		       misc_int_to_char(player_games_goals_get(pl2, fix->competition->id, PLAYER_VALUE_GOALS)));
 	misc_token_add(token_rep,
 		       option_int("string_token_player_goals_all1", &tokens), 
 		       misc_int_to_char(player_all_games_goals(pl2, PLAYER_VALUE_GOALS)));
 	misc_token_add(token_rep,
 		       option_int("string_token_player_yellows", &tokens), 
-		       misc_int_to_char(player_card_get(pl2, fix->clid, PLAYER_VALUE_CARD_YELLOW)));
+		       misc_int_to_char(player_card_get(pl2, fix->competition->id, PLAYER_VALUE_CARD_YELLOW)));
     }
 }
 
@@ -598,11 +598,11 @@ lg_commentary_initialize(const Fixture *fix)
 
     misc_token_add(token_rep,
 		   option_int("string_token_league_cup_name", &tokens), 
-		   g_strdup(league_cup_get_name_string(fix->clid)));
+		   g_strdup(league_cup_get_name_string(fix->competition->id)));
 
-    if(fix->clid >= ID_CUP_START)
+    if(fix->competition->id >= ID_CUP_START)
     {
-	cup_get_round_name(cup_from_clid(fix->clid), fix->round, buf);
+	cup_get_round_name(cup_from_clid(fix->competition->id), fix->round, buf);
 	misc_token_add(token_rep,
 		       option_int("string_token_cup_round_name", &tokens), 
 		       g_strdup(buf));
@@ -615,7 +615,7 @@ lg_commentary_initialize(const Fixture *fix)
 
     misc_token_add(token_rep,
 		   option_int("string_token_yellow_limit", &tokens), 
-		   misc_int_to_char(league_cup_get_yellow_red(fix->clid)));
+		   misc_int_to_char(league_cup_get_yellow_red(fix->competition->id)));
 }
 
 /** Free the memory occupied by the tokens array and the permanent tokens. */

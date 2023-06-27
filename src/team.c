@@ -1119,7 +1119,7 @@ team_write_own_results(const Team *tm, gchar *buf, gboolean sort, gboolean cup_m
     strcpy(neutral, "");
 
     for(i=0;i<matches->len;i++)
-	if(cup_matches || ((Fixture*)g_ptr_array_index(matches, i))->clid < ID_CUP_START)
+	if(cup_matches || ((Fixture*)g_ptr_array_index(matches, i))->competition->id < ID_CUP_START)
 	{
 	    res[0] = math_sum_int_array(((Fixture*)g_ptr_array_index(matches, i))->result[0], 2);
 	    res[1] = math_sum_int_array(((Fixture*)g_ptr_array_index(matches, i))->result[1], 2);

@@ -47,6 +47,10 @@ enum
     TAG_END
 };
 
+typedef struct {
+    Competition *competition;
+} FixtureUserData;
+
 gint state, residx1, residx2, teamidx, nameidx;
 Fixture new_fixture;
 GArray *fixtures_array;
@@ -66,6 +70,7 @@ xml_loadsave_fixtures_start_element (GMarkupParseContext *context,
     gint i;
     gint tag = xml_get_tag_from_name(element_name);
     gboolean valid_tag = FALSE;
+    FixtureUserData *fixture_user_data = (FixtureUserData*)user_data;
 
     for(i=TAG_FIXTURES;i<TAG_END;i++)
 	if(tag == i)
@@ -81,8 +86,10 @@ xml_loadsave_fixtures_start_element (GMarkupParseContext *context,
 	    valid_tag = TRUE;
 	}
 
-    if(state == TAG_FIXTURE)
-	residx1 = residx2 = teamidx = nameidx = 0;
+    if(state == TAG_FIXTURE) {
+        residx1 = residx2 = teamidx = nameidx = 0;
+        new_fixture.competition = fixture_user_data->competition;
+    }
 
     if(!valid_tag)
 	debug_print_message("xml_loadsave_fixtures_start_element: unknown tag: %s; I'm in state %d\n",
@@ -153,9 +160,8 @@ xml_loadsave_fixtures_text         (GMarkupParseContext *context,
 
     int_value = xml_read_int(buf);
 
-    if(state == TAG_ID)
-	new_fixture.clid = int_value;
-    else if(state == TAG_ROUND)
+    /* Do nothing for TAG_ID now that Fixture has a Competition* member. */
+    if(state == TAG_ROUND)
 	new_fixture.round = int_value;
     else if(state == TAG_FIXTURE_REPLAY_NUMBER)
 	new_fixture.replay_number = int_value;
@@ -180,22 +186,24 @@ xml_loadsave_fixtures_text         (GMarkupParseContext *context,
 }
 
 void
-xml_loadsave_fixtures_read(const gchar *filename, GArray *fixtures)
+xml_loadsave_fixtures_read(const gchar *filename, Competition *competition,
+                           GArray *fixtures)
 {
 #ifdef DEBUG
     printf("xml_loadsave_fixtures_read\n");
 #endif
-
     GMarkupParser parser = {xml_loadsave_fixtures_start_element,
 			    xml_loadsave_fixtures_end_element,
 			    xml_loadsave_fixtures_text, NULL, NULL};
     GMarkupParseContext *context;
+    FixtureUserData user_data;
     gchar *file_contents;
     gsize length;
     GError *error = NULL;
 
+    user_data.competition = competition;
     context = 
-	g_markup_parse_context_new(&parser, 0, NULL, NULL);
+	g_markup_parse_context_new(&parser, 0, &user_data, NULL);
 
     if(!g_file_get_contents(filename, &file_contents, &length, &error))
     {
@@ -235,7 +243,8 @@ xml_loadsave_fixtures_write(const gchar *filename, const GArray *fixtures)
     for(i=0;i<fixtures->len;i++)
     {
 	fprintf(fil, "<_%d>\n", TAG_FIXTURE);
-	xml_write_int(fil, g_array_index(fixtures, Fixture, i).clid, TAG_ID, I1);
+    /* Keep this for backwards compatibility. */
+	xml_write_int(fil, g_array_index(fixtures, Fixture, i).competition->id, TAG_ID, I1);
 	xml_write_int(fil, g_array_index(fixtures, Fixture, i).round, TAG_ROUND, I1);
 	xml_write_int(fil, g_array_index(fixtures, Fixture, i).replay_number, 
 		      TAG_FIXTURE_REPLAY_NUMBER, I1);

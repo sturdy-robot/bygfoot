@@ -100,7 +100,7 @@ xml_load_league(Country *country, GPtrArray *league_list, const gchar *dirname, 
 	g_print("%s\n", buf);
 
     sprintf(buf, "%s%s%s_fixtures.xml", dirname, G_DIR_SEPARATOR_S, prefix);
-    xml_loadsave_fixtures_read(buf, league->fixtures);
+    xml_loadsave_fixtures_read(buf, &league->c, league->fixtures);
 
     sprintf(buf, "%s%s%s_stat.xml", dirname, G_DIR_SEPARATOR_S, prefix);
     xml_loadsave_league_stat_read(buf, &league->stats);
@@ -130,7 +130,7 @@ xml_load_cup(Bygfoot *bygfoot, Cup *cup, const gchar *dirname, const gchar *base
 	g_print("%s\n", buf);
 
     sprintf(buf, "%s%s%s_fixtures.xml", dirname, G_DIR_SEPARATOR_S, prefix);
-    xml_loadsave_fixtures_read(buf, cup->fixtures);
+    xml_loadsave_fixtures_read(buf, &cup->c, cup->fixtures);
 
     g_free(prefix);
 }

@@ -1503,7 +1503,6 @@ bygfoot_json_serialize_fixture(const Fixture *fixture)
     #define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(fixture_obj, fixture, field, serialize_func);
 
-    SERIALIZE(clid, json_object_new_int64);
     SERIALIZE(id, json_object_new_int64);
     SERIALIZE(round, json_object_new_int64);
     SERIALIZE(replay_number, json_object_new_int64);

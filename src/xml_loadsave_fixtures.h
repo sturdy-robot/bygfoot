@@ -51,7 +51,8 @@ xml_loadsave_fixtures_text         (GMarkupParseContext *context,
 				  GError             **error);
 
 void
-xml_loadsave_fixtures_read(const gchar *filename, GArray *fixtures);
+xml_loadsave_fixtures_read(const gchar *filename, Competition *competition,
+                           GArray *fixtures);
 
 void
 xml_loadsave_fixtures_write(const gchar *filename, const GArray *fixtures);

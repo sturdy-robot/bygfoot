@@ -311,8 +311,8 @@ game_gui_set_main_window_header(void)
     }
     else
     {
-        rank = team_get_league_rank(current_user.tm, fix->clid);
-        gtk_label_set_text(label_league, league_cup_get_name_string(fix->clid));        
+        rank = team_get_league_rank(current_user.tm, fix->competition->id);
+        gtk_label_set_text(label_league, league_cup_get_name_string(fix->competition->id));        
     }
 
     if(rank != 0)

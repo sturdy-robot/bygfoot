@@ -1025,20 +1025,20 @@ treeview_create_fixtures_header(const Fixture *fix, GtkListStore *ls, gboolean b
     gchar *symbol = NULL;
 
 
-    if(fix->clid < ID_CUP_START)
+    if(fix->competition->id < ID_CUP_START)
     {
         sprintf(buf3, _("Week %d Round %d"), fix->week_number, fix->week_round_number);
-	name = league_cup_get_name_string(fix->clid);
+	name = league_cup_get_name_string(fix->competition->id);
 	strcpy(round_name, "");
-	symbol = league_from_clid(fix->clid)->symbol;
+	symbol = league_from_clid(fix->competition->id)->symbol;
     }
     else
     {
         sprintf(buf3, _("Week %d Round %d\nCup round %d"), 
                 fix->week_number, fix->week_round_number, fix->round + 1);
-	name = cup_from_clid(fix->clid)->name;
-	sprintf(round_name, "\n%s", g_array_index(cup_from_clid(fix->clid)->rounds, CupRound, fix->round).name);
-	symbol = cup_from_clid(fix->clid)->symbol;
+	name = cup_from_clid(fix->competition->id)->name;
+	sprintf(round_name, "\n%s", g_array_index(cup_from_clid(fix->competition->id)->rounds, CupRound, fix->round).name);
+	symbol = cup_from_clid(fix->competition->id)->symbol;
     }
     
     sprintf(buf, "<span background='%s' foreground='%s'>%s%s</span>", 
@@ -1093,17 +1093,17 @@ treeview_create_fixture(const Fixture *fix, GtkListStore *ls)
     for(i=0;i<2;i++)
 	if(query_fixture_has_tables(fix))
 	{
-	    if(fix->clid < ID_CUP_START)
-		rank = team_get_league_rank(fix->teams[i], fix->clid);
+	    if(fix->competition->id < ID_CUP_START)
+		rank = team_get_league_rank(fix->teams[i], fix->competition->id);
 	    else
 		rank = team_get_cup_rank(fix->teams[i], 
-					 cup_get_last_tables_round(fix->clid), TRUE);
+					 cup_get_last_tables_round(fix->competition->id), TRUE);
 
 	    sprintf(buf[i], "<span background='%s' foreground='%s'>%s [%d]</span>",
 		    colour_bg, colour_fg, fix->teams[i]->name, rank);
 	}
-	else if(fix->clid >= ID_CUP_START &&
-		query_league_cup_has_property(fix->clid, "national"))
+	else if(fix->competition->id >= ID_CUP_START &&
+		query_league_cup_has_property(fix->competition->id, "national"))
 	    sprintf(buf[i], "<span background='%s' foreground='%s'>%s (%d)</span>",
 		    colour_bg, colour_fg, fix->teams[i]->name,
 		    league_from_clid(fix->teams[i]->clid)->layer);
@@ -1890,11 +1890,11 @@ treeview_create_next_opponent(void)
     
     ls = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
 
-    if(fix->clid < ID_CUP_START)
-	strcpy(buf, league_cup_get_name_string(fix->clid));
+    if(fix->competition->id < ID_CUP_START)
+	strcpy(buf, league_cup_get_name_string(fix->competition->id));
     else
-	sprintf(buf, "%s (%s)", league_cup_get_name_string(fix->clid),
-                g_array_index(cup_from_clid(fix->clid)->rounds, CupRound, fix->round).name);
+	sprintf(buf, "%s (%s)", league_cup_get_name_string(fix->competition->id),
+                g_array_index(cup_from_clid(fix->competition->id)->rounds, CupRound, fix->round).name);
 
     gtk_list_store_append(ls, &iter);
     gtk_list_store_set(ls, &iter, 0, _("Your next opponent"), 1, buf, -1);
@@ -1927,11 +1927,11 @@ treeview_create_next_opponent(void)
     gtk_list_store_append(ls, &iter);
     gtk_list_store_set(ls, &iter, 0, _("Team"), 1, opp->name, -1);
     
-    rank = team_get_league_rank(opp, fix->clid);
+    rank = team_get_league_rank(opp, fix->competition->id);
     if(rank != 0)
     {
 	sprintf(buf, "%d (%s)", rank,
-                league_cup_get_name_string(fix->clid));
+                league_cup_get_name_string(fix->competition->id));
 	gtk_list_store_append(ls, &iter);
 	gtk_list_store_set(ls, &iter, 0, _("Rank"), 1, buf, -1);
     }
@@ -1969,7 +1969,7 @@ treeview_create_next_opponent(void)
     gtk_list_store_append(ls, &iter);
     gtk_list_store_set(ls, &iter, 0, _("Goals"), 1, buf2, -1);
 
-    team_write_overall_results(opp, fix->clid, buf);
+    team_write_overall_results(opp, fix->competition->id, buf);
     gtk_list_store_append(ls, &iter);
     gtk_list_store_set(ls, &iter, 0, _("Overall results"), 1, buf, -1);
 
@@ -1978,7 +1978,7 @@ treeview_create_next_opponent(void)
     /* The user's results against a specific team. */
     gtk_list_store_set(ls, &iter, 0, _("Your results"), 1, buf, -1);
 
-    team_write_overall_results(current_user.tm, fix->clid, buf);
+    team_write_overall_results(current_user.tm, fix->competition->id, buf);
     gtk_list_store_append(ls, &iter);
     gtk_list_store_set(ls, &iter, 0, _("Your overall results"), 1, buf, -1);
     
@@ -2333,13 +2333,13 @@ treeview_create_fixtures_week(gint week_number, gint week_round_number)
 
     for(i=0;i<fixtures->len;i++)
     {
-	if(((Fixture*)g_ptr_array_index(fixtures, i))->clid >= ID_CUP_START ||
-	   ((Fixture*)g_ptr_array_index(fixtures, i))->clid == current_user.tm->clid ||	   
+	if(((Fixture*)g_ptr_array_index(fixtures, i))->competition->id >= ID_CUP_START ||
+	   ((Fixture*)g_ptr_array_index(fixtures, i))->competition->id == current_user.tm->clid ||	   
 	   opt_user_int("int_opt_user_show_all_leagues"))
 	{
 	    if(i == 0 ||
-	       ((Fixture*)g_ptr_array_index(fixtures, i))->clid != 
-	       ((Fixture*)g_ptr_array_index(fixtures, i - 1))->clid)
+	       ((Fixture*)g_ptr_array_index(fixtures, i))->competition->id != 
+	       ((Fixture*)g_ptr_array_index(fixtures, i - 1))->competition->id)
 	    {
 		gtk_list_store_append(ls, &iter);
 		gtk_list_store_set(ls, &iter, 0, NULL, -1);

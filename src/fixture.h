@@ -59,7 +59,7 @@ fixture_write_round_robin(gpointer league_cup, gint cup_round,
 void
 fixture_write_round_robin_matchday(GArray *fixtures, gint cup_round, GPtrArray *teams,
 				   gint special, gint week_number,
-				   gint clid, gboolean home_advantage,
+				   Competition *competition, gboolean home_advantage,
                                    gboolean can_sched_current_round);
 
 void
@@ -68,8 +68,9 @@ fixture_write_knockout_round(Cup *cup, gint cup_round, GPtrArray *teams,
 
 void
 fixture_write(GArray *fixtures, Team *home_team, Team *away_team, gint week_number,
-	      gint week_round_number, gint clid, gint cup_round, gint replay_number,
-	      gboolean home_advantage, gboolean second_leg, gboolean decisive);
+	      gint week_round_number, Competition *competition, gint cup_round,
+	      gint replay_number, gboolean home_advantage, gboolean second_leg,
+	      gboolean decisive);
 
 void
 fixture_update(Cup *cup);
