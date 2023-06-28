@@ -583,7 +583,7 @@ news_set_league_cup_tokens(const Fixture *fix)
 
     if(fix->competition->id >= ID_CUP_START)
     {
-        cup = cup_from_clid(fix->competition->id);
+        cup = (Cup*)fix->competition;
         cupround = &g_array_index(cup->rounds, CupRound, fix->round);
 
         if(query_league_cup_has_property(cup->c.id, "international"))

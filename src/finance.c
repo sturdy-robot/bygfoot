@@ -362,9 +362,10 @@ finance_assign_game_money(const Fixture *fix)
 	const_float("float_game_finance_journey_factor_national") :
 	const_float("float_game_finance_journey_factor_international");    
     gint ticket_income[2] = {0, 0};
+    Cup *cup = (Cup*)fix->competition;
 
     if (fix->competition->id >= ID_CUP_START &&
-	! g_array_index(cup_from_clid(fix->competition->id)->rounds, CupRound, fix->round).home_away)
+	! g_array_index(cup->rounds, CupRound, fix->round).home_away)
     {
 	ticket_income[0] = 
 	    ticket_income[1] = fix->attendance * fix->teams[0]->stadium.ticket_price / 2;

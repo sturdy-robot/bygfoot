@@ -372,7 +372,8 @@ game_assign_attendance(Fixture *fix)
 
     if(fix->competition->id >= ID_CUP_START)
     {
-	if(cup_from_clid(fix->competition->id)->rounds->len - fix->round <=
+	Cup *cup = (Cup*)fix->competition;
+	if(cup->rounds->len - fix->round <=
 	   const_int("int_game_stadium_attendance_cup_rounds_full_house"))
 	    factor = 1;
 	else if(query_league_cup_has_property(fix->competition->id, "national"))
@@ -1119,7 +1120,7 @@ game_post_match(Fixture *fix)
     if(fix->competition->id < ID_CUP_START)
 	return;
 
-    cup = cup_from_clid(fix->competition->id);
+    cup = (Cup*)fix->competition;
 
     if(fix->round == cup->rounds->len - 1 &&
        fix == &g_array_index(cup->fixtures, Fixture, cup->fixtures->len - 1))
@@ -1150,7 +1151,8 @@ game_post_match(Fixture *fix)
     }
     else if(usr_idx != -1)
     {
-	cup_get_round_name(cup_from_clid(fix->competition->id), fix->round, buf);
+	Cup *cup = (Cup*)fix->competition;
+	cup_get_round_name(cup, fix->round, buf);
 	sprintf(buf2, "%d", fix->round + 1);
 
 	user_history_add(&usr(usr_idx),

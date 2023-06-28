@@ -602,7 +602,7 @@ lg_commentary_initialize(const Fixture *fix)
 
     if(fix->competition->id >= ID_CUP_START)
     {
-	cup_get_round_name(cup_from_clid(fix->competition->id), fix->round, buf);
+	cup_get_round_name((Cup*)fix->competition, fix->round, buf);
 	misc_token_add(token_rep,
 		       option_int("string_token_cup_round_name", &tokens), 
 		       g_strdup(buf));

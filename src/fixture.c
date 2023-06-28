@@ -310,6 +310,7 @@ fixture_winner_of(const Fixture *fix, gboolean team_id)
     gint winner_idx = -1;
     const Fixture *first_leg = NULL;
     const CupRound *cupround = NULL;
+    Cup *cup;
 
     if(fix->competition->id < ID_CUP_START)
     {
@@ -320,8 +321,8 @@ fixture_winner_of(const Fixture *fix, gboolean team_id)
 	    return (gpointer)fix->teams[winner_idx];
     }
 
-    cupround = &g_array_index(cup_from_clid(fix->competition->id)->rounds, 
-			      CupRound, fix->round);
+    cup = (Cup*)fix->competition;
+    cupround = &g_array_index(cup->rounds, CupRound, fix->round);
 
     if(cupround->replay != 0 ||
        !cupround->home_away ||
@@ -1003,9 +1004,10 @@ fixture_get_first_leg(const Fixture *fix, gboolean silent)
 
     gint i;
     Fixture *first_leg = NULL;
-    const GArray *fixtures = cup_from_clid(fix->competition->id)->fixtures;
+    const Cup *cup = (const Cup*)fix->competition;
+    const GArray *fixtures = cup->fixtures;
 
-    if(g_array_index(cup_from_clid(fix->competition->id)->rounds, CupRound, fix->round).round_robin_number_of_groups == 0)
+    if(g_array_index(cup->rounds, CupRound, fix->round).round_robin_number_of_groups == 0)
         for(i=0;i<fixtures->len;i++)
             if(g_array_index(fixtures, Fixture, i).round == fix->round &&
                g_array_index(fixtures, Fixture, i).teams[0] == fix->teams[1] &&
@@ -1014,7 +1016,7 @@ fixture_get_first_leg(const Fixture *fix, gboolean silent)
 
     if(first_leg == NULL && !silent)
 	debug_print_message("fixture_get_first_leg: didn't find first leg match; cup %s round %d\n",
-		  cup_from_clid(fix->competition->id)->name, fix->round);
+		  cup->name, fix->round);
 
     return first_leg;
 }
@@ -1863,7 +1865,7 @@ fixture_get_cup_round_name(const Fixture *fix, gchar *buf)
     printf("cup_round_name\n");
 #endif
 
-    const Cup *cup = cup_from_clid(fix->competition->id);
+    const Cup *cup = (Cup*)fix->competition;
     const CupRound *cup_round = 
 	&g_array_index(cup->rounds, CupRound, fix->round);
 
