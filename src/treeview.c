@@ -1250,13 +1250,14 @@ treeview_table_write_header(GtkListStore *ls, const Table *table, gint table_ind
     }
     else
     {
-	symbol = cup_from_clid(table->competition->id)->symbol;
-	if(g_array_index(cup_from_clid(table->competition->id)->rounds, CupRound,
+	Cup *cup = (Cup*)table->competition;
+	symbol = cup->symbol;
+	if(g_array_index(cup->rounds, CupRound,
 			 table->round).tables->len > 1)			 
 	    /*  A group of a round robin stage of a cup. */
-	    sprintf(buf, _("%s Group %d"), cup_from_clid(table->competition->id)->name, table_index + 1);
+	    sprintf(buf, _("%s Group %d"), cup->name, table_index + 1);
 	else
-	    sprintf(buf, "%s", cup_from_clid(table->competition->id)->name);
+	    sprintf(buf, "%s", cup->name);
     }
 
     gtk_list_store_append(ls, &iter);

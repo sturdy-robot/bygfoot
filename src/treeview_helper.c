@@ -683,8 +683,9 @@ treeview_helper_get_table_element_colours(const Table *table, gint table_index, 
     }
     else
     {
+	Cup *cup = (Cup*)table->competition;
 	cup_advance = 
-	    fixture_get_round_robin_advance(cup_from_clid(table->competition->id), table->round);
+	    fixture_get_round_robin_advance(cup, table->round);
 	for(i=0;i<cup_advance->len;i++)
 	    if((Team*)g_ptr_array_index(cup_advance, i) == elem->team)
 	    {
@@ -696,7 +697,7 @@ treeview_helper_get_table_element_colours(const Table *table, gint table_index, 
 	free_g_ptr_array(&cup_advance);
 
 	treeview_helper_get_table_element_colour_cups_cup(
-	    cup_from_clid(table->competition->id), elem->team, colour_bg);
+	    cup, elem->team, colour_bg);
     }
 }
 
