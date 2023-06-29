@@ -935,7 +935,7 @@ user_add_cup_success(User *user, const Cup *cup, gint round, gint type)
     }
     else if(type == USER_HISTORY_REACH_CUP_ROUND)
     {
-	if(round == cup_from_clid(cup->c.id)->rounds->len - 2)
+	if(round == cup->rounds->len - 2)
 	{
 	    if(international)
 		user->counters[COUNT_USER_SUCCESS] +=
@@ -944,7 +944,7 @@ user_add_cup_success(User *user, const Cup *cup, gint round, gint type)
 		user->counters[COUNT_USER_SUCCESS] +=
 		    const_int("int_user_success_national_semis");
 	}
-	else if(round == cup_from_clid(cup->c.id)->rounds->len - 3)
+	else if(round == cup->rounds->len - 3)
 	{
 	    if(international)
 		user->counters[COUNT_USER_SUCCESS] +=
