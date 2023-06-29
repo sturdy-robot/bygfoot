@@ -130,10 +130,9 @@ xml_loadsave_table_text         (GMarkupParseContext *context,
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
 
+    /* Ignore TAG_ID, since Table now has a pointer to its Competition. */
     if(state == TAG_NAME)
 	misc_string_assign(&new_table->name, buf);
-    else if(state == TAG_ID)
-	new_table->clid = xml_read_int(buf);
     else if(state == TAG_ROUND)
 	new_table->round = xml_read_int(buf);
     else if(state == TAG_TEAM_ID)
@@ -198,7 +197,7 @@ xml_loadsave_table_write(const gchar *filename, const Table *table)
     fprintf(fil, "<_%d>\n", TAG_TABLE);
     
     xml_write_string(fil, table->name, TAG_NAME, I0);
-    xml_write_int(fil, table->clid, TAG_ID, I0);
+    xml_write_int(fil, table->competition->id, TAG_ID, I0);
     xml_write_int(fil, table->round, TAG_ROUND, I0);
 
     for(i=0;i<table->elements->len;i++)

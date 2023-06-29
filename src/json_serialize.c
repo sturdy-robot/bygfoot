@@ -1448,7 +1448,6 @@ bygfoot_json_serialize_table(const Table *table)
             SERIALIZE_OBJECT_FIELD(table_obj, table, field, serialize_func);
 
     SERIALIZE(name, serialize_string);
-    SERIALIZE(clid, json_object_new_int64);
     SERIALIZE(round, json_object_new_int64);
     SERIALIZE(elements, bygfoot_json_serialize_table_elements);
     #undef SERIALIZE

@@ -288,6 +288,7 @@ xml_loadsave_league_text         (GMarkupParseContext *context,
 
 	sprintf(buf2, "%s%s%s", dirname, G_DIR_SEPARATOR_S, buf);
 	xml_loadsave_table_read(buf2, &new_table);
+        new_table.competition = &new_league->c;
 	g_array_append_val(new_league->tables, new_table);
     }
     else if(state == TAG_LEAGUE_AVERAGE_TALENT)

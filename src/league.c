@@ -1567,7 +1567,7 @@ league_add_table(League *league)
     TableElement new_table_element;
  
     new_table = table_new();
-    new_table.clid = league->c.id;
+    new_table.competition = &league->c;
     new_table.name = g_strdup(league->name);
 
     for(i = 0; i < league->c.teams->len; i++)

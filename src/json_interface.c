@@ -646,7 +646,7 @@ bygfoot_json_table_to_json(const Table *table)
     int i;
 
     json_object_object_add(table_obj, "name", json_object_new_string(table->name));
-    json_object_object_add(table_obj, "id", json_object_new_int64(table->clid));
+    json_object_object_add(table_obj, "id", json_object_new_int64(table->competition->id));
     json_object_object_add(table_obj, "round", json_object_new_int64(table->round));
 
 

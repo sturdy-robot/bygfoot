@@ -68,7 +68,7 @@ typedef struct
 typedef struct
 {
     gchar *name;
-    gint clid;
+    Competition *competition;
     /** The cup round (or -1 if it's a league). */
     gint round;
     GArray *elements;

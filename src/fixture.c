@@ -429,7 +429,7 @@ fixture_write_cup_round_robin(Cup *cup, gint cup_round, GPtrArray *teams,
     {
 	table_group[i].name = NULL;
 	misc_string_assign(&table_group[i].name, cup->name);
-	table_group[i].clid = cup->c.id;
+	table_group[i].competition = &cup->c;
 	table_group[i].round = cup_round;
 	table_group[i].elements = g_array_new(FALSE, FALSE, sizeof(TableElement));    
 	teams_group[i] = g_ptr_array_new();

@@ -332,6 +332,7 @@ xml_loadsave_cup_text         (GMarkupParseContext *context,
 
 	sprintf(buf2, "%s%s%s", dirname, G_DIR_SEPARATOR_S, buf);
 	xml_loadsave_table_read(buf2, &new_table);
+        new_table.competition = &new_cup->c;
 	
 	g_array_append_val(new_round.tables, new_table);
     }

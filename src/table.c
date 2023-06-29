@@ -41,7 +41,7 @@ table_new(void)
     Table new;
 
     new.name = NULL;
-    new.clid = -1;
+    new.competition = NULL;
     new.round = -1;
     new.elements = g_array_new(FALSE, FALSE, sizeof(TableElement));
 
@@ -302,7 +302,7 @@ table_copy(const Table *table)
     TableElement *elem;
 
     new_table.name = g_strdup(table->name);
-    new_table.clid = table->clid;
+    new_table.competition = table->competition;
     new_table.round = table->round;
     new_table.elements = g_array_new(FALSE, FALSE, sizeof(TableElement));
 
