@@ -1,5 +1,6 @@
 
 #include "bygfoot.h"
+#include "country.h"
 #include "file.h"
 #include "load_save.h"
 #include "gui.h"
@@ -68,3 +69,27 @@ gdouble bygfoot_get_progress_bar_fraction(const Bygfoot *bygfoot)
 
     return 0;
 }
+
+Competition *
+bygfoot_get_competition_id(const Bygfoot *bygfoot, int id)
+{
+    int i;
+    Competition *c;
+
+    c = country_get_competition_id(&country, id);
+    if (c)
+        return c;
+
+    for (i = 0; i < bygfoot->international_cups->len; i++) {
+        Cup *cup = g_ptr_array_index(bygfoot->international_cups, i);
+        if (cup->c.id == id)
+            return &cup->c;
+    }
+
+    for (i = 0; i < country_list->len; i++) {
+        const Country *other_country = g_ptr_array_index(country_list, i);
+        Competition *c = country_get_competition_id(other_country, id);
+    }
+}
+
+

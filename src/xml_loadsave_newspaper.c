@@ -152,14 +152,17 @@ xml_loadsave_newspaper_text         (GMarkupParseContext *context,
 	new_article.subtitle_id = xml_read_int(buf);
     else if(state == TAG_NEWS_PAPER_ARTICLE_USER_IDX)
 	new_article.user_idx = xml_read_int(buf);
-    else if(state == TAG_NEWS_PAPER_ARTICLE_CLID)
-	new_article.clid = xml_read_int(buf);
+    else if(state == TAG_NEWS_PAPER_ARTICLE_CLID) {
+        Bygfoot *bygfoot = (Bygfoot*)user_data;
+        gint clid = xml_read_int(buf);
+        new_article.competition = bygfoot_get_competition_id(bygfoot, clid);
+    }
     else if(state == TAG_NEWS_PAPER_ARTICLE_CUP_ROUND)
 	new_article.cup_round = xml_read_int(buf);
 }
 
 void
-xml_loadsave_newspaper_read(const gchar *dirname, const gchar *prefix)
+xml_loadsave_newspaper_read(Bygfoot *bygfoot, const gchar *dirname, const gchar *prefix)
 {
 #ifdef DEBUG
     printf("xml_loadsave_newspaper_read\n");
@@ -179,7 +182,7 @@ xml_loadsave_newspaper_read(const gchar *dirname, const gchar *prefix)
     sprintf(filename, "%s%s%s___newspaper.xml", dirname, G_DIR_SEPARATOR_S, prefix);
 
     context = 
-	g_markup_parse_context_new(&parser, 0, NULL, NULL);
+	g_markup_parse_context_new(&parser, 0, bygfoot, NULL);
 
     if(!g_file_get_contents(filename, &file_contents, &length, &error))
     {
@@ -239,7 +242,7 @@ xml_loadsave_newspaper_write(const gchar *prefix)
 		      TAG_NEWS_PAPER_ARTICLE_SUBTITLE_ID, I1);
 	xml_write_int(fil, g_array_index(newspaper.articles, NewsPaperArticle, i).user_idx, 
 		      TAG_NEWS_PAPER_ARTICLE_USER_IDX, I1);
-	xml_write_int(fil, g_array_index(newspaper.articles, NewsPaperArticle, i).clid, 
+	xml_write_int(fil, g_array_index(newspaper.articles, NewsPaperArticle, i).competition->id, 
 		      TAG_NEWS_PAPER_ARTICLE_CLID, I1);
 	xml_write_int(fil, g_array_index(newspaper.articles, NewsPaperArticle, i).cup_round, 
 		      TAG_NEWS_PAPER_ARTICLE_CUP_ROUND, I1);

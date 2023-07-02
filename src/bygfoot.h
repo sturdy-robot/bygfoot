@@ -212,4 +212,7 @@ User *bygfoot_add_user(Bygfoot *bygfoot, const gchar *username, Team *tm);
 void bygfoot_start_game(Bygfoot *bygfoot);
 void bygfoot_show_progress(const Bygfoot *bygfoot, gfloat value, const gchar *text, gint pictype);
 gdouble bygfoot_get_progress_bar_fraction(const Bygfoot *bygfoot);
+
+Competition *
+bygfoot_get_competition_id(const Bygfoot *bygfoot, int id);
 #endif

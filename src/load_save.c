@@ -337,7 +337,7 @@ load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_mai
         _("Loading newspaper..."),
         PIC_TYPE_LOAD);
 
-    xml_loadsave_newspaper_read(dirname, prefix);
+    xml_loadsave_newspaper_read(bygfoot, dirname, prefix);
 
     if(debug > 60)
         g_print("load_save_load done \n");

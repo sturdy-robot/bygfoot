@@ -37,4 +37,6 @@ country_get_next_competition(const Country *country, gint clid, gboolean count_i
 Competition *
 country_get_previous_competition(const Country *country, gint clid, gboolean count_inactive);
 
+Competition *
+country_get_competition_id(const Country *country, int id);
 #endif

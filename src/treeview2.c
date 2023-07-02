@@ -606,8 +606,8 @@ treeview2_create_news(GtkListStore *ls)
     {
         second_column = (i == newspaper.articles->len - 1 ||
                          (i < newspaper.articles->len - 1 &&
-                          g_array_index(newspaper.articles, NewsPaperArticle, i).clid !=
-                          g_array_index(newspaper.articles, NewsPaperArticle, i + 1).clid));
+                          g_array_index(newspaper.articles, NewsPaperArticle, i).competition->id !=
+                          g_array_index(newspaper.articles, NewsPaperArticle, i + 1).competition->id));
 
         if(!opt_int("int_opt_news_show_recent") ||
            g_array_index(newspaper.articles, NewsPaperArticle, i).week_number == week - 1)

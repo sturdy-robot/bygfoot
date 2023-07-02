@@ -116,3 +116,22 @@ country_get_previous_competition(const Country *country, gint clid, gboolean cou
         return country_get_previous_competition(country, league->c.id, count_inactive);
     return &league->c;
 }
+
+Competition *
+country_get_competition_id(const Country *country, int id)
+{
+    int i;
+
+    for (i = 0; i < country->leagues->len; i++) {
+        League *league = g_ptr_array_index(country->leagues, i);
+        if (league->c.id == id)
+            return &league->c;
+    }
+
+    for (i = 0; i < country->cups->len; i++) {
+        Cup *cup = g_ptr_array_index(country->cups, i);
+        if (cup->c.id == id)
+            return &cup->c;
+    }
+    return NULL;
+}

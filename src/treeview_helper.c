@@ -1882,13 +1882,13 @@ treeview_helper_news_additional(GtkTreeViewColumn *col,
         return;
     }
 
-    if(article->clid >= ID_CUP_START)
+    if(article->competition->id >= ID_CUP_START)
     {
-        cup_get_round_name(cup_from_clid(article->clid), article->cup_round, round_name);
-        sprintf(buf2, "%s\n%s", league_cup_get_name_string(article->clid), round_name);
+        cup_get_round_name(cup_from_clid(article->competition->id), article->cup_round, round_name);
+        sprintf(buf2, "%s\n%s", league_cup_get_name_string(article->competition->id), round_name);
     }
     else
-        sprintf(buf2, "%s", league_cup_get_name_string(article->clid));
+        sprintf(buf2, "%s", league_cup_get_name_string(article->competition->id));
 
     sprintf(buf, "<span %s>%s</span>", 
             const_app("string_news_window_league_cup_attribute"),

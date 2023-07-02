@@ -51,7 +51,7 @@ xml_loadsave_newspaper_text         (GMarkupParseContext *context,
 				  GError             **error);
 
 void
-xml_loadsave_newspaper_read(const gchar *dirname, const gchar *prefix);
+xml_loadsave_newspaper_read(Bygfoot *bygfoot, const gchar *dirname, const gchar *prefix);
 
 void
 xml_loadsave_newspaper_write(const gchar *prefix);

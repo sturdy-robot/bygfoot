@@ -486,7 +486,6 @@ bygfoot_get_cup_sid(const gchar *sid)
     return NULL;
 }
 
-
 /** @return A League object if the league with \p sid belongs to \p country.
  * NULL otherwise.
  */
