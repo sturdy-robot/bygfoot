@@ -783,7 +783,7 @@ bygfoot_json_serialize_player_card(const PlayerCard *card)
     #define SERIALIZE(field, serialize_func) \
             SERIALIZE_OBJECT_FIELD(card_obj, card, field, serialize_func);
 
-    SERIALIZE(clid, json_object_new_int64);
+    json_object_object_add(card_obj, "clid", json_object_new_int64(card->competition->id));
     SERIALIZE(yellow, json_object_new_int64);
     SERIALIZE(red, json_object_new_int64);
     #undef SERIALIZE

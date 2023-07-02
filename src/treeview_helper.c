@@ -988,7 +988,7 @@ treeview_helper_player_info_banned_to_cell(GtkCellRenderer *renderer, const GArr
 	    /* Ban info of a player in the format:
 	       'Cup/league name: Number of weeks banned' */
 	    sprintf(buf2, _("%s: %d weeks\n"),
-		    league_cup_get_name_string(g_array_index(cards, PlayerCard, i).clid),
+		    league_cup_get_name_string(g_array_index(cards, PlayerCard, i).competition->id),
 		    g_array_index(cards, PlayerCard, i).red);
 	    strcat(buf, buf2);
 	}	
@@ -1015,21 +1015,21 @@ treeview_helper_player_info_yellow_to_cell(GtkCellRenderer *renderer, const GArr
 
     for(i=0;i<cards->len;i++)
     {
-	yellow_red = league_cup_get_yellow_red(g_array_index(cards, PlayerCard, i).clid);
+	yellow_red = league_cup_get_yellow_red(g_array_index(cards, PlayerCard, i).competition->id);
 
 	if(g_array_index(cards, PlayerCard, i).yellow > 0)
 	{
 	    if(yellow_red < 1000)
 	    {
 		sprintf(buf2, "%s: %d (%d)\n",
-			league_cup_get_name_string(g_array_index(cards, PlayerCard, i).clid),
+			league_cup_get_name_string(g_array_index(cards, PlayerCard, i).competition->id),
 			g_array_index(cards, PlayerCard, i).yellow, yellow_red);
 	    }
 	    else
 		/* Yellow cards of a player in a cup/league. No limit means there isn't a limit
 		   after which the player gets banned for a match automatically. */
 		sprintf(buf2, _("%s: %d (no limit)\n"),
-			league_cup_get_name_string(g_array_index(cards, PlayerCard, i).clid),
+			league_cup_get_name_string(g_array_index(cards, PlayerCard, i).competition->id),
 			g_array_index(cards, PlayerCard, i).yellow);
 	    
 	    strcat(buf, buf2);

@@ -407,7 +407,7 @@ live_game_event_foul(void)
     {
 	type = LIVE_GAME_EVENT_FOUL_YELLOW;
 	player_card_set(player_of_id_team(tms[foul_team], foul_player),
-			match->fix->competition->id, PLAYER_VALUE_CARD_YELLOW, 1, TRUE);
+			match->fix->competition, PLAYER_VALUE_CARD_YELLOW, 1, TRUE);
 	player_of_id_team(tms[foul_team], foul_player)->career[PLAYER_VALUE_CARD_YELLOW]++;
         player_of_id_team(tms[foul_team], foul_player)->card_status = PLAYER_CARD_STATUS_YELLOW;
     }
@@ -985,9 +985,9 @@ live_game_event_send_off(gint team, gint player, gboolean second_yellow)
     player_of_id_team(tms[team], player)->cskill = 0;
 
     if(second_yellow)
-	player_card_set(player_of_id_team(tms[team], player), match->fix->competition->id, PLAYER_VALUE_CARD_RED, 2, FALSE);
+	player_card_set(player_of_id_team(tms[team], player), match->fix->competition, PLAYER_VALUE_CARD_RED, 2, FALSE);
     else
-	player_card_set(player_of_id_team(tms[team], player), match->fix->competition->id, PLAYER_VALUE_CARD_RED, 
+	player_card_set(player_of_id_team(tms[team], player), match->fix->competition, PLAYER_VALUE_CARD_RED, 
 			game_player_get_ban_duration(), FALSE);
 
     player_of_id_team(tms[team], player)->career[PLAYER_VALUE_CARD_RED]++;

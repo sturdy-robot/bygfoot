@@ -195,6 +195,42 @@ update_all_cups(void)
     country.allcups = new_acps;
 }
 
+static void
+country_adjust_competition_pointers(Country *country)
+{
+    gint i;
+
+    for (i = 0; i < country->leagues->len; i++) {
+        gint j;
+        League *league = g_ptr_array_index(country->leagues, i);
+        for (j = 0; j < league->c.teams->len; j++) {
+            gint k;
+            Team *team = g_ptr_array_index(league->c.teams, j); 
+            for (k = 0; k < team->players->len; k++) {
+                gint x;
+                Player *player = &g_array_index(team->players, Player, k);
+                for (x = 0; x < player->cards->len; x++) {
+                    PlayerCard *card = &g_array_index(player->cards, PlayerCard, x);
+                    gint clid = GPOINTER_TO_INT(card->competition);
+                    card->competition = bygfoot_get_competition_id(country->bygfoot, clid);
+                }
+            }
+        }
+    }
+}
+
+static void
+bygfoot_adjust_competition_pointers(Bygfoot *bygfoot)
+{
+    gint i;
+    country_adjust_competition_pointers(&country);
+
+    for (i = 0; i < country_list->len; i++) {
+        Country *c = g_ptr_array_index(country_list, i);
+        country_adjust_competition_pointers(c);
+    }
+}
+
 /** Load the game from the specified file.
     @param create_main_window Whether to create and show the main window. */
 gboolean
@@ -286,7 +322,7 @@ load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_mai
     xml_loadsave_leagues_cups_adjust_team_ptrs();
     xml_loadsave_leagues_cups_adjust_team_ptrs_cups(bygfoot->international_cups);
     update_all_cups();
-
+    bygfoot_adjust_competition_pointers(bygfoot);
 
     if(debug > 60)
         g_print("load_save_load users \n");

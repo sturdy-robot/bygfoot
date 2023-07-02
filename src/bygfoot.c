@@ -91,5 +91,3 @@ bygfoot_get_competition_id(const Bygfoot *bygfoot, int id)
         Competition *c = country_get_competition_id(other_country, id);
     }
 }
-
-

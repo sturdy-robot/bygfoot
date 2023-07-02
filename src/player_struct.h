@@ -57,8 +57,8 @@ enum PlayerStreak
 */
 typedef struct
 {
-    /** Numerical id of the league or cup. */
-    gint clid;
+    /** Pointer to the league or cup. */
+    Competition *competition;
     /** Number of yellow cards. */
     gint yellow;
     /** Number of weeks the player is banned. */

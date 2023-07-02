@@ -220,7 +220,7 @@ xml_loadsave_players_text(gchar *text)
     else if(state == TAG_PLAYER_GAMES_GOAL_SHOTS)
 	new_games_goals.shots = xml_read_int(text);
     else if(state == TAG_PLAYER_CARD_CLID)
-	new_card.clid = xml_read_int(text);
+	new_card.competition = GINT_TO_POINTER(xml_read_int(text));
     else if(state == TAG_PLAYER_CARD_YELLOW)
 	new_card.yellow = xml_read_int(text);
     else if(state == TAG_PLAYER_CARD_RED)
@@ -317,7 +317,7 @@ xml_loadsave_players_write_player(FILE *fil, const Player *pl)
     {
 	fprintf(fil, "%s<_%d>\n", I2, TAG_PLAYER_CARD);
 
-	xml_write_int(fil, g_array_index(pl->cards, PlayerCard, i).clid,
+	xml_write_int(fil, g_array_index(pl->cards, PlayerCard, i).competition->id,
 		      TAG_PLAYER_CARD_CLID, I3);
 	xml_write_int(fil, g_array_index(pl->cards, PlayerCard, i).yellow,
 		      TAG_PLAYER_CARD_YELLOW, I3);

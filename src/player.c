@@ -774,10 +774,10 @@ player_is_banned(const Player *pl)
             g_ptr_array_add(cards, card);
             continue;
         }
-        if(card->clid < ID_CUP_START)
-	    yellow_red = league_from_clid(card->clid)->yellow_red;
+        if(card->competition->id < ID_CUP_START)
+	    yellow_red = league_from_clid(card->competition->id)->yellow_red;
         else
-	    yellow_red = cup_from_clid(card->clid)->yellow_red;
+	    yellow_red = cup_from_clid(card->competition->id)->yellow_red;
         if(card->yellow == yellow_red - 1)
             g_ptr_array_add(cards, card);
     }
@@ -795,7 +795,7 @@ player_is_banned(const Player *pl)
      * for this player. */
     for (i = 0; i < cards->len; i++) {
         PlayerCard *card = g_ptr_array_index(cards, i);
-        if (card->clid != fix->competition->id)
+        if (card->competition->id != fix->competition->id)
             continue;
         if (card->red > 0) {
             result = card->red;
@@ -931,7 +931,7 @@ player_card_get(const Player *pl, gint clid, gint card_type)
     gint return_value = 0;
     
     for(i=0;i<pl->cards->len;i++)
-	if(g_array_index(pl->cards, PlayerCard, i).clid == clid)
+	if(g_array_index(pl->cards, PlayerCard, i).competition->id == clid)
 	{
 	    if(card_type == PLAYER_VALUE_CARD_YELLOW)
 		return_value = g_array_index(pl->cards, PlayerCard, i).yellow;
@@ -952,7 +952,8 @@ player_card_get(const Player *pl, gint clid, gint card_type)
     @param diff Whether we add the value to the old one or
     replace the old value by the new one. */
 void
-player_card_set(Player *pl, gint clid, gint card_type, gint value, gboolean diff)
+player_card_set(Player *pl, Competition *competition, gint card_type,
+                gint value, gboolean diff)
 {
 #ifdef DEBUG
     printf("player_card_set\n");
@@ -962,7 +963,7 @@ player_card_set(Player *pl, gint clid, gint card_type, gint value, gboolean diff
     PlayerCard new;
 
     for(i=0;i<pl->cards->len;i++)
-	if(g_array_index(pl->cards, PlayerCard, i).clid == clid)
+	if(g_array_index(pl->cards, PlayerCard, i).competition->id == competition->id)
 	{
 	    if(card_type == PLAYER_VALUE_CARD_YELLOW)
 		card_value = &g_array_index(pl->cards, PlayerCard, i).yellow;
@@ -983,12 +984,12 @@ player_card_set(Player *pl, gint clid, gint card_type, gint value, gboolean diff
 	    return;
 	}
 
-    new.clid = clid;
+    new.competition = competition;
     new.yellow = new.red = 0;
 
     g_array_append_val(pl->cards, new);
 
-    player_card_set(pl, clid, card_type, value, diff);
+    player_card_set(pl, competition, card_type, value, diff);
 }
 
 /** Return the number of games or goals.
@@ -1347,14 +1348,14 @@ player_update_post_match(Player *pl, const Fixture *fix)
     gint winner = -1;
 
     if(player_card_get(pl, fix->competition->id, PLAYER_VALUE_CARD_RED) > 0)
-	player_card_set(pl, fix->competition->id, PLAYER_VALUE_CARD_RED, -1, TRUE);
+	player_card_set(pl, fix->competition, PLAYER_VALUE_CARD_RED, -1, TRUE);
 
     if(player_card_get(pl, fix->competition->id, PLAYER_VALUE_CARD_YELLOW) >= yellow_red)
     {
-	player_card_set(pl, fix->competition->id, PLAYER_VALUE_CARD_YELLOW, 0, FALSE);
+	player_card_set(pl, fix->competition, PLAYER_VALUE_CARD_YELLOW, 0, FALSE);
 	
 	if(player_card_get(pl, fix->competition->id, PLAYER_VALUE_CARD_RED) == 0 && debug < 50)
-	    player_card_set(pl, fix->competition->id, PLAYER_VALUE_CARD_RED, 1, FALSE);
+	    player_card_set(pl, fix->competition, PLAYER_VALUE_CARD_RED, 1, FALSE);
     }
 
     pl->card_status = PLAYER_CARD_STATUS_NONE;
