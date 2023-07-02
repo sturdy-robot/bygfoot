@@ -1884,7 +1884,7 @@ treeview_helper_news_additional(GtkTreeViewColumn *col,
 
     if(article->competition->id >= ID_CUP_START)
     {
-        cup_get_round_name(cup_from_clid(article->competition->id), article->cup_round, round_name);
+        cup_get_round_name((Cup*)article->competition, article->cup_round, round_name);
         sprintf(buf2, "%s\n%s", league_cup_get_name_string(article->competition->id), round_name);
     }
     else
