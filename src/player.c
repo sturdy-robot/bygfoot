@@ -776,8 +776,10 @@ player_is_banned(const Player *pl)
         }
         if(card->competition->id < ID_CUP_START)
 	    yellow_red = league_from_clid(card->competition->id)->yellow_red;
-        else
-	    yellow_red = cup_from_clid(card->competition->id)->yellow_red;
+        else {
+            Cup *cup = (Cup*)card->competition;
+	    yellow_red = cup->yellow_red;
+	}
         if(card->yellow == yellow_red - 1)
             g_ptr_array_add(cards, card);
     }
