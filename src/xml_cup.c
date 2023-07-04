@@ -437,7 +437,7 @@ xml_cup_read_text         (GMarkupParseContext *context,
     else if(state == STATE_SKIP_WEEKS_WITH)
         g_ptr_array_add(new_cup->skip_weeks_with, g_strdup(buf));
     else if(state == STATE_YELLOW_RED)
-	new_cup->yellow_red = int_value;
+	new_cup->c.yellow_red = int_value;
     else if(state == STATE_TALENT_DIFF)
 	new_cup->talent_diff = 
 	    (float_value / 10000);

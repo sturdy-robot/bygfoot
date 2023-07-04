@@ -768,19 +768,12 @@ player_is_banned(const Player *pl)
      * team_get_fixture() */
     for (i = 0; i < pl->cards->len; i++) {
         PlayerCard *card = &g_array_index(pl->cards, PlayerCard, i);
-        gint yellow_red;
 
         if (card->red) {
             g_ptr_array_add(cards, card);
             continue;
         }
-        if(card->competition->id < ID_CUP_START)
-	    yellow_red = league_from_clid(card->competition->id)->yellow_red;
-        else {
-            Cup *cup = (Cup*)card->competition;
-	    yellow_red = cup->yellow_red;
-	}
-        if(card->yellow == yellow_red - 1)
+        if(card->yellow == card->competition->yellow_red - 1)
             g_ptr_array_add(cards, card);
     }
 
@@ -1346,13 +1339,12 @@ player_update_post_match(Player *pl, const Fixture *fix)
     printf("player_update_post_match\n");
 #endif
 
-    gint yellow_red = league_cup_get_yellow_red(fix->competition->id);
     gint winner = -1;
 
     if(player_card_get(pl, fix->competition->id, PLAYER_VALUE_CARD_RED) > 0)
 	player_card_set(pl, fix->competition, PLAYER_VALUE_CARD_RED, -1, TRUE);
 
-    if(player_card_get(pl, fix->competition->id, PLAYER_VALUE_CARD_YELLOW) >= yellow_red)
+    if(player_card_get(pl, fix->competition->id, PLAYER_VALUE_CARD_YELLOW) >= fix->competition->yellow_red)
     {
 	player_card_set(pl, fix->competition, PLAYER_VALUE_CARD_YELLOW, 0, FALSE);
 	

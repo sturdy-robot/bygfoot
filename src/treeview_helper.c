@@ -1015,7 +1015,7 @@ treeview_helper_player_info_yellow_to_cell(GtkCellRenderer *renderer, const GArr
 
     for(i=0;i<cards->len;i++)
     {
-	yellow_red = league_cup_get_yellow_red(g_array_index(cards, PlayerCard, i).competition->id);
+	yellow_red = g_array_index(cards, PlayerCard, i).competition->yellow_red;
 
 	if(g_array_index(cards, PlayerCard, i).yellow > 0)
 	{

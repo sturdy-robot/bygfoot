@@ -427,7 +427,7 @@ xml_league_read_text         (GMarkupParseContext *context,
     else if(state == STATE_ROUND_ROBINS)
 	new_league.round_robins = int_value;
     else if(state == STATE_YELLOW_RED)
-	new_league.yellow_red = int_value;
+	new_league.c.yellow_red = int_value;
     else if(state == STATE_AVERAGE_TALENT)
 	new_league.average_talent = 
 	    (float_value / 10000) * const_float_fast(float_player_max_skill);

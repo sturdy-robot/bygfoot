@@ -36,5 +36,9 @@ typedef struct
     /** Teams participating in the competition. */
     GPtrArray *teams;
 
+    /** Number of yellow cards that lead to a missed match.
+	Default: 1000 (off). */
+    gint yellow_red;
+
 } Competition;
 #endif

@@ -178,9 +178,6 @@ typedef struct
 	when the cup fixtures for the first round get written.
 	Default: 0 (ie. the cup is visible from the first week). */
     gint add_week;
-    /** Number of yellow cards that lead to a missed match.
-	Default: 1000 (off). */
-    gint yellow_red;
     /** Difference of the average talent for the cup teams compared to
 	the league with highest average talent.
 	Default: 0. */

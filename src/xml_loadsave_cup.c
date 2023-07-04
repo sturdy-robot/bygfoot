@@ -277,7 +277,7 @@ xml_loadsave_cup_text         (GMarkupParseContext *context,
 /*     else if(state == TAG_SKIP_WEEKS_WITH) */
 /*         g_ptr_array_add(new_cup->skip_weeks_with, g_strdup(buf)); */
     else if(state == TAG_YELLOW_RED)
-	new_cup->yellow_red = xml_read_int(buf);
+	new_cup->c.yellow_red = xml_read_int(buf);
     else if(state == TAG_PROPERTY)
 	g_ptr_array_add(new_cup->properties, g_strdup(buf));
     else if(state == TAG_CUP_LAST_WEEK)
@@ -445,7 +445,7 @@ xml_loadsave_cup_write(const gchar *prefix, const Cup *cup)
     xml_write_int(fil, cup->add_week, TAG_CUP_ADD_WEEK, I0);
     xml_write_int(fil, cup->group, TAG_CUP_GROUP, I0);
     xml_write_int(fil, cup->week_gap, TAG_WEEK_GAP, I0);
-    xml_write_int(fil, cup->yellow_red, TAG_YELLOW_RED, I0);
+    xml_write_int(fil, cup->c.yellow_red, TAG_YELLOW_RED, I0);
     xml_write_float(fil, cup->talent_diff, TAG_CUP_TALENT_DIFF, I0);
     xml_write_int(fil, cup->next_fixture_update_week, 
 		  TAG_CUP_NEXT_FIXTURE_UPDATE_WEEK, I0);

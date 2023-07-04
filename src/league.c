@@ -79,7 +79,7 @@ league_new(gboolean new_id, Country *country)
     new.two_match_weeks[0] = g_array_new(FALSE, FALSE, sizeof(gint));
     new.two_match_weeks[1] = g_array_new(FALSE, FALSE, sizeof(gint));
     new.round_robins = 2;
-    new.yellow_red = 1000;
+    new.c.yellow_red = 1000;
 
     new.stats = stat_league_new("", "");
     new.country = country;

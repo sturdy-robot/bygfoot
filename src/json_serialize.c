@@ -433,7 +433,7 @@ bygfoot_json_serialize_league(const League *league)
     SERIALIZE(two_match_weeks, bygfoot_json_serialize_two_match_weeks);
     SERIALIZE(round_robins, json_object_new_int64);
     SERIALIZE(rr_breaks, serialize_int_garray);
-    SERIALIZE(yellow_red, json_object_new_int64);
+    json_object_object_add(league_obj, "yellow_red", json_object_new_int64(league->c.yellow_red));
     SERIALIZE(average_talent, json_object_new_double);
     json_object_object_add(league_obj, "teams", bygfoot_json_serialize_teams(league->c.teams));
     SERIALIZE(joined_leagues, bygfoot_json_serialize_joined_leagues);
@@ -899,7 +899,7 @@ bygfoot_json_serialize_cup(const Cup *cup)
     SERIALIZE_CUP_FIELD(last_week, json_object_new_int64);
     SERIALIZE_CUP_FIELD(week_gap, json_object_new_int64);
     SERIALIZE_CUP_FIELD(add_week, json_object_new_int64);
-    SERIALIZE_CUP_FIELD(yellow_red, json_object_new_int64);
+    json_object_object_add(cup_obj, "yellow_red", json_object_new_int64(cup->c.yellow_red));
     SERIALIZE_CUP_FIELD(talent_diff, json_object_new_double);
     SERIALIZE_CUP_FIELD(next_fixture_update_week, json_object_new_int64);
     SERIALIZE_CUP_FIELD(next_fixture_update_week_round, json_object_new_int64);

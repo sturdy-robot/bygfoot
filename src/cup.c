@@ -61,7 +61,7 @@ cup_new(gboolean new_id, Bygfoot *bygfoot)
     new.last_week = -1;
     new.week_gap = 1;
 
-    new.yellow_red = 1000;
+    new.c.yellow_red = 1000;
     new.talent_diff = 0;
 
     new.rounds = g_array_new(FALSE, FALSE, sizeof(CupRound));

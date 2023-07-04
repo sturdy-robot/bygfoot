@@ -615,7 +615,7 @@ lg_commentary_initialize(const Fixture *fix)
 
     misc_token_add(token_rep,
 		   option_int("string_token_yellow_limit", &tokens), 
-		   misc_int_to_char(league_cup_get_yellow_red(fix->competition->id)));
+		   misc_int_to_char(fix->competition->yellow_red));
 }
 
 /** Free the memory occupied by the tokens array and the permanent tokens. */

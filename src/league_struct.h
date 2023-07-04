@@ -165,9 +165,6 @@ typedef struct
     gint round_robins;
     /** Number of weeks between the parts of a round robin. */
     GArray *rr_breaks;
-    /** Number of yellow cards until a player gets banned. 
-	Default 1000 (which means 'off', basically). */
-    gint yellow_red;
     /** Average talent for the first season. Default: -1. */
     gfloat average_talent;
     /** List of leagues joined fixture-wise to this one.
