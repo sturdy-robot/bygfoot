@@ -230,13 +230,13 @@ start_generate_cup_history()
 
     /* First pass: Collect all the teams that qualify for a cup from a league. */
     for (i = country.cups->len - 1; i >=0; i--) {
-        Cup *cup = &g_array_index(country.cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.cups, i);
         generate_cup_history_leagues(cup);
     }
 
     /* Second pass: Collect all the teams that qualify for a cup from another cup. */
     for (i = country.cups->len - 1; i >=0; i--) {
-        Cup *cup = &g_array_index(country.cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.cups, i);
         generate_cup_history_cups(cup);
     }
 }
@@ -247,12 +247,12 @@ start_generate_cup_history_international(Bygfoot *bygfoot)
     gint i;
 
     for (i = bygfoot->international_cups->len - 1; i >=0; i--) {
-        Cup *cup = &g_array_index(bygfoot->international_cups, Cup, i);
+        Cup *cup = g_ptr_array_index(bygfoot->international_cups, i);
         generate_cup_history_leagues(cup);
     }
 
     for (i = bygfoot->international_cups->len - 1; i >= 0; i--) {
-        Cup *cup = &g_array_index(bygfoot->international_cups, Cup, i);
+        Cup *cup = g_ptr_array_index(bygfoot->international_cups, i);
         generate_cup_history_cups(cup);
     }
 }
@@ -292,13 +292,13 @@ start_new_season(Bygfoot *bygfoot)
         }
 
 	for(i=0;i<country.cups->len;i++) {
-            Cup *cup = &g_array_index(country.cups, Cup, i);
+            Cup *cup = g_ptr_array_index(country.cups, i);
 	    if(cup->add_week <= 0)
 		g_ptr_array_add(country.allcups, cup);
         }
 
         for(i = 0; i < bygfoot->international_cups->len; i++) {
-            Cup *cup = &g_array_index(bygfoot->international_cups, Cup, i);
+            Cup *cup = g_ptr_array_index(bygfoot->international_cups, i);
             if (cup->add_week <= 0)
                 g_ptr_array_add(country.allcups, cup);
         }
@@ -313,7 +313,7 @@ start_new_season(Bygfoot *bygfoot)
     }
 
     for(i=country.cups->len - 1; i >= 0; i--) {
-        Cup *cup = &g_array_index(country.cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.cups, i);
         /* Reset all cups.  We need to make sure all cups get reset
 	 * before the start of the next season.  Otherwise, the fixtures
 	 * from last year's cup will interfere with scheduling the league
@@ -327,7 +327,7 @@ start_new_season(Bygfoot *bygfoot)
     }
 
     for (i = bygfoot->international_cups->len - 1; i >=0; i--) {
-        Cup *cup = &g_array_index(bygfoot->international_cups, Cup, i);
+        Cup *cup = g_ptr_array_index(bygfoot->international_cups, i);
         cup_reset(cup);
         if (cup->add_week == -1) 
             fixture_write_cup_fixtures(cup);
@@ -386,7 +386,7 @@ start_new_season(Bygfoot *bygfoot)
        the first the results are often still 
        needed for the international cups. */
     for (i = bygfoot->international_cups->len - 1; i >=0; i--) {
-        Cup *cup = &g_array_index(bygfoot->international_cups, Cup, i);
+        Cup *cup = g_ptr_array_index(bygfoot->international_cups, i);
         if (cup->add_week == 0)
             fixture_write_cup_fixtures(cup);
         else if (!query_cup_self_referential(cup))
@@ -395,7 +395,7 @@ start_new_season(Bygfoot *bygfoot)
 
     for(i=country.cups->len - 1; i >= 0; i--)
     {
-        Cup *cup = &g_array_index(country.cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.cups, i);
         if(cup->add_week == 0)
             fixture_write_cup_fixtures(cup);
         else if(!query_cup_self_referential(cup))
@@ -487,13 +487,13 @@ start_new_season_reset_ids(void)
 
     max = -1;
     for(i=0;i<country.cups->len;i++) {
-        Cup *cup = &g_array_index(country.cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.cups, i);
 	if(cup->c.id > max)
 	    max = cup->c.id;
     }
 
     for (i = 0; i < country.bygfoot->international_cups->len; i++) {
-        Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.bygfoot->international_cups, i);
         if (cup->c.id > max)
             max = cup->c.id;
     }
@@ -740,7 +740,7 @@ end_week_round_update_fixtures(Bygfoot *bygfoot)
     
     for(i=0;i<country.cups->len;i++)
     {
-        Cup *cup = &g_array_index(country.cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.cups, i);
 	if(cup->add_week == 1000 && 
 	   query_cup_hidden(cup) &&
 	   query_cup_begins(cup))
@@ -752,7 +752,7 @@ end_week_round_update_fixtures(Bygfoot *bygfoot)
 	}
     }
     for (i = 0; i < bygfoot->international_cups->len; i++) {
-        Cup *cup = &g_array_index(bygfoot->international_cups, Cup, i);
+        Cup *cup = g_ptr_array_index(bygfoot->international_cups, i);
         if (cup->add_week == 1000 &&
             query_cup_hidden(cup) &&
             query_cup_begins(cup))
@@ -895,7 +895,7 @@ start_week_add_cups(Bygfoot *bygfoot)
     gint i;
 
     for(i=0;i<country.cups->len;i++) {
-        Cup *cup = &g_array_index(country.cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.cups, i);
 	if(cup->add_week == week)
 	{
 	    if(fixture_write_cup_fixtures(cup))
@@ -904,7 +904,7 @@ start_week_add_cups(Bygfoot *bygfoot)
     }
 
     for (i = 0; i < country.bygfoot->international_cups->len; i++) {
-        Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.bygfoot->international_cups, i);
         if (cup->add_week == week) {
             if (fixture_write_cup_fixtures(cup))
                 g_ptr_array_add(country.allcups, cup);
@@ -931,7 +931,7 @@ update_teams(void (*update_func)(Team*))
      * in the user's country, because these have already been updated above.
      */
     for(i=0;i<country.bygfoot->international_cups->len;i++) {
-        Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.bygfoot->international_cups, i);
 	for(j=0; j<cup->c.teams->len;j++) {
             Team *team = g_ptr_array_index(cup->c.teams, j);
             if (g_hash_table_lookup(visited, team))

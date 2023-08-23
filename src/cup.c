@@ -267,7 +267,7 @@ cup_get_choose_team_league_cup(const CupChooseTeam *ct,
     }
     else if(g_str_has_prefix(ct->sid, "CUP") && idx >=0 && idx <= country.cups->len)
     {
-	*cup = &g_array_index(country.cups, Cup, idx - 1);
+	*cup = g_ptr_array_index(country.cups, idx - 1);
 	*league = NULL;
     }
     else
@@ -291,7 +291,7 @@ cup_get_choose_team_league_cup(const CupChooseTeam *ct,
 
 	for(i=0;i<country.cups->len;i++)
 	{
-            Cup *c = &g_array_index(country.cups, Cup, i);
+            Cup *c = g_ptr_array_index(country.cups, i);
 	    if(strcmp(c->sid, ct->sid) == 0 ||
                g_str_has_prefix(c->sid, prefix))
 	    {
@@ -302,7 +302,7 @@ cup_get_choose_team_league_cup(const CupChooseTeam *ct,
 	}
         for(i=0; i< country.bygfoot->international_cups->len; i++)
         {
-            Cup *c = &g_array_index(country.bygfoot->international_cups, Cup, i);
+            Cup *c = g_ptr_array_index(country.bygfoot->international_cups, i);
             if (strcmp(c->sid, ct->sid) == 0)
             {
                 *cup = c;
@@ -1109,13 +1109,13 @@ cup_from_clid(gint clid)
     gint i;
 
     for(i=0;i<country.cups->len;i++) {
-        Cup *cup = &g_array_index(country.cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.cups, i);
 	if(cup->c.id == clid)
 	    return cup;
     }
 
     for (i = 0; i < country.bygfoot->international_cups->len; i++) {
-        Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.bygfoot->international_cups, i);
         if (cup->c.id == clid)
             return cup;
     }
@@ -1136,7 +1136,7 @@ cup_from_sid(const gchar *sid)
     gint i;
 
     for(i=0;i<country.cups->len;i++) {
-        Cup *cup = &g_array_index(country.cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.cups, i);
 	if(strcmp(cup->sid, sid) == 0)
 	    return cup;
     }

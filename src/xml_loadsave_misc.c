@@ -64,7 +64,7 @@ typedef struct {
     Country *country;
     const gchar *directory;
     Bygfoot *bygfoot;
-    GArray *cups;
+    GPtrArray *cups;
 
 } MiscUserData;
 
@@ -117,7 +117,7 @@ xml_loadsave_misc_start_element (GMarkupParseContext *context,
     if (tag == TAG_COUNTRY) {
         misc_user_data->country = g_malloc0(sizeof(Country));
         misc_user_data->country->leagues = g_array_new(FALSE, FALSE, sizeof(League));
-        misc_user_data->country->cups = g_array_new(FALSE, FALSE, sizeof(Cup));
+        misc_user_data->country->cups = g_ptr_array_new();
         misc_user_data->country->allcups = g_ptr_array_new();
         misc_user_data->country->bygfoot = misc_user_data->bygfoot;
         misc_user_data->cups = misc_user_data->country->cups;
@@ -234,10 +234,10 @@ xml_loadsave_misc_text         (GMarkupParseContext *context,
         xml_load_league(misc_user_data->country, misc_user_data->country->leagues,
                         misc_user_data->directory, buf);
     } else if (state == TAG_CUP_FILE) {
-        Cup new_cup = cup_new(FALSE, misc_user_data->bygfoot);
-        g_array_append_val(misc_user_data->cups, new_cup);
-        xml_load_cup(misc_user_data->bygfoot,
-	             &g_array_index(misc_user_data->cups, Cup, misc_user_data->cups->len - 1),
+        Cup *new_cup = g_malloc0(sizeof(Cup));
+        *new_cup = cup_new(FALSE, misc_user_data->bygfoot);
+        g_ptr_array_add(misc_user_data->cups, new_cup);
+        xml_load_cup(misc_user_data->bygfoot, new_cup,
                      misc_user_data->directory, buf);
     }
 }
@@ -279,8 +279,8 @@ xml_loadsave_misc_read(Bygfoot *bygfoot, const gchar *dirname, const gchar *base
         g_ptr_array_free(country_list, TRUE);
     country_list = g_ptr_array_new();
     if (bygfoot->international_cups) {
-	g_array_free(bygfoot->international_cups, TRUE);
-        bygfoot->international_cups = g_array_new(FALSE, TRUE, sizeof(Cup));
+	g_ptr_array_free(bygfoot->international_cups, TRUE);
+        bygfoot->international_cups = g_ptr_array_new();
     }
     free_bets(TRUE);
 
@@ -391,7 +391,7 @@ xml_loadsave_misc_write_country(const Country *country, FILE *fil,
     }
 
     for (i = 0; i < country->cups->len; i++) {
-        const Cup *cup = &g_array_index(country->cups, Cup, i);
+        const Cup *cup = g_ptr_array_index(country->cups, i);
 	xml_loadsave_cup_write(prefix, cup);
 	sprintf(buf, "%s___cup_%d.xml", basename, cup->c.id);
 	xml_write_string(fil, buf, TAG_CUP_FILE, I3);
@@ -428,7 +428,7 @@ xml_loadsave_misc_write_international_cups(FILE *fil, Bygfoot *bygfoot,
 
     fprintf(fil, "%s<_%d>\n", I2, TAG_INTERNATIONAL_CUPS);
     for (i = 0; i < bygfoot->international_cups->len; i++) {
-        const Cup *cup = &g_array_index(bygfoot->international_cups, Cup, i);
+        const Cup *cup = g_ptr_array_index(bygfoot->international_cups, i);
 	xml_loadsave_cup_write(prefix, cup);
 	sprintf(buf, "%s___cup_%d.xml", basename, cup->c.id);
 	xml_write_string(fil, buf, TAG_CUP_FILE, I3);

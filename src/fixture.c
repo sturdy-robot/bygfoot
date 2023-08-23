@@ -1421,14 +1421,14 @@ fixture_from_id(gint id, gboolean abort_program)
     }
 
     for(i=0;i<country.cups->len;i++) {
-        Cup *cup = &g_array_index(country.cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.cups, i);
 	for(j=0;j<cup->fixtures->len;j++)
 	    if(g_array_index(cup->fixtures, Fixture, j).id == id)
 		return &g_array_index(cup->fixtures, Fixture, j);
     }
 
     for (i = 0; i < country.bygfoot->international_cups->len; i++) {
-        Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.bygfoot->international_cups, i);
         for (j = 0; j < cup->fixtures->len; j++) {
             Fixture *fixture = &g_array_index(cup->fixtures, Fixture, j);
             if (fixture->id == id)

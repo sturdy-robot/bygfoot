@@ -51,6 +51,6 @@ xml_cup_read_end_element    (GMarkupParseContext *context,
 
 
 void
-xml_cup_read(const gchar *file, GArray *cups, Bygfoot *bygfoot);
+xml_cup_read(const gchar *file, GPtrArray *cups, Bygfoot *bygfoot);
 
 #endif

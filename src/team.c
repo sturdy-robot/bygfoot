@@ -166,7 +166,7 @@ query_team_is_in_cups(const Team *tm, gint group)
 	return FALSE;
 
     for(i=0;i<country.cups->len;i++) {
-        const Cup *cup = &g_array_index(country.cups, Cup, i);
+        const Cup *cup = g_ptr_array_index(country.cups, i);
         if (cup->group != group)
             continue;
 	for(j=0;j<cup->c.teams->len;j++) {
@@ -180,7 +180,7 @@ query_team_is_in_cups(const Team *tm, gint group)
         }
     }
     for (i = 0; i < country.bygfoot->international_cups->len; i++) {
-        const Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
+        const Cup *cup = g_ptr_array_index(country.bygfoot->international_cups, i);
         if (cup->group != group)
             continue;
         for (j = 0; j < cup->c.teams->len; j++) {
@@ -294,7 +294,7 @@ team_of_sid(const char *sid, const Country *country)
     }
 
     for( i = 0; i < country->cups->len; i++) {
-        const Cup *cup = &g_array_index(country->cups, Cup, i);
+        const Cup *cup = g_ptr_array_index(country->cups, i);
         for (j = 0; j < cup->rounds->len; j++) {
             const CupRound *round = &g_array_index(cup->rounds, CupRound, j);
             for (k = 0; k < round->team_ptrs->len; k++) {

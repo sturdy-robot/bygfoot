@@ -603,7 +603,7 @@ free_player(Player *pl)
    @param cups The pointer to the array we free.
 */
 void
-free_cups_array(GArray **cups, gboolean reset)
+free_cups_array(GPtrArray **cups, gboolean reset)
 {
 #ifdef DEBUG
     printf("free_cups_array\n");
@@ -614,17 +614,17 @@ free_cups_array(GArray **cups, gboolean reset)
     if(*cups == NULL)
     {
 	if(reset)
-	    *cups = g_array_new(FALSE, FALSE, sizeof(Cup));
+	    *cups = g_ptr_array_new();
 	return;
     }
 
     for(i=0;i<(*cups)->len;i++)
-	free_cup(&g_array_index(*cups, Cup, i));
+	free_cup(g_ptr_array_index(*cups, i));
 
-    free_g_array(cups);
+    free_g_ptr_array(cups);
 
     if(reset)
-	*cups = g_array_new(FALSE, FALSE, sizeof(Cup));
+	*cups = g_ptr_array_new();
 }
 
 /**

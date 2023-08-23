@@ -153,7 +153,7 @@ bygfoot_json_serialize_games_goals(const PlayerGamesGoals *games_goals);
 /** @name Cup */
 /* @{ */
 json_object *
-bygfoot_json_serialize_cups(const GArray *garry);
+bygfoot_json_serialize_cups(const GPtrArray *cups);
 
 json_object *
 bygfoot_json_serialize_cup(const Cup *cup);

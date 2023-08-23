@@ -112,7 +112,7 @@ xml_country_read_start_element (GMarkupParseContext *context,
     {
 	state = STATE_CUPS;
 	if(cntry->cups == NULL)
-	    cntry->cups = g_array_new(FALSE, FALSE, sizeof(Cup));
+	    cntry->cups = g_ptr_array_new();
     }
     else if(strcmp(element_name, TAG_CUP) == 0)
 	state = STATE_CUP;

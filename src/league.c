@@ -157,7 +157,7 @@ league_cup_get_index_from_clid(gint clid)
     }
     else {
         for(i=0;i<country.cups->len;i++) {
-            Cup *cup = &g_array_index(country.cups, Cup, i);
+            Cup *cup = g_ptr_array_index(country.cups, i);
             if(cup->c.id == clid)
             {
                 index = i;
@@ -458,7 +458,7 @@ country_get_cup_sid(const Country *country, const gchar *sid)
 {
     int i;
     for (i = 0; i < country->cups->len; i++) {
-        Cup *cup = &g_array_index(country->cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country->cups, i);
         if (!strcmp(cup->sid, sid))
             return cup;
     }
@@ -479,7 +479,7 @@ bygfoot_get_cup_sid(const gchar *sid)
             return cup;
     }
     for (i = 0; i < country.bygfoot->international_cups->len; i++) {
-        Cup *cup = &g_array_index(country.bygfoot->international_cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.bygfoot->international_cups, i);
         if (strcmp(cup->sid, sid) == 0)
             return cup;
     }

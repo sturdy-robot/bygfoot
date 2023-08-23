@@ -524,7 +524,7 @@ treeview_helper_get_table_element_colour_cups(const League *league, gint table_i
 
     for(i=0;i<country.cups->len;i++)
     {
-        Cup *cup = &g_array_index(country.cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.cups, i);
 	cup_highlight_colour = cup_get_highlight_colour(cup);
 
 	if(cup_highlight_colour != NULL)
@@ -588,7 +588,7 @@ treeview_helper_get_table_element_colour_cups_cup(const Cup *cup,
 
     for(i=0;i<country.cups->len;i++)
     {
-        Cup *cup = &g_array_index(country.cups, Cup, i);
+        Cup *cup = g_ptr_array_index(country.cups, i);
 	cup_highlight_colour = cup_get_highlight_colour(cup);
 
 	if(cup_highlight_colour != NULL)

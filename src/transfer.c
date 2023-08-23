@@ -403,7 +403,7 @@ transfer_get_deadline(void)
 
     if(length == 0)
 	for(i=0;i<country.cups->len;i++) {
-            Cup *cup = &g_array_index(country.cups, Cup, i);
+            Cup *cup = g_ptr_array_index(country.cups, i);
 	    length = MAX(length, cup->last_week);
         }
 

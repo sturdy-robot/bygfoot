@@ -76,7 +76,7 @@ void
 free_team(Team *team);
 
 void
-free_cups_array(GArray **cups, gboolean reset);
+free_cups_array(GPtrArray **cups, gboolean reset);
 
 void
 free_cup(Cup *cup);

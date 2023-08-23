@@ -24,7 +24,7 @@ typedef struct
 
     /** @name Global state */
     /* @{ */
-    GArray *international_cups;
+    GPtrArray *international_cups;
     /* @} */
 } Bygfoot;
 

@@ -201,7 +201,7 @@ debug_action(const gchar *text)
     {
         for(i = 0; i < country.cups->len; i++)
         {
-            Cup *cup = &g_array_index(country.cups, Cup, i);
+            Cup *cup = g_ptr_array_index(country.cups, i);
             if(cup->add_week != 1000)
             {
                 g_print("Cup: %s\n", cup->name);

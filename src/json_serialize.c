@@ -867,9 +867,18 @@ bygfoot_json_serialize_cup_rounds(const GArray *rounds,
     return rounds_array_obj;
 }
 
-SERIALIZE_GARRAY_FUNC_DEF(bygfoot_json_serialize_cups,
-                          Cup,
-                          bygfoot_json_serialize_cup);
+struct json_object *
+bygfoot_json_serialize_cups(const GPtrArray *cups)
+{
+    struct json_object *cups_array = json_object_new_array_ext(cups->len);
+    gint i;
+
+    for (i = 0; i < cups->len; i++) {
+        const Cup *cup = g_ptr_array_index(cups, i);
+        json_object_array_add(cups_array, bygfoot_json_serialize_cup(cup));
+    }
+    return cups_array;
+}
 
 struct json_object *
 bygfoot_json_serialize_cup(const Cup *cup)

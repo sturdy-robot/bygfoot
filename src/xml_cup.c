@@ -136,7 +136,7 @@ enum XmlCupStates
 gint state;
 
 /** The variable we will fill and append to an array. */
-Cup new_cup;
+Cup *new_cup;
 CupRound new_round;
 static CupChooseTeam *new_choose_team = NULL;
 WeekBreak new_week_break;
@@ -163,7 +163,8 @@ xml_cup_read_start_element (GMarkupParseContext *context,
 
     if(strcmp(element_name, TAG_CUP) == 0)
     {
-	new_cup = cup_new(TRUE, (Bygfoot*)user_data);
+	new_cup = g_malloc0(sizeof(Cup));
+	*new_cup = cup_new(TRUE, (Bygfoot*)user_data);
 	state = STATE_CUP;
     }
     else if(strcmp(element_name, TAG_DEF_NAME) == 0)
@@ -239,7 +240,7 @@ xml_cup_read_start_element (GMarkupParseContext *context,
         else
         {
             new_wait.cup_round = -1;
-            debug_print_message("xml_cup_read_start_element: No round number specified for cup round wait in cup %s\n", new_cup.name);            
+            debug_print_message("xml_cup_read_start_element: No round number specified for cup round wait in cup %s\n", new_cup->name);            
         }
     }
     else if(strcmp(element_name, TAG_CUP_ROUND_TWO_MATCH_WEEK_START) == 0)
@@ -324,7 +325,7 @@ xml_cup_read_end_element    (GMarkupParseContext *context,
     else if(strcmp(element_name, TAG_DEF_WEEK_BREAK) == 0)
     {
 	state = STATE_CUP;
-        g_array_append_val(new_cup.week_breaks, new_week_break);
+        g_array_append_val(new_cup->week_breaks, new_week_break);
     }
     else if(strcmp(element_name, TAG_CUP_ROUND) == 0)
     {
@@ -333,8 +334,8 @@ xml_cup_read_end_element    (GMarkupParseContext *context,
         if(new_round.home_away == 0)
             new_round.round_robins = 1;
 	
-        league_cup_adjust_rr_breaks(new_round.rr_breaks, new_round.round_robins, new_cup.week_gap);
-	g_array_append_val(new_cup.rounds, new_round);
+        league_cup_adjust_rr_breaks(new_round.rr_breaks, new_round.round_robins, new_cup->week_gap);
+	g_array_append_val(new_cup->rounds, new_round);
     }
     else if(strcmp(element_name, TAG_CUP_ROUND_HOME_AWAY) == 0 ||
 	    strcmp(element_name, TAG_CUP_ROUND_REPLAY) == 0 ||
@@ -414,31 +415,31 @@ xml_cup_read_text         (GMarkupParseContext *context,
     float_value = (gfloat)g_ascii_strtod(buf, NULL);
 
     if(state == STATE_NAME)
-	misc_string_assign(&new_cup.name, buf);
+	misc_string_assign(&new_cup->name, buf);
     else if(state == STATE_SHORT_NAME)
-	misc_string_assign(&new_cup.short_name, buf);
+	misc_string_assign(&new_cup->short_name, buf);
     else if(state == STATE_SYMBOL)
-	misc_string_assign(&new_cup.symbol, buf);
+	misc_string_assign(&new_cup->symbol, buf);
     else if(state == STATE_SID)
-	misc_string_assign(&new_cup.sid, buf);
+	misc_string_assign(&new_cup->sid, buf);
     else if(state == STATE_GROUP)
-	new_cup.group = int_value;
+	new_cup->group = int_value;
     else if(state == STATE_LAST_WEEK)
-	new_cup.last_week = int_value;
+	new_cup->last_week = int_value;
     else if(state == STATE_PROPERTY)
-	g_ptr_array_add(new_cup.properties, g_strdup(buf));
+	g_ptr_array_add(new_cup->properties, g_strdup(buf));
     else if(state == STATE_ADD_WEEK)
-	new_cup.add_week = int_value;
+	new_cup->add_week = int_value;
     else if(state == STATE_WEEK_GAP)
-	new_cup.week_gap = int_value;
+	new_cup->week_gap = int_value;
     else if(state == STATE_WEEK_BREAK)
 	new_week_break.week_number = int_value;
     else if(state == STATE_SKIP_WEEKS_WITH)
-        g_ptr_array_add(new_cup.skip_weeks_with, g_strdup(buf));
+        g_ptr_array_add(new_cup->skip_weeks_with, g_strdup(buf));
     else if(state == STATE_YELLOW_RED)
-	new_cup.yellow_red = int_value;
+	new_cup->yellow_red = int_value;
     else if(state == STATE_TALENT_DIFF)
-	new_cup.talent_diff = 
+	new_cup->talent_diff = 
 	    (float_value / 10000);
     else if(state == STATE_CUP_ROUND_NAME)
 	new_round.name = g_strdup(buf);
@@ -505,7 +506,7 @@ xml_cup_read_text         (GMarkupParseContext *context,
  * @param cups The array we append the new cup to.
  */
 void
-xml_cup_read(const gchar *cup_name, GArray *cups, Bygfoot *bygfoot)
+xml_cup_read(const gchar *cup_name, GPtrArray *cups, Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("xml_cup_read\n");
@@ -554,14 +555,14 @@ xml_cup_read(const gchar *cup_name, GArray *cups, Bygfoot *bygfoot)
 	misc_print_error(&error, TRUE);
     }
 
-    league_cup_adjust_week_breaks(new_cup.week_breaks, new_cup.week_gap);
+    league_cup_adjust_week_breaks(new_cup->week_breaks, new_cup->week_gap);
 
-    for(i = 0; i < new_cup.rounds->len; i++)
-        if(g_array_index(new_cup.rounds, CupRound, i).name == NULL)
+    for(i = 0; i < new_cup->rounds->len; i++)
+        if(g_array_index(new_cup->rounds, CupRound, i).name == NULL)
         {
-            cup_get_round_name(&new_cup, i, buf);
-            g_array_index(new_cup.rounds, CupRound, i).name = g_strdup(buf);
+            cup_get_round_name(new_cup, i, buf);
+            g_array_index(new_cup->rounds, CupRound, i).name = g_strdup(buf);
         }
 
-    g_array_append_val(cups, new_cup);
+    g_ptr_array_add(cups, new_cup);
 }

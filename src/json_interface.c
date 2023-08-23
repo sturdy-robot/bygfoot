@@ -385,7 +385,7 @@ bygfoot_json_call_get_fixtures(Bygfoot *bygfoot, const json_object *args)
         }
     }
     for (i = 0; i < country.cups->len; i++) {
-        const Cup *cup = &g_array_index(country.cups, Cup, i);
+        const Cup *cup = g_ptr_array_index(country.cups, i);
         int j;
         for (j = 0; j < cup->fixtures->len; j++) {
             const Fixture *fixture = &g_array_index(cup->fixtures, Fixture, j);
@@ -393,7 +393,7 @@ bygfoot_json_call_get_fixtures(Bygfoot *bygfoot, const json_object *args)
         }
     }
     for (i = 0; i < bygfoot->international_cups->len; i++) {
-        const Cup *cup = &g_array_index(bygfoot->international_cups, Cup, i);
+        const Cup *cup = g_ptr_array_index(bygfoot->international_cups, i);
         int j;
         for (j = 0; j < cup->fixtures->len; j++) {
             const Fixture *fixture = &g_array_index(cup->fixtures, Fixture, j);
@@ -480,7 +480,7 @@ bygfoot_json_call_get_cups(Bygfoot *bygfoot, const json_object *args)
     int i;
 
     for (i = 0; i < country.cups->len; i++) {
-        const Cup *cup = &g_array_index(country.cups, Cup, i);
+        const Cup *cup = g_ptr_array_index(country.cups, i);
         json_object_array_add(cups_obj, bygfoot_json_serialize_cup(cup));
     }
 

@@ -108,7 +108,7 @@ xml_loadsave_leagues_cups_text         (GMarkupParseContext *context,
 #endif
 
     gchar buf[SMALL];
-    Cup new_cup;
+    Cup *new_cup;
 
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
@@ -117,9 +117,10 @@ xml_loadsave_leagues_cups_text         (GMarkupParseContext *context,
 	xml_load_league(country, country->leagues, dir, buf);
     else if(state == TAG_CUP_FILE)
     {
-	new_cup = cup_new(FALSE, country->bygfoot);
-	g_array_append_val(country->cups, new_cup);
-	xml_load_cup(country->bygfoot, &g_array_index(country->cups, Cup, country->cups->len - 1), dir, buf);
+    new_cup = g_malloc0(sizeof(Cup));
+	*new_cup = cup_new(FALSE, country->bygfoot);
+	g_ptr_array_add(country->cups, new_cup);
+	xml_load_cup(country->bygfoot, new_cup, dir, buf);
     }
 }
 
@@ -197,7 +198,7 @@ xml_loadsave_leagues_cups_write(const gchar *prefix)
 
     for(i=0;i<country.cups->len;i++)
     {
-	Cup *cup = &g_array_index(country.cups, Cup, i);
+	Cup *cup = g_ptr_array_index(country.cups, i);
 	xml_loadsave_cup_write(prefix, cup);
 	sprintf(buf, "%s___cup_%d.xml", basename, cup->c.id);
 	xml_write_string(fil, buf, TAG_CUP_FILE, I1);
@@ -211,7 +212,7 @@ xml_loadsave_leagues_cups_write(const gchar *prefix)
 }
 
 void
-xml_loadsave_leagues_cups_adjust_team_ptrs_cups(GArray *cups)
+xml_loadsave_leagues_cups_adjust_team_ptrs_cups(GPtrArray *cups)
 {
     gint i, j, k;
     GPtrArray *team_ptrs;
@@ -219,7 +220,7 @@ xml_loadsave_leagues_cups_adjust_team_ptrs_cups(GArray *cups)
 
     for(i = 0; i < cups->len; i++)
     {
-        Cup *cup = &g_array_index(cups, Cup, i);
+        Cup *cup = g_ptr_array_index(cups, i);
         fixture_refresh_team_pointers(cup->fixtures);
 
         for(j = 0; j < cup->rounds->len; j++)
