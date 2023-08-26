@@ -255,7 +255,7 @@ dump-sim-old:
     - |
       dnf install -y jq git
       sha=`git ls-remote $CI_MERGE_REQUEST_PROJECT_URL $CI_MERGE_REQUEST_TARGET_BRANCH_NAME | cut -f 1`
-      read -r package_version package_id < <(curl "https://gitlab.com/api/v4/projects/bygfoot%2Fbygfoot/packages?package_name=fedora-36" | jq "[.[] | select(.pipeline.sha | contains (\"$sha\"))][0] | .version, .id" | xargs echo)
+      read -r package_version package_id < <(curl "https://gitlab.com/api/v4/projects/bygfoot%2Fbygfoot/packages?package_name=fedora-36&sort=desc" | jq "[.[] | select(.pipeline.sha | contains (\"$sha\"))][0] | .version, .id" | xargs echo)
       file_name=`curl "https://gitlab.com/api/v4/projects/bygfoot%2Fbygfoot/packages/$package_id/package_files" | jq -r .[0].file_name`
       curl -O -L "https://gitlab.com/api/v4/projects/bygfoot%2Fbygfoot/packages/generic/fedora-36/$package_version/$file_name"
       dnf install -y json-c gtk2 unzip diffutils $file_name
