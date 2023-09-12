@@ -62,7 +62,7 @@ stat_update_leagues(void)
     gint i;
 
     for(i=0;i<country.leagues->len;i++) {
-        League *league = &g_array_index(country.leagues, League, i);
+        League *league = g_ptr_array_index(country.leagues, i);
 	if(query_league_active(league) && 
 	   g_array_index(
 	       league->fixtures, Fixture, league->fixtures->len - 1).week_number >= week)
@@ -208,7 +208,7 @@ stat_create_season_stat(void)
 
     for(i=0;i<country.leagues->len;i++)
     {
-        League *league = &g_array_index(country.leagues, League, i);
+        League *league = g_ptr_array_index(country.leagues, i);
         if(!query_league_cup_has_property(league->c.id, "omit_from_history") &&
            !query_league_cup_has_property(league->c.id, "inactive"))
         {
@@ -302,7 +302,7 @@ stat_show_av_league_goals(void)
 
     g_print("\n\n");
     for(i=0;i<country.leagues->len;i++) {
-        League *league = &g_array_index(country.leagues, League, i);
+        League *league = g_ptr_array_index(country.leagues, i);
 	stat_show_av_goals(league_cup_get_fixtures(league->c.id));
     }
 }

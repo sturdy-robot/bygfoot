@@ -156,7 +156,7 @@ typedef struct country
     enum ReservePromRules reserve_promotion_rules;
 
     /** Leagues and cups arrays. */
-    GArray *leagues;
+    GPtrArray *leagues;
     GPtrArray *cups;
     
     /** Pointer array holding all cups. */

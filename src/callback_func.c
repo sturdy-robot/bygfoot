@@ -69,7 +69,7 @@ callback_show_next_live_game(Bygfoot *bygfoot)
 
     for(i=0; i<country.leagues->len; i++)
     {
-        League *league = &g_array_index(country.leagues, League, i);
+        League *league = g_ptr_array_index(country.leagues, i);
         for(j=0; j<league->fixtures->len; j++)
         {
             user_team_involved = fixture_user_team_involved(&g_array_index(league->fixtures, Fixture, j));

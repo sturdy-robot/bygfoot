@@ -32,7 +32,7 @@ league_allcups_get_index(const Country *country, gint clid)
 {
     int i;
     for (i = 0; i < country->leagues->len; i++) {
-        League *league = &g_array_index(country->leagues, League, i);
+        League *league = g_ptr_array_index(country->leagues, i);
         if (league->c.id == clid)
             return i;
     }
@@ -53,7 +53,7 @@ country_get_next_competition(const Country *country, gint clid, gboolean count_i
 
     /* Get the next league. */
     if (clid_is_league(clid) && index + 1 < country->leagues->len) {
-         league = &g_array_index(country->leagues, League, index + 1);
+         league = g_ptr_array_index(country->leagues, index + 1);
          if (!count_inactive && !query_league_active(league))
             return country_get_next_competition(country, league->c.id, count_inactive);
          return &league->c;
@@ -75,7 +75,7 @@ country_get_next_competition(const Country *country, gint clid, gboolean count_i
     }
 
     /* Get the first league. */
-    league = &g_array_index(country->leagues, League, 0);
+    league = g_ptr_array_index(country->leagues, 0);
     if (!count_inactive && !query_league_active(league))
         return country_get_next_competition(country, league->c.id, count_inactive);
     return &league->c;
@@ -89,7 +89,7 @@ country_get_previous_competition(const Country *country, gint clid, gboolean cou
 
     /* Get the previous league. */
     if (clid_is_league(clid) && index > 0) {
-        league = &g_array_index(country->leagues, League, index - 1);
+        league = g_ptr_array_index(country->leagues, index - 1);
         if (!count_inactive && !query_league_active(league))
             return country_get_previous_competition(country, league->c.id, count_inactive);
         return &league->c;
@@ -111,7 +111,7 @@ country_get_previous_competition(const Country *country, gint clid, gboolean cou
     }
 
     /* Get the last league. */
-    league = &g_array_index(country->leagues, League, country->leagues->len - 1);
+    league = g_ptr_array_index(country->leagues, country->leagues->len - 1);
     if (!count_inactive && !query_league_active(league))
         return country_get_previous_competition(country, league->c.id, count_inactive);
     return &league->c;

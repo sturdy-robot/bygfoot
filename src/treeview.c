@@ -76,7 +76,7 @@ treeview_create_team_selection_list(const Country *country,
 
     for(i=0;i<country->leagues->len;i++)
     {
-        const League *league = &g_array_index(country->leagues, League, i);
+        const League *league = g_ptr_array_index(country->leagues, i);
         for(j=0;j<league->c.teams->len;j++)
         {
             const Team *team = g_ptr_array_index(league->c.teams, j);
@@ -756,7 +756,7 @@ treeview_create_users(void)
 		gtk_list_store_set(ls, &iter, 3,
 				   league_cup_get_name_string(usr(i).tm->clid), -1);
 	    else {
-                League *league = &g_array_index(country.leagues, League, usr(i).scout);
+                League *league = g_ptr_array_index(country.leagues, usr(i).scout);
 		gtk_list_store_set(ls, &iter, 3, league->name, -1);
             }
 	}
@@ -2902,7 +2902,7 @@ treeview_create_league_list(void)
 
     for(i=0;i<country.leagues->len;i++)
     {
-        League *league = &g_array_index(country.leagues, League, i);
+        League *league = g_ptr_array_index(country.leagues, i);
 	gtk_list_store_append(ls, &iter);
 	gtk_list_store_set(ls, &iter, 0, league->name, -1);
     }

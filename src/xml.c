@@ -73,7 +73,7 @@ xml_load_users(const gchar *dirname, const gchar *basename)
 }
 
 void
-xml_load_league(Country *country, GArray *league_list, const gchar *dirname, const gchar *basename)
+xml_load_league(Country *country, GPtrArray *league_list, const gchar *dirname, const gchar *basename)
 {
 #ifdef DEBUG
     printf("xml_load_league\n");
@@ -82,10 +82,10 @@ xml_load_league(Country *country, GArray *league_list, const gchar *dirname, con
     gchar buf[SMALL], team_file[SMALL];
     League new = league_new(FALSE, country);
     gchar *prefix = g_strndup(basename, strlen(basename) - 4);
-    League *league = NULL;
+    League *league = g_malloc0(sizeof(League));
+    *league = new;
 
-    g_array_append_val(league_list, new);
-    league = &g_array_index(league_list, League, league_list->len - 1);
+    g_ptr_array_add(league_list, league);
 
     sprintf(buf, "%s%s%s", dirname, G_DIR_SEPARATOR_S, basename);
     sprintf(team_file, "%s%s%s_teams.xml", dirname, G_DIR_SEPARATOR_S, prefix);

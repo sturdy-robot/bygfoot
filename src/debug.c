@@ -258,7 +258,7 @@ debug_calibrate_betting_odds(gint skilldiffmax, gint matches_per_skilldiff, Bygf
 #endif
 
     gint i, skilldiff, matches;
-    League *league = &g_array_index(country.leagues, League, 0);
+    League *league = g_ptr_array_index(country.leagues, 0);
     Fixture *fix = &g_array_index(league->fixtures, Fixture, 0);
     LiveGame live_game;
 

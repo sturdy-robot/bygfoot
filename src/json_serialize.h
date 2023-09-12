@@ -24,7 +24,7 @@ bygfoot_json_serialize_country(const Country *country);
 /** @name League */
 /* @{ */
 json_object *
-bygfoot_json_serialize_league_array(const GArray *league_array);
+bygfoot_json_serialize_leagues(const GPtrArray *leagues);
 
 json_object *
 bygfoot_json_serialize_league(const League *league);

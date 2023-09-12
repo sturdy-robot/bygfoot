@@ -274,7 +274,7 @@ query_tables_in_country(void)
     gint i;
 
     for(i=0;i<country.leagues->len;i++) {
-        League *league = &g_array_index(country.leagues, League, i);
+        League *league = g_ptr_array_index(country.leagues, i);
 	if(query_league_active(league))
 	    return TRUE;
     }

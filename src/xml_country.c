@@ -102,7 +102,7 @@ xml_country_read_start_element (GMarkupParseContext *context,
     {
 	state = STATE_LEAGUES;
 	if(cntry->leagues == NULL)
-	    cntry->leagues = g_array_new(FALSE, FALSE, sizeof(League));
+	    cntry->leagues = g_ptr_array_new();
 	//if(cntry->teams == NULL)
 	//    cntry->teams = g_array_new(FALSE, FALSE, sizeof(Country));
     }
@@ -294,6 +294,6 @@ xml_country_read(const gchar *country_name, Country *cntry_arg,
     }
 
     for(i=0;i<cntry->leagues->len;i++)
-	if(g_array_index(cntry->leagues, League, i).layer == -1)
-	    g_array_index(cntry->leagues, League, i).layer = i + 1;
+	if(((League*)g_ptr_array_index(cntry->leagues, i))->layer == -1)
+	   ((League*)g_ptr_array_index(cntry->leagues, i))->layer = i + 1;
 }

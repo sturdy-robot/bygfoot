@@ -394,7 +394,7 @@ transfer_get_deadline(void)
     gint length = 0;
 
    for(i=0;i<country.leagues->len;i++) {
-        League *league = &g_array_index(country.leagues, League, i);
+        League *league = g_ptr_array_index(country.leagues, i);
 	if(query_league_active(league))
 	    length = 
 		MAX(length, g_array_index(

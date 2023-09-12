@@ -404,12 +404,13 @@ game_assign_attendance_neutral(Fixture *fix)
     printf("game_assign_attendance_neutral\n");
 #endif
 
+    const League *first_league = g_ptr_array_index(country.leagues, 0);
     const GPtrArray *teamsp = 
 	(GPtrArray*)league_cup_get_teams(fix->clid);
     gfloat av_att = (fix->clid >= ID_CUP_START && 
 		     query_league_cup_has_property(fix->clid, "international") && teamsp->len > 0) ?
 	(gfloat)league_cup_average_capacity(fix->clid) :
-	(gfloat)league_cup_average_capacity(g_array_index(country.leagues, League, 0).c.id);
+	(gfloat)league_cup_average_capacity(first_league->c.id);
 
     fix->attendance = (gint)rint(av_att * 
 				 math_rnd(const_float("float_game_stadium_attendance_neutral_lower"),

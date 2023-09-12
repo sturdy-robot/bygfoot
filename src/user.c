@@ -112,7 +112,7 @@ user_set_up_team_new_game(User *user)
     else
     {
         Team *team = NULL;
-        League *league = &g_array_index(country.leagues, League, user->scout);
+        League *league = g_ptr_array_index(country.leagues, user->scout);
 	rndom = math_rndi(0, league->c.teams->len - 1);
 	while(team_is_user(g_ptr_array_index(league->c.teams, rndom)) != -1)
 	    rndom = math_rndi(0, league->c.teams->len - 1);
@@ -326,7 +326,7 @@ query_user_game_in_week_round(gint usr_idx, gint week_number, gint week_round_nu
     gint i, j;
 
     for(i=0;i<country.leagues->len;i++) {
-        League *league = &g_array_index(country.leagues, League, i);
+        League *league = g_ptr_array_index(country.leagues, i);
 	for(j=0;j<league->fixtures->len;j++)
 	    if(fixture_user_team_involved(&g_array_index(league->fixtures, Fixture, j)) == usr_idx &&
 	       g_array_index(league->fixtures, Fixture, j).week_number == week_number &&

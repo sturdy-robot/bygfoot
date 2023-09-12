@@ -112,7 +112,7 @@ team_generate_players_stadium(Team *tm, gfloat av_talent)
     }
     else
     {
-        League *league = &g_array_index(country.leagues, League, 0);
+        League *league = g_ptr_array_index(country.leagues, 0);
         average_talent = (tm->average_talent == 0) ?
             team_get_average_talents(league->c.teams) *
             (1 + cup_from_clid(tm->clid)->talent_diff) :
@@ -253,7 +253,7 @@ team_of_id(gint id)
     gint i, j, k;
 
     for(i=0;i<country.leagues->len;i++) {
-        League *league = &g_array_index(country.leagues, League, i);
+        League *league = g_ptr_array_index(country.leagues, i);
 	for(j=0;j<league->c.teams->len;j++) {
 	    Team *team = g_ptr_array_index(league->c.teams, j);
 	    if(team->id == id)
@@ -264,7 +264,7 @@ team_of_id(gint id)
     for (i = 0; i < country_list->len; i++) {
         Country *country = g_ptr_array_index(country_list, i);
 	for (j = 0; j < country->leagues->len; j++) {
-	    League *league = &g_array_index(country->leagues, League, j);
+	    League *league = g_ptr_array_index(country->leagues, j);
 	    for (k = 0; k < league->c.teams->len; k++) {
                 Team *team = g_ptr_array_index(league->c.teams, k);
 		if (team->id == id)
@@ -285,7 +285,7 @@ team_of_sid(const char *sid, const Country *country)
 {
     gint i, j, k;
     for (i = 0; i < country->leagues->len; i++) {
-        const League *league = &g_array_index(country->leagues, League, i);
+        const League *league = g_ptr_array_index(country->leagues, i);
         for (j = 0; j < league->c.teams->len; j++ ) {
             Team *team = g_ptr_array_index(league->c.teams, j);
             if (!strcmp(team->name, sid))
@@ -336,7 +336,7 @@ team_get_fixture(const Team *tm, gboolean last_fixture)
 	if(tm->clid < ID_CUP_START)
 	    for(i=0;i<country.leagues->len;i++)
 	    {
-                League *league = &g_array_index(country.leagues, League, i);
+                League *league = g_ptr_array_index(country.leagues, i);
 		if(!query_league_active(league))
 		    continue;
 
@@ -383,7 +383,7 @@ team_get_fixture(const Team *tm, gboolean last_fixture)
 	if(tm->clid < ID_CUP_START)
 	    for(i=0;i<country.leagues->len;i++)
 	    {
-                League *league = &g_array_index(country.leagues, League, i);
+                League *league = g_ptr_array_index(country.leagues, i);
 		if(query_league_active(league))
 		{
 		    for(j=league->fixtures->len - 1;j>=0;j--)
@@ -948,7 +948,7 @@ team_get_sorted(GCompareDataFunc compare_function, gint type, gboolean cup)
     if(!cup)
     {
 	for(i=0;i<country.leagues->len;i++) {
-            League *league = &g_array_index(country.leagues, League, i);
+            League *league = g_ptr_array_index(country.leagues, i);
 	    for(j=0;j<league->c.teams->len;j++)
 		g_ptr_array_add(teams, g_ptr_array_index(league->c.teams, j));
         }
@@ -1074,7 +1074,7 @@ query_team_plays(const Team *tm, gint week_number, gint week_round_number)
 
     if(tm->clid < ID_CUP_START)
 	for(i=0;i<country.leagues->len;i++) {
-            League *league = &g_array_index(country.leagues, League, i);
+            League *league = g_ptr_array_index(country.leagues, i);
 	    if(league->c.id == tm->clid)
 		for(j=0;j<league->fixtures->len;j++)
 		    if(g_array_index(league->fixtures, Fixture, j).week_number == week_number && 

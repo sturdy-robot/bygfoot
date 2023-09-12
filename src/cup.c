@@ -197,7 +197,7 @@ query_cup_choose_team_is_league(const gchar *sid)
     gint i;
 
     for(i=0;i<country.leagues->len;i++) {
-        const League *league = &g_array_index(country.leagues, League, i);
+        const League *league = g_ptr_array_index(country.leagues, i);
 	if(strcmp(league->sid, sid) == 0)
 	    return TRUE;
     }
@@ -262,7 +262,7 @@ cup_get_choose_team_league_cup(const CupChooseTeam *ct,
 
     if(g_str_has_prefix(ct->sid, "LEAGUE") && idx >=0 && idx <= country.leagues->len)
     {
-	*league = &g_array_index(country.leagues, League, idx - 1);
+	*league = g_ptr_array_index(country.leagues, idx - 1);
 	*cup = NULL;
     }
     else if(g_str_has_prefix(ct->sid, "CUP") && idx >=0 && idx <= country.cups->len)
@@ -279,7 +279,7 @@ cup_get_choose_team_league_cup(const CupChooseTeam *ct,
 
 	for(i=0;i<country.leagues->len;i++)
 	{
-            League *l = &g_array_index(country.leagues, League, i);
+            League *l = g_ptr_array_index(country.leagues, i);
 	    if(strcmp(l->sid, ct->sid) == 0 ||
                g_str_has_prefix(l->sid, prefix))
 	    {

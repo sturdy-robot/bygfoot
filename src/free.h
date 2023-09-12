@@ -61,7 +61,7 @@ void
 free_country(Country *cntry, gboolean reset);
 
 void
-free_leagues_array(GArray **leagues, gboolean reset);
+free_leagues_array(GPtrArray **leagues, gboolean reset);
 
 void
 free_league(League *league);

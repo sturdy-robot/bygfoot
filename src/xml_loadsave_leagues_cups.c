@@ -190,7 +190,7 @@ xml_loadsave_leagues_cups_write(const gchar *prefix)
 
     for(i=0;i<country.leagues->len;i++)
     {
-	League *league = &g_array_index(country.leagues, League, i);
+	League *league = g_ptr_array_index(country.leagues, i);
 	xml_loadsave_league_write(prefix, league);
 	sprintf(buf, "%s___league_%d.xml", basename, league->c.id);
 	xml_write_string(fil, buf, TAG_LEAGUE_FILE, I1);
@@ -263,7 +263,7 @@ xml_loadsave_leagues_cups_adjust_team_ptrs(void)
 
     for(i = 0; i < country.leagues->len; i++)
     {
-	League *league = &g_array_index(country.leagues, League, i);
+	League *league = g_ptr_array_index(country.leagues, i);
         fixture_refresh_team_pointers(league->fixtures);
 
         for(j = 0; j < league->tables->len; j++)

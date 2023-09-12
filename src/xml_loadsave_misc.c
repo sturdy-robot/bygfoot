@@ -116,7 +116,7 @@ xml_loadsave_misc_start_element (GMarkupParseContext *context,
 
     if (tag == TAG_COUNTRY) {
         misc_user_data->country = g_malloc0(sizeof(Country));
-        misc_user_data->country->leagues = g_array_new(FALSE, FALSE, sizeof(League));
+        misc_user_data->country->leagues = g_ptr_array_new();
         misc_user_data->country->cups = g_ptr_array_new();
         misc_user_data->country->allcups = g_ptr_array_new();
         misc_user_data->country->bygfoot = misc_user_data->bygfoot;
@@ -384,7 +384,7 @@ xml_loadsave_misc_write_country(const Country *country, FILE *fil,
 
     fprintf(fil, "%s<_%d>\n", I2, TAG_LEAGUES_CUPS);
     for (i = 0; i < country->leagues->len; i++) {
-        const League *league = &g_array_index(country->leagues, League, i);
+        const League *league = g_ptr_array_index(country->leagues, i);
 	xml_loadsave_league_write(prefix, league);
 	sprintf(buf, "%s___league_%d.xml", basename, league->c.id);
 	xml_write_string(fil, buf, TAG_LEAGUE_FILE, I3);

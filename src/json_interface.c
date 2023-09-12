@@ -377,7 +377,7 @@ bygfoot_json_call_get_fixtures(Bygfoot *bygfoot, const json_object *args)
     struct json_object *response, *data;
     int i;
     for (i = 0; i < country.leagues->len; i++) {
-        const League *league = &g_array_index(country.leagues, League, i);
+        const League *league = g_ptr_array_index(country.leagues, i);
         int j;
         for (j = 0; j < league->fixtures->len; j++) {
             const Fixture *fixture = &g_array_index(league->fixtures, Fixture, j);
@@ -431,7 +431,7 @@ bygfoot_json_call_get_tables(Bygfoot *bygfoot, const json_object *args)
     tables = json_object_new_array();
     //GArray *leagues, *cups;
     for (i = 0; i < country.leagues->len; i++) {
-        const League *league = &g_array_index(country.leagues, League, i);
+        const League *league = g_ptr_array_index(country.leagues, i);
         int j;
         for (j = 0; j < league->tables->len; j++) {
             const Table *table = &g_array_index(league->tables, Table, j);
@@ -452,7 +452,7 @@ bygfoot_json_call_get_players(Bygfoot *bygfoot, const json_object *args)
     struct json_object *response, *data;
     int i;
     for (i = 0; i < country.leagues->len; i++) {
-        const League *league = &g_array_index(country.leagues, League, i);
+        const League *league = g_ptr_array_index(country.leagues, i);
         int j;
         for (j = 0; j < league->c.teams->len; j++) {
             const Team *team = g_ptr_array_index(league->c.teams, j);
@@ -490,7 +490,7 @@ bygfoot_json_call_get_cups(Bygfoot *bygfoot, const json_object *args)
 static json_object *
 bygfoot_json_call_get_leagues(Bygfoot *bygfoot, const json_object *args)
 {
-    return bygfoot_json_serialize_league_array(country.leagues);
+    return bygfoot_json_serialize_leagues(country.leagues);
 }
 
 static json_object *

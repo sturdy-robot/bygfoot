@@ -343,7 +343,7 @@ free_country(Country *cntry, gboolean reset)
    @param leagues The pointer to the array we free.
 */
 void
-free_leagues_array(GArray **leagues, gboolean reset)
+free_leagues_array(GPtrArray **leagues, gboolean reset)
 {
 #ifdef DEBUG
     printf("free_leagues_array\n");
@@ -354,17 +354,17 @@ free_leagues_array(GArray **leagues, gboolean reset)
     if(*leagues == NULL)
     {
 	if(reset)
-	    *leagues = g_array_new(FALSE, FALSE, sizeof(League));
+	    *leagues = g_ptr_array_new();
 	return;
     }
 
     for(i=0;i<(*leagues)->len;i++)
-	free_league(&g_array_index(*leagues, League, i));
+	free_league((League*)g_ptr_array_index(*leagues, i));
 
-    free_g_array(leagues);
+    free_g_ptr_array(leagues);
 
     if(reset)
-	*leagues = g_array_new(FALSE, FALSE, sizeof(League));
+	*leagues = g_ptr_array_new();
 }
 
 /**

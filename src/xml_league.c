@@ -568,13 +568,17 @@ xml_league_read(const gchar *league_name, Country *country)
     if(g_markup_parse_context_parse(context, file_contents, length, &error))
     {
         gint i;
+        League *new_league_ptr;
 	g_markup_parse_context_end_parse(context, NULL);	
 	g_markup_parse_context_free(context);
 	g_free(file_contents);
 
         league_cup_adjust_rr_breaks(new_league.rr_breaks, new_league.round_robins, new_league.week_gap);
         league_cup_adjust_week_breaks(new_league.week_breaks, new_league.week_gap);
-	g_array_append_val(country->leagues, new_league);
+        new_league_ptr = g_malloc0(sizeof(League));
+        *new_league_ptr = new_league;
+
+	g_ptr_array_add(country->leagues, new_league_ptr);
 
         for (i = 0; i < new_league.prom_rel.elements->len; i++) {
             PromRelElement *elem = &g_array_index(new_league.prom_rel.elements,

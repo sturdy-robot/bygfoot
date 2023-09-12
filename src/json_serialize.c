@@ -387,7 +387,7 @@ bygfoot_json_serialize_country(const Country *country)
     SERIALIZE_COUNTRY_FIELD(sid, serialize_string);
     SERIALIZE_COUNTRY_FIELD(rating, json_object_new_int64);
     SERIALIZE_COUNTRY_FIELD(reserve_promotion_rules, json_object_new_int64);
-    SERIALIZE_COUNTRY_FIELD(leagues, bygfoot_json_serialize_league_array);
+    SERIALIZE_COUNTRY_FIELD(leagues, bygfoot_json_serialize_leagues);
     SERIALIZE_COUNTRY_FIELD(cups, bygfoot_json_serialize_cups);
     SERIALIZE_COUNTRY_FIELD(allcups, bygfoot_json_serialize_cup_ptrs);
 
@@ -397,17 +397,17 @@ bygfoot_json_serialize_country(const Country *country)
 }
 
 struct json_object *
-bygfoot_json_serialize_league_array(const GArray *league_array)
+bygfoot_json_serialize_leagues(const GPtrArray *leagues)
 {
-    struct json_object *league_array_obj =
-            json_object_new_array_ext(league_array->len);
+    struct json_object *leagues_obj =
+            json_object_new_array_ext(leagues->len);
     gint i;
-    for (i = 0; i < league_array->len; i++) {
-        const League *league = &g_array_index(league_array, League, i);
-        json_object_array_add(league_array_obj,
+    for (i = 0; i < leagues->len; i++) {
+        const League *league = g_ptr_array_index(leagues, i);
+        json_object_array_add(leagues_obj,
                               bygfoot_json_serialize_league(league));
     }
-    return league_array_obj;
+    return leagues_obj;
 }
 
 struct json_object *
