@@ -953,7 +953,6 @@ bygfoot_json_serialize_cup_choose_team(const CupChooseTeam *choose_team)
         SERIALIZE(generate, json_object_new_boolean);
         SERIALIZE(preload, json_object_new_boolean);
         SERIALIZE(optional, json_object_new_boolean);
-        SERIALIZE(previous_season, json_object_new_boolean);
         #undef SERIALIZE
     }
     return choose_team_array;

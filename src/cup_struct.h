@@ -149,9 +149,6 @@ typedef struct CupChooseTeam
      * Default: FALSE. */
     gboolean optional;
 
-    /** Whether to load the team from the results of the previous season. */
-    gboolean previous_season;
-
     /** The alternate CupChooseTeam to use if we are unable to select any
      *  teams using this one.
      */
