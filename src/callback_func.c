@@ -755,12 +755,12 @@ callback_show_player_list(gint type)
         break;
     case SHOW_NEXT_LEAGUE:
         stat1 = league_cup_get_next_clid(stat1, TRUE);
-        while(stat1 >= ID_CUP_START && cup_from_clid(stat1)->c.teams->len == 0)
+        while(stat1 >= ID_CUP_START && !cup_is_international(cup_from_clid(stat1)))
             stat1 = league_cup_get_next_clid(stat1, TRUE);
         break;
     case SHOW_PREVIOUS_LEAGUE:
         stat1 = league_cup_get_previous_clid(stat1, TRUE);
-        while(stat1 >= ID_CUP_START && cup_from_clid(stat1)->c.teams->len == 0)
+        while(stat1 >= ID_CUP_START && !cup_is_international(cup_from_clid(stat1)))
             stat1 = league_cup_get_previous_clid(stat1, TRUE);
         break;
     }
