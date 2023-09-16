@@ -169,7 +169,7 @@ void
 treeview_create_next_opponent_values(GtkListStore *liststore, const Fixture *fix);
 
 void
-treeview_show_all_players(gint clid);
+treeview_show_all_players(const Competition *comp);
 
 GtkTreeModel*
 treeview_create_preview(void);

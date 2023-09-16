@@ -26,6 +26,8 @@
 #ifndef COMPETITION_STRUCT_H
 #define COMPETITION_STRUCT_H
 
+#include <glib.h>
+
 /** Competition struct represents the common parts of the Cup and League
  * structs. */
 typedef struct

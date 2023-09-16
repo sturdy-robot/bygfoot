@@ -24,7 +24,9 @@
 */
 
 #include "bygfoot.h"
+#include "cup.h"
 #include "competition.h"
+#include "league.h"
 
 gboolean
 clid_is_league(gint clid)
@@ -38,8 +40,22 @@ clid_is_cup(gint clid)
     return clid >= ID_CUP_START;
 }
 
+Competition *
+competition_get_from_clid(gint clid)
+{
+    if (clid_is_league(clid))
+        return &league_from_clid(clid)->c;
+    return &cup_from_clid(clid)->c;
+}
+
 gboolean
 competition_is_cup(const Competition *c)
 {
     return clid_is_cup(c->id);
+}
+
+GPtrArray *
+competition_get_teams(const Competition *c)
+{
+    return c->teams;
 }

@@ -752,7 +752,8 @@ callback_show_player_list(gint type)
         return;
         break;
     case SHOW_CURRENT:
-        stat1 = current_user.tm->clid;
+        comp = competition_get_from_clid(current_user.tm->clid);
+        stat1 = comp->id;
         break;
     case SHOW_NEXT_LEAGUE:
         /* Find the next league or international cup. */
@@ -769,7 +770,7 @@ callback_show_player_list(gint type)
         break;
     }
 
-    treeview_show_all_players(stat1);
+    treeview_show_all_players(comp);
 }
 
 /** Fire a player. */

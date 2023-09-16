@@ -34,7 +34,13 @@ clid_is_league(gint clid);
 gboolean
 clid_is_cup(gint clid);
 
+Competition *
+competition_get_from_clid(gint clid);
+
 gboolean
 competition_is_cup(const Competition *c);
+
+GPtrArray *
+competition_get_teams(const Competition *c);
 
 #endif

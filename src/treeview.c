@@ -23,6 +23,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+#include "competition.h"
 #include "cup.h"
 #include "file.h"
 #include "finance.h"
@@ -2126,38 +2127,26 @@ treeview_show_league_results(GtkTreeView *treeview)
 
 /** Show a list of all players in the teams of the cup or league. */
 void
-treeview_show_all_players(gint clid)
+treeview_show_all_players(const Competition *comp)
 {
 #ifdef DEBUG
     printf("treeview_show_all_players\n");
 #endif
 
     gint i, j;
+    /* FIXME: This needs to get freed. */
     GPtrArray *players = g_ptr_array_new();
-    const GPtrArray *teams = NULL;
-    const GPtrArray *teamsp = NULL;
-    
-    if(clid < ID_CUP_START)
-    {
-	teams = league_cup_get_teams(clid);
-	for(i=0;i<teams->len;i++) {
-            Team *team = g_ptr_array_index(teams, i);
-	    if(team != current_user.tm)
-		for(j=0;j<team->players->len;j++)
-		    g_ptr_array_add(players, &g_array_index(team->players,
-							    Player, j));
-        }
+    const GPtrArray *teams = competition_get_teams(comp);
+
+    for(i=0;i<teams->len;i++) {
+        Team *team = g_ptr_array_index(teams, i);
+	if(team != current_user.tm) {
+	    for(j=0;j<team->players->len;j++) {
+	        g_ptr_array_add(players, &g_array_index(team->players,
+		                Player, j));
+            }
+	}
     }
-    else
-    {
-	teamsp = (GPtrArray*)league_cup_get_teams(clid);
-	for(i=0;i<teamsp->len;i++)
-	    if((Team*)g_ptr_array_index(teamsp, i) != current_user.tm)
-		for(j=0;j<((Team*)g_ptr_array_index(teamsp, i))->players->len;j++)
-		    g_ptr_array_add(players, &g_array_index(((Team*)g_ptr_array_index(teamsp, i))->players,
-							    Player, j));
-    }
-	
     treeview_show_player_list(GTK_TREE_VIEW(lookup_widget(window.main, "treeview_right")),
 			      players, 
 			      treeview_helper_get_attributes_from_scout(current_user.scout), FALSE, FALSE);    
