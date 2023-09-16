@@ -742,6 +742,7 @@ callback_show_player_list(gint type)
     printf("callback_show_player_list\n");
 #endif
 
+    Competition *comp;
     stat0 = STATUS_SHOW_PLAYER_LIST;
 
     switch(type)
@@ -754,14 +755,17 @@ callback_show_player_list(gint type)
         stat1 = current_user.tm->clid;
         break;
     case SHOW_NEXT_LEAGUE:
-        stat1 = league_cup_get_next_clid(stat1, TRUE);
-        while(stat1 >= ID_CUP_START && !cup_is_international(cup_from_clid(stat1)))
-            stat1 = league_cup_get_next_clid(stat1, TRUE);
+        /* Find the next league or international cup. */
+        do {
+            comp = country_get_next_competition(&country, stat1, TRUE);
+            stat1 = comp->id;
+        } while (competition_is_cup(comp) && !cup_is_international((Cup*)comp));
         break;
     case SHOW_PREVIOUS_LEAGUE:
-        stat1 = league_cup_get_previous_clid(stat1, TRUE);
-        while(stat1 >= ID_CUP_START && !cup_is_international(cup_from_clid(stat1)))
-            stat1 = league_cup_get_previous_clid(stat1, TRUE);
+        do {
+            comp = country_get_previous_competition(&country, stat1, TRUE);
+            stat1 = comp->id;
+        } while (competition_is_cup(comp) && !cup_is_international((Cup*)comp));
         break;
     }
 
