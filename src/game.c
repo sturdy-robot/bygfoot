@@ -23,6 +23,7 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+#include "competition.h"
 #include "cup.h"
 #include "finance.h"
 #include "fixture.h"
@@ -406,8 +407,7 @@ game_assign_attendance_neutral(Fixture *fix)
 #endif
 
     const League *first_league = g_ptr_array_index(country.leagues, 0);
-    const GPtrArray *teamsp = 
-	(GPtrArray*)league_cup_get_teams(fix->competition->id);
+    const GPtrArray *teamsp = competition_get_teams(fix->competition);
     gfloat av_att = (fix->competition->id >= ID_CUP_START && 
 		     query_league_cup_has_property(fix->competition->id, "international") && teamsp->len > 0) ?
 	(gfloat)league_cup_average_capacity(fix->competition->id) :
