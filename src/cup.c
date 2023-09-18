@@ -751,7 +751,7 @@ cup_compare_success(gconstpointer a, gconstpointer b, gpointer data)
     printf("cup_compare_success\n");
 #endif
 
-    const Cup *cup = (const Cup*)data;
+    Cup *cup = (Cup*)data;
     const CupRound *cupround = NULL;
     const GArray *fixtures = cup->fixtures;
     const Team *team1 = *(const Team**)a;
@@ -819,7 +819,7 @@ cup_compare_success_knockout(const Team *tm1, const Team *tm2, const GArray *fix
 
 /** Compare two teams in cup tables. */
 gint
-cup_compare_success_tables(const Team *tm1, const Team *tm2, const Cup *cup, gint round)
+cup_compare_success_tables(const Team *tm1, const Team *tm2, Cup *cup, gint round)
 {
 #ifdef DEBUG
     printf("cup_compare_success_tables\n");
@@ -845,7 +845,7 @@ cup_compare_success_tables(const Team *tm1, const Team *tm2, const Cup *cup, gin
 		else if(g_array_index(g_array_index(cupround->tables, Table, i).elements, TableElement, j).team == tm2)
 		    elem2 = &g_array_index(g_array_index(cupround->tables, Table, i).elements, TableElement, j);
 
-	return_value = table_element_compare_func(elem1, elem2, GINT_TO_POINTER(cup->c.id));
+	return_value = table_element_compare_func(elem1, elem2, &cup->c);
     }
 
     return return_value;

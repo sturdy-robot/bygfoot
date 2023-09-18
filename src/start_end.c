@@ -681,7 +681,7 @@ end_week_round_sort_tables(Bygfoot *bygfoot)
                 
                 g_array_sort_with_data(g_array_index(league->tables, Table, k).elements,
                                        (GCompareDataFunc)table_element_compare_func,
-                                       GINT_TO_POINTER(league->c.id));
+                                       &league->c);
             }
 	}
     }
@@ -701,7 +701,7 @@ end_week_round_sort_tables(Bygfoot *bygfoot)
 		g_array_sort_with_data(
 		    g_array_index(cup_get_last_tables(cup->c.id), Table, j).elements,
 		    (GCompareDataFunc)table_element_compare_func,
-		    GINT_TO_POINTER(cup->c.id));
+		    &cup->c);
 	    }
     }
 }

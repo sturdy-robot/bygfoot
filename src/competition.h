@@ -38,6 +38,9 @@ Competition *
 competition_get_from_clid(gint clid);
 
 gboolean
+competition_is_league(const Competition *c);
+
+gboolean
 competition_is_cup(const Competition *c);
 
 GPtrArray *

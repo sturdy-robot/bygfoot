@@ -101,7 +101,7 @@ GPtrArray*
 cup_get_teams_sorted(const Cup *cup);
 
 gint
-cup_compare_success_tables(const Team *tm1, const Team *tm2, const Cup *cup, gint round);
+cup_compare_success_tables(const Team *tm1, const Team *tm2, Cup *cup, gint round);
 
 gint
 cup_compare_success(gconstpointer a, gconstpointer b, gpointer data);

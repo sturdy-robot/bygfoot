@@ -190,29 +190,28 @@ table_update_get_elements(TableElement **elements, const Fixture *fix, gboolean 
 gint
 table_element_compare_func(gconstpointer a,
 			   gconstpointer b,
-			   gpointer clid_pointer)
+			   gpointer comp_ptr)
 {
 #ifdef DEBUG
     printf("table_element_compare_func\n");
 #endif
 
     gint i;
-    gint clid, cup_round, value;
+    gint cup_round, value;
     TableElement *element1 = (TableElement*)a,
 	*element2 = (TableElement*)b;
     GArray *fixtures;
     const Fixture *fix[2] = {NULL, NULL};
+    Competition *comp = (Competition*)comp_ptr;
 
     if(element1->team == element2->team)
 	return 0;
 
-    clid = GPOINTER_TO_INT(clid_pointer);
-
-    fixtures = league_cup_get_fixtures(clid);
-    if(clid < ID_CUP_START)
+    fixtures = league_cup_get_fixtures(comp->id);
+    if(competition_is_league(comp))
 	cup_round = -1;
     else
-	cup_round = cup_has_tables(clid);
+	cup_round = cup_has_tables(comp->id);
     
     /*todo use misc_int_compare*/
     if(element1->values[TABLE_PTS] != element2->values[TABLE_PTS])

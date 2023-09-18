@@ -49,6 +49,12 @@ competition_get_from_clid(gint clid)
 }
 
 gboolean
+competition_is_league(const Competition *c)
+{
+    return clid_is_league(c->id);
+}
+
+gboolean
 competition_is_cup(const Competition *c)
 {
     return clid_is_cup(c->id);
