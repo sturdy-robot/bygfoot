@@ -375,9 +375,9 @@ callback_show_tables(gint type)
     if(type == SHOW_CURRENT)
         clid = stat1;
     else if(type == SHOW_NEXT_LEAGUE)
-        clid = league_cup_get_next_clid(stat1, FALSE);
+        clid = league_cup_get_next_clid(stat1, TRUE);
     else if(type == SHOW_PREVIOUS_LEAGUE)
-        clid = league_cup_get_previous_clid(stat1, FALSE);
+        clid = league_cup_get_previous_clid(stat1, TRUE);
     else
     {
         debug_print_message("callback_show_tables: unknown type %d \n", type);
@@ -388,9 +388,9 @@ callback_show_tables(gint type)
             (clid >= ID_CUP_START && cup_has_tables(clid) == -1))
     {
         if(type == SHOW_PREVIOUS_LEAGUE)
-            clid = league_cup_get_previous_clid(clid, FALSE);
+            clid = league_cup_get_previous_clid(clid, TRUE);
         else
-            clid = league_cup_get_next_clid(clid, FALSE);
+            clid = league_cup_get_next_clid(clid, TRUE);
     }
 
     stat1 = clid;
