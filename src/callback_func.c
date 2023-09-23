@@ -370,33 +370,33 @@ callback_show_tables(gint type)
     printf("callback_show_tables\n");
 #endif
 
-    gint clid = -1;
+    Competition *comp;
 
     if(type == SHOW_CURRENT)
-        clid = stat1;
+        comp = competition_get_from_clid(stat1);
     else if(type == SHOW_NEXT_LEAGUE)
-        clid = league_cup_get_next_clid(stat1, TRUE);
+        comp = country_get_next_competition(&country, stat1, TRUE);
     else if(type == SHOW_PREVIOUS_LEAGUE)
-        clid = league_cup_get_previous_clid(stat1, TRUE);
+        comp = country_get_previous_competition(&country, stat1, TRUE);
     else
     {
         debug_print_message("callback_show_tables: unknown type %d \n", type);
         return;
     }
 
-    while((clid < ID_CUP_START && !query_league_active(league_from_clid(clid))) ||
-            (clid >= ID_CUP_START && cup_has_tables(clid) == -1))
+    while((competition_is_league(comp) && !query_league_active((League*)comp)) ||
+            (competition_is_cup(comp) && cup_has_tables(comp->id) == -1))
     {
         if(type == SHOW_PREVIOUS_LEAGUE)
-            clid = league_cup_get_previous_clid(clid, TRUE);
+	    comp = country_get_previous_competition(&country, comp->id, TRUE);
         else
-            clid = league_cup_get_next_clid(clid, TRUE);
+            comp = country_get_next_competition(&country, comp->id, TRUE);
     }
 
-    stat1 = clid;
+    stat1 = comp->id;
 
     treeview_show_table(GTK_TREE_VIEW(lookup_widget(window.main, "treeview_right")),
-                        clid);
+                        comp->id);
 }
 
 /** Open the digits window to get a loan. */
