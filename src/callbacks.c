@@ -478,7 +478,7 @@ on_treeview_right_button_press_event   (GtkWidget       *widget,
         callback_show_fixtures(SHOW_CURRENT);
         break;
     case STATUS_SHOW_FIXTURES:
-        if(stat1 >= ID_CUP_START && cup_has_tables(stat1) == -1)
+        if(stat1 >= ID_CUP_START && cup_has_tables_clid(stat1) == -1)
             game_gui_print_message(_("Cup has no tables."));
         else
         {

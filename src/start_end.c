@@ -690,7 +690,7 @@ end_week_round_sort_tables(Bygfoot *bygfoot)
         Cup *cup = g_ptr_array_index(country.allcups, i);
 	if(query_fixture_in_week_round(cup->c.id, week, week_round) &&
 	   g_array_index(cup->fixtures, Fixture, cup->fixtures->len - 1).round ==
-	   cup_has_tables(cup->c.id))
+	   cup_has_tables(cup))
 	    for(j=0;j<cup_get_last_tables(cup->c.id)->len;j++)
 	    {
 		for(k=0;k<g_array_index(cup_get_last_tables(cup->c.id), Table, j).elements->len;k++)

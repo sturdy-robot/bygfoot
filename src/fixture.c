@@ -963,7 +963,7 @@ query_fixture_has_tables(const Fixture *fix)
 #endif
 
     return (fix->competition->id < ID_CUP_START ||
-	    cup_has_tables(fix->competition->id) == fix->round);
+	    cup_has_tables((Cup*)fix->competition) == fix->round);
 }
 
 /** Find out whether there were games in the specified league

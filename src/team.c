@@ -536,12 +536,12 @@ team_get_league_rank(const Team *tm, gint clid)
     }
     else
     {
-        if(cup_has_tables(clid_local) == -1)
+        if(cup_has_tables_clid(clid_local) == -1)
             return 0;
 
 	rank = team_get_cup_rank(
 	    tm, &g_array_index(cup_from_clid(clid_local)->rounds, CupRound,
-			       cup_has_tables(clid_local)), FALSE);
+			       cup_has_tables_clid(clid_local)), FALSE);
 	return (rank == -1) ? 0 : rank;
     }
 
@@ -1451,7 +1451,7 @@ team_get_table_clid(const Team *tm)
     {
 	for(i = country.allcups->len - 1; i >= 0; i--) {
             Cup *cup = g_ptr_array_index(country.allcups, i);
-	    if(cup_has_tables(cup->c.id) != -1 && 
+	    if(cup_has_tables(cup) != -1 && 
 	       query_team_is_in_cup(tm, cup))
 		return cup->c.id;
         }

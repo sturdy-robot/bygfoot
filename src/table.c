@@ -211,7 +211,7 @@ table_element_compare_func(gconstpointer a,
     if(competition_is_league(comp))
 	cup_round = -1;
     else
-	cup_round = cup_has_tables(comp->id);
+	cup_round = cup_has_tables((Cup*)comp);
     
     /*todo use misc_int_compare*/
     if(element1->values[TABLE_PTS] != element2->values[TABLE_PTS])
@@ -280,7 +280,7 @@ query_tables_in_country(void)
 
     for(i=0;i<country.cups->len;i++) {
         Cup *cup = g_ptr_array_index(country.cups, i);
-	if(cup_has_tables(cup->c.id) != -1)
+	if(cup_has_tables(cup) != -1)
 	    return TRUE;
     }
 

@@ -1188,13 +1188,8 @@ cup_get_round_name(const Cup *cup, gint round, gchar *buf)
     and the number of the cup round with tables
     otherwise. */
 gint
-cup_has_tables(gint clid)
+cup_has_tables(const Cup *cup)
 {
-#ifdef DEBUG
-    printf("cup_has_tables\n");
-#endif
-
-    const Cup *cup = cup_from_clid(clid);
     gint i;
 
     for(i=cup->rounds->len - 1;  i>=0; i--)
@@ -1202,6 +1197,17 @@ cup_has_tables(gint clid)
 	    return i;
 
     return -1;
+}
+
+gint
+cup_has_tables_clid(gint clid)
+{
+#ifdef DEBUG
+    printf("cup_has_tables\n");
+#endif
+
+    const Cup *cup = cup_from_clid(clid);
+    return cup_has_tables(cup);
 }
 
 /** Return the team that won the cup. */

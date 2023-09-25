@@ -385,7 +385,7 @@ callback_show_tables(gint type)
     }
 
     while((competition_is_league(comp) && !query_league_active((League*)comp)) ||
-            (competition_is_cup(comp) && cup_has_tables(comp->id) == -1))
+            (competition_is_cup(comp) && cup_has_tables((Cup*)comp) == -1))
     {
         if(type == SHOW_PREVIOUS_LEAGUE)
 	    comp = country_get_previous_competition(&country, comp->id, TRUE);
