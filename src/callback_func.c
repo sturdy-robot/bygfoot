@@ -135,7 +135,7 @@ callback_show_next_live_game(Bygfoot *bygfoot)
     treeview_show_user_player_list();
     /* no more user games to show: end round. */
     end_week_round(bygfoot);
-    game_gui_show_main();
+    game_gui_show_main(bygfoot->gui);
 
     user_event_show_next();
 
@@ -146,21 +146,21 @@ callback_show_next_live_game(Bygfoot *bygfoot)
     on the player list.
     @param idx The player number. */
 void
-callback_player_activate(gint idx)
+callback_player_activate(Bygfoot *bygfoot, gint idx)
 {
 #ifdef DEBUG
     printf("callback_player_activate\n");
 #endif
 
-    if(stat0 == STATUS_SHOW_TRANSFER_LIST)
+    if(gui_get_status(bygfoot->gui) == STATUS_SHOW_TRANSFER_LIST)
     {
         selected_row = -1;
         transfer_add_remove_user_player(player_of_idx_team(current_user.tm, idx));
     }
-    else if(stat0 == STATUS_SHOW_YA)
+    else if(gui_get_status(bygfoot->gui) == STATUS_SHOW_YA)
     {
         selected_row = idx;
-        on_menu_move_to_youth_academy_activate(NULL, NULL);
+        on_menu_move_to_youth_academy_activate(NULL, bygfoot);
     }
     else if(gtk_notebook_get_current_page(
                 GTK_NOTEBOOK(lookup_widget(window.main, "notebook_player"))) == 1)
@@ -193,7 +193,7 @@ callback_player_activate(gint idx)
         selected_row = -1;
 
         treeview_show_user_player_list();
-        if(stat0 == STATUS_MAIN)
+        if(gui_get_status(bygfoot->gui) == STATUS_MAIN)
             treeview_show_next_opponent();
     }
 
@@ -203,7 +203,7 @@ callback_player_activate(gint idx)
     @param idx The player number.
     @param event The type of button click. */
 void
-callback_player_clicked(gint idx, GdkEventButton *event)
+callback_player_clicked(Bygfoot *bygfoot, gint idx, GdkEventButton *event)
 {
 #ifdef DEBUG
     printf("callback_player_clicked\n");
@@ -214,7 +214,7 @@ callback_player_clicked(gint idx, GdkEventButton *event)
         return;
 
     if(event->button == 1)
-        callback_player_activate(idx);
+        callback_player_activate(bygfoot, idx);
     else if(event->button == 3)
     {
         selected_row = idx;
@@ -675,7 +675,7 @@ callback_offer_new_contract(gint idx)
 
 /** Show the player list of a team in the browse-teams mode. */
 void
-callback_show_team(gint type)
+callback_show_team(GUI *gui, gint type)
 {
 #ifdef DEBUG
     printf("callback_show_team\n");
@@ -723,7 +723,7 @@ callback_show_team(gint type)
         tm = g_ptr_array_index(teams, stat1);
     }
 
-    stat0 = STATUS_BROWSE_TEAMS;
+    gui_set_status(gui, STATUS_BROWSE_TEAMS);
 
     if(tm != current_user.tm)
     {
@@ -731,19 +731,19 @@ callback_show_team(gint type)
         game_gui_write_av_skills(tm);
     }
     else
-        callback_show_team((type == SHOW_PREVIOUS) ? SHOW_PREVIOUS : SHOW_NEXT);
+        callback_show_team(gui, (type == SHOW_PREVIOUS) ? SHOW_PREVIOUS : SHOW_NEXT);
 }
 
 /** Show a sortable list of all players in a league or cup. */
 void
-callback_show_player_list(gint type)
+callback_show_player_list(GUI *gui, gint type)
 {
 #ifdef DEBUG
     printf("callback_show_player_list\n");
 #endif
 
     Competition *comp;
-    stat0 = STATUS_SHOW_PLAYER_LIST;
+    gui_set_status(gui, STATUS_SHOW_PLAYER_LIST);
 
     switch(type)
     {
@@ -883,7 +883,7 @@ callback_show_season_history(gint type)
 
 /** Show the player list of the next opponent. */
 void
-callback_show_next_opponent(void)
+callback_show_next_opponent(GUI *gui)
 {
 #ifdef DEBUG
     printf("callback_show_next_opponent\n");
@@ -898,7 +898,7 @@ callback_show_next_opponent(void)
     if(opp == NULL)
         return;
 
-    stat0 = STATUS_BROWSE_TEAMS;
+    gui_set_status(gui, STATUS_BROWSE_TEAMS);
     stat1 = team_get_index(opp);
     stat2 = opp->clid;
 
@@ -908,7 +908,7 @@ callback_show_next_opponent(void)
 /** Show the player list after the user clicked on a player in
     the browse players mode. */
 void
-callback_show_player_team(void)
+callback_show_player_team(GUI *gui)
 {
 #ifdef DEBUG
     printf("callback_show_player_team\n");
@@ -919,7 +919,7 @@ callback_show_player_team(void)
     const Player *pl =
         (const Player*)treeview_helper_get_pointer(treeview_right, 2);
 
-    stat0 = STATUS_BROWSE_TEAMS;
+    gui_set_status(gui, STATUS_BROWSE_TEAMS);
     stat1 = team_get_index(pl->team);
     stat2 = pl->team->clid;
 
@@ -928,7 +928,7 @@ callback_show_player_team(void)
 
 /** Show the youth players of the current user. */
 void
-callback_show_youth_academy(void)
+callback_show_youth_academy(const GUI *gui)
 {
 #ifdef DEBUG
     printf("callback_show_youth_academy\n");
@@ -948,7 +948,7 @@ callback_show_youth_academy(void)
                         attributes.on_off[PLAYER_LIST_ATTRIBUTE_AGE] =
                             attributes.on_off[PLAYER_LIST_ATTRIBUTE_ETAL] = 1;
 
-    if(stat0 != STATUS_SHOW_YA)
+    if(gui_get_status(gui) != STATUS_SHOW_YA)
         game_gui_print_message(_("Left click to move players to and from the youth academy; right click for context menu."));
 
     treeview_show_player_list(

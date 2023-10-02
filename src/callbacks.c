@@ -78,6 +78,7 @@ on_eventbox_style_button_press_event   (GtkWidget       *widget,
     printf("on_eventbox_style_button_press_event\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     gint new_style = -1;
 
     if(event->type != GDK_BUTTON_PRESS)
@@ -97,7 +98,7 @@ on_eventbox_style_button_press_event   (GtkWidget       *widget,
     game_gui_write_meters(current_user.tm);
     game_gui_write_radio_items();
     
-    if(stat0 == STATUS_MAIN)
+    if(gui_get_status(bygfoot->gui)  == STATUS_MAIN)
 	treeview_show_next_opponent();
 
     setsav0;
@@ -115,6 +116,7 @@ on_eventbox_boost_button_press_event   (GtkWidget       *widget,
     printf("on_eventbox_boost_button_press_event\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     gint new_boost = -1; 
 
     if(event->type != GDK_BUTTON_PRESS)
@@ -137,7 +139,7 @@ on_eventbox_boost_button_press_event   (GtkWidget       *widget,
     game_gui_write_meters(current_user.tm);
     game_gui_write_radio_items();
 
-    if(stat0 == STATUS_MAIN)
+    if(gui_get_status(bygfoot->gui) == STATUS_MAIN)
 	treeview_show_next_opponent();
 
     setsav0;
@@ -177,13 +179,14 @@ on_button_back_to_main_clicked         (GtkButton       *button,
     printf("on_button_back_to_main_clicked\n");
 #endif
 
-    if(stat0 != STATUS_LIVE_GAME_PAUSE)
-	stat0 = STATUS_MAIN;
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    if(gui_get_status(bygfoot->gui) != STATUS_LIVE_GAME_PAUSE)
+        gui_set_status(bygfoot->gui, STATUS_MAIN);
     gtk_notebook_set_current_page(GTK_NOTEBOOK(lookup_widget(window.main, "notebook_player")), 0);
     selected_row = -1;
-    game_gui_show_main();
+    game_gui_show_main(bygfoot->gui);
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 
     if((opt_int("int_opt_news_popup") == 2 ||
         (opt_int("int_opt_news_popup") == 1 &&
@@ -202,13 +205,14 @@ on_button_transfers_clicked            (GtkButton       *button,
     printf("on_button_transfers_clicked\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(sett_int("int_opt_disable_transfers"))
 	game_gui_print_message(_("Transfers are disabled in this country definition."));
     else if(week < transfer_get_deadline() || transfer_list->len > 0)
     {
-	if(stat0 != STATUS_SHOW_TRANSFER_LIST)
+	if(gui_get_status(bygfoot->gui) != STATUS_SHOW_TRANSFER_LIST)
 	{
-	    stat0 = STATUS_SHOW_TRANSFER_LIST;
+	    gui_set_status(bygfoot->gui, STATUS_SHOW_TRANSFER_LIST);
 	    game_gui_print_message(
 		_("Left click to make an offer. Right click to remove offer."));
 	    game_gui_print_message_with_delay(
@@ -220,7 +224,7 @@ on_button_transfers_clicked            (GtkButton       *button,
 	gtk_notebook_set_current_page(
 	    GTK_NOTEBOOK(lookup_widget(window.main, "notebook_player")), 1);
 	
-	gui_set_arrows();
+	gui_set_arrows(bygfoot->gui);
     }
     else
 	game_gui_print_message(_("The transfer deadline is over."));
@@ -268,7 +272,8 @@ on_button_browse_forward_clicked       (GtkButton       *button,
     printf("on_button_browse_forward_clicked\n");
 #endif
 
-    switch(stat0)
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    switch(gui_get_status(bygfoot->gui))
     {
 	case STATUS_SHOW_FIXTURES:
 	    callback_show_fixtures(SHOW_NEXT);
@@ -277,11 +282,11 @@ on_button_browse_forward_clicked       (GtkButton       *button,
 	    callback_show_fixtures_week(SHOW_NEXT);
 	    break;
 	case STATUS_BROWSE_TEAMS:
-	    callback_show_team(SHOW_NEXT);
+	    callback_show_team(bygfoot->gui, SHOW_NEXT);
 	    break;
 	case STATUS_SHOW_PLAYER_INFO:
 	    selected_row = (selected_row + 1) % current_user.tm->players->len;
-	    on_menu_show_info_activate(NULL, NULL);
+	    on_menu_show_info_activate(NULL, bygfoot);
 	    break;
 	case STATUS_SHOW_SEASON_HISTORY:
 	    callback_show_season_history(SHOW_NEXT);
@@ -298,7 +303,8 @@ on_button_browse_back_clicked          (GtkButton       *button,
     printf("on_button_browse_back_clicked\n");
 #endif
 
-    switch(stat0)
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    switch(gui_get_status(bygfoot->gui))
     {
 	case STATUS_SHOW_FIXTURES:
 	    callback_show_fixtures(SHOW_PREVIOUS);
@@ -307,11 +313,11 @@ on_button_browse_back_clicked          (GtkButton       *button,
 	    callback_show_fixtures_week(SHOW_PREVIOUS);
 	    break;
 	case STATUS_BROWSE_TEAMS:
-	    callback_show_team(SHOW_PREVIOUS);
+	    callback_show_team(bygfoot->gui, SHOW_PREVIOUS);
 	    break;
 	case STATUS_SHOW_PLAYER_INFO:
 	    selected_row = (selected_row == 0) ? current_user.tm->players->len - 1 : selected_row - 1;
-	    on_menu_show_info_activate(NULL, NULL);
+	    on_menu_show_info_activate(NULL, bygfoot);
 	    break;
 	case STATUS_SHOW_SEASON_HISTORY:
 	    callback_show_season_history(SHOW_PREVIOUS);
@@ -327,7 +333,8 @@ on_button_cl_back_clicked              (GtkButton       *button,
     printf("on_button_cl_back_clicked\n");
 #endif
 
-    switch(stat0)
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    switch(gui_get_status(bygfoot->gui))
     {
 	case STATUS_SHOW_FIXTURES:
 	    callback_show_fixtures(SHOW_PREVIOUS_LEAGUE);
@@ -336,10 +343,10 @@ on_button_cl_back_clicked              (GtkButton       *button,
 	    callback_show_tables(SHOW_PREVIOUS_LEAGUE);
 	    break;
 	case STATUS_BROWSE_TEAMS:
-	    callback_show_team(SHOW_PREVIOUS_LEAGUE);
+	    callback_show_team(bygfoot->gui, SHOW_PREVIOUS_LEAGUE);
 	    break;
 	case STATUS_SHOW_PLAYER_LIST:
-	    callback_show_player_list(SHOW_PREVIOUS_LEAGUE);
+	    callback_show_player_list(bygfoot->gui, SHOW_PREVIOUS_LEAGUE);
 	    break;
 	case STATUS_SHOW_LEAGUE_STATS:
 	    callback_show_league_stats(SHOW_PREVIOUS_LEAGUE);
@@ -358,7 +365,8 @@ on_button_cl_forward_clicked           (GtkButton       *button,
     printf("on_button_cl_forward_clicked\n");
 #endif
 
-    switch(stat0)
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    switch(gui_get_status(bygfoot->gui))
     {
 	case STATUS_SHOW_FIXTURES:
 	    callback_show_fixtures(SHOW_NEXT_LEAGUE);
@@ -367,10 +375,10 @@ on_button_cl_forward_clicked           (GtkButton       *button,
 	    callback_show_tables(SHOW_NEXT_LEAGUE);
 	    break;
 	case STATUS_BROWSE_TEAMS:
-	    callback_show_team(SHOW_NEXT_LEAGUE);
+	    callback_show_team(bygfoot->gui, SHOW_NEXT_LEAGUE);
 	    break;
 	case STATUS_SHOW_PLAYER_LIST:
-	    callback_show_player_list(SHOW_NEXT_LEAGUE);
+	    callback_show_player_list(bygfoot->gui, SHOW_NEXT_LEAGUE);
 	    break;
 	case STATUS_SHOW_LEAGUE_STATS:
 	    callback_show_league_stats(SHOW_NEXT_LEAGUE);
@@ -396,7 +404,8 @@ on_treeview_right_button_press_event   (GtkWidget       *widget,
 
     gint idx;
 
-    if(stat0 == STATUS_SHOW_FINANCES)
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    if(gui_get_status(bygfoot->gui) == STATUS_SHOW_FINANCES)
     {
 	if(event->button == 1)
 	    callback_get_loan();
@@ -416,7 +425,7 @@ on_treeview_right_button_press_event   (GtkWidget       *widget,
     else
 	return TRUE;
 
-    switch(stat0)
+    switch(gui_get_status(bygfoot->gui))
     {
 	case STATUS_SHOW_TRANSFER_LIST:
 	    if(trans(idx - 1).tm == current_user.tm ||
@@ -435,18 +444,18 @@ on_treeview_right_button_press_event   (GtkWidget       *widget,
 	    }
 	    break;
 	case STATUS_SHOW_TEAM_LIST:
-	    callback_show_team(SHOW_CURRENT);
+	    callback_show_team(bygfoot->gui, SHOW_CURRENT);
 	    break;
 	case STATUS_MAIN:
-	    callback_show_next_opponent();
+	    callback_show_next_opponent(bygfoot->gui);
 	    break;
 	case STATUS_SHOW_PLAYER_LIST:
-	    callback_show_player_team();
+	    callback_show_player_team(bygfoot->gui);
 	    break;
 	case STATUS_SHOW_YA:
 	    selected_row = idx - 1;
 	    if(event->button == 1)
-		on_menu_youth_move_to_team_activate(NULL, NULL);
+		on_menu_youth_move_to_team_activate(NULL, bygfoot);
 	    else if(event->button == 3)
 		window_show_menu_youth((GdkEvent*)event);
 	    break;
@@ -464,15 +473,15 @@ on_treeview_right_button_press_event   (GtkWidget       *widget,
                         bygfoot, 
 		       &g_array_index(jobs, Job, idx - 1), &current_user))
 		{
-		    stat0 = STATUS_MAIN;
-		    game_gui_show_main();
+		    gui_set_status(bygfoot->gui, STATUS_MAIN);
+		    game_gui_show_main(bygfoot->gui);
 		    setsav0;
 		}
             }
 	    break;
 
     case STATUS_SHOW_TABLES:
-        stat0 = STATUS_SHOW_FIXTURES;
+        gui_set_status(bygfoot->gui, STATUS_SHOW_FIXTURES);
         stat2 = week;
         stat3 = week_round;
         callback_show_fixtures(SHOW_CURRENT);
@@ -482,13 +491,13 @@ on_treeview_right_button_press_event   (GtkWidget       *widget,
             game_gui_print_message(_("Cup has no tables."));
         else
         {
-            stat0 = STATUS_SHOW_TABLES;
+            gui_set_status(bygfoot->gui, STATUS_SHOW_TABLES);
             callback_show_tables(SHOW_CURRENT);   
         }
         break;
     }
     
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 
     return TRUE;
 }
@@ -502,6 +511,7 @@ on_player_list1_button_press_event     (GtkWidget       *widget,
     printf("on_player_list1_button_press_event\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     gint idx = -1;
 
     if(event->button == 2)
@@ -509,7 +519,7 @@ on_player_list1_button_press_event     (GtkWidget       *widget,
 	on_menu_rearrange_team_activate(NULL, NULL);
 	return TRUE;
     }
-    else if(stat0 == STATUS_LIVE_GAME_PAUSE && event->button == 3)
+    else if(gui_get_status(bygfoot->gui) == STATUS_LIVE_GAME_PAUSE && event->button == 3)
     {
 	on_menu_reset_players_activate(NULL, NULL);
 	return TRUE;
@@ -524,7 +534,7 @@ on_player_list1_button_press_event     (GtkWidget       *widget,
 	return FALSE;
     }
  
-    callback_player_clicked(idx - 1, event);
+    callback_player_clicked(bygfoot, idx - 1, event);
 
     return FALSE;
 }
@@ -539,6 +549,7 @@ on_player_list1_key_press_event        (GtkWidget       *widget,
     printf("on_player_list1_key_press_event\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     gint idx = -1;
 
     if(event->keyval != GDK_Return)
@@ -552,7 +563,7 @@ on_player_list1_key_press_event        (GtkWidget       *widget,
 	return FALSE;
     }
 
-    callback_player_activate(idx - 1);
+    callback_player_activate(bygfoot, idx - 1);
 
     return FALSE;
 }
@@ -573,7 +584,7 @@ on_menu_load_last_save_activate        (GtkMenuItem     *menuitem,
     if(load_save_load_game(bygfoot, "last_save", FALSE))
     {
 	cur_user = 0;
-	on_button_back_to_main_clicked(NULL, NULL);
+	on_button_back_to_main_clicked(NULL, bygfoot);
 	setsav1;
     }
 }
@@ -592,7 +603,7 @@ on_menu_new_activate                   (GtkMenuItem     *menuitem,
     
     main_init(NULL, NULL, bygfoot);
     window_show_startup(user_data);
-    stat0 = STATUS_TEAM_SELECTION;
+    gui_set_status(bygfoot->gui, STATUS_TEAM_SELECTION);
     statp = NULL;
 }
 
@@ -713,13 +724,14 @@ on_menu_fixtures_activate              (GtkMenuItem     *menuitem,
     printf("on_menu_fixtures_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     game_gui_print_message(
         _("Left click to show table."));
 
-    stat0 = STATUS_SHOW_FIXTURES;
+    gui_set_status(bygfoot->gui, STATUS_SHOW_FIXTURES);
     callback_show_fixtures(SHOW_TEAM);
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 }
 
 G_MODULE_EXPORT void
@@ -730,10 +742,11 @@ on_menu_fixtures_week_activate         (GtkMenuItem     *menuitem,
     printf("on_menu_fixtures_week_activate\n");
 #endif
 
-    stat0 = STATUS_SHOW_FIXTURES_WEEK;
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    gui_set_status(bygfoot->gui, STATUS_SHOW_FIXTURES_WEEK);
     callback_show_fixtures_week(SHOW_CURRENT);
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 }
 
 
@@ -745,6 +758,7 @@ on_menu_tables_activate                (GtkMenuItem     *menuitem,
     printf("on_menu_tables_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     /* No tables in this country? */
     if(!query_tables_in_country())
     {
@@ -756,11 +770,11 @@ on_menu_tables_activate                (GtkMenuItem     *menuitem,
     game_gui_print_message(
         _("Left click to show fixtures."));
 
-    stat0 = STATUS_SHOW_TABLES;
+    gui_set_status(bygfoot->gui, STATUS_SHOW_TABLES);
     stat1 = team_get_table_clid(current_user.tm);
     callback_show_tables(SHOW_CURRENT);
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 }
 
 
@@ -772,6 +786,7 @@ on_menu_league_stats_activate          (GtkMenuItem     *menuitem,
     printf("on_menu_league_stats_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(!query_leagues_active_in_country())
     {
 	game_gui_print_message(
@@ -779,10 +794,10 @@ on_menu_league_stats_activate          (GtkMenuItem     *menuitem,
 	return;	
     }
 
-    stat0 = STATUS_SHOW_LEAGUE_STATS;
+    gui_set_status(bygfoot->gui, STATUS_SHOW_LEAGUE_STATS);
     callback_show_league_stats(SHOW_CURRENT);
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 }
 
 
@@ -794,6 +809,7 @@ on_menu_season_history_activate        (GtkMenuItem     *menuitem,
     printf("on_menu_season_history_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(season_stats->len == 0)
     {
 	game_gui_print_message(
@@ -801,10 +817,10 @@ on_menu_season_history_activate        (GtkMenuItem     *menuitem,
 	return;
     }
 
-    stat0 = STATUS_SHOW_SEASON_HISTORY;
+    gui_set_status(bygfoot->gui, STATUS_SHOW_SEASON_HISTORY);
     callback_show_season_history(SHOW_CURRENT);
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 }
 
 
@@ -820,6 +836,7 @@ on_menu_show_youth_academy_activate    (GtkMenuItem     *menuitem,
     printf("on_menu_show_youth_academy_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(sett_int("int_opt_disable_ya"))
     {
 	game_gui_print_message(
@@ -827,8 +844,8 @@ on_menu_show_youth_academy_activate    (GtkMenuItem     *menuitem,
 	return;
     }
 
-    callback_show_youth_academy();
-    stat0 = STATUS_SHOW_YA;
+    callback_show_youth_academy(bygfoot->gui);
+    gui_set_status(bygfoot->gui, STATUS_SHOW_YA);
 }
 
 G_MODULE_EXPORT void
@@ -860,9 +877,10 @@ on_menu_show_job_exchange_activate     (GtkMenuItem     *menuitem,
     printf("on_menu_show_job_exchange_activate\n");
 #endif
 
-    stat0 = STATUS_SHOW_JOB_EXCHANGE;
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    gui_set_status(bygfoot->gui, STATUS_SHOW_JOB_EXCHANGE);
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 
     treeview2_show_job_exchange();
 
@@ -1000,14 +1018,15 @@ on_menu_browse_teams_activate          (GtkMenuItem     *menuitem,
     printf("on_menu_browse_teams_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     GtkWidget *treeview_right =
 	lookup_widget(window.main, "treeview_right");
 
-    treeview_show_team_list(GTK_TREE_VIEW(treeview_right), TRUE, TRUE);
+    treeview_show_team_list(GTK_TREE_VIEW(treeview_right), TRUE, TRUE, bygfoot);
 
-    stat0 = STATUS_SHOW_TEAM_LIST;
+    gui_set_status(bygfoot->gui, STATUS_SHOW_TEAM_LIST);
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 }
 
 /***********************************************************************************************************
@@ -1054,10 +1073,11 @@ on_menu_browse_players_activate        (GtkMenuItem     *menuitem,
     printf("on_menu_browse_players_activate\n");
 #endif
 
-    stat0 = STATUS_SHOW_PLAYER_LIST;
-    callback_show_player_list(SHOW_CURRENT);
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    gui_set_status(bygfoot->gui, STATUS_SHOW_PLAYER_LIST);
+    callback_show_player_list(bygfoot->gui, SHOW_CURRENT);
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 }
 
 G_MODULE_EXPORT void
@@ -1094,17 +1114,18 @@ on_menu_show_info_activate      (GtkMenuItem     *menuitem,
     printf("on_menu_show_info_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(selected_row == -1)
     {
 	game_gui_print_message(_("You haven't selected a player."));
 	return;
     }    
 
-    if(stat0 != STATUS_LIVE_GAME_PAUSE)
-	stat0 = STATUS_SHOW_PLAYER_INFO;
+    if(gui_get_status(bygfoot->gui) != STATUS_LIVE_GAME_PAUSE)
+        gui_set_status(bygfoot->gui, STATUS_SHOW_PLAYER_INFO);
     treeview_show_player_info(player_of_idx_team(current_user.tm, selected_row));
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 }
 
 G_MODULE_EXPORT void
@@ -1208,6 +1229,7 @@ on_menu_move_to_youth_academy_activate (GtkMenuItem     *menuitem,
 #endif
 
     Player *pl;
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
 
     if(sett_int("int_opt_disable_ya"))
     {
@@ -1234,7 +1256,7 @@ on_menu_move_to_youth_academy_activate (GtkMenuItem     *menuitem,
 	{
 	    player_move_to_ya(selected_row);
 	    treeview_show_user_player_list();
-	    on_menu_show_youth_academy_activate(NULL, NULL);
+	    on_menu_show_youth_academy_activate(NULL, bygfoot);
 	    selected_row = -1;
 	}
     }
@@ -1260,8 +1282,7 @@ on_player_menu_show_info_activate      (GtkMenuItem     *menuitem,
 #ifdef DEBUG
     printf("on_player_menu_show_info_activate\n");
 #endif
-
-    on_menu_show_info_activate(NULL, NULL);
+    on_menu_show_info_activate(NULL, user_data);
 }
 
 G_MODULE_EXPORT void
@@ -1336,7 +1357,8 @@ on_player_menu_move_to_youth_academy_activate
     printf("on_player_menu_move_to_youth_academy_activate\n");
 #endif
 
-    on_menu_move_to_youth_academy_activate(NULL, NULL);
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    on_menu_move_to_youth_academy_activate(NULL, bygfoot);
 }
 
 /***********************************************************************************************************
@@ -1351,6 +1373,7 @@ on_menu_youth_move_to_team_activate    (GtkMenuItem     *menuitem,
     printf("on_menu_youth_move_to_team_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(sett_int("int_opt_disable_ya"))
     {
 	game_gui_print_message(
@@ -1365,7 +1388,7 @@ on_menu_youth_move_to_team_activate    (GtkMenuItem     *menuitem,
     {
 	player_move_from_ya(selected_row);
 	treeview_show_user_player_list();
-	on_menu_show_youth_academy_activate(NULL, NULL);
+	on_menu_show_youth_academy_activate(NULL, bygfoot);
 	selected_row = -1;
     }
 }
@@ -1380,6 +1403,7 @@ on_menu_youth_kick_out_of_academy_activate
     printf("on_menu_youth_kick_out_of_academy_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(opt_user_int("int_opt_user_confirm_youth"))
     {
 	stat1 = STATUS_QUERY_KICK_YOUTH;
@@ -1389,7 +1413,7 @@ on_menu_youth_kick_out_of_academy_activate
     {
 	free_player(&g_array_index(current_user.youth_academy.players, Player, selected_row));
 	g_array_remove_index(current_user.youth_academy.players, selected_row);
-	on_menu_show_youth_academy_activate(NULL, NULL);
+	on_menu_show_youth_academy_activate(NULL, bygfoot);
 	selected_row = -1;
     }
 }
@@ -1406,6 +1430,7 @@ on_menu_next_user_activate             (GtkMenuItem     *menuitem,
     printf("on_menu_next_user_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data; 
     if(transfer_offers_pending())
     {
 	game_gui_show_warning(_("You still have some transfer business to manage."));
@@ -1415,7 +1440,7 @@ on_menu_next_user_activate             (GtkMenuItem     *menuitem,
     cur_user = (cur_user + 1) % users->len;
     user_event_show_next();
 
-    on_button_back_to_main_clicked(NULL, NULL);
+    on_button_back_to_main_clicked(NULL, bygfoot);
 }
 
 
@@ -1427,6 +1452,7 @@ on_menu_previous_user_activate         (GtkMenuItem     *menuitem,
     printf("on_menu_previous_user_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(transfer_offers_pending())
     {
 	game_gui_show_warning(_("You still have some transfer business to manage."));
@@ -1436,7 +1462,7 @@ on_menu_previous_user_activate         (GtkMenuItem     *menuitem,
     cur_user = (cur_user == 0) ? users->len - 1 : cur_user - 1;
     user_event_show_next();
 
-    on_button_back_to_main_clicked(NULL, NULL);
+    on_button_back_to_main_clicked(NULL, bygfoot);
 }
 
 G_MODULE_EXPORT void
@@ -1447,11 +1473,13 @@ on_menu_manage_users_activate          (GtkMenuItem     *menuitem,
     printf("on_menu_manage_users_activate\n");
 #endif
 
-    stat0 = stat1 = STATUS_USER_MANAGEMENT;
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    gui_set_status(bygfoot->gui, STATUS_USER_MANAGEMENT);
+    stat1 = STATUS_USER_MANAGEMENT;
     window_create(WINDOW_USER_MANAGEMENT);
-    treeview_show_users(GTK_TREE_VIEW(lookup_widget(window.user_management, "treeview_user_management_users")));
+    treeview_show_users(GTK_TREE_VIEW(lookup_widget(window.user_management, "treeview_user_management_users")), bygfoot->gui);
     treeview_show_team_list(GTK_TREE_VIEW(lookup_widget(window.user_management, "treeview_user_management_teams")),
-			    FALSE, FALSE);
+			    FALSE, FALSE, bygfoot);
 }
 
 
@@ -1484,16 +1512,17 @@ on_menu_user_show_last_stats_activate  (GtkMenuItem     *menuitem,
     printf("on_menu_user_show_last_stats_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(current_user.live_game.units->len == 0)
     {
 	game_gui_show_warning(_("No match stored."));
 	return;
     }
 
-    stat0 = STATUS_SHOW_LAST_MATCH_STATS;
+    gui_set_status(bygfoot->gui, STATUS_SHOW_LAST_MATCH_STATS);
     callback_show_last_match_stats();
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 }
 
 
@@ -1506,10 +1535,11 @@ on_menu_user_show_coming_matches_activate
     printf("on_menu_user_show_coming_matches_activate\n");
 #endif
 
-    stat0 = STATUS_SHOW_PREVIEW;
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    gui_set_status(bygfoot->gui, STATUS_SHOW_PREVIEW);
     treeview_show_preview();
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 }
 
 /***********************************************************************************************************
@@ -1525,7 +1555,8 @@ on_menu_betting_activate               (GtkMenuItem     *menuitem,
     printf("on_menu_betting_activate\n");
 #endif
 
-    on_button_back_to_main_clicked(NULL, NULL);
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    on_button_back_to_main_clicked(NULL, bygfoot);
     window_show_bets();
 }
 
@@ -1565,18 +1596,19 @@ on_menu_show_finances_activate         (GtkMenuItem     *menuitem,
     printf("on_menu_show_finances_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(sett_int("int_opt_disable_finances"))
     {
 	game_gui_print_message(_("Finances are disabled in this country definition."));
 	return;
     }
 
-    stat0 = STATUS_SHOW_FINANCES;
+    gui_set_status(bygfoot->gui, STATUS_SHOW_FINANCES);
     game_gui_print_message(_("Left-click: get loan; Right-click: pay back; Middle click: stadium window."));
     treeview_show_finances(GTK_TREE_VIEW(lookup_widget(window.main, "treeview_right")),
 			   &current_user);
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 }
 
 
@@ -1610,10 +1642,11 @@ on_menu_user_show_history_activate     (GtkMenuItem     *menuitem,
     printf("on_menu_user_show_history_activate\n");
 #endif
 
-    stat0 = STATUS_SHOW_USER_HISTORY;
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    gui_set_status(bygfoot->gui, STATUS_SHOW_USER_HISTORY);
     treeview_show_user_history();
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 }
 
 G_MODULE_EXPORT void
@@ -1677,10 +1710,11 @@ on_menu_my_league_results_activate     (GtkMenuItem     *menuitem,
     printf("on_menu_my_league_results_activate\n");
 #endif
 
-    stat0 = STATUS_SHOW_LEAGUE_RESULTS;
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    gui_set_status(bygfoot->gui, STATUS_SHOW_LEAGUE_RESULTS);
     treeview_show_league_results(GTK_TREE_VIEW(lookup_widget(window.main, "treeview_right")));
 
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 }
 
 
@@ -1693,9 +1727,10 @@ on_menu_season_results_activate        (GtkMenuItem     *menuitem,
     printf("on_menu_season_results_activate\n");
 #endif
 
-    stat0 = STATUS_SHOW_SEASON_RESULTS;
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    gui_set_status(bygfoot->gui, STATUS_SHOW_SEASON_RESULTS);
     treeview2_show_season_results();
-    gui_set_arrows();
+    gui_set_arrows(bygfoot->gui);
 }
 
 /***********************************************************************************************************

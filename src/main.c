@@ -37,6 +37,7 @@
 #include "debug.h"
 #include "file.h"
 #include "free.h"
+#include "gui.h"
 #include "job_struct.h"
 #ifdef ENABLE_JSON
 #include "json_interface.h"
@@ -206,7 +207,7 @@ main_parse_cl_arguments(gint *argc, gchar ***argv, Bygfoot *bygfoot)
 
     if(lang != NULL)
     {
-        language_set(language_get_code_index(lang) + 1);
+        language_set(bygfoot, language_get_code_index(lang) + 1);
         file_load_hints_file();
         g_free(lang);
     }
@@ -277,7 +278,7 @@ main_parse_debug_cl_arguments(gint *argc, gchar ***argv)
   Initialize some global variables. Most of them get nullified.
  */
     void
-main_init_variables(void)
+main_init_variables(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("main_init_variables\n");
@@ -344,7 +345,7 @@ main_init_variables(void)
     file_load_conf_files();
     xml_strategy_load_strategies();
 
-    language_set(language_get_code_index(opt_str("string_opt_language_code")) + 1);
+    language_set(bygfoot, language_get_code_index(opt_str("string_opt_language_code")) + 1);
 
     option_add(&options, "int_opt_calodds", 0, NULL);
 
@@ -418,7 +419,7 @@ main_init(gint *argc, gchar ***argv, Bygfoot *bygfoot)
     file_add_support_directory_recursive(bygfoot, dir);
 #endif
 
-    main_init_variables();
+    main_init_variables(bygfoot);
 
     load_last_save = FALSE;
     main_parse_cl_arguments(argc, argv, bygfoot);
@@ -484,7 +485,7 @@ main (gint argc, gchar *argv[])
     {
         if(country.sid == NULL)
         {
-            stat0 = STATUS_SPLASH;
+            gui_set_status(bygfoot.gui, STATUS_SPLASH);
             window_show_splash(&bygfoot);
 
             if(os_is_unix)
@@ -493,7 +494,7 @@ main (gint argc, gchar *argv[])
         else
         {
             window_show_startup(&bygfoot);
-            stat0 = STATUS_TEAM_SELECTION;
+            gui_set_status(bygfoot.gui, STATUS_TEAM_SELECTION);
         }
     }
 

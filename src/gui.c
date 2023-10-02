@@ -143,7 +143,7 @@ gui_set_arrow_pair(gint pair, gboolean state)
     sensitivity of the arrows atop the right treeview
     accordingly. */
 void
-gui_set_arrows(void)
+gui_set_arrows(const GUI *gui)
 {
 #ifdef DEBUG
     printf("gui_set_arrows\n");
@@ -151,16 +151,16 @@ gui_set_arrows(void)
 
     gui_set_arrow_pair(3, FALSE);
 
-    if(stat0 == STATUS_SHOW_FIXTURES ||
-       stat0 == STATUS_BROWSE_TEAMS ||
-       stat0 == STATUS_SHOW_SEASON_HISTORY)
+    if(gui->status == STATUS_SHOW_FIXTURES ||
+       gui->status == STATUS_BROWSE_TEAMS ||
+       gui->status == STATUS_SHOW_SEASON_HISTORY)
 	gui_set_arrow_pair(3, TRUE);
-    else if(stat0 == STATUS_SHOW_PLAYER_INFO ||
-	    stat0 == STATUS_SHOW_FIXTURES_WEEK)
+    else if(gui->status == STATUS_SHOW_PLAYER_INFO ||
+	    gui->status == STATUS_SHOW_FIXTURES_WEEK)
 	gui_set_arrow_pair(1, TRUE);
-    else if(stat0 == STATUS_SHOW_TABLES ||
-	    stat0 == STATUS_SHOW_PLAYER_LIST ||
-	    stat0 == STATUS_SHOW_LEAGUE_STATS)
+    else if(gui->status == STATUS_SHOW_TABLES ||
+	    gui->status == STATUS_SHOW_PLAYER_LIST ||
+	    gui->status == STATUS_SHOW_LEAGUE_STATS)
 	gui_set_arrow_pair(0, TRUE);
 }
 
@@ -177,4 +177,20 @@ gui_set_sensitive_lg_meters(gboolean state)
     gtk_widget_set_sensitive(lookup_widget(window.live, "eventbox_lg_style"), state);
     gtk_widget_set_sensitive(lookup_widget(window.live, "image_lg_boost"), state);
     gtk_widget_set_sensitive(lookup_widget(window.live, "eventbox_lg_boost"), state);    
+}
+
+enum Status0Value
+gui_get_status(const GUI *gui)
+{
+    if (!gui)
+        return STATUS_NONE;
+    return gui->status;
+}
+
+void
+gui_set_status(GUI *gui, enum Status0Value status)
+{
+    if (!gui)
+       return;
+    gui->status = status;
 }

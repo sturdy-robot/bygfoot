@@ -27,6 +27,7 @@
 #define GUI_H
 
 #include "bygfoot.h"
+#include "gui_struct.h"
 
 /** What kind of pictures we on top of the progress bar. */
 enum PicType
@@ -50,9 +51,15 @@ void
 gui_set_arrow_pair(gint pair, gboolean state);
 
 void
-gui_set_arrows(void);
+gui_set_arrows(const GUI *gui);
 
 void
 gui_set_sensitive_lg_meters(gboolean state);
+
+enum Status0Value
+gui_get_status(const GUI *gui);
+
+void
+gui_set_status(GUI *gui, enum Status0Value status);
 
 #endif

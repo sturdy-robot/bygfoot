@@ -2,6 +2,7 @@
 #define BYGFOOT_STRUCT_H
 
 #include <glib.h>
+#include "gui_struct.h"
 
 enum BygfootFrontend {
     BYGFOOT_FRONTEND_GTK2,
@@ -15,6 +16,9 @@ typedef struct
 {
     /** Which kind of frontend is being use. See #enum BygfootFrontend. */
     enum BygfootFrontend frontend;
+
+    /* GUI state. */
+    GUI *gui;
 
     /** @name Frontend functions */
     /* @{ */

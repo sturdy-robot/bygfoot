@@ -412,7 +412,7 @@ window_show_file_sel(Bygfoot *bygfoot)
 	   stat5 == STATUS_LOAD_GAME_SPLASH)
 	{
 	    cur_user = 0;
-	    on_button_back_to_main_clicked(NULL, NULL);
+	    on_button_back_to_main_clicked(NULL, bygfoot);
 	    setsav1;
 	}
 

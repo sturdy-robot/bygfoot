@@ -88,7 +88,6 @@
 #define news_article_id_new (counters[COUNT_NEWS_ARTICLE_ID]++)
 
 /** Convenience abbrevs. */
-#define stat0 status[0]
 #define stat1 status[1]
 #define stat2 status[2]
 #define stat3 status[3]

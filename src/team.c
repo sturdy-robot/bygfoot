@@ -29,6 +29,7 @@
 #include "fixture.h"
 #include "game.h"
 #include "game_gui.h"
+#include "gui.h"
 #include "league.h"
 #include "main.h"
 #include "maths.h"
@@ -325,8 +326,8 @@ team_get_fixture(const Team *tm, gboolean last_fixture)
     const Fixture *fix = NULL;
 
     if(!last_fixture && 
-       (stat0 == STATUS_LIVE_GAME_PAUSE ||
-	stat0 == STATUS_SHOW_LIVE_GAME) &&
+       (gui_get_status(tm->country->bygfoot->gui) == STATUS_LIVE_GAME_PAUSE ||
+	gui_get_status(tm->country->bygfoot->gui) == STATUS_SHOW_LIVE_GAME) &&
        (tm == ((LiveGame*)statp)->fix->teams[0] ||
 	tm == ((LiveGame*)statp)->fix->teams[1]))
 	return ((LiveGame*)statp)->fix;

@@ -51,7 +51,7 @@ void
 game_gui_set_main_window_header(void);
 
 void
-game_gui_show_main(void);
+game_gui_show_main(const GUI *gui);
 
 #ifdef G_OS_UNIX
 void

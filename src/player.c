@@ -27,6 +27,7 @@
 #include "fixture.h"
 #include "free.h"
 #include "game_gui.h"
+#include "gui.h"
 #include "league.h"
 #include "main.h"
 #include "maths.h"
@@ -674,7 +675,7 @@ player_swap(Team *tm1, gint player_number1, Team *tm2, gint player_number2)
     gint move = (tm1 == tm2 && player_number1 < player_number2) ? 
 	-1 : 1;
 
-    if(stat0 == STATUS_LIVE_GAME_PAUSE)
+    if(gui_get_status(tm1->country->bygfoot->gui) == STATUS_LIVE_GAME_PAUSE)
     {
 	if((player_number1 < 11 && player_is_banned(player_of_idx_team(tm1, player_number1)) > 0 &&
 	    player_of_idx_team(tm1, player_number1)->participation) ||

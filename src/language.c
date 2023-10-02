@@ -42,7 +42,7 @@ extern int _nl_msg_cat_cntr=0;
 
 /** Set the game language to the specified one. */
 void
-language_set(gint index)
+language_set(Bygfoot *bygfoot, gint index)
 {
 #ifdef DEBUG
     printf("language_set\n");
@@ -91,7 +91,7 @@ language_set(gint index)
 	{
 	    window_destroy(&window.main);
 	    window_create(WINDOW_MAIN);
-	    on_button_back_to_main_clicked(NULL, NULL);
+	    on_button_back_to_main_clicked(NULL, bygfoot);
 	}
     }
 

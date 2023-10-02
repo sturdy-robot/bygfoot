@@ -115,7 +115,7 @@ misc2_callback_transfer_user_player(void)
 
 /** Transfer a cpu player to a user team. */
 void
-misc2_callback_transfer_cpu_player(void)
+misc2_callback_transfer_cpu_player(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("misc2_callback_transfer_cpu_player\n");
@@ -145,9 +145,9 @@ misc2_callback_transfer_cpu_player(void)
     game_gui_set_main_window_header();
 
     if(week < transfer_get_deadline() || transfer_list->len > 0 )
-	on_button_transfers_clicked(NULL, NULL);
+	on_button_transfers_clicked(NULL, bygfoot);
     else
-	on_button_back_to_main_clicked(NULL, NULL);
+	on_button_back_to_main_clicked(NULL, bygfoot);
 }
 
 /** Change the user team's structure to a value he's specified. */
@@ -271,8 +271,8 @@ misc2_callback_add_user(void)
 
     treeview_show_users(
 	GTK_TREE_VIEW(lookup_widget(window.user_management,
-				    "treeview_user_management_users")));
-    treeview_show_team_list(treeview_user_management_teams, FALSE, FALSE);
+				    "treeview_user_management_users")), tm->country->bygfoot->gui);
+    treeview_show_team_list(treeview_user_management_teams, FALSE, FALSE, tm->country->bygfoot);
 
     setsav0;
 }

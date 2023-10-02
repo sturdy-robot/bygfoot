@@ -29,7 +29,7 @@
 #include "bygfoot.h"
 
 void
-misc2_callback_transfer_cpu_player(void);
+misc2_callback_transfer_cpu_player(Bygfoot *bygfoot);
 
 void
 misc2_callback_transfer_user_player(void);

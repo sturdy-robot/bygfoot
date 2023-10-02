@@ -43,6 +43,7 @@ on_button_options_ok_clicked           (GtkButton       *button,
     printf("on_button_options_ok_clicked\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     gboolean save_global =
 	gtk_toggle_button_get_active(
 	    GTK_TOGGLE_BUTTON(lookup_widget(window.options, "checkbutton_save_global"))),
@@ -52,7 +53,7 @@ on_button_options_ok_clicked           (GtkButton       *button,
     const gchar *conf_dir = file_get_first_support_dir();
     gchar buf[SMALL];
 
-    option_gui_write_options();
+    option_gui_write_options(bygfoot);
 
     if(save_global)
     {

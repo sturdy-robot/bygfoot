@@ -19,6 +19,7 @@ bygfoot_init(Bygfoot *bygfoot, enum BygfootFrontend frontend)
     case BYGFOOT_FRONTEND_GTK2:
         bygfoot->show_progress = gui_show_progress;
         bygfoot->get_progress_bar_fraction = gui_get_progress_bar_fraction;
+        bygfoot->gui = malloc(sizeof(GUI));
         break;
     case BYGFOOT_FRONTEND_CONSOLE:
         bygfoot->show_progress = NULL;

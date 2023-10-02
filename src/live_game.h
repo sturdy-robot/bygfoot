@@ -54,7 +54,7 @@ gint
 live_game_get_minutes_remaining(const LiveGameUnit *unit);
 
 void
-live_game_create_unit(void);
+live_game_create_unit(GUI *gui);
 
 void
 live_game_fill_new_unit(LiveGameUnit *new);
@@ -63,43 +63,43 @@ void
 live_game_create_start_unit(void);
 
 void
-live_game_evaluate_unit(LiveGameUnit *unit);
+live_game_evaluate_unit(GUI *gui, LiveGameUnit *unit);
 
 void
-live_game_event_foul(void);
+live_game_event_foul(GUI *gui);
 
 void
-live_game_event_lost_possession(void);
+live_game_event_lost_possession(GUI *gui);
 
 void
-live_game_event_injury(gint team, gint player, gboolean create_new);
+live_game_event_injury(GUI *gui, gint team, gint player, gboolean create_new);
 
 void
-live_game_event_stadium(void);
+live_game_event_stadium(GUI *gui);
 
 void
-live_game_event_scoring_chance(void);
+live_game_event_scoring_chance(GUI *gui);
 
 void
 live_game_event_penalty();
 
 void
-live_game_event_general(gboolean create_new);
+live_game_event_general(GUI *gui, gboolean create_new);
 
 void
 live_game_event_general_get_players(void);
 
 void
-live_game_event_free_kick(void);
+live_game_event_free_kick(GUI *gui);
 
 void
-live_game_event_send_off(gint team, gint player, gboolean second_yellow);
+live_game_event_send_off(GUI *gui, gint team, gint player, gboolean second_yellow);
 
 void
-live_game_event_duel(void);
+live_game_event_duel(GUI *gui);
 
 void
-live_game_event_corner_kick(void);
+live_game_event_corner_kick(GUI *gui);
 
 gboolean
 query_live_game_second_yellow(gint team, gint player);

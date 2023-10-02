@@ -24,6 +24,7 @@
 */
 
 #include "cup.h"
+#include "competition.h"
 #include "league.h"
 #include "misc.h"
 #include "table.h"

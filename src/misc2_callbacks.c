@@ -30,6 +30,7 @@
 #include "finance.h"
 #include "free.h"
 #include "game_gui.h"
+#include "gui.h"
 #include "league.h"
 #include "job.h"
 #include "load_save.h"
@@ -75,8 +76,8 @@ on_button_offer_ok_clicked             (GtkButton       *button,
 			     league_cup_get_name_string(current_user.tm->clid),
 			     NULL);
 
-	stat0 = STATUS_MAIN;
-	game_gui_show_main();
+	gui_set_status(bygfoot->gui, STATUS_MAIN);
+	game_gui_show_main(bygfoot->gui);
     }
 
     g_free(team_name);
@@ -95,6 +96,7 @@ on_button_offer_cancel_clicked         (GtkButton       *button,
     printf("on_button_offer_cancel_clicked\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(stat2 != STATUS_JOB_OFFER_SUCCESS &&
        stat2 != STATUS_JOB_EXCHANGE_SHOW_TEAM)
     {
@@ -109,10 +111,10 @@ on_button_offer_cancel_clicked         (GtkButton       *button,
 
     window_destroy(&window.job_offer);
 
-    if(stat0 != STATUS_SHOW_JOB_EXCHANGE)
+    if(gui_get_status(bygfoot->gui) != STATUS_SHOW_JOB_EXCHANGE)
     {
-	stat0 = STATUS_MAIN;
-	game_gui_show_main();
+	gui_set_status(bygfoot->gui, STATUS_MAIN);
+	game_gui_show_main(bygfoot->gui);
     }
 }
 
@@ -149,6 +151,7 @@ on_button_digits_ok_clicked            (GtkButton       *button,
 	{gtk_spin_button_get_value_as_int(spinbutton1),
 	 gtk_spin_button_get_value_as_int(spinbutton2)};
     gboolean destroy_window = TRUE;
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
 
     switch(stat1)
     {
@@ -170,7 +173,7 @@ on_button_digits_ok_clicked            (GtkButton       *button,
         break;
     case STATUS_CUSTOM_STRUCTURE:
         destroy_window = misc2_callback_change_structure(values[1]);
-        if(destroy_window && stat0 == STATUS_LIVE_GAME_PAUSE)
+        if(destroy_window && gui_get_status(bygfoot->gui) == STATUS_LIVE_GAME_PAUSE)
             gtk_widget_set_sensitive(window.main, TRUE);
         break;
     case STATUS_SET_YA_PERCENTAGE:
@@ -199,7 +202,7 @@ on_button_digits_alr_clicked           (GtkButton       *button,
     printf("on_button_digits_alr_clicked\n");
 #endif
 
-    on_button_digits_ok_clicked(NULL, NULL);
+    on_button_digits_ok_clicked(NULL, user_data);
     on_automatic_loan_repayment_activate(NULL, NULL);
 }
 
@@ -263,11 +266,11 @@ on_button_yesno_yes_clicked            (GtkButton       *button,
         user_remove(stat2, TRUE);
         treeview_show_users(
             GTK_TREE_VIEW(lookup_widget(window.user_management,
-                                        "treeview_user_management_users")));
+                                        "treeview_user_management_users")), bygfoot->gui);
         treeview_show_team_list(
             GTK_TREE_VIEW(lookup_widget(window.user_management, 
                                         "treeview_user_management_teams")),
-            FALSE, FALSE);
+            FALSE, FALSE, bygfoot);
         break;
     case STATUS_QUERY_UNFIT:
         load_save_autosave(bygfoot);
@@ -283,7 +286,7 @@ on_button_yesno_yes_clicked            (GtkButton       *button,
     case STATUS_QUERY_KICK_YOUTH:
         free_player(&g_array_index(current_user.youth_academy.players, Player, selected_row));
         g_array_remove_index(current_user.youth_academy.players, selected_row);
-        on_menu_show_youth_academy_activate(NULL, NULL);
+        on_menu_show_youth_academy_activate(NULL, bygfoot);
         selected_row = -1;
         break;
     }
@@ -381,8 +384,9 @@ on_button_user_management_close_clicked
     printf("on_button_user_management_close_clicked\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     window_destroy(&window.user_management);
-    on_button_back_to_main_clicked(NULL, NULL);
+    on_button_back_to_main_clicked(NULL, bygfoot);
 }
 
 
@@ -497,7 +501,7 @@ on_window_job_offer_delete_event       (GtkWidget       *widget,
     printf("on_window_job_offer_delete_event\n");
 #endif
 
-    on_button_offer_cancel_clicked(NULL, NULL);
+    on_button_offer_cancel_clicked(NULL, user_data);
     return FALSE;
 }
 
@@ -566,7 +570,7 @@ on_spinbutton1_activate                (GtkEntry        *entry,
 #endif
 
     gtk_spin_button_update(GTK_SPIN_BUTTON(lookup_widget(window.digits, "spinbutton1")));
-    on_button_digits_ok_clicked(NULL, NULL);
+    on_button_digits_ok_clicked(NULL, user_data);
 }
 
 
@@ -579,7 +583,7 @@ on_spinbutton2_activate                (GtkEntry        *entry,
 #endif
 
     gtk_spin_button_update(GTK_SPIN_BUTTON(lookup_widget(window.digits, "spinbutton2")));
-    on_button_digits_ok_clicked(NULL, NULL);
+    on_button_digits_ok_clicked(NULL, user_data);
 }
 
 
@@ -605,10 +609,11 @@ on_button_transfer_yes_clicked         (GtkButton       *button,
     printf("on_button_transfer_yes_clicked\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(stat1 == STATUS_TRANSFER_OFFER_USER)
 	misc2_callback_transfer_user_player();
     else if(STATUS_TRANSFER_OFFER_CPU)
-	misc2_callback_transfer_cpu_player();
+	misc2_callback_transfer_cpu_player(bygfoot);
 
     window_destroy(&window.transfer_dialog);
 }

@@ -523,7 +523,7 @@ game_gui_read_radio_items(GtkWidget *widget)
 
 /** Show the main menu. */
 void
-game_gui_show_main(void)
+game_gui_show_main(const GUI *gui)
 {
 #ifdef DEBUG
     printf("game_gui_show_main\n");
@@ -540,7 +540,7 @@ game_gui_show_main(void)
        counters[COUNT_NEWS_SHOWN] == 0 &&
        counters[COUNT_NEW_NEWS] != 0)
         on_menu_news_activate(NULL, NULL);
-    if(current_user.counters[COUNT_USER_SHOW_RES] && stat0 != STATUS_LIVE_GAME_PAUSE)
+    if(current_user.counters[COUNT_USER_SHOW_RES] && gui_get_status(gui) != STATUS_LIVE_GAME_PAUSE)
     {
 	on_menu_user_show_last_stats_activate(NULL, NULL);
 	current_user.counters[COUNT_USER_SHOW_RES] = 0;

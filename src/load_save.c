@@ -295,7 +295,7 @@ load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_mai
     file_load_opt_file(buf->str, &options, FALSE);
     g_string_printf(buf, "%s%s%s___settings", dirname, G_DIR_SEPARATOR_S, prefix);
     file_load_opt_file(buf->str, &settings, FALSE);
-    language_set(language_get_code_index(opt_str("string_opt_language_code")) + 1);
+    language_set(bygfoot, language_get_code_index(opt_str("string_opt_language_code")) + 1);
 
     if(debug > 60)
         g_print("load_save_load leagues \n");
@@ -408,7 +408,7 @@ load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_mai
     if(create_main_window)
     {
         window_create_with_userdata(WINDOW_MAIN, bygfoot);
-        on_button_back_to_main_clicked(NULL, NULL);
+        on_button_back_to_main_clicked(NULL, bygfoot);
     }
     else if(window.main != NULL)
     {

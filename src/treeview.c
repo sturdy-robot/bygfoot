@@ -31,6 +31,7 @@
 #include "free.h"
 #include "game.h"
 #include "game_gui.h"
+#include "gui.h"
 #include "language.h"
 #include "league.h"
 #include "live_game.h"
@@ -127,7 +128,7 @@ treeview_create_team_selection_list(const Country *country,
    @param treeview The treeview that gets configured.
 */
 void
-treeview_set_up_team_selection_treeview(GtkTreeView *treeview)
+treeview_set_up_team_selection_treeview(GtkTreeView *treeview, Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("treeview_set_up_team_selection_treeview\n");
@@ -171,7 +172,7 @@ treeview_set_up_team_selection_treeview(GtkTreeView *treeview)
     gtk_tree_view_column_pack_start(col, renderer, TRUE);
     gtk_tree_view_column_set_cell_data_func(col, renderer,
 					    treeview_helper_team_selection,
-					    NULL, NULL);
+					    bygfoot, NULL);
     /* League column */
     col = gtk_tree_view_column_new();
     gtk_tree_view_column_set_title(col, _("League"));
@@ -190,7 +191,7 @@ treeview_set_up_team_selection_treeview(GtkTreeView *treeview)
     gtk_tree_view_column_pack_start(col, renderer, TRUE);
     gtk_tree_view_column_set_cell_data_func(col, renderer,
 					    treeview_helper_team_selection,
-					    NULL, NULL);
+					    bygfoot, NULL);
 
 }
 
@@ -204,7 +205,7 @@ treeview_set_up_team_selection_treeview(GtkTreeView *treeview)
 */
 void
 treeview_show_team_list(GtkTreeView *treeview, gboolean show_cup_teams,
-			gboolean show_user_teams)
+			gboolean show_user_teams, Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("treeview_show_team_list\n");
@@ -217,7 +218,7 @@ treeview_show_team_list(GtkTreeView *treeview, gboolean show_cup_teams,
      
     treeview_helper_clear(treeview);
 
-    treeview_set_up_team_selection_treeview(treeview);
+    treeview_set_up_team_selection_treeview(treeview, bygfoot);
     
     gtk_tree_view_set_model(treeview, team_list);
     
@@ -728,7 +729,7 @@ treeview_live_game_show_result(const LiveGameUnit *unit)
 
 /** Fill a tree model with the users. */
 GtkTreeModel*
-treeview_create_users(void)
+treeview_create_users(const GUI *gui)
 {
 #ifdef DEBUG
     printf("treeview_create_users\n");
@@ -751,7 +752,7 @@ treeview_create_users(void)
 			   2, usr(i).tm->name,
 			   -1);
 
-	if(stat0 == STATUS_TEAM_SELECTION)
+	if(gui_get_status(gui) == STATUS_TEAM_SELECTION)
 	{
 	    if(usr(i).scout == -1)
 		gtk_list_store_set(ls, &iter, 3,
@@ -807,7 +808,7 @@ treeview_set_up_users(GtkTreeView *treeview)
 /** Show the list of users at startup.
     @param treeview The treeview we use. */
 void
-treeview_show_users(GtkTreeView *treeview)
+treeview_show_users(GtkTreeView *treeview, GUI *gui)
 {
 #ifdef DEBUG
     printf("treeview_show_users\n");
@@ -818,7 +819,7 @@ treeview_show_users(GtkTreeView *treeview)
     treeview_helper_clear(treeview);
     
     treeview_set_up_users(treeview);
-    model = treeview_create_users();
+    model = treeview_create_users(gui);
     gtk_tree_view_set_model(treeview, model);
     g_object_unref(model);
 }

@@ -132,6 +132,7 @@ on_button_font_sel_apply_clicked       (GtkButton       *button,
 #ifdef DEBUG
     printf("on_button_font_sel_apply_clicked\n");
 #endif
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
 
     gchar *font = 
 	gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(window.font_sel));
@@ -142,8 +143,8 @@ on_button_font_sel_apply_clicked       (GtkButton       *button,
 	gtk_entry_set_text(GTK_ENTRY(lookup_widget(window.options, "entry_font_name")), font);
 	g_free(font);
 
-	stat0 = STATUS_MAIN;
-	game_gui_show_main();
+	gui_set_status(bygfoot->gui, STATUS_MAIN);
+	game_gui_show_main(bygfoot->gui);
 
 	setsav0;
     }
@@ -199,8 +200,9 @@ on_button_pause_clicked                (GtkButton       *button,
 #ifdef DEBUG
     printf("on_button_pause_clicked\n");
 #endif
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
 
-    misc_callback_pause_live_game();
+    misc_callback_pause_live_game(bygfoot->gui);
 }
 
 
@@ -272,8 +274,9 @@ on_treeview_users_button_press_event   (GtkWidget       *widget,
 #ifdef DEBUG
     printf("on_treeview_users_button_press_event\n");
 #endif
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
 
-    misc_callback_remove_user(event);
+    misc_callback_remove_user(bygfoot, event);
 
     return FALSE;
 }
@@ -310,9 +313,10 @@ on_button_stadium_ok_clicked           (GtkButton       *button,
     printf("on_button_stadium_ok_clicked\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     misc_callback_improve_stadium();
 
-    if(stat0 == STATUS_SHOW_FINANCES)
+    if(gui_get_status(bygfoot->gui) == STATUS_SHOW_FINANCES)
 	on_menu_show_finances_activate(NULL, NULL);
 }
 
@@ -494,9 +498,10 @@ on_eventbox_lg_style_button_press_event (GtkWidget       *widget,
     printf("on_eventbox_lg_style_button_press_event\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     gint new_style = -1;
 
-    if(stat0 == STATUS_LIVE_GAME_PAUSE)
+    if(gui_get_status(bygfoot->gui) == STATUS_LIVE_GAME_PAUSE)
     {
 	on_eventbox_style_button_press_event(NULL, event, NULL);
 	return FALSE;
@@ -524,7 +529,7 @@ on_eventbox_lg_style_button_press_event (GtkWidget       *widget,
     if(&current_user == &usr(stat2))
 	game_gui_write_meters(current_user.tm);
     
-    stat0 = STATUS_LIVE_GAME_CHANGE;
+    gui_set_status(bygfoot->gui, STATUS_LIVE_GAME_CHANGE);
 
     return FALSE;
 }
@@ -539,9 +544,10 @@ on_eventbox_lg_boost_button_press_event (GtkWidget       *widget,
     printf("on_eventbox_lg_boost_button_press_event\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     gint new_boost = -1;
 
-    if(stat0 == STATUS_LIVE_GAME_PAUSE)
+    if(gui_get_status(bygfoot->gui) == STATUS_LIVE_GAME_PAUSE)
     {
 	on_eventbox_boost_button_press_event(NULL, event, NULL);
 	return FALSE;
@@ -575,7 +581,7 @@ on_eventbox_lg_boost_button_press_event (GtkWidget       *widget,
     if(&current_user == &usr(stat2))
 	game_gui_write_meters(current_user.tm);
     
-    stat0 = STATUS_LIVE_GAME_CHANGE;
+    gui_set_status(bygfoot->gui, STATUS_LIVE_GAME_CHANGE);
 
     return FALSE;
 }
@@ -590,6 +596,6 @@ on_button_team_selection_back_clicked  (GtkButton       *button,
 #endif
 
     window_destroy(&window.startup);
-    stat0 = STATUS_SPLASH;
+    gui_set_status(bygfoot->gui, STATUS_SPLASH);
     window_show_splash(bygfoot);
 }

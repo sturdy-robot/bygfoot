@@ -72,7 +72,7 @@ add_executable(bygfoot WIN32
     src/free.c src/free.h
     src/game.c src/game.h
     src/game_gui.c src/game_gui.h
-    src/gui.c src/gui.h
+    src/gui.c src/gui.h src/gui_struct.h
     src/interface.c src/interface.h
     src/job.c src/job.h src/job_struct.h
     src/language.c src/language.h

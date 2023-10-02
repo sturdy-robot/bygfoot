@@ -41,7 +41,7 @@ void
 option_gui_set_up_window(void);
 
 void
-option_gui_write_options(void);
+option_gui_write_options(Bygfoot *bygfoot);
 
 #endif
 

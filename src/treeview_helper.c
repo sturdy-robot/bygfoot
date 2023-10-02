@@ -28,6 +28,7 @@
 #include "file.h"
 #include "fixture.h"
 #include "free.h"
+#include "gui.h"
 #include "job.h"
 #include "league.h"
 #include "misc.h"
@@ -774,6 +775,7 @@ treeview_helper_team_selection(GtkTreeViewColumn *col,
     gchar buf[SMALL];
     gint column = treeview_helper_get_col_number_column(col);
     gpointer team_pointer;
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
 
     gtk_tree_model_get(model, iter, column, &team_pointer, -1);
 
@@ -781,7 +783,7 @@ treeview_helper_team_selection(GtkTreeViewColumn *col,
 	g_object_set(renderer, "text", ((Team*)team_pointer)->name, NULL);
     else if(column == 4)
     {
-	if(stat0 == STATUS_TEAM_SELECTION)
+	if(gui_get_status(bygfoot->gui) == STATUS_TEAM_SELECTION)
 	    strcpy(buf, "");
 	else
 	    sprintf(buf, "%.1f", team_get_average_skill((Team*)team_pointer, FALSE));

@@ -62,7 +62,7 @@ misc_callback_show_team_list(GtkWidget *widget, const gchar *country_file,
 
     xml_country_read(country_file, NULL, bygfoot);
 
-    treeview_show_team_list(GTK_TREE_VIEW(treeview_startup), FALSE, FALSE);
+    treeview_show_team_list(GTK_TREE_VIEW(treeview_startup), FALSE, FALSE, bygfoot);
 
     treeview_show_leagues_combo();
 
@@ -85,7 +85,7 @@ misc_callback_start_game(Bygfoot *bygfoot)
     GtkToggleButton *checkbutton_randomise_teams =
 	GTK_TOGGLE_BUTTON(lookup_widget(window.startup, "checkbutton_randomise_teams"));
 
-    stat0 = STATUS_MAIN;
+    gui_set_status(bygfoot->gui, STATUS_MAIN);
 
 /*     option_add(&options, "int_opt_load_defs", 1, NULL); */
 /*     option_add(&options, "int_opt_randomise_teams", 0, NULL); */
@@ -109,7 +109,7 @@ misc_callback_start_game(Bygfoot *bygfoot)
 
 	window_create_with_userdata(WINDOW_MAIN, bygfoot);
 	
-	game_gui_show_main();
+	game_gui_show_main(bygfoot->gui);
 
 	if(statp != NULL)
 	{
@@ -155,9 +155,9 @@ misc_callback_add_player(Bygfoot *bygfoot)
     new_user->scout = (start_league == 0 || tm->clid == ((League*)g_ptr_array_index(country.leagues, start_league - 1))->c.id) ? -1 : start_league - 1;
     
 
-    treeview_show_users(treeview_users);
+    treeview_show_users(treeview_users, bygfoot->gui);
 
-    treeview_show_team_list(treeview_startup, FALSE, FALSE);
+    treeview_show_team_list(treeview_startup, FALSE, FALSE, bygfoot);
 
     gtk_combo_box_set_active(GTK_COMBO_BOX(combo_leagues), 0);
 
@@ -171,7 +171,7 @@ misc_callback_add_player(Bygfoot *bygfoot)
 /** Remove a user from the users list. 
     @param event The mouse click event on the treeview. */
 void
-misc_callback_remove_user(GdkEventButton *event)
+misc_callback_remove_user(Bygfoot *bygfoot, GdkEventButton *event)
 {
 #ifdef DEBUG
     printf("misc_callback_remove_user\n");
@@ -187,8 +187,8 @@ misc_callback_remove_user(GdkEventButton *event)
 
     user_remove(treeview_helper_get_index(treeview_users, 0) - 1, FALSE);
     
-    treeview_show_users(treeview_users);
-    treeview_show_team_list(treeview_startup, FALSE, FALSE);
+    treeview_show_users(treeview_users, bygfoot->gui);
+    treeview_show_team_list(treeview_startup, FALSE, FALSE, bygfoot);
     
     if(users->len == 0)
     {
@@ -199,7 +199,7 @@ misc_callback_remove_user(GdkEventButton *event)
 
 /** Stop the live game so that users can make subs etc. */
 void
-misc_callback_pause_live_game(void)
+misc_callback_pause_live_game(GUI *gui)
 {
 #ifdef DEBUG
     printf("misc_callback_pause_live_game\n");
@@ -229,7 +229,7 @@ misc_callback_pause_live_game(void)
     if(stat2 == cur_user)
 	treeview_show_user_player_list();
 
-    stat0 = STATUS_LIVE_GAME_PAUSE;
+    gui_set_status(gui, STATUS_LIVE_GAME_PAUSE);
 }
 
 /** Update the cost and expected duration labels in the stadium

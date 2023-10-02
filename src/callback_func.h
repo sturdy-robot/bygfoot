@@ -33,10 +33,10 @@ void
 callback_show_next_live_game(Bygfoot *bygfoot);
 
 void
-callback_player_clicked(gint idx, GdkEventButton *event);
+callback_player_clicked(Bygfoot *bygfoot, gint idx, GdkEventButton *event);
 
 void
-callback_player_activate(gint idx);
+callback_player_activate(Bygfoot *bygfoot, gint idx);
 
 void
 callback_show_last_match(gboolean start, LiveGame *lg, Bygfoot *bygfoot);
@@ -60,10 +60,10 @@ void
 callback_offer_new_contract(gint idx);
 
 void
-callback_show_team(gint type);
+callback_show_team(GUI *gui, gint type);
 
 void
-callback_show_player_list(gint type);
+callback_show_player_list(GUI *gui, gint type);
 
 void
 callback_fire_player(gint idx);
@@ -81,12 +81,12 @@ void
 callback_show_season_history(gint type);
 
 void
-callback_show_next_opponent(void);
+callback_show_next_opponent(GUI *gui);
 
 void
-callback_show_player_team(void);
+callback_show_player_team(GUI *gui);
 
 void
-callback_show_youth_academy(void);
+callback_show_youth_academy(const GUI *gui);
 
 #endif

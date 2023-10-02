@@ -28,6 +28,7 @@
 #include "free.h"
 #include "game.h"
 #include "game_gui.h"
+#include "gui.h"
 #include "league.h"
 #include "lg_commentary.h"
 #include "live_game.h"
@@ -71,12 +72,13 @@ live_game_calculate_fixture(Fixture *fix, LiveGame *live_game, Bygfoot *bygfoot)
     printf("live_game_calculate_fixture\n");
 #endif
     statp = live_game;
+    enum Status0Value stat0 = gui_get_status(bygfoot->gui);
 
     if(stat0 != STATUS_LIVE_GAME_PAUSE && 
        stat0 != STATUS_LIVE_GAME_CHANGE)
 	live_game_initialize(fix, live_game, bygfoot);
     else
-	stat0 = STATUS_SHOW_LIVE_GAME;
+        gui_set_status(bygfoot->gui, STATUS_SHOW_LIVE_GAME);
 
     game_get_values(match->fix, match->team_values,
 		    match->home_advantage);
@@ -88,10 +90,10 @@ live_game_calculate_fixture(Fixture *fix, LiveGame *live_game, Bygfoot *bygfoot)
 
     do
     {
-	live_game_create_unit();
-	live_game_evaluate_unit(&last_unit);
-    }
-    while(last_unit.event.type != LIVE_GAME_EVENT_END_MATCH &&
+	live_game_create_unit(bygfoot->gui);
+	live_game_evaluate_unit(bygfoot->gui, &last_unit);
+        stat0 = gui_get_status(bygfoot->gui);
+    } while(last_unit.event.type != LIVE_GAME_EVENT_END_MATCH &&
 	  stat0 != STATUS_LIVE_GAME_PAUSE &&
 	  stat0 != STATUS_LIVE_GAME_CHANGE);
 
@@ -100,9 +102,9 @@ live_game_calculate_fixture(Fixture *fix, LiveGame *live_game, Bygfoot *bygfoot)
 	if(stat2 != -1 || stat5 < -1000)
 	    lg_commentary_free_tokens();
 	game_post_match(fix);
-        stat0 = STATUS_NONE;
+        gui_set_status(bygfoot->gui, STATUS_NONE);
     }
-    else if(stat0 == STATUS_LIVE_GAME_CHANGE)
+    else if(gui_get_status(bygfoot->gui) == STATUS_LIVE_GAME_CHANGE)
 	live_game_resume(bygfoot);
 }
 
@@ -126,7 +128,7 @@ live_game_initialize(Fixture *fix, LiveGame *live_game, Bygfoot *bygfoot)
     if(show)
     {
 	cur_user = stat2;
-	on_button_back_to_main_clicked(NULL, NULL);
+	on_button_back_to_main_clicked(NULL, bygfoot);
 
 	if(window.live == NULL)
 	    window.live = window_create_with_userdata(WINDOW_LIVE, bygfoot);
@@ -149,7 +151,7 @@ live_game_initialize(Fixture *fix, LiveGame *live_game, Bygfoot *bygfoot)
 /** Create a game unit for the live game.
     @see #LiveGameUnit, #LiveGame, live_game_fill_new_unit() */
 void
-live_game_create_unit(void)
+live_game_create_unit(GUI *gui)
 {
 #ifdef DEBUG
     printf("live_game_create_unit\n");
@@ -186,7 +188,7 @@ live_game_create_unit(void)
     if(last_unit.event.type == LIVE_GAME_EVENT_HALF_TIME ||
        last_unit.event.type == LIVE_GAME_EVENT_EXTRA_TIME)
     {
-	live_game_event_general(TRUE);
+	live_game_event_general(gui, TRUE);
 	return;
     }
     else if(query_live_game_event_is_break(new.minute, new.time))
@@ -309,7 +311,7 @@ live_game_create_start_unit(void)
     @param unit The unit we evaluate.
     @see The live_game_event* functions. */
 void
-live_game_evaluate_unit(LiveGameUnit *unit)
+live_game_evaluate_unit(GUI *gui, LiveGameUnit *unit)
 {
 #ifdef DEBUG
     printf("live_game_evaluate_unit\n");
@@ -321,19 +323,19 @@ live_game_evaluate_unit(LiveGameUnit *unit)
        debug > 130)
 	g_print("\t\tlive_game_evaluate_unit\n");
     if(type == LIVE_GAME_EVENT_FOUL)
-	live_game_event_foul();
+	live_game_event_foul(gui);
     else if(type == LIVE_GAME_EVENT_LOST_POSSESSION)
-	live_game_event_lost_possession();
+	live_game_event_lost_possession(gui);
     else if(type == LIVE_GAME_EVENT_INJURY)
-	live_game_event_injury(-1, -1, FALSE);
+	live_game_event_injury(gui, -1, -1, FALSE);
     else if(type == LIVE_GAME_EVENT_STADIUM)
-	live_game_event_stadium();
+	live_game_event_stadium(gui);
     else if(type == LIVE_GAME_EVENT_SCORING_CHANCE)
-	live_game_event_scoring_chance();
+	live_game_event_scoring_chance(gui);
     else if(type == LIVE_GAME_EVENT_PENALTY)
 	live_game_event_penalty();
     else if(type == LIVE_GAME_EVENT_GENERAL)
-	live_game_event_general(FALSE);
+	live_game_event_general(gui, FALSE);
     else if(type == LIVE_GAME_EVENT_START_MATCH)
 	live_game_finish_unit();
     else if(type == LIVE_GAME_EVENT_HALF_TIME ||
@@ -344,7 +346,7 @@ live_game_evaluate_unit(LiveGameUnit *unit)
 	live_game_finish_unit();
 	if(type != LIVE_GAME_EVENT_END_MATCH && show && 
 	   option_int("int_opt_user_pause_break", &usr(stat2).options))
-	    misc_callback_pause_live_game();
+	    misc_callback_pause_live_game(gui);
     }
     else if(type != LIVE_GAME_EVENT_END_MATCH)
 	debug_print_message("live_game_evaluate_unit: unknown event type %d\n",
@@ -353,7 +355,7 @@ live_game_evaluate_unit(LiveGameUnit *unit)
 
 /** Calculate a foul event. */
 void
-live_game_event_foul(void)
+live_game_event_foul(GUI *gui)
 {
 #ifdef DEBUG
     printf("live_game_event_foul\n");
@@ -423,10 +425,10 @@ live_game_event_foul(void)
        (type == LIVE_GAME_EVENT_FOUL_YELLOW &&
 	query_live_game_second_yellow(foul_team, foul_player)))
     {
-	live_game_event_send_off(foul_team, foul_player, 
+	live_game_event_send_off(gui, foul_team, foul_player, 
 				 query_live_game_second_yellow(foul_team, foul_player));
 	if(type == LIVE_GAME_EVENT_FOUL_RED_INJURY)
-	    live_game_event_injury(!foul_team, fouled_player, TRUE);
+	    live_game_event_injury(gui, !foul_team, fouled_player, TRUE);
         player_of_id_team(tms[foul_team], foul_player)->card_status = PLAYER_CARD_STATUS_RED;
     }
 
@@ -437,7 +439,7 @@ live_game_event_foul(void)
 	if(rndom < const_float("float_live_game_penalty_prob"))
 	    live_game_event_penalty();
 	else if(rndom < const_float("float_live_game_free_kick_prob"))
-	    live_game_event_free_kick();
+	    live_game_event_free_kick(gui);
 	else
 	    last_unit.possession = !foul_team;
     }
@@ -447,7 +449,7 @@ live_game_event_foul(void)
 
 /** Calculate a lost possession event. */
 void
-live_game_event_lost_possession(void)
+live_game_event_lost_possession(GUI *gui)
 {
 #ifdef DEBUG
     printf("live_game_event_lost_possession\n");
@@ -470,7 +472,7 @@ live_game_event_lost_possession(void)
 
     live_game_finish_unit();
 
-    live_game_event_general(TRUE);
+    live_game_event_general(gui, TRUE);
 }
 
 /** Calculate an injury event. 
@@ -480,7 +482,7 @@ live_game_event_lost_possession(void)
     @param create_new Whether to put the event into a new unit instead of
     the last one. */
 void
-live_game_event_injury(gint team, gint player, gboolean create_new)
+live_game_event_injury(GUI *gui, gint team, gint player, gboolean create_new)
 {
 #ifdef DEBUG
     printf("live_game_event_injury\n");
@@ -547,7 +549,7 @@ live_game_event_injury(gint team, gint player, gboolean create_new)
 		 !option_int("int_opt_user_auto_sub",
 			     &usr(usr_idx).options)) ||
 		tms[last_unit.event.team]->players->len == 11))
-		misc_callback_pause_live_game();
+		misc_callback_pause_live_game(gui);
 	    else if(tms[last_unit.event.team]->players->len > 11)
 	    {
 		sub_in = game_substitute_player(tms[last_unit.event.team],
@@ -574,7 +576,7 @@ live_game_event_injury(gint team, gint player, gboolean create_new)
 
 /** Calculate a stadium event. */
 void
-live_game_event_stadium(void)
+live_game_event_stadium(GUI *gui)
 {
 #ifdef DEBUG
     printf("live_game_event_stadium\n");
@@ -607,12 +609,12 @@ live_game_event_stadium(void)
 
     match->stadium_event = last_unit.event.type;
 
-    live_game_event_general(TRUE);
+    live_game_event_general(gui, TRUE);
 }
 
 /** Calculate a scoring chance event. */
 void
-live_game_event_scoring_chance(void)
+live_game_event_scoring_chance(GUI *gui)
 {
 #ifdef DEBUG
     printf("live_game_event_scoring_chance\n");
@@ -685,14 +687,14 @@ live_game_event_scoring_chance(void)
     live_game_finish_unit();
 
     if(last_unit.event.type != LIVE_GAME_EVENT_OWN_GOAL)
-	live_game_event_duel();
+	live_game_event_duel(gui);
     else
-	live_game_event_general(TRUE);
+	live_game_event_general(gui, TRUE);
 }
 
 /** Calculate a penalty event. */
 void
-live_game_event_penalty(void)
+live_game_event_penalty(GUI *gui)
 {
 #ifdef DEBUG
     printf("live_game_event_penalty\n");
@@ -756,13 +758,13 @@ live_game_event_penalty(void)
 
     live_game_finish_unit();
 
-    live_game_event_duel();
+    live_game_event_duel(gui);
 }
 
 /** Calculate a general event. 
     @param create_new Whether we create a new unit for the event. */
 void
-live_game_event_general(gboolean create_new)
+live_game_event_general(GUI *gui, gboolean create_new)
 {
 #ifdef DEBUG
     printf("live_game_event_general\n");
@@ -774,7 +776,7 @@ live_game_event_general(gboolean create_new)
        debug > 130)
 	g_print("\t\tlive_game_event_general\n");
 
-    if(create_new && stat0 == STATUS_LIVE_GAME_PAUSE)
+    if(create_new && gui_get_status(gui) == STATUS_LIVE_GAME_PAUSE)
 	return;
 
     if(create_new)
@@ -859,7 +861,7 @@ live_game_event_general(gboolean create_new)
 
     if(last_unit.event.type >= LIVE_GAME_EVENT_STRUCTURE_CHANGE &&
        last_unit.event.type <= LIVE_GAME_EVENT_BOOST_CHANGE_ON)
-	live_game_event_general(TRUE);
+	live_game_event_general(gui, TRUE);
 }
 
 /** Fill in the players values in a general unit. */
@@ -906,7 +908,7 @@ live_game_event_general_get_players(void)
 
 /** Calculate a free kick event. */
 void
-live_game_event_free_kick(void)
+live_game_event_free_kick(GUI *gui)
 {
 #ifdef DEBUG
     printf("live_game_event_free_kick\n");
@@ -938,12 +940,12 @@ live_game_event_free_kick(void)
 
     live_game_finish_unit();
 
-    live_game_event_duel();
+    live_game_event_duel(gui);
 }
 
 /** Calculate a send-off event. */
 void
-live_game_event_send_off(gint team, gint player, gboolean second_yellow)
+live_game_event_send_off(GUI *gui, gint team, gint player, gboolean second_yellow)
 {
 #ifdef DEBUG
     printf("live_game_event_send_off\n");
@@ -1007,7 +1009,7 @@ live_game_event_send_off(gint team, gint player, gboolean second_yellow)
 	     !option_int("int_opt_user_auto_sub",
 			 &usr(usr_idx).options)) ||
 	    tms[team]->players->len == 1))
-	    misc_callback_pause_live_game();
+	    misc_callback_pause_live_game(gui);
 	else if(tms[team]->players->len > 11)
 	{
 	    game_substitute_player_send_off(match->fix->competition->id,
@@ -1114,7 +1116,7 @@ live_game_event_team_change(gint team_number, gint event_type)
 
 /** Calculate whether a player who tries to score succeeds. */
 void
-live_game_event_duel(void)
+live_game_event_duel(GUI *gui)
 {
 #ifdef DEBUG
     printf("live_game_event_duel\n");
@@ -1227,11 +1229,11 @@ live_game_event_duel(void)
     {
        if (last_unit.event.type == LIVE_GAME_EVENT_KEEPER_PUSHED_IN_CORNER ||
            last_unit.event.type == LIVE_GAME_EVENT_PLAYER_PUSHED_IN_CORNER) {
-         live_game_event_corner_kick();
+         live_game_event_corner_kick(gui);
        }
        else
        {
-         live_game_event_general(TRUE);
+         live_game_event_general(gui, TRUE);
        }
     }
 }
@@ -1239,7 +1241,7 @@ live_game_event_duel(void)
 /** Create an event for the corner kick.
 */
 void
-live_game_event_corner_kick()
+live_game_event_corner_kick(GUI *gui)
 {
 #ifdef DEBUG
     printf("live_game_event_corner_kick\n");
@@ -1251,7 +1253,7 @@ live_game_event_corner_kick()
        debug > 130)
 	g_print("\t\tlive_game_event_corner_kick\n");
 
-    if(stat0 == STATUS_LIVE_GAME_PAUSE)
+    if(gui_get_status(gui) == STATUS_LIVE_GAME_PAUSE)
 	return;
     new.event.player =
 	new.event.player2 = -1;
@@ -1285,7 +1287,7 @@ live_game_event_corner_kick()
     new.event.commentary_id = -1;
     live_game_fill_new_unit(&new);
     g_array_append_val(unis, new);
-    live_game_evaluate_unit(&new);
+    live_game_evaluate_unit(gui, &new);
 }
 
 /** Find out whether the specified player already has a yellow card

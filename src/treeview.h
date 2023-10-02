@@ -39,11 +39,11 @@ treeview_create_team_selection_list(const Country *country,
 				    gboolean show_user_teams);
 
 void
-treeview_set_up_team_selection_treeview (GtkTreeView *treeview);
+treeview_set_up_team_selection_treeview (GtkTreeView *treeview, Bygfoot *bygfoot);
 
 void
 treeview_show_team_list(GtkTreeView *treeview, gboolean show_cup_teams,
-			gboolean show_user_teams);
+			gboolean show_user_teams, Bygfoot *bygfoot);
 
 GtkTreeModel*
 treeview_create_player_list(GPtrArray *players, gint *attributes, gint max, 
@@ -84,10 +84,10 @@ void
 treeview_live_game_show_result(const LiveGameUnit *unit);
 
 void
-treeview_show_users(GtkTreeView *treeview);
+treeview_show_users(GtkTreeView *treeview, GUI *gui);
 
 GtkTreeModel*
-treeview_create_users(void);
+treeview_create_users(const GUI *gui);
 
 void
 treeview_set_up_users(GtkTreeView *treeview);

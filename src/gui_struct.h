@@ -1,12 +1,12 @@
 /*
-   language.h
+   gui_struct.h
 
    Bygfoot Football Manager -- a small and simple GTK2-based
    football management game.
 
    http://bygfoot.sourceforge.net
 
-   Copyright (C) 2005  Gyözö Both (gyboth@bygfoot.com)
+   Copyright (C) 2023  Tom Stellard (tom@stellard.net)
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,33 +23,18 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#ifndef LANGUAGE_H
-#define LANGUAGE_H
+#ifndef GUI_STRUCT_H
+#define GUI_STRUCT_H
 
-#include "bygfoot.h"
-#include "option.h"
+#include "enums.h"
 
-#include <locale.h>
-
-#define language_get_current_index() (strlen(opt_str("string_opt_language_code")) > 0) ? language_get_code_index(opt_str("string_opt_language_code")) : -1
-
-gint
-language_get_code_index(const gchar *code);
-
-void
-language_set(Bygfoot *bygfoot, gint index);
-
-void
-language_pick_country(GPtrArray *country_files);
-
-void
-language_get_code(gchar *buf);
-
-gint
-language_compare_country_files(gconstpointer a, gconstpointer b, gpointer data);
-
-/* #ifndef G_OS_UNIX */
-/* extern int _nl_msg_cat_cntr; */
-/* #endif */
+/**
+ * This struct holds state related to the user interface.
+ */
+typedef struct {
+    /** The current status of the gui.  This usually used to determine
+     * what is currently being display. */
+    enum Status0Value status;
+} GUI;
 
 #endif

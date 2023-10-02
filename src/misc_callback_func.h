@@ -39,10 +39,10 @@ void
 misc_callback_add_player(Bygfoot *bygfoot);
 
 void
-misc_callback_remove_user(GdkEventButton *event);
+misc_callback_remove_user(Bygfoot *bygfoot, GdkEventButton *event);
 
 void
-misc_callback_pause_live_game(void);
+misc_callback_pause_live_game(GUI *gui);
 
 void
 misc_callback_improve_stadium(void);

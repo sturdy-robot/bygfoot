@@ -32,7 +32,7 @@ void
 main_init(gint *argc, gchar ***argv, Bygfoot *bygfoot);
 
 void
-main_init_variables(void);
+main_init_variables(Bygfoot *bygfoot);
 
 #ifdef G_OS_UNIX
 void

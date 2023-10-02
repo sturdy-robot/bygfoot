@@ -522,7 +522,7 @@ option_gui_set_up_window(void)
 /** Read the widget states in the options window and set the
     options accordingly. */
 void
-option_gui_write_options(void)
+option_gui_write_options(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("option_gui_write_options\n");
@@ -544,7 +544,7 @@ option_gui_write_options(void)
          GTK_TOGGLE_BUTTON(lookup_widget(window.options, "radiobutton_news_popup_user")),
          GTK_TOGGLE_BUTTON(lookup_widget(window.options, "radiobutton_news_popup_always"))};
 
-    language_set(language_index);
+    language_set(bygfoot, language_index);
     opt_user_set_int("int_opt_user_training_camp_hotel", training_camp_hotel);
 
     option_gui_write_bool_widgets(bool_options, bool_widgets);
@@ -566,7 +566,7 @@ option_gui_write_options(void)
 	    file_load_opt_file(gtk_entry_get_text(entry_widgets[i]), &constants, TRUE);
 	else if(i == ENTRY_OPT_FONT_NAME &&
 		strcmp(gtk_entry_get_text(entry_widgets[i]), opt_str("string_opt_font_name")) != 0)
-	    on_button_back_to_main_clicked(NULL, NULL);
+	    on_button_back_to_main_clicked(NULL, bygfoot);
     }
 
     for(i = 0; i < 3; i++)

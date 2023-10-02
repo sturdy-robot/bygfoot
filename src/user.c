@@ -236,6 +236,7 @@ user_remove(gint idx, gboolean regenerate_team)
 #endif
 
     gint i;
+    Bygfoot *bygfoot = usr(idx).tm->country->bygfoot;
 
     if(regenerate_team)
     {
@@ -258,7 +259,7 @@ user_remove(gint idx, gboolean regenerate_team)
     cur_user = 0;
 
     if(window.main != NULL)
-	game_gui_show_main();
+	game_gui_show_main(bygfoot->gui);
 }
 
 void
