@@ -804,6 +804,7 @@ callback_show_league_stats(gint type)
     printf("callback_show_league_stats\n");
 #endif
 
+    Competition *comp;
     switch(type)
     {
     default:
@@ -811,20 +812,22 @@ callback_show_league_stats(gint type)
         return;
         break;
     case SHOW_CURRENT:
-        stat1 = current_user.tm->clid;
-        while(stat1 >= ID_CUP_START ||
-                !query_league_active(league_from_clid(stat1)))
-            stat1 = league_cup_get_next_clid(stat1, FALSE);
-        break;
+        comp = competition_get_from_clid(current_user.tm->clid);
+        stat1 = comp->id;
+        if (competition_is_league(comp) && query_league_active((League*)comp))
+            break;
+        /* Fall-through */
     case SHOW_NEXT_LEAGUE:
-        stat1 = league_cup_get_next_clid(stat1, FALSE);
-        while(stat1 >= ID_CUP_START)
-            stat1 = league_cup_get_next_clid(stat1, FALSE);
+        do {
+            comp = country_get_next_competition(&country, stat1, FALSE);
+            stat1 = comp->id;
+        } while (competition_is_cup(comp));
         break;
     case SHOW_PREVIOUS_LEAGUE:
-        stat1 = league_cup_get_previous_clid(stat1, FALSE);
-        while(stat1 >= ID_CUP_START)
-            stat1 = league_cup_get_previous_clid(stat1, FALSE);
+        do {
+            comp = country_get_next_competition(&country, stat1, FALSE);
+            stat1 = comp->id;
+        } while (competition_is_cup(comp));
         break;
     }
 
