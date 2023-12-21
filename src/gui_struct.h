@@ -26,12 +26,14 @@
 #ifndef GUI_STRUCT_H
 #define GUI_STRUCT_H
 
+#include "competition_struct.h"
 #include "enums.h"
 
 /**
  * This struct holds state related to the user interface.
  */
 typedef struct {
+    Competition *current_competition;
     /** The current status of the gui.  This usually used to determine
      * what is currently being display. */
     enum Status0Value status;

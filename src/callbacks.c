@@ -27,6 +27,7 @@
 
 #include "callbacks.h"
 #include "callback_func.h"
+#include "competition.h"
 #include "debug.h"
 #include "fixture.h"
 #include "free.h"
@@ -276,7 +277,7 @@ on_button_browse_forward_clicked       (GtkButton       *button,
     switch(gui_get_status(bygfoot->gui))
     {
 	case STATUS_SHOW_FIXTURES:
-	    callback_show_fixtures(SHOW_NEXT);
+	    callback_show_fixtures(bygfoot->gui, SHOW_NEXT);
 	    break;
 	case STATUS_SHOW_FIXTURES_WEEK:
 	    callback_show_fixtures_week(SHOW_NEXT);
@@ -307,7 +308,7 @@ on_button_browse_back_clicked          (GtkButton       *button,
     switch(gui_get_status(bygfoot->gui))
     {
 	case STATUS_SHOW_FIXTURES:
-	    callback_show_fixtures(SHOW_PREVIOUS);
+	    callback_show_fixtures(bygfoot->gui, SHOW_PREVIOUS);
 	    break;
 	case STATUS_SHOW_FIXTURES_WEEK:
 	    callback_show_fixtures_week(SHOW_PREVIOUS);
@@ -337,10 +338,10 @@ on_button_cl_back_clicked              (GtkButton       *button,
     switch(gui_get_status(bygfoot->gui))
     {
 	case STATUS_SHOW_FIXTURES:
-	    callback_show_fixtures(SHOW_PREVIOUS_LEAGUE);
+	    callback_show_fixtures(bygfoot->gui, SHOW_PREVIOUS_LEAGUE);
 	    break;
 	case STATUS_SHOW_TABLES:	    
-	    callback_show_tables(SHOW_PREVIOUS_LEAGUE);
+	    callback_show_tables(bygfoot->gui, SHOW_PREVIOUS_LEAGUE);
 	    break;
 	case STATUS_BROWSE_TEAMS:
 	    callback_show_team(bygfoot->gui, SHOW_PREVIOUS_LEAGUE);
@@ -349,7 +350,7 @@ on_button_cl_back_clicked              (GtkButton       *button,
 	    callback_show_player_list(bygfoot->gui, SHOW_PREVIOUS_LEAGUE);
 	    break;
 	case STATUS_SHOW_LEAGUE_STATS:
-	    callback_show_league_stats(SHOW_PREVIOUS_LEAGUE);
+	    callback_show_league_stats(bygfoot->gui, SHOW_PREVIOUS_LEAGUE);
 	    break;
 	case STATUS_SHOW_SEASON_HISTORY:
 	    callback_show_season_history(SHOW_PREVIOUS_LEAGUE);
@@ -369,10 +370,10 @@ on_button_cl_forward_clicked           (GtkButton       *button,
     switch(gui_get_status(bygfoot->gui))
     {
 	case STATUS_SHOW_FIXTURES:
-	    callback_show_fixtures(SHOW_NEXT_LEAGUE);
+	    callback_show_fixtures(bygfoot->gui, SHOW_NEXT_LEAGUE);
 	    break;
 	case STATUS_SHOW_TABLES:
-	    callback_show_tables(SHOW_NEXT_LEAGUE);
+	    callback_show_tables(bygfoot->gui, SHOW_NEXT_LEAGUE);
 	    break;
 	case STATUS_BROWSE_TEAMS:
 	    callback_show_team(bygfoot->gui, SHOW_NEXT_LEAGUE);
@@ -381,7 +382,7 @@ on_button_cl_forward_clicked           (GtkButton       *button,
 	    callback_show_player_list(bygfoot->gui, SHOW_NEXT_LEAGUE);
 	    break;
 	case STATUS_SHOW_LEAGUE_STATS:
-	    callback_show_league_stats(SHOW_NEXT_LEAGUE);
+	    callback_show_league_stats(bygfoot->gui, SHOW_NEXT_LEAGUE);
 	    break;
 	case STATUS_SHOW_SEASON_HISTORY:
 	    callback_show_season_history(SHOW_NEXT_LEAGUE);
@@ -484,17 +485,20 @@ on_treeview_right_button_press_event   (GtkWidget       *widget,
         gui_set_status(bygfoot->gui, STATUS_SHOW_FIXTURES);
         stat2 = week;
         stat3 = week_round;
-        callback_show_fixtures(SHOW_CURRENT);
+        callback_show_fixtures(bygfoot->gui, SHOW_CURRENT);
         break;
-    case STATUS_SHOW_FIXTURES:
-        if(stat1 >= ID_CUP_START && cup_has_tables_clid(stat1) == -1)
+    case STATUS_SHOW_FIXTURES: {
+        /* This is a right-click on the league schedule. */
+        Competition *comp = gui_get_current_competition(bygfoot->gui);
+        if(competition_is_cup(comp) && cup_has_tables((Cup*)comp) == -1)
             game_gui_print_message(_("Cup has no tables."));
         else
         {
             gui_set_status(bygfoot->gui, STATUS_SHOW_TABLES);
-            callback_show_tables(SHOW_CURRENT);   
+            callback_show_tables(bygfoot->gui, SHOW_CURRENT);   
         }
         break;
+    }
     }
     
     gui_set_arrows(bygfoot->gui);
@@ -729,7 +733,7 @@ on_menu_fixtures_activate              (GtkMenuItem     *menuitem,
         _("Left click to show table."));
 
     gui_set_status(bygfoot->gui, STATUS_SHOW_FIXTURES);
-    callback_show_fixtures(SHOW_TEAM);
+    callback_show_fixtures(bygfoot->gui, SHOW_TEAM);
 
     gui_set_arrows(bygfoot->gui);
 }
@@ -771,8 +775,8 @@ on_menu_tables_activate                (GtkMenuItem     *menuitem,
         _("Left click to show fixtures."));
 
     gui_set_status(bygfoot->gui, STATUS_SHOW_TABLES);
-    stat1 = team_get_table_clid(current_user.tm);
-    callback_show_tables(SHOW_CURRENT);
+    gui_set_current_competition(bygfoot->gui, competition_get_from_clid(team_get_table_clid(current_user.tm)));
+    callback_show_tables(bygfoot->gui, SHOW_CURRENT);
 
     gui_set_arrows(bygfoot->gui);
 }
@@ -795,7 +799,7 @@ on_menu_league_stats_activate          (GtkMenuItem     *menuitem,
     }
 
     gui_set_status(bygfoot->gui, STATUS_SHOW_LEAGUE_STATS);
-    callback_show_league_stats(SHOW_CURRENT);
+    callback_show_league_stats(bygfoot->gui, SHOW_CURRENT);
 
     gui_set_arrows(bygfoot->gui);
 }

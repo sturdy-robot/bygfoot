@@ -194,3 +194,15 @@ gui_set_status(GUI *gui, enum Status0Value status)
        return;
     gui->status = status;
 }
+
+Competition *
+gui_get_current_competition(const GUI *gui)
+{
+    return gui->current_competition;
+}
+
+void
+gui_set_current_competition(GUI *gui, Competition *comp)
+{
+    gui->current_competition = comp;
+}

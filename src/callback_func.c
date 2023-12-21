@@ -344,18 +344,19 @@ callback_show_fixtures_week(gint type)
     @param type An integer telling us which league/cup and which
     week and round to show. */
 void
-callback_show_fixtures(gint type)
+callback_show_fixtures(GUI *gui, gint type)
 {
 #ifdef DEBUG
     printf("callback_show_fixtures\n");
 #endif
 
-    const Fixture *fix = fixture_get(type, stat1, stat2, stat3,
+    Competition *comp = gui_get_current_competition(gui);
+    const Fixture *fix = fixture_get(type, comp->id, stat2, stat3,
                                      current_user.tm);
 
     treeview_show_fixtures(GTK_TREE_VIEW(lookup_widget(window.main, "treeview_right")),
                            fix->competition->id, fix->week_number, fix->week_round_number);
-    stat1 = fix->competition->id;
+    gui_set_current_competition(gui, fix->competition);
     stat2 = fix->week_number;
     stat3 = fix->week_round_number;
 }
@@ -364,21 +365,19 @@ callback_show_fixtures(gint type)
     @type Integer telling us whether to show the current user's
     tables or those of the previous/next league/cup. */
 void
-callback_show_tables(gint type)
+callback_show_tables(GUI *gui, gint type)
 {
 #ifdef DEBUG
     printf("callback_show_tables\n");
 #endif
 
-    Competition *comp;
+    Competition *comp = gui_get_current_competition(gui);
 
-    if(type == SHOW_CURRENT)
-        comp = competition_get_from_clid(stat1);
-    else if(type == SHOW_NEXT_LEAGUE)
-        comp = country_get_next_competition(&country, stat1, TRUE);
+    if(type == SHOW_NEXT_LEAGUE)
+        comp = country_get_next_competition(&country, comp->id, TRUE);
     else if(type == SHOW_PREVIOUS_LEAGUE)
-        comp = country_get_previous_competition(&country, stat1, TRUE);
-    else
+        comp = country_get_previous_competition(&country, comp->id, TRUE);
+    else if (type != SHOW_CURRENT)
     {
         debug_print_message("callback_show_tables: unknown type %d \n", type);
         return;
@@ -393,7 +392,7 @@ callback_show_tables(gint type)
             comp = country_get_next_competition(&country, comp->id, TRUE);
     }
 
-    stat1 = comp->id;
+    gui_set_current_competition(gui, comp);
 
     treeview_show_table(GTK_TREE_VIEW(lookup_widget(window.main, "treeview_right")),
                         comp->id);
@@ -753,19 +752,19 @@ callback_show_player_list(GUI *gui, gint type)
         break;
     case SHOW_CURRENT:
         comp = competition_get_from_clid(current_user.tm->clid);
-        stat1 = comp->id;
+        gui_set_current_competition(gui, comp);
         break;
     case SHOW_NEXT_LEAGUE:
         /* Find the next league or international cup. */
         do {
             comp = country_get_next_competition(&country, stat1, TRUE);
-            stat1 = comp->id;
+            gui_set_current_competition(gui, comp);
         } while (competition_is_cup(comp) && !cup_is_international((Cup*)comp));
         break;
     case SHOW_PREVIOUS_LEAGUE:
         do {
             comp = country_get_previous_competition(&country, stat1, TRUE);
-            stat1 = comp->id;
+            gui_set_current_competition(gui, comp);
         } while (competition_is_cup(comp) && !cup_is_international((Cup*)comp));
         break;
     }
@@ -798,11 +797,11 @@ callback_fire_player(gint idx)
 /** Show a page with the information in the league stats
     structure. */
 void
-callback_show_league_stats(gint type)
+callback_show_league_stats(GUI *gui, gint type)
 {
-#ifdef DEBUG
+//#ifdef DEBUG
     printf("callback_show_league_stats\n");
-#endif
+//#endif
 
     Competition *comp;
     switch(type)
@@ -813,25 +812,28 @@ callback_show_league_stats(gint type)
         break;
     case SHOW_CURRENT:
         comp = competition_get_from_clid(current_user.tm->clid);
-        stat1 = comp->id;
+        gui_set_current_competition(gui, comp);
         if (competition_is_league(comp) && query_league_active((League*)comp))
             break;
         /* Fall-through */
     case SHOW_NEXT_LEAGUE:
+        comp = gui_get_current_competition(gui);
         do {
             comp = country_get_next_competition(&country, stat1, FALSE);
             stat1 = comp->id;
         } while (competition_is_cup(comp));
+        gui_set_current_competition(gui, comp);
         break;
     case SHOW_PREVIOUS_LEAGUE:
+        comp = gui_get_current_competition(gui);
         do {
-            comp = country_get_next_competition(&country, stat1, FALSE);
-            stat1 = comp->id;
+            comp = country_get_next_competition(&country, comp->id, FALSE);
         } while (competition_is_cup(comp));
+        gui_set_current_competition(gui, comp);
         break;
     }
 
-    treeview_show_league_stats(stat1);
+    treeview_show_league_stats(comp->id);
 }
 
 /** Show the appropriate season history page in the right treeview. */

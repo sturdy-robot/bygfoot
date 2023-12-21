@@ -42,10 +42,10 @@ void
 callback_show_last_match(gboolean start, LiveGame *lg, Bygfoot *bygfoot);
 
 void
-callback_show_fixtures(gint type);
+callback_show_fixtures(GUI *gui, gint type);
 
 void
-callback_show_tables(gint type);
+callback_show_tables(GUI *gui, gint type);
 
 void
 callback_pay_loan(void);
@@ -75,7 +75,7 @@ void
 callback_show_fixtures_week(gint type);
 
 void
-callback_show_league_stats(gint type);
+callback_show_league_stats(GUI *gui, gint type);
 
 void
 callback_show_season_history(gint type);

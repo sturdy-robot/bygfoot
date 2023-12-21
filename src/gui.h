@@ -62,4 +62,10 @@ gui_get_status(const GUI *gui);
 void
 gui_set_status(GUI *gui, enum Status0Value status);
 
+Competition *
+gui_get_current_competition(const GUI *gui);
+
+void
+gui_set_current_competition(GUI *gui, Competition *comp);
+
 #endif
