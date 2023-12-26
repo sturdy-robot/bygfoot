@@ -352,7 +352,7 @@ treeview2_create_bets(GtkListStore *ls)
 			if(query_fixture_has_tables(fix))
 			{
 			    if(fix->competition->id < ID_CUP_START)
-				rank = team_get_league_rank(fix->teams[j], fix->competition->id);
+				rank = team_get_league_rank(fix->teams[j], fix->competition);
 			    else
 				rank = team_get_cup_rank(fix->teams[j], 
 							 cup_get_last_tables_round(fix->competition->id), TRUE);

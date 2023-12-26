@@ -1097,7 +1097,7 @@ treeview_create_fixture(const Fixture *fix, GtkListStore *ls)
 	if(query_fixture_has_tables(fix))
 	{
 	    if(fix->competition->id < ID_CUP_START)
-		rank = team_get_league_rank(fix->teams[i], fix->competition->id);
+		rank = team_get_league_rank(fix->teams[i], fix->competition);
 	    else
 		rank = team_get_cup_rank(fix->teams[i], 
 					 cup_get_last_tables_round(fix->competition->id), TRUE);
@@ -1933,7 +1933,7 @@ treeview_create_next_opponent(void)
     gtk_list_store_append(ls, &iter);
     gtk_list_store_set(ls, &iter, 0, _("Team"), 1, opp->name, -1);
     
-    rank = team_get_league_rank(opp, fix->competition->id);
+    rank = team_get_league_rank(opp, fix->competition);
     if(rank != 0)
     {
 	sprintf(buf, "%d (%s)", rank,

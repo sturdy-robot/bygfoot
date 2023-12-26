@@ -23,6 +23,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+#include "competition.h"
 #include "cup.h"
 #include "file.h"
 #include "finance.h"
@@ -517,7 +518,7 @@ team_get_average_talent(const Team *tm)
 
 /** Return the rank of the team in the league tables. */
 gint
-team_get_league_rank(const Team *tm, gint clid)
+team_get_league_rank(const Team *tm, Competition *comp)
 {
 #ifdef DEBUG
     printf("team_get_league_rank\n");
@@ -525,26 +526,26 @@ team_get_league_rank(const Team *tm, gint clid)
 
     gint i, clid_local, rank = 0;
     GArray *elements = NULL;
-    
-    clid_local = (clid == -1) ? team_get_table_clid(tm) : clid;
 
-    if(clid_local < ID_CUP_START)
-    {
-	if(!query_league_active(league_from_clid(clid_local)))
-	    return 0;
+    comp = comp ? comp : competition_get_from_clid(team_get_table_clid(tm));
 
-	elements = league_table(league_from_clid(clid_local))->elements;
-    }
-    else
+    if (competition_is_cup(comp))
     {
-        if(cup_has_tables_clid(clid_local) == -1)
+        Cup *cup = (Cup*)comp;
+        if(cup_has_tables(cup) == -1)
             return 0;
 
 	rank = team_get_cup_rank(
-	    tm, &g_array_index(cup_from_clid(clid_local)->rounds, CupRound,
-			       cup_has_tables_clid(clid_local)), FALSE);
+	    tm, &g_array_index(cup->rounds, CupRound,
+			       cup_has_tables(cup)), FALSE);
 	return (rank == -1) ? 0 : rank;
     }
+
+    League *league = (League*)comp;
+    if(!query_league_active(league))
+        return 0;
+
+    elements = league_table(league)->elements;
 
     for(i=0;i<elements->len;i++)
 	if(g_array_index(elements, TableElement, i).team == tm)
@@ -875,8 +876,8 @@ team_compare_func(gconstpointer a, gconstpointer b, gpointer data)
     if(type == TEAM_COMPARE_LEAGUE_RANK)
     {
 	if(tm1->clid == tm2->clid)
-	    return_value = misc_int_compare(team_get_league_rank(tm2, -1),
-                                            team_get_league_rank(tm1, -1));
+	    return_value = misc_int_compare(team_get_league_rank(tm2, NULL),
+                                            team_get_league_rank(tm1, NULL));
 	else
 	    return_value = misc_int_compare(league_from_clid(tm2->clid)->layer,
 					    league_from_clid(tm1->clid)->layer);

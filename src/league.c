@@ -608,7 +608,7 @@ league_season_start(League *league)
 
     Team *team = g_ptr_array_index(league->c.teams, i);
     team_is_top = 
-        (team_get_league_rank(team, -1) <=
+        (team_get_league_rank(team, NULL) <=
          user_champ_best_teams_limit && idx == 0 && user_champ);
 
     team_change_factor = 

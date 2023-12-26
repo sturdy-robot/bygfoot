@@ -306,12 +306,12 @@ game_gui_set_main_window_header(void)
 
     if(fix == NULL)
     {
-        rank = team_get_league_rank(current_user.tm, -1);
+        rank = team_get_league_rank(current_user.tm, NULL);
         gtk_label_set_text(label_league, league_cup_get_name_string(current_user.tm->clid));
     }
     else
     {
-        rank = team_get_league_rank(current_user.tm, fix->competition->id);
+        rank = team_get_league_rank(current_user.tm, fix->competition);
         gtk_label_set_text(label_league, league_cup_get_name_string(fix->competition->id));        
     }
 
@@ -837,7 +837,7 @@ game_gui_show_job_offer(Team *team, Job *job, gint type)
     if(job == NULL ||
        job->type == JOB_TYPE_NATIONAL)
 	gui_label_set_text_from_int(label_rank, 
-				    team_get_league_rank(tm, -1), FALSE);
+				    team_get_league_rank(tm, NULL), FALSE);
 
     misc_print_grouped_int(
 	math_round_integer(tm->stadium.capacity * 

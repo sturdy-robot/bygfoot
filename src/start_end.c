@@ -336,7 +336,7 @@ start_new_season(Bygfoot *bygfoot)
     {
 	for(i=0;i<users->len;i++)
 	{
-	    sprintf(buf, "%d", team_get_league_rank(usr(i).tm, -1));
+	    sprintf(buf, "%d", team_get_league_rank(usr(i).tm, NULL));
 	    user_history_add(&usr(i), USER_HISTORY_END_SEASON,
 			     usr(i).tm->name, 
 			     league_cup_get_name_string(usr(i).tm->clid), 

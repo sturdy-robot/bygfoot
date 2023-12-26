@@ -86,7 +86,7 @@ gint
 team_get_cup_rank(const Team *tm, const CupRound *cupround, gboolean abort);
 
 gint
-team_get_league_rank(const Team *tm, gint clid);
+team_get_league_rank(const Team *tm, Competition *comp);
 
 void
 team_change_structure(Team *tm, gint new_structure);

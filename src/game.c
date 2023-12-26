@@ -366,7 +366,7 @@ game_assign_attendance(Fixture *fix)
     gint max_att = MIN(league_att, tm[0]->stadium.capacity);
 
     if(fix->competition->id < ID_CUP_START && 
-       team_get_league_rank(tm[1], fix->competition->id) <
+       team_get_league_rank(tm[1], fix->competition) <
        (gint)rint((gfloat)league_from_clid(fix->competition->id)->c.teams->len *
 		  const_float("float_game_stadium_attendance_rank_percentage")))
 	factor *= const_float("float_game_stadium_attendance_rank_factor");
