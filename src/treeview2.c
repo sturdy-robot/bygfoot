@@ -355,7 +355,7 @@ treeview2_create_bets(GtkListStore *ls)
 				rank = team_get_league_rank(fix->teams[j], fix->competition);
 			    else
 				rank = team_get_cup_rank(fix->teams[j], 
-							 cup_get_last_tables_round(fix->competition->id), TRUE);
+							 cup_get_last_tables_round((Cup*)fix->competition), TRUE);
 
 			    sprintf(team_names[j], "%s [%d]",
 				    fix->teams[j]->name, rank);

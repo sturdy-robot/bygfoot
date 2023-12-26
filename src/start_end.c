@@ -691,15 +691,15 @@ end_week_round_sort_tables(Bygfoot *bygfoot)
 	if(query_fixture_in_week_round(cup->c.id, week, week_round) &&
 	   g_array_index(cup->fixtures, Fixture, cup->fixtures->len - 1).round ==
 	   cup_has_tables(cup))
-	    for(j=0;j<cup_get_last_tables(cup->c.id)->len;j++)
+	    for(j=0;j<cup_get_last_tables(cup)->len;j++)
 	    {
-		for(k=0;k<g_array_index(cup_get_last_tables(cup->c.id), Table, j).elements->len;k++)
+		for(k=0;k<g_array_index(cup_get_last_tables(cup), Table, j).elements->len;k++)
 		    g_array_index(
-			g_array_index(cup_get_last_tables(cup->c.id), Table, j).elements,
+			g_array_index(cup_get_last_tables(cup), Table, j).elements,
 			TableElement, k).old_rank = k;
 
 		g_array_sort_with_data(
-		    g_array_index(cup_get_last_tables(cup->c.id), Table, j).elements,
+		    g_array_index(cup_get_last_tables(cup), Table, j).elements,
 		    (GCompareDataFunc)table_element_compare_func,
 		    &cup->c);
 	    }

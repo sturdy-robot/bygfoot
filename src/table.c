@@ -168,9 +168,9 @@ table_update_get_elements(TableElement **elements, const Fixture *fix, gboolean 
         }
     }
     else
-	for(i=0;i<cup_get_last_tables(fix->competition->id)->len;i++)
+	for(i=0;i<cup_get_last_tables((Cup*)fix->competition)->len;i++)
 	{
-	    table = &g_array_index(cup_get_last_tables(fix->competition->id), Table, i);
+	    table = &g_array_index(cup_get_last_tables((Cup*)fix->competition), Table, i);
 
 	    if(elements[0] == NULL || elements[1] == NULL)
 		for(j=0;j<table->elements->len;j++)

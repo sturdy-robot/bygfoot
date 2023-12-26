@@ -1100,7 +1100,7 @@ treeview_create_fixture(const Fixture *fix, GtkListStore *ls)
 		rank = team_get_league_rank(fix->teams[i], fix->competition);
 	    else
 		rank = team_get_cup_rank(fix->teams[i], 
-					 cup_get_last_tables_round(fix->competition->id), TRUE);
+					 cup_get_last_tables_round((Cup*)fix->competition), TRUE);
 
 	    sprintf(buf[i], "<span background='%s' foreground='%s'>%s [%d]</span>",
 		    colour_bg, colour_fg, fix->teams[i]->name, rank);
@@ -1372,7 +1372,7 @@ treeview_create_table(Competition *comp)
     else
     {
         Cup *cup = (Cup*)comp;
-        tables = cup_get_last_tables(cup->id);
+        tables = cup_get_last_tables(cup);
 	for(i=0;i< tables->len;i++)
 	    treeview_create_single_table(ls, &g_array_index(tables, Table, i), i);
     }

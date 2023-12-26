@@ -31,8 +31,8 @@
 #include "fixture_struct.h"
 #include "league_struct.h"
 
-#define cup_get_last_tables_round(clid) &g_array_index(cup_from_clid(clid)->rounds, CupRound, cup_has_tables_clid(clid))
-#define cup_get_last_tables(clid) g_array_index(cup_from_clid(clid)->rounds, CupRound, cup_has_tables_clid(clid)).tables
+#define cup_get_last_tables_round(cup) &g_array_index((cup)->rounds, CupRound, cup_has_tables((cup)))
+#define cup_get_last_tables(cup) g_array_index((cup)->rounds, CupRound, cup_has_tables((cup))).tables
 
 /* Helper macro to iterate through national and international cups. */
 
