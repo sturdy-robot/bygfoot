@@ -1199,17 +1199,6 @@ cup_has_tables(const Cup *cup)
     return -1;
 }
 
-gint
-cup_has_tables_clid(gint clid)
-{
-#ifdef DEBUG
-    printf("cup_has_tables\n");
-#endif
-
-    const Cup *cup = cup_from_clid(clid);
-    return cup_has_tables(cup);
-}
-
 /** Return the team that won the cup. */
 Team*
 cup_get_winner(const Cup *cup)
