@@ -118,13 +118,13 @@ void
 treeview_create_fixture(const Fixture *fix, GtkListStore *liststore);
 
 void
-treeview_show_table(GtkTreeView *treeview, gint clid);
+treeview_show_table(GtkTreeView *treeview, Competition *comp);
 
 void
 treeview_set_up_table(GtkTreeView *treeview);
 
 GtkTreeModel*
-treeview_create_table(gint clid);
+treeview_create_table(Competition *comp);
 
 void
 treeview_create_single_table(GtkListStore *liststore, const Table *table, gint table_index);

@@ -395,7 +395,7 @@ callback_show_tables(GUI *gui, gint type)
     gui_set_current_competition(gui, comp);
 
     treeview_show_table(GTK_TREE_VIEW(lookup_widget(window.main, "treeview_right")),
-                        comp->id);
+                        comp);
 }
 
 /** Open the digits window to get a loan. */

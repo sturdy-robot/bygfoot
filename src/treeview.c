@@ -1339,7 +1339,7 @@ treeview_create_single_table(GtkListStore *ls, const Table *table, gint table_in
 
 /** Create a league table or one or more cup tables. */
 GtkTreeModel*
-treeview_create_table(gint clid)
+treeview_create_table(Competition *comp)
 {
 #ifdef DEBUG
     printf("treeview_create_table\n");
@@ -1362,15 +1362,17 @@ treeview_create_table(gint clid)
 			   G_TYPE_STRING,
 			   G_TYPE_STRING);
 
-    if(clid < ID_CUP_START)
+    if(competition_is_league(comp))
     {
-        tables = league_from_clid(clid)->tables;
+        League *league = (League*)comp;
+        tables = league->tables;
         for(i = tables->len - 1; i >= 0; i--)
             treeview_create_single_table(ls, &g_array_index(tables, Table, i), i);        
     }
     else
     {
-        tables = cup_get_last_tables(clid);
+        Cup *cup = (Cup*)comp;
+        tables = cup_get_last_tables(cup->id);
 	for(i=0;i< tables->len;i++)
 	    treeview_create_single_table(ls, &g_array_index(tables, Table, i), i);
     }
@@ -1452,7 +1454,7 @@ treeview_set_up_table(GtkTreeView *treeview)
 
 /** Show the table going with a league or cup. */
 void
-treeview_show_table(GtkTreeView *treeview, gint clid)
+treeview_show_table(GtkTreeView *treeview, Competition *comp)
 {
 #ifdef DEBUG
     printf("treeview_show_table\n");
@@ -1463,7 +1465,7 @@ treeview_show_table(GtkTreeView *treeview, gint clid)
     treeview_helper_clear(treeview);
     
     treeview_set_up_table(treeview);
-    model = treeview_create_table(clid);
+    model = treeview_create_table(comp);
     gtk_tree_view_set_model(treeview, model);
     g_object_unref(model);
 }
