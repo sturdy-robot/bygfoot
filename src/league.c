@@ -385,17 +385,19 @@ league_cup_average_capacity(gint clid)
 
     if(clid < ID_CUP_START)
     {    
-    teams = league_cup_get_teams(clid);
-    for(i=0;i<teams->len;i++)
-        sum += ((Team*)g_ptr_array_index(teams, i))->stadium.capacity;
-        cnt++;
+        teams = league_cup_get_teams(clid);
+        for(i=0;i<teams->len;i++) {
+            sum += ((Team*)g_ptr_array_index(teams, i))->stadium.capacity;
+        }
+        cnt = teams->len;
     }
     else
     {
-    teamsp = league_cup_get_teams(clid);
-    for(i=0;i<teamsp->len;i++)
-        sum += ((Team*)g_ptr_array_index(teamsp, i))->stadium.capacity;
-        cnt++;
+        teamsp = league_cup_get_teams(clid);
+        for(i=0;i<teamsp->len;i++) {
+            sum += ((Team*)g_ptr_array_index(teamsp, i))->stadium.capacity;
+        }
+        cnt = teamsp->len;
     }
     
     return sum / (gfloat)cnt;
