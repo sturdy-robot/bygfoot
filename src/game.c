@@ -359,10 +359,10 @@ game_assign_attendance(Fixture *fix)
 		 const_float("float_game_stadium_attendance_percentage_upper")) *
 	powf(tm[0]->stadium.safety, 
 	     const_float("float_game_stadium_attendance_safety_exponent"));
-    gint max_att = MIN((gint)rint((gfloat)league_cup_average_capacity(tm[0]->clid) *
+    gint league_att = (gint)rint((gfloat)league_cup_average_capacity(tm[0]->clid) *
 				  const_float("float_game_stadium_attendance_average_exceed_factor") *
-				  math_rnd(0.9, 1.1)),
-		       tm[0]->stadium.capacity);
+				  math_rnd(0.9, 1.1));
+    gint max_att = MIN(league_att, tm[0]->stadium.capacity);
 
     if(fix->competition->id < ID_CUP_START && 
        team_get_league_rank(tm[1], fix->competition->id) <
