@@ -372,35 +372,20 @@ league_cup_get_previous_fixture(gint clid, gint week_number, gint week_round_num
 /** Return the average stadium capacity of cpu teams
     in the specified league or cup. */
 gint
-league_cup_average_capacity(gint clid)
+league_cup_average_capacity(const Competition *comp)
 {
 #ifdef DEBUG
     printf("league_cup_average_capacity\n");
 #endif
 
-    gint i, cnt = 0;
+    gint i;
     gfloat sum = 0;
-    const GPtrArray *teams = NULL;
-    const GPtrArray *teamsp = NULL;
 
-    if(clid < ID_CUP_START)
-    {    
-        teams = league_cup_get_teams(clid);
-        for(i=0;i<teams->len;i++) {
-            sum += ((Team*)g_ptr_array_index(teams, i))->stadium.capacity;
-        }
-        cnt = teams->len;
-    }
-    else
-    {
-        teamsp = league_cup_get_teams(clid);
-        for(i=0;i<teamsp->len;i++) {
-            sum += ((Team*)g_ptr_array_index(teamsp, i))->stadium.capacity;
-        }
-        cnt = teamsp->len;
+    for(i=0;i<comp->teams->len;i++) {
+        sum += ((Team*)g_ptr_array_index(comp->teams, i))->stadium.capacity;
     }
     
-    return sum / (gfloat)cnt;
+    return sum / (gfloat)comp->teams->len;
 }
 
 

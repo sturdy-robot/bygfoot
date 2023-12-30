@@ -88,7 +88,7 @@ Fixture*
 league_cup_get_previous_fixture(gint clid, gint week_number, gint week_round_number);
 
 gint
-league_cup_average_capacity(gint clid);
+league_cup_average_capacity(const Competition *comp);
 
 void
 league_get_team_movements(League *league, GArray *team_movements);

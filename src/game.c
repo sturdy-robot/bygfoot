@@ -360,7 +360,8 @@ game_assign_attendance(Fixture *fix)
 		 const_float("float_game_stadium_attendance_percentage_upper")) *
 	powf(tm[0]->stadium.safety, 
 	     const_float("float_game_stadium_attendance_safety_exponent"));
-    gint league_att = (gint)rint((gfloat)league_cup_average_capacity(tm[0]->clid) *
+    Competition *comp = tm[0]->clid == fix->competition->id ? fix->competition : competition_get_from_clid(tm[0]->clid);
+    gint league_att = (gint)rint((gfloat)league_cup_average_capacity(comp) *
 				  const_float("float_game_stadium_attendance_average_exceed_factor") *
 				  math_rnd(0.9, 1.1));
     gint max_att = MIN(league_att, tm[0]->stadium.capacity);
@@ -410,8 +411,8 @@ game_assign_attendance_neutral(Fixture *fix)
     const GPtrArray *teamsp = competition_get_teams(fix->competition);
     gfloat av_att = (fix->competition->id >= ID_CUP_START && 
 		     query_league_cup_has_property(fix->competition->id, "international") && teamsp->len > 0) ?
-	(gfloat)league_cup_average_capacity(fix->competition->id) :
-	(gfloat)league_cup_average_capacity(first_league->c.id);
+	(gfloat)league_cup_average_capacity(fix->competition) :
+	(gfloat)league_cup_average_capacity(&first_league->c);
 
     fix->attendance = (gint)rint(av_att * 
 				 math_rnd(const_float("float_game_stadium_attendance_neutral_lower"),
