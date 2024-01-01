@@ -222,7 +222,7 @@ league_cup_get_next_clid(gint clid, gboolean count_inactive)
 
     if(i != country.leagues->len - 1)
     {
-        League *league = g_ptr_array_index(country.leagues, i + i);
+        League *league = g_ptr_array_index(country.leagues, i + 1);
         if(query_league_active(league) || count_inactive)
         return_value = league->c.id;
         else
