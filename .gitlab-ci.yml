@@ -31,7 +31,7 @@ set-vars:
 
 gating-test:
   stage: build
-  image: registry.fedoraproject.org/fedora:36
+  image: registry.fedoraproject.org/fedora:39
   rules:
     - if: $CI_MERGE_REQUEST_IID
     - if: $CI_COMMIT_TAG
@@ -131,7 +131,7 @@ build-generic-deb:
 
 build-generic-rpm:
   extends: .build-pkg
-  image: registry.fedoraproject.org/fedora:35
+  image: registry.fedoraproject.org/fedora:38
   variables:
     OS_NAME: Linux-RPM
     PKG_TYPE: RPM
@@ -140,20 +140,20 @@ build-generic-rpm:
     - |
       dnf install -y cmake ninja-build gtk2-devel gettext gcc rpm-build
 
-build-fedora-35:
+build-fedora-38:
   extends: build-generic-rpm
-  image: registry.fedoraproject.org/fedora:35
+  image: registry.fedoraproject.org/fedora:38
   variables:
-    OS_NAME: fedora-35
+    OS_NAME: fedora-38
   before_script:
     - |
       dnf install -y cmake ninja-build gtk2-devel gettext gcc rpm-build json-c-devel
 
-build-fedora-36:
-  extends: build-fedora-35
-  image: registry.fedoraproject.org/fedora:36
+build-fedora-39:
+  extends: build-fedora-38
+  image: registry.fedoraproject.org/fedora:39
   variables:
-    OS_NAME: fedora-36
+    OS_NAME: fedora-39
 
 build-mingw:
   stage: build
@@ -162,7 +162,7 @@ build-mingw:
     - if: $CI_MERGE_REQUEST_IID
     - if: $CI_COMMIT_TAG
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH =~ /^release/
-  image: registry.fedoraproject.org/fedora:36
+  image: registry.fedoraproject.org/fedora:39
   variables:
     OS_NAME: mingw
     BYGFOOT_MINGW: 1
@@ -238,23 +238,23 @@ test-dev-build:
   needs:
     - build-ubuntu-22.04
 
-test-fedora-35:
+test-fedora-38:
   extends: .test-ubuntu
-  image: registry.fedoraproject.org/fedora:35
+  image: registry.fedoraproject.org/fedora:38
   before_script:
     - |
       dnf install -y json-c gtk2 unzip diffutils *.rpm
   needs:
-    - build-fedora-35
+    - build-fedora-38
 
-test-fedora-36:
-  extends: test-fedora-35
-  image: registry.fedoraproject.org/fedora:36
+test-fedora-39:
+  extends: test-fedora-38
+  image: registry.fedoraproject.org/fedora:39
   needs: 
-    - build-fedora-36
+    - build-fedora-39
 
 .dump-sim:
-  extends: test-fedora-36
+  extends: test-fedora-39
   only:
     - merge_requests
   script:
@@ -297,7 +297,7 @@ compare-sim:
       diff old.log.gz new.log.gz || true
 
 upload-packages:
-  image: registry.fedoraproject.org/fedora:35
+  image: registry.fedoraproject.org/fedora:38
   stage: deploy
   variables:
     PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic"
