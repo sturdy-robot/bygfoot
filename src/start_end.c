@@ -1111,7 +1111,7 @@ start_new_season_league_changes(void)
 	for(j=0;j<league->c.teams->len;j++)
 	{
             Team *team = g_ptr_array_index(league->c.teams, j);
-	    team->clid = league->c.id;
+	    team_set_league(team, league);
 	    for(k=0;k<team->players->len;k++)
 		g_array_index(team->players, Player, k).team = team;
 	}

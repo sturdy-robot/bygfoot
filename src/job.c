@@ -406,6 +406,7 @@ job_change_country(Job *job, Bygfoot *bygfoot)
 	    {
 		tm.id = new_team->id;
 		tm.clid = new_team->clid;
+                tm.league = new_team->league;
 		job->team_id = tm.id;
 		free_team(new_team);
 		*new_team = tm;

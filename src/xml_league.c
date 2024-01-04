@@ -608,6 +608,11 @@ xml_league_read(const gchar *league_name, Country *country)
 		prom_games->ranks[1] = prom_games->number_of_advance;
 	    }
 	}
+
+        for (i = 0; i < new_league.c.teams->len; i++) {
+            Team *team = g_ptr_array_index(new_league.c.teams, i);
+            team_set_league(team, new_league_ptr);
+        }
     }
     else
     {

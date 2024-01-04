@@ -138,7 +138,7 @@ typedef struct
    @see PromRel
    @see Table
 */
-typedef struct
+typedef struct league
 {
     /** Parent Object */
     Competition c;

@@ -28,6 +28,7 @@
 
 #include "bygfoot.h"
 #include "competition_struct.h"
+#include "league_struct.h"
 #include "team_struct.h"
 
 /** Structure representing a fixture, or, in other words,

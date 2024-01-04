@@ -28,6 +28,7 @@
 #include "misc.h"
 #include "option.h"
 #include "table.h"
+#include "team.h"
 #include "variables.h"
 #include "xml.h"
 #include "xml_loadsave_cup.h"
@@ -329,6 +330,7 @@ xml_loadsave_league_read(const gchar *filename, const gchar *team_file, League *
     gchar *file_contents;
     gsize length;
     GError *error = NULL;
+    gint i;
 
     context = 
 	g_markup_parse_context_new(&parser, 0, NULL, NULL);
@@ -354,6 +356,11 @@ xml_loadsave_league_read(const gchar *filename, const gchar *team_file, League *
     {
 	debug_print_message("xml_loadsave_league_read: error parsing file %s\n", filename);
 	misc_print_error(&error, TRUE);
+    }
+
+    for (i = 0; i < new_league->c.teams->len; i++) {
+        Team *team = g_ptr_array_index(new_league->c.teams, i);
+        team->league = league;
     }
 
     g_free(dirname);

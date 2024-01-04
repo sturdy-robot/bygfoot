@@ -28,6 +28,8 @@
 
 #include "bygfoot.h"
 
+struct league;
+
 /** @see team_return_league_cup_value_int() */
 enum LeagueCupValue
 {
@@ -81,7 +83,11 @@ typedef struct
     /** The sid of the strategy if it's a CPU team. */
     gchar *strategy_sid;
 
-    gint clid, /**< Numerical id of the league or cup the team belongs to. */
+    /** Numerical id of the league or cup the team belongs to. For teams in
+     * the user's country this will refer to the clid of their league.  For
+     * other teams, this will refer to the clid of the cup they are in.
+     * This field is deprecated and will be replaced by the league field. */
+    gint clid,
 	id, /**< Id of the team. */
 	structure, /**< Playing structure. @see team_assign_playing_structure() */
 	style, /**< Playing style. @see team_assign_playing_style() */
@@ -119,6 +125,9 @@ typedef struct
     gint reserve_level;
 
     Country *country;
+
+    /** The current league that this team plays in. */
+    struct league *league;
 } Team;
 
 #endif

@@ -1516,3 +1516,10 @@ team_get_weekly_wages(const Team *tm)
     }
     return wages;
 }
+
+void
+team_set_league(Team *tm, League *league)
+{
+    tm->clid = league->c.id;
+    tm->league = league;
+}
