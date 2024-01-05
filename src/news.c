@@ -557,21 +557,26 @@ news_set_league_cup_tokens(const Fixture *fix)
     const CupRound *cupround;
     const Team *tm;
 
-    if(fix->teams[0]->clid < ID_CUP_START)
-	misc_token_add(token_rep_news,
-		       option_int("string_token_team_layer0", &tokens),
-		       misc_int_to_char(league_from_clid(fix->teams[0]->clid)->layer));
-    if(fix->teams[1]->clid < ID_CUP_START)
-	misc_token_add(token_rep_news,
-		       option_int("string_token_team_layer1", &tokens),
-		       misc_int_to_char(league_from_clid(fix->teams[1]->clid)->layer));
-	
-    if(fix->teams[0]->clid < ID_CUP_START &&
-       fix->teams[1]->clid < ID_CUP_START)
+    /* We want to avoid comparing layers between teams of different countries,
+     * because the layer numbers are relative to each country.  The news xml
+     * files only ever use the layer0 and layer1 values if the layerdiff is
+     * greater than 0.  We set layerdiff to 0 for international cups below,
+     * so it's safe to set layer0 and layer1 values unconditionally here
+     * even for international cups.
+     */
+    misc_token_add(token_rep_news,
+                   option_int("string_token_team_layer0", &tokens),
+                   misc_int_to_char(fix->teams[0]->league->layer));
+    misc_token_add(token_rep_news,
+                   option_int("string_token_team_layer1", &tokens),
+                   misc_int_to_char(fix->teams[1]->league->layer));
+
+    /* Both teams in the same country. */
+    if(fix->teams[0]->country == fix->teams[1]->country)
 	misc_token_add(token_rep_news,
 		       option_int("string_token_team_layerdiff", &tokens),
-		       misc_int_to_char(ABS(league_from_clid(fix->teams[0]->clid)->layer -
-                                            league_from_clid(fix->teams[1]->clid)->layer)));
+		       misc_int_to_char(ABS(fix->teams[0]->league->layer -
+                                            fix->teams[1]->league->layer)));
 
     misc_token_add(token_rep_news,
 		   option_int("string_token_league_cup_name", &tokens),
