@@ -26,6 +26,7 @@
 #include <locale.h>
 
 #include "cup.h"
+#include "competition.h"
 #include "file.h"
 #include "fixture.h"
 #include "free.h"
@@ -580,21 +581,23 @@ lg_commentary_initialize(const Fixture *fix)
 		   option_int("string_token_team_away", &tokens), 
 		   g_strdup(fix->teams[1]->name));
 
-    if(fix->teams[0]->clid < ID_CUP_START)
+    if (competition_is_league(fix->competition) ||
+        (competition_is_cup(fix->competition) && !cup_is_international((Cup*)fix->competition))) {
+        /* We only want to set the layer values for leagues or national cups.
+         * In international cups the layer values don't mean much since they
+         * are relative to their own country.
+         */
 	misc_token_add(token_rep,
 		       option_int("string_token_team_layer0", &tokens), 
-		       misc_int_to_char(league_from_clid(fix->teams[0]->clid)->layer));
-    if(fix->teams[1]->clid < ID_CUP_START)
+		       misc_int_to_char(fix->teams[0]->league->layer));
 	misc_token_add(token_rep,
 		       option_int("string_token_team_layer1", &tokens), 
 		       misc_int_to_char(league_from_clid(fix->teams[1]->clid)->layer));
-	
-    if(fix->teams[0]->clid < ID_CUP_START &&
-       fix->teams[1]->clid < ID_CUP_START)
 	misc_token_add(token_rep,
 		       option_int("string_token_team_layerdiff", &tokens),
 		       misc_int_to_char(league_from_clid(fix->teams[0]->clid)->layer -
 					league_from_clid(fix->teams[1]->clid)->layer));
+    }
 
     misc_token_add(token_rep,
 		   option_int("string_token_league_cup_name", &tokens), 
