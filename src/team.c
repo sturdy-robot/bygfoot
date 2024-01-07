@@ -104,23 +104,11 @@ team_generate_players_stadium(Team *tm, gfloat av_talent)
 		 const_float("float_team_stadium_safety_upper"));
     tm->stadium.ticket_price = const_int("int_team_stadium_ticket_price");
 
-    if(tm->clid < ID_CUP_START)
-    {
-	league_av_talent = (av_talent > 0) ?
-	    av_talent : league_from_clid(tm->clid)->average_talent;
-	average_talent = (tm->average_talent == 0) ?
-	    skill_factor * league_av_talent :
-	    tm->average_talent;
-    }
-    else
-    {
-        League *league = g_ptr_array_index(country.leagues, 0);
-        average_talent = (tm->average_talent == 0) ?
-            team_get_average_talents(league->c.teams) *
-            (1 + cup_from_clid(tm->clid)->talent_diff) :
-            tm->average_talent;
-        average_talent *= skill_factor;
-    }
+    league_av_talent = (av_talent > 0) ?
+        av_talent : league_from_clid(tm->clid)->average_talent;
+    average_talent = (tm->average_talent == 0) ?
+        skill_factor * league_av_talent :
+        tm->average_talent;
 	
     average_talent = CLAMP(average_talent, 0, const_float_fast(float_player_max_skill));
     tm->average_talent = average_talent;
