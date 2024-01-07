@@ -1060,7 +1060,6 @@ query_team_plays(const Team *tm, gint week_number, gint week_round_number)
 
     gint i, j;
 
-    if(tm->clid < ID_CUP_START)
 	for(i=0;i<country.leagues->len;i++) {
             League *league = g_ptr_array_index(country.leagues, i);
 	    if(league->c.id == tm->clid)
