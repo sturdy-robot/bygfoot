@@ -323,7 +323,6 @@ team_get_fixture(const Team *tm, gboolean last_fixture)
     
     if(!last_fixture)
     {
-	if(tm->clid < ID_CUP_START)
 	    for(i=0;i<country.leagues->len;i++)
 	    {
                 League *league = g_ptr_array_index(country.leagues, i);
@@ -370,7 +369,6 @@ team_get_fixture(const Team *tm, gboolean last_fixture)
     }
     else
     {
-	if(tm->clid < ID_CUP_START)
 	    for(i=0;i<country.leagues->len;i++)
 	    {
                 League *league = g_ptr_array_index(country.leagues, i);
