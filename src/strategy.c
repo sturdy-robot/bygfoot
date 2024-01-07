@@ -386,12 +386,11 @@ strategy_set_tokens(const Team *tm, const Fixture *fixture)
 		   option_int("string_token_opponent_skill", &tokens),
 		   misc_int_to_char((gint)rint(team_get_average_skill(opp, FALSE))));
 
-    if(tm->clid < ID_CUP_START &&
-       opp->clid < ID_CUP_START)
+    if(tm->country == opp->country)
 	misc_token_add(token_strat,
 		       option_int("string_token_team_layerdiff", &tokens),
-		       misc_int_to_char(league_from_clid(tm->clid)->layer -
-					league_from_clid(opp->clid)->layer));
+		       misc_int_to_char(tm->league->layer -
+					opp->league->layer));
 
     misc_token_add(token_strat,
 		   option_int("string_token_goals_to_win", &tokens),
