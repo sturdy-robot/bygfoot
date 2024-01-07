@@ -872,7 +872,7 @@ team_compare_func(gconstpointer a, gconstpointer b, gpointer data)
     }
     else if(type == TEAM_COMPARE_LEAGUE_LAYER)
 	return_value = 
-	    (tm1->clid >= ID_CUP_START || tm2->clid >= ID_CUP_START) ?
+	    (tm1->country != tm2->country) ?
 	    0 : misc_int_compare(league_from_clid(tm2->clid)->layer,
 				 league_from_clid(tm1->clid)->layer);
     else if(type == TEAM_COMPARE_OFFENSIVE)
