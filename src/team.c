@@ -1433,8 +1433,7 @@ team_get_table_clid(const Team *tm)
 
     gint i;
 
-    if(tm->clid >= ID_CUP_START ||
-       (tm->clid < ID_CUP_START && !query_league_active(league_from_clid(tm->clid))))
+    if (!query_league_active(tm->league))
     {
 	for(i = country.allcups->len - 1; i >= 0; i--) {
             Cup *cup = g_ptr_array_index(country.allcups, i);
