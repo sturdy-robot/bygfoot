@@ -825,12 +825,7 @@ team_get_table_value(const Team *tm, gint type)
     gint i;
     const GArray *elements = NULL;
 
-    if(tm->clid >= ID_CUP_START)
-	main_exit_program(EXIT_INT_NOT_FOUND, 
-			  "team_get_table_value: team is not a league team: %s \n", 
-			  tm->name);
-    
-    elements = league_table(league_from_clid(tm->clid))->elements;
+    elements = league_table(tm->league)->elements;
 
     for(i=0;i<elements->len;i++)
 	if(g_array_index(elements, TableElement, i).team == tm)
