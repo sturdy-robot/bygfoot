@@ -514,12 +514,12 @@ player_compare_func(gconstpointer a, gconstpointer b, gpointer data)
     }
     else if(type == PLAYER_COMPARE_ATTRIBUTE_LEAGUE_GOALS)
     {
-	gint goals1 = player_games_goals_get(pl1, pl1->team->clid, PLAYER_VALUE_GOALS),
-	    games1 = player_games_goals_get(pl1, pl1->team->clid, PLAYER_VALUE_GAMES),
-	    shots1 = player_games_goals_get(pl1, pl1->team->clid, PLAYER_VALUE_SHOTS),
-	    goals2 = player_games_goals_get(pl2, pl2->team->clid, PLAYER_VALUE_GOALS),
-	    games2 = player_games_goals_get(pl2, pl2->team->clid, PLAYER_VALUE_GAMES),
-	    shots2 = player_games_goals_get(pl2, pl2->team->clid, PLAYER_VALUE_SHOTS);
+	gint goals1 = player_games_goals_get(pl1, pl1->team->league->c.id, PLAYER_VALUE_GOALS),
+	    games1 = player_games_goals_get(pl1, pl1->team->league->c.id, PLAYER_VALUE_GAMES),
+	    shots1 = player_games_goals_get(pl1, pl1->team->league->c.id, PLAYER_VALUE_SHOTS),
+	    goals2 = player_games_goals_get(pl2, pl2->team->league->c.id, PLAYER_VALUE_GOALS),
+	    games2 = player_games_goals_get(pl2, pl2->team->league->c.id, PLAYER_VALUE_GAMES),
+	    shots2 = player_games_goals_get(pl2, pl2->team->league->c.id, PLAYER_VALUE_SHOTS);
 
 	if(goals1 != goals2)
 	    return_value = misc_int_compare(goals1, goals2);

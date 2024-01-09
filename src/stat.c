@@ -103,7 +103,7 @@ stat_update_league_players(League *league)
 	    pl = &g_array_index(team->players, Player, j);
 	    if(pl->pos != PLAYER_POS_GOALIE)
 		g_ptr_array_add(players_sorted[0], pl);
-	    else if(player_games_goals_get(pl, pl->team->clid, PLAYER_VALUE_GAMES) >=
+	    else if(player_games_goals_get(pl, pl->team->league->c.id, PLAYER_VALUE_GAMES) >=
 		    const_float("float_stat_goalie_percentage") * 
 		    (gfloat)team_get_table_value(pl->team, TABLE_PLAYED))
 		g_ptr_array_add(players_sorted[1], pl);
@@ -125,11 +125,11 @@ stat_update_league_players(League *league)
 	    new_stat.team_name = g_strdup(pl->team->name);
 	    new_stat.value_string = g_strdup(pl->name);
 	    new_stat.value1 = 
-		player_games_goals_get(pl, pl->team->clid, PLAYER_VALUE_GOALS);
+		player_games_goals_get(pl, pl->team->league->c.id, PLAYER_VALUE_GOALS);
 	    new_stat.value2 = 
-		player_games_goals_get(pl, pl->team->clid, PLAYER_VALUE_GAMES);
+		player_games_goals_get(pl, pl->team->league->c.id, PLAYER_VALUE_GAMES);
 	    new_stat.value3 = 
-		player_games_goals_get(pl, pl->team->clid, PLAYER_VALUE_SHOTS);
+		player_games_goals_get(pl, pl->team->league->c.id, PLAYER_VALUE_SHOTS);
 
 	    g_array_append_val(players[i], new_stat);
 	}
