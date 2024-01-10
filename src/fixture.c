@@ -724,8 +724,8 @@ fixture_write_knockout_round(Cup *cup, gint cup_round, GPtrArray *teams,
 	fixture_get_free_round(week_number, teams, -1, -1, can_sched_current_round);
     for(i=0; i<=(teams->len - 2) / 2; i++)	
 	if(!round->home_away && query_league_cup_has_property(cup->c.id, "weak_at_home") &&
-	   league_from_clid(((Team*)g_ptr_array_index(teams, 2 * i))->clid)->layer <
-	   league_from_clid(((Team*)g_ptr_array_index(teams, 2 * i + 1))->clid)->layer)
+	   ((Team*)g_ptr_array_index(teams, 2 * i))->league->layer <
+	   ((Team*)g_ptr_array_index(teams, 2 * i + 1))->league->layer)
 	    fixture_write(cup->fixtures, (Team*)g_ptr_array_index(teams, 2 * i + 1),
 			  (Team*)g_ptr_array_index(teams, 2 * i), week_number,
 			  week_round_number, &cup->c, cup_round, 0,
