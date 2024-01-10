@@ -751,7 +751,7 @@ callback_show_player_list(GUI *gui, gint type)
         return;
         break;
     case SHOW_CURRENT:
-        comp = competition_get_from_clid(current_user.tm->clid);
+        comp = &current_user.tm->league->c;
         gui_set_current_competition(gui, comp);
         break;
     case SHOW_NEXT_LEAGUE:
