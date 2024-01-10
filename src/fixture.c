@@ -1379,7 +1379,7 @@ fixture_get_matches(const Team *tm1, const Team *tm2)
 
     for(i=0;i<country.leagues->len;i++) {
         League *league = g_ptr_array_index(country.leagues, i);
-	if(league->c.id == tm1->clid)
+	if(league->c.id == tm1->league->c.id)
 	    for(j=0;j<league->fixtures->len;j++)
 	    {
 		if(g_array_index(league->fixtures, Fixture, j).attendance == -1)
