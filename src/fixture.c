@@ -1294,7 +1294,7 @@ fixture_get_latest(const Team *tm, gboolean with_cups)
 
     for(i=0;i<country.leagues->len;i++) {
         League *league = g_ptr_array_index(country.leagues, i);
-	if(league->c.id == tm->clid)
+	if(league->c.id == tm->league->c.id)
 	{
 	    for(j=0;j<league->fixtures->len;j++)
 		if(g_array_index(league->fixtures, Fixture, j).attendance == -1)
