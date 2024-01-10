@@ -1498,7 +1498,7 @@ fixture_get_next_week(gint *week_number, gint *week_round_number)
 	       (fix->week_number < *week_number ||
 		(fix->week_number == *week_number && 
 		 fix->week_round_number < *week_round_number)) &&
-	       (fix->competition->id == current_user.tm->clid || 
+	       (fix->competition->id == current_user.tm->league->c.id ||
 		opt_user_int("int_opt_user_show_all_leagues")))
 	    {
 		*week_number = fix->week_number;
