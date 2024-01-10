@@ -813,7 +813,7 @@ callback_show_league_stats(GUI *gui, gint type)
         return;
         break;
     case SHOW_CURRENT:
-        comp = competition_get_from_clid(current_user.tm->clid);
+        comp = &current_user.tm->league->c;
         gui_set_current_competition(gui, comp);
         if (competition_is_league(comp) && query_league_active((League*)comp))
             break;
