@@ -539,7 +539,7 @@ team_get_league_rank(const Team *tm, Competition *comp)
     
     main_exit_program(EXIT_INT_NOT_FOUND, 
 		      "team_get_league_rank: no rank found for team %s in league %s. \n",
-		      tm->name, league_cup_get_name_string(tm->clid));
+		      tm->name, league_cup_get_name_string(tm->league->c.id));
 
     return -1;
 }
