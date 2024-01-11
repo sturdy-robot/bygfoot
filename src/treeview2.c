@@ -306,7 +306,7 @@ treeview2_create_bets(GtkListStore *ls)
 	for(i=0;i<bets[k]->len;i++)
 	{
 	    fix = fixture_from_id(g_array_index(bets[k], BetMatch, i).fix_id, TRUE);
-	    if(fix->competition->id == current_user.tm->clid ||
+	    if(fix->competition->id == current_user.tm->league->c.id ||
 	       (fix->competition->id >= ID_CUP_START &&
 		opt_user_int("int_opt_user_bet_show_cups")) ||
 	       (fix->competition->id < ID_CUP_START &&
@@ -364,7 +364,7 @@ treeview2_create_bets(GtkListStore *ls)
 				query_league_cup_has_property(fix->competition->id, "national"))
 			    sprintf(team_names[j], "%s (%d)",
 				    fix->teams[j]->name,
-				    league_from_clid(fix->teams[j]->clid)->layer);
+				    fix->teams[j]->league->layer);
 			else
 			    strcpy(team_names[j], fix->teams[j]->name);
 
