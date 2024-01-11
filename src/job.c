@@ -326,7 +326,7 @@ query_job_application_successful(const Job *job, const User *user)
 	(gfloat)const_int("int_job_application_points_per_av_skill");
 
     success_needed += 
-	((gfloat)(job->league_layer - league_from_clid(user->tm->clid)->layer) *
+	((gfloat)(job->league_layer - user->tm->league->layer) *
 	 (gfloat)const_int("int_job_application_points_per_layer"));
 
     if(job->type != JOB_TYPE_NATIONAL)
