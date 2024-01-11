@@ -1594,9 +1594,9 @@ fixture_get_season_results(void)
     GPtrArray *results = g_ptr_array_new();
     GArray *fixtures = NULL;
     
-    if(query_league_active(league_from_clid(current_user.tm->clid)))
+    if(query_league_active(current_user.tm->league))
     {
-	fixtures = league_from_clid(current_user.tm->clid)->fixtures;
+	fixtures = current_user.tm->league->fixtures;
 	for(i=0;i<fixtures->len;i++)
 	    if(query_fixture_team_involved((&g_array_index(fixtures, Fixture, i)),
 					   current_user.tm->id))
