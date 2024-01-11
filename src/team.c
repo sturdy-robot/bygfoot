@@ -105,7 +105,7 @@ team_generate_players_stadium(Team *tm, gfloat av_talent)
     tm->stadium.ticket_price = const_int("int_team_stadium_ticket_price");
 
     league_av_talent = (av_talent > 0) ?
-        av_talent : league_from_clid(tm->clid)->average_talent;
+        av_talent : tm->league->average_talent;
     average_talent = (tm->average_talent == 0) ?
         skill_factor * league_av_talent :
         tm->average_talent;
