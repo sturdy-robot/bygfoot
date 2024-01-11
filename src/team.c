@@ -1438,7 +1438,7 @@ team_get_table_clid(const Team *tm)
         }
     }
 
-    return tm->clid;
+    return tm->league->c.id;
 }
 
 /** Write a won/lost/draw, gf:ga stat about the team's results in the
