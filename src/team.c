@@ -856,18 +856,18 @@ team_compare_func(gconstpointer a, gconstpointer b, gpointer data)
 
     if(type == TEAM_COMPARE_LEAGUE_RANK)
     {
-	if(tm1->clid == tm2->clid)
+	if(tm1->league == tm2->league)
 	    return_value = misc_int_compare(team_get_league_rank(tm2, NULL),
                                             team_get_league_rank(tm1, NULL));
 	else
-	    return_value = misc_int_compare(league_from_clid(tm2->clid)->layer,
-					    league_from_clid(tm1->clid)->layer);
+	    return_value = misc_int_compare(tm2->league->layer,
+					    tm1->league->layer);
     }
     else if(type == TEAM_COMPARE_LEAGUE_LAYER)
 	return_value = 
 	    (tm1->country != tm2->country) ?
-	    0 : misc_int_compare(league_from_clid(tm2->clid)->layer,
-				 league_from_clid(tm1->clid)->layer);
+	    0 : misc_int_compare(tm2->league->layer,
+				 tm1->league->layer);
     else if(type == TEAM_COMPARE_OFFENSIVE)
     {
 	gint gf1 = team_get_table_value(tm1, TABLE_GF),
