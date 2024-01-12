@@ -932,7 +932,7 @@ country_filter_relegations(const Country *country, GArray *team_movements,
     gint i = team_movements->len - 1;
     while (i >= 0) {
         const TeamMove *move = &g_array_index(team_movements, TeamMove, i--);
-        const League *league = league_from_clid(move->tm->clid);
+        const League *league = move->tm->league;
         gint league_idx = league_index_from_sid(league->sid);
         MoveSummary *summary = &g_array_index(move_summaries, MoveSummary, league_idx);
         const Team *first_team;
@@ -968,7 +968,7 @@ country_filter_relegations(const Country *country, GArray *team_movements,
      * team to also be relegated. */
     for (i = 0; i < team_movements->len; i++) {
         const TeamMove *move = &g_array_index(team_movements, TeamMove, i);
-        const League *league = league_from_clid(move->tm->clid);
+        const League *league = move->tm->league;
         if (move->prom_rel_type != PROM_REL_RELEGATION)
             continue;
         if (league->layer != current_layer)
