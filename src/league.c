@@ -871,7 +871,7 @@ country_filter_promotions(const Country *country, GArray *team_movements,
     while (i < team_movements->len) {
         gint additions = 0;
         const TeamMove *move = &g_array_index(team_movements, TeamMove, i++);
-        const League *league = league_from_clid(move->tm->clid);
+        const League *league = move->tm->league;
         gint league_idx = league_index_from_sid(league->sid);
         MoveSummary *summary = &g_array_index(move_summaries, MoveSummary, league_idx);
         gint dest_idx;
