@@ -785,7 +785,7 @@ handle_required_reserve_relegation(const TeamMove *move, GArray *team_movements)
                     continue;
                 }
 
-                if (move->tm->clid == reserve_team->clid) {
+                if (move->tm->league == reserve_team->league) {
                     /* We have found the last relegation for this league, so
                      * insert the new_move here. */
                     gint insert_index = k + 1;
