@@ -107,7 +107,7 @@ user_set_up_team_new_game(User *user)
 	user_set_up_team(user, TRUE);
 	user_history_add(user, USER_HISTORY_START_GAME, 
 			 user->tm->name, 
-			 league_cup_get_name_string(user->tm->clid), NULL, NULL);
+			 league_cup_get_name_string(user->tm->league->c.id), NULL, NULL);
     }
     else
     {
@@ -127,7 +127,7 @@ user_set_up_team_new_game(User *user)
 
 	user_history_add(user, USER_HISTORY_START_GAME, 
 			 user->tm->name, 
-			 league_cup_get_name_string(user->tm->clid), NULL, NULL);
+			 league_cup_get_name_string(user->tm->league->c.id), NULL, NULL);
 
 	user_set_up_team(user, TRUE);
     }
