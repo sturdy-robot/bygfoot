@@ -1291,11 +1291,11 @@ league_team_movements_print(const GArray *team_movements,
     tmove = &g_array_index(team_movements, TeamMove, i);
     if(tmove->dest_assigned)
         g_print("%-25s (%d) %s \t\t", tmove->tm->name,
-           league_from_clid(tmove->tm->clid)->layer,
+           tmove->tm->league->layer,
            ((League*)g_ptr_array_index(country.leagues, g_array_index(tmove->dest_idcs, gint, 0)))->name);
     else
         g_print("%-25s (%d) UNASSIGNED \t\t", tmove->tm->name,
-           league_from_clid(tmove->tm->clid)->layer);
+           tmove->tm->league->layer);
     for(j=0;j<tmove->dest_idcs->len;j++)
         g_print("%d ", g_array_index(tmove->dest_idcs, gint, j));
     g_print("\n");
