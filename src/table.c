@@ -150,15 +150,15 @@ table_update_get_elements(TableElement **elements, const Fixture *fix, gboolean 
         for(j = 0; j < 2; j++)
         {
             if(non_cumulative &&
-               league_from_clid(fix->teams[j]->clid)->tables->len == 1)
+               fix->teams[j]->league->tables->len == 1)
             {
                 elements[j] = NULL;
                 continue;
             }
 
             table = (non_cumulative) ? 
-                league_table(league_from_clid(fix->teams[j]->clid)) :
-                league_table_cumul(league_from_clid(fix->teams[j]->clid));
+                league_table(fix->teams[j]->league) :
+                league_table_cumul(fix->teams[j]->league);
             
             for(i=0;i<table->elements->len;i++)
             {
