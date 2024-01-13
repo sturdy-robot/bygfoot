@@ -592,11 +592,11 @@ lg_commentary_initialize(const Fixture *fix)
 		       misc_int_to_char(fix->teams[0]->league->layer));
 	misc_token_add(token_rep,
 		       option_int("string_token_team_layer1", &tokens), 
-		       misc_int_to_char(league_from_clid(fix->teams[1]->clid)->layer));
+		       misc_int_to_char(fix->teams[1]->league->layer));
 	misc_token_add(token_rep,
 		       option_int("string_token_team_layerdiff", &tokens),
-		       misc_int_to_char(league_from_clid(fix->teams[0]->clid)->layer -
-					league_from_clid(fix->teams[1]->clid)->layer));
+		       misc_int_to_char(fix->teams[0]->league->layer -
+					fix->teams[1]->league->layer));
     }
 
     misc_token_add(token_rep,
