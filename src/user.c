@@ -419,7 +419,7 @@ user_weekly_update_counters(User *user)
 #endif
 
     gint rank = team_get_league_rank(user->tm, NULL);
-    gint teamslen = ((GPtrArray*)(league_cup_get_teams(user->tm->clid)))->len;
+    gint teamslen = user->tm->league->c.teams->len;
     gint rank_bounds[2] = 
 	{(gint)rint(const_float("float_user_success_table_bound_upper") *
 		    (gfloat)teamslen),
@@ -457,7 +457,7 @@ user_weekly_update_counters(User *user)
 	    MAX(cnts[COUNT_USER_STADIUM_SAFETY] - (gint)rint(increase_safety * 100), 0);
     }
     
-    if(query_league_matches_in_week(league_from_clid(user->tm->clid), week))
+    if(query_league_matches_in_week(user->tm->league, week))
     {
 	if(rank < rank_bounds[0])
 	    user->counters[COUNT_USER_SUCCESS] += (rank_bounds[0] - rank);
