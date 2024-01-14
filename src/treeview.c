@@ -755,7 +755,7 @@ treeview_create_users(const GUI *gui)
 	{
 	    if(usr(i).scout == -1)
 		gtk_list_store_set(ls, &iter, 3,
-				   league_cup_get_name_string(usr(i).tm->clid), -1);
+				   league_cup_get_name_string(usr(i).tm->league->c.id), -1);
 	    else {
                 League *league = g_ptr_array_index(country.leagues, usr(i).scout);
 		gtk_list_store_set(ls, &iter, 3, league->name, -1);
@@ -763,7 +763,7 @@ treeview_create_users(const GUI *gui)
 	}
 	else
 	    gtk_list_store_set(ls, &iter, 3,
-			       league_cup_get_name_string(usr(i).tm->clid), -1);
+			       league_cup_get_name_string(usr(i).tm->league->c.id), -1);
     }
 
     return GTK_TREE_MODEL(ls);
