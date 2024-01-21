@@ -339,7 +339,7 @@ start_new_season(Bygfoot *bygfoot)
 	    sprintf(buf, "%d", team_get_league_rank(usr(i).tm, NULL));
 	    user_history_add(&usr(i), USER_HISTORY_END_SEASON,
 			     usr(i).tm->name, 
-			     league_cup_get_name_string(usr(i).tm->clid), 
+			     usr(i).tm->league->name, 
 			     buf, NULL);
 
 	    usr(i).counters[COUNT_USER_TRAININGS_LEFT_SEASON] =
