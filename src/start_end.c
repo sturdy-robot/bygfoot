@@ -1080,7 +1080,7 @@ start_new_season_league_changes(void)
 
     for(i=0;i<team_movements->len;i++)
 	league_remove_team_with_id(
-	    league_from_clid(g_array_index(team_movements, TeamMove, i).tm->clid),
+	    g_array_index(team_movements, TeamMove, i).tm->league,
 	    g_array_index(team_movements, TeamMove, i).tm->id);
 
     league_team_movements_destinations(team_movements, league_size);
