@@ -2050,7 +2050,7 @@ treeview_create_league_results(void)
     gint i;
     gchar name[SMALL], results[SMALL];
     GArray *table_elements = 
-	league_table(league_from_clid(current_user.tm->clid))->elements;
+	league_table(current_user.tm->league)->elements;
     GtkListStore *ls = 
 	gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING,
 			   G_TYPE_STRING);
