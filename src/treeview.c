@@ -1108,7 +1108,7 @@ treeview_create_fixture(const Fixture *fix, GtkListStore *ls)
 		query_league_cup_has_property(fix->competition->id, "national"))
 	    sprintf(buf[i], "<span background='%s' foreground='%s'>%s (%d)</span>",
 		    colour_bg, colour_fg, fix->teams[i]->name,
-		    league_from_clid(fix->teams[i]->clid)->layer);
+		    fix->teams[i]->league->layer);
 	else
 	    sprintf(buf[i], "<span background='%s' foreground='%s'>%s</span>",
 		    colour_bg, colour_fg, fix->teams[i]->name);
