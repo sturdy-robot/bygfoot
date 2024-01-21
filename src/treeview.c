@@ -2329,7 +2329,7 @@ treeview_create_fixtures_week(gint week_number, gint week_round_number)
     for(i=0;i<fixtures->len;i++)
     {
 	if(((Fixture*)g_ptr_array_index(fixtures, i))->competition->id >= ID_CUP_START ||
-	   ((Fixture*)g_ptr_array_index(fixtures, i))->competition->id == current_user.tm->clid ||	   
+	   ((Fixture*)g_ptr_array_index(fixtures, i))->competition->id == current_user.tm->league->c.id ||	   
 	   opt_user_int("int_opt_user_show_all_leagues"))
 	{
 	    if(i == 0 ||
