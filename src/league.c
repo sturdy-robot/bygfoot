@@ -1370,7 +1370,7 @@ league_team_movements_assign_dest(GArray *team_movements, gint idx,
     if(debug > 60)
     g_print("%s  %d -> %d\n", tmove->tm->name,
 
-    league_from_clid(tmove->tm->clid)->layer,
+    tmove->tm->league->layer,
     league_from_clid(((League*)g_ptr_array_index(country.leagues, dest_idx))->c.id)->layer);
 
     if(league_cur_size[dest_idx] == league_size[dest_idx])
