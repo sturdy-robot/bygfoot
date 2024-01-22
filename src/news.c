@@ -908,8 +908,8 @@ news_check_match_relevant(const LiveGame *live_game)
     user_leagues = g_array_new(FALSE, FALSE, sizeof(gint));
 
     for(i = 0; i < users->len; i++)
-        if(!query_misc_integer_is_in_g_array(usr(i).tm->clid, user_leagues))
-            g_array_append_val(user_leagues, usr(i).tm->clid);
+        if(!query_misc_integer_is_in_g_array(usr(i).tm->league->c.id, user_leagues))
+            g_array_append_val(user_leagues, usr(i).tm->league->c.id);
 
     if(query_misc_integer_is_in_g_array(live_game->fix->competition->id, user_leagues) &&
        opt_int("int_opt_news_create_league"))
