@@ -794,7 +794,7 @@ news_set_rank_tokens(const Fixture *fix)
 
     for(i = 0; i < 2; i++)
     {
-        table = league_table(league_from_clid(fix->teams[i]->clid));
+        table = league_table(fix->teams[i]->league);
         for(j = 0; j < table->elements->len; j++)
             if(g_array_index(table->elements, TableElement, j).team == fix->teams[i])
             {                
