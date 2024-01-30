@@ -43,6 +43,9 @@
 #include "user.h"
 #include "variables.h"
 
+static int
+treeview_helper_player_get_games_goals(const Player *pl, gint type);
+
 /** Select the row that's been clicked on. */
 gboolean
 treeview_helper_select_row(GtkTreeView *treeview, GdkEventButton *event)
@@ -465,21 +468,21 @@ treeview_helper_player_compare(GtkTreeModel *model,
             break;
         case PLAYER_LIST_ATTRIBUTE_GOALS:
             if(pl1->pos == 0 && pl2->pos == 0)
-                return_value = misc_int_compare(player_games_goals_get(pl2, pl2->team->clid, PLAYER_VALUE_GOALS),
-                                                player_games_goals_get(pl1, pl1->team->clid, PLAYER_VALUE_GOALS));
+                return_value = misc_int_compare(treeview_helper_player_get_games_goals(pl2, PLAYER_VALUE_GOALS),
+                                                treeview_helper_player_get_games_goals(pl1, PLAYER_VALUE_GOALS));
             else if(pl1->pos == 0 || pl2->pos == 0)
                 return_value = (pl1->pos == 0) ? 1 : -1;
             else
-                return_value = misc_int_compare(player_games_goals_get(pl1, pl1->team->clid, PLAYER_VALUE_GOALS),
-                                                player_games_goals_get(pl2, pl2->team->clid, PLAYER_VALUE_GOALS));
+                return_value = misc_int_compare(treeview_helper_player_get_games_goals(pl1, PLAYER_VALUE_GOALS),
+                                                treeview_helper_player_get_games_goals(pl2, PLAYER_VALUE_GOALS));
                     break;
         case PLAYER_LIST_ATTRIBUTE_SHOTS:
-            return_value = misc_int_compare(player_games_goals_get(pl1, pl1->team->clid, PLAYER_VALUE_SHOTS),
-                                            player_games_goals_get(pl2, pl2->team->clid, PLAYER_VALUE_SHOTS));
+            return_value = misc_int_compare(treeview_helper_player_get_games_goals(pl1, PLAYER_VALUE_SHOTS),
+                                            treeview_helper_player_get_games_goals(pl2, PLAYER_VALUE_SHOTS));
             break;
         case PLAYER_LIST_ATTRIBUTE_GAMES:
-            return_value = misc_int_compare(player_games_goals_get(pl1, pl1->team->clid, PLAYER_VALUE_GAMES),
-                                            player_games_goals_get(pl2, pl2->team->clid, PLAYER_VALUE_GAMES));
+            return_value = misc_int_compare(treeview_helper_player_get_games_goals(pl1, PLAYER_VALUE_GAMES),
+                                            treeview_helper_player_get_games_goals(pl2, PLAYER_VALUE_GAMES));
             break;
         case PLAYER_LIST_ATTRIBUTE_SKILL:
             return_value = misc_float_compare(pl1->skill, pl2->skill);
@@ -1423,6 +1426,20 @@ treeview_helper_player_status_to_cell(GtkTreeViewColumn *col,
 	g_object_set(renderer, "text", buf, NULL);
 }
 
+static int
+treeview_helper_player_get_games_goals(const Player *pl, gint type)
+{
+    const Fixture *fix = team_get_fixture(pl->team, FALSE);
+    gint clid = pl->team->league->c.id;
+
+    if(fix != NULL)
+	clid = fix->competition->id;
+    else if (pl->games_goals->len == 1)
+        clid = g_array_index(pl->games_goals, PlayerGamesGoals, 0).clid;
+
+    return player_games_goals_get(pl, clid, type);
+}
+
 /** Render a cell of player games or goals.
     @param buf The string the cell will contain.
     @param pl The pointer to the player.
@@ -1435,7 +1452,7 @@ treeview_helper_player_games_goals_to_cell(gchar *buf, const Player *pl, gint ty
 #endif
 
     const Fixture *fix = team_get_fixture(pl->team, FALSE);
-    gint clid = pl->team->clid;
+    gint val = treeview_helper_player_get_games_goals(pl, type);
 
     if(pl->games_goals->len == 0)
     {
@@ -1443,14 +1460,10 @@ treeview_helper_player_games_goals_to_cell(gchar *buf, const Player *pl, gint ty
 	return;
     }
 
-    if(fix != NULL)
-	clid = fix->competition->id;
-
     if(opt_user_int("int_opt_user_show_overall"))
-	sprintf(buf, "%d(%d)", player_games_goals_get(pl, clid, type),
-		player_all_games_goals(pl, type));
+	sprintf(buf, "%d(%d)", val, player_all_games_goals(pl, type));
     else
-	sprintf(buf, "%d", player_games_goals_get(pl, clid, type));
+	sprintf(buf, "%d", val);
 }
 
 /** Render a cell of player fitness.
