@@ -792,8 +792,7 @@ game_gui_show_job_offer(Team *team, Job *job, gint type)
        type == STATUS_JOB_OFFER_FIRE_FAILURE)
 	user_history_add(&current_user, (type == STATUS_JOB_OFFER_FIRE_FINANCE) ?
 			 USER_HISTORY_FIRE_FINANCE : USER_HISTORY_FIRE_FAILURE,
-			 current_user.tm->name, team->name, 
-			 league_cup_get_name_string(team->clid), NULL);
+			 current_user.tm->name, team->name, team->league->name, NULL);
 
     window_create(WINDOW_JOB_OFFER, team->country->bygfoot);
 
