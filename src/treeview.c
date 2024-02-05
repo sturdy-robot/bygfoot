@@ -99,9 +99,8 @@ treeview_create_team_selection_list(const Country *country,
     if(!show_cup_teams)    
 	return GTK_TREE_MODEL(ls);
 
-    for(i=0;i<country->cups->len;i++)
-    {
-    	const Cup *cup = g_ptr_array_index(country->cups, i);
+    for(i=0;i<country->bygfoot->international_cups->len;i++) {
+        const Cup *cup = g_ptr_array_index(country->bygfoot->international_cups, i);
 	for(j=0;j<cup->c.teams->len;j++)
 	{
 	    const Team *team = g_ptr_array_index(cup->c.teams, j);
