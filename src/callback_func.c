@@ -689,8 +689,9 @@ callback_show_team(GUI *gui, gint type)
     if(type == SHOW_CURRENT)
     {
         tm = (const Team*)treeview_helper_get_pointer(treeview_right, 2);
+        comp = (Competition*)treeview_helper_get_pointer(treeview_right, 5);
         stat1 = team_get_index(tm);
-        stat2 = tm->clid;
+        stat2 = comp->id;
     }
     else
     {

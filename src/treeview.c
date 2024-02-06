@@ -69,11 +69,12 @@ treeview_create_team_selection_list(const Country *country,
     GtkListStore  *ls;
     GtkTreeIter iter;
 
-    ls = gtk_list_store_new(5,
+    ls = gtk_list_store_new(6,
 			    G_TYPE_INT,
 			    GDK_TYPE_PIXBUF,
 			    G_TYPE_POINTER,
 			    G_TYPE_STRING,
+			    G_TYPE_POINTER,
 			    G_TYPE_POINTER);
 
     for(i=0;i<country->leagues->len;i++)
@@ -90,7 +91,8 @@ treeview_create_team_selection_list(const Country *country,
                                    0, cnt++,
                                    2, (gpointer)team,
                                    3, league->name,
-                                   4, (gpointer)team,
+                                   4, (gpointer)team, /* FIXME: Why are we adding the team pointer twice? */
+				   5, (gpointer)league,
                                    -1);
             }
         }	
@@ -111,6 +113,7 @@ treeview_create_team_selection_list(const Country *country,
 			       2, team,
 			       3, cup->name,
 			       4, team,
+			       5, cup,
 			       -1);
 	}
     }
