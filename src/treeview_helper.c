@@ -1197,9 +1197,7 @@ treeview_helper_player_to_cell(GtkTreeViewColumn *col,
         break;
     case PLAYER_LIST_ATTRIBUTE_LEAGUE_CUP:
         idx = job_team_is_on_list(pl->team->id);
-        strcpy(buf, (idx == -1) ?
-               league_cup_get_name_string(pl->team->clid) :
-               g_array_index(jobs, Job, idx).league_name);
+        strcpy(buf, pl->team->league->name);
         break;
     }
 
