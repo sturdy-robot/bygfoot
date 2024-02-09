@@ -77,7 +77,7 @@ on_button_offer_ok_clicked             (GtkButton       *button,
 			     NULL);
 
 	gui_set_status(bygfoot->gui, STATUS_MAIN);
-	game_gui_show_main(bygfoot->gui);
+	game_gui_show_main(bygfoot);
     }
 
     g_free(team_name);
@@ -114,7 +114,7 @@ on_button_offer_cancel_clicked         (GtkButton       *button,
     if(gui_get_status(bygfoot->gui) != STATUS_SHOW_JOB_EXCHANGE)
     {
 	gui_set_status(bygfoot->gui, STATUS_MAIN);
-	game_gui_show_main(bygfoot->gui);
+	game_gui_show_main(bygfoot);
     }
 }
 

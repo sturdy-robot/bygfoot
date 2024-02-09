@@ -259,7 +259,7 @@ user_remove(gint idx, gboolean regenerate_team)
     cur_user = 0;
 
     if(window.main != NULL)
-	game_gui_show_main(bygfoot->gui);
+	game_gui_show_main(bygfoot);
 }
 
 void

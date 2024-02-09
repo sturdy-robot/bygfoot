@@ -185,7 +185,7 @@ on_button_back_to_main_clicked         (GtkButton       *button,
         gui_set_status(bygfoot->gui, STATUS_MAIN);
     gtk_notebook_set_current_page(GTK_NOTEBOOK(lookup_widget(window.main, "notebook_player")), 0);
     selected_row = -1;
-    game_gui_show_main(bygfoot->gui);
+    game_gui_show_main(bygfoot);
 
     gui_set_arrows(bygfoot->gui);
 
@@ -475,7 +475,7 @@ on_treeview_right_button_press_event   (GtkWidget       *widget,
 		       &g_array_index(jobs, Job, idx - 1), &current_user))
 		{
 		    gui_set_status(bygfoot->gui, STATUS_MAIN);
-		    game_gui_show_main(bygfoot->gui);
+		    game_gui_show_main(bygfoot);
 		    setsav0;
 		}
             }

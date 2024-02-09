@@ -144,7 +144,7 @@ on_button_font_sel_apply_clicked       (GtkButton       *button,
 	g_free(font);
 
 	gui_set_status(bygfoot->gui, STATUS_MAIN);
-	game_gui_show_main(bygfoot->gui);
+	game_gui_show_main(bygfoot);
 
 	setsav0;
     }

@@ -523,7 +523,7 @@ game_gui_read_radio_items(GtkWidget *widget)
 
 /** Show the main menu. */
 void
-game_gui_show_main(const GUI *gui)
+game_gui_show_main(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("game_gui_show_main\n");
@@ -540,9 +540,9 @@ game_gui_show_main(const GUI *gui)
        counters[COUNT_NEWS_SHOWN] == 0 &&
        counters[COUNT_NEW_NEWS] != 0)
         on_menu_news_activate(NULL, NULL);
-    if(current_user.counters[COUNT_USER_SHOW_RES] && gui_get_status(gui) != STATUS_LIVE_GAME_PAUSE)
+    if(current_user.counters[COUNT_USER_SHOW_RES] && gui_get_status(bygfoot->gui) != STATUS_LIVE_GAME_PAUSE)
     {
-	on_menu_user_show_last_stats_activate(NULL, NULL);
+	on_menu_user_show_last_stats_activate(NULL, bygfoot);
 	current_user.counters[COUNT_USER_SHOW_RES] = 0;
 
 	/** Check the success counter and offer a job 

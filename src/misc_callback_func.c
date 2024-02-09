@@ -109,7 +109,7 @@ misc_callback_start_game(Bygfoot *bygfoot)
 
 	window_create_with_userdata(WINDOW_MAIN, bygfoot);
 	
-	game_gui_show_main(bygfoot->gui);
+	game_gui_show_main(bygfoot);
 
 	if(statp != NULL)
 	{

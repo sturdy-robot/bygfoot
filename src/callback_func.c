@@ -135,7 +135,7 @@ callback_show_next_live_game(Bygfoot *bygfoot)
     treeview_show_user_player_list();
     /* no more user games to show: end round. */
     end_week_round(bygfoot);
-    game_gui_show_main(bygfoot->gui);
+    game_gui_show_main(bygfoot);
 
     user_event_show_next();
 
