@@ -999,17 +999,16 @@ team_get_new(const Team *tm, gboolean fire)
 
 /** Return the index of the team in the teams array. */
 gint
-team_get_index(const Team *tm)
+team_get_index(const Team *tm, const Competition *comp)
 {
 #ifdef DEBUG
     printf("team_get_index\n");
 #endif
 
     gint i;
-    GPtrArray *teams = league_cup_get_teams(tm->clid);
 
-    for(i=0;i<teams->len;i++)
-        if (g_ptr_array_index(teams, i) == tm)
+    for(i=0;i<comp->teams->len;i++)
+        if (g_ptr_array_index(comp->teams, i) == tm)
             return i;
 
     main_exit_program(EXIT_INT_NOT_FOUND, 

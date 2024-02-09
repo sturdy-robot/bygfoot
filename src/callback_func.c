@@ -690,7 +690,7 @@ callback_show_team(GUI *gui, gint type)
     {
         tm = (const Team*)treeview_helper_get_pointer(treeview_right, 2);
         comp = (Competition*)treeview_helper_get_pointer(treeview_right, 5);
-        stat1 = team_get_index(tm);
+        stat1 = team_get_index(tm, comp);
         stat2 = comp->id;
     }
     else
@@ -907,7 +907,7 @@ callback_show_next_opponent(GUI *gui)
         return;
 
     gui_set_status(gui, STATUS_BROWSE_TEAMS);
-    stat1 = team_get_index(opp);
+    stat1 = team_get_index(opp, fix->competition);
     stat2 = opp->clid;
 
     treeview_show_player_list_team(treeview_right, opp, current_user.scout % 10);
@@ -928,7 +928,7 @@ callback_show_player_team(GUI *gui)
         (const Player*)treeview_helper_get_pointer(treeview_right, 2);
 
     gui_set_status(gui, STATUS_BROWSE_TEAMS);
-    stat1 = team_get_index(pl->team);
+    stat1 = team_get_index(pl->team, gui_get_current_competition(gui));
     stat2 = pl->team->clid;
 
     treeview_show_player_list_team(treeview_right, pl->team, current_user.scout % 10);

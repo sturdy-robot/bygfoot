@@ -125,7 +125,7 @@ gint
 team_compare_func(gconstpointer a, gconstpointer b, gpointer data);
 
 gint
-team_get_index(const Team *tm);
+team_get_index(const Team *tm, const Competition *comp);
 
 gfloat
 team_get_average_talents(const GPtrArray *teams);
