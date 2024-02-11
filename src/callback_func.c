@@ -756,14 +756,16 @@ callback_show_player_list(GUI *gui, gint type)
         break;
     case SHOW_NEXT_LEAGUE:
         /* Find the next league or international cup. */
+        comp = gui_get_current_competition(gui);
         do {
-            comp = country_get_next_competition(&country, stat1, TRUE);
+            comp = country_get_next_competition(&country, comp->id, TRUE);
             gui_set_current_competition(gui, comp);
         } while (competition_is_cup(comp) && !cup_is_international((Cup*)comp));
         break;
     case SHOW_PREVIOUS_LEAGUE:
+        comp = gui_get_current_competition(gui);
         do {
-            comp = country_get_previous_competition(&country, stat1, TRUE);
+            comp = country_get_previous_competition(&country, comp->id, TRUE);
             gui_set_current_competition(gui, comp);
         } while (competition_is_cup(comp) && !cup_is_international((Cup*)comp));
         break;
