@@ -831,7 +831,7 @@ game_gui_show_job_offer(Team *team, Job *job, gint type)
     gtk_label_set_text(label_name, tm->name);
     gtk_label_set_text(label_league, 
 		       (type != STATUS_JOB_EXCHANGE_SHOW_TEAM) ?
-		       league_cup_get_name_string(tm->clid) : job->league_name);
+		       tm->league->name : job->league_name);
 
     if(job == NULL ||
        job->type == JOB_TYPE_NATIONAL)
