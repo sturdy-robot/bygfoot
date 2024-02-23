@@ -99,7 +99,7 @@ debug_print_message(gchar *format, ...)
 
 /** Take some debug action depending on the text. Text is a prefix and a number. */
 void
-debug_action(const gchar *text)
+debug_action(Bygfoot *bygfoot, const gchar *text)
 {
 #ifdef DEBUG
     printf("debug_action\n");
@@ -176,7 +176,7 @@ debug_action(const gchar *text)
         if(value < 100)
             while(week < value)
             {
-                on_button_new_week_clicked(NULL, NULL);
+                on_button_new_week_clicked(NULL, bygfoot);
                 game_gui_set_main_window_header();
                 while (gtk_events_pending ())
                     gtk_main_iteration ();
@@ -184,7 +184,7 @@ debug_action(const gchar *text)
         else
             while(season < value - 100)
             {
-                on_button_new_week_clicked(NULL, NULL);
+                on_button_new_week_clicked(NULL, bygfoot);
                 game_gui_set_main_window_header();
                 while (gtk_events_pending ())
                     gtk_main_iteration ();

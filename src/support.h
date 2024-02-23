@@ -76,10 +76,7 @@ GtkWidget*  lookup_widget              (GtkWidget       *widget,
 /** This will load the ui file, connect the signals and return the builder
 */
 GtkBuilder*
-load_ui (const gchar *filename);
-
-GtkBuilder*
-load_ui_with_userdata (const gchar *filename, Bygfoot *bygfoot);
+load_ui (const gchar *filename, Bygfoot *bygfoot);
 
 /* Use this function to set the directory containing installed pixmaps. */
 void        add_pixmap_directory       (const gchar     *directory);

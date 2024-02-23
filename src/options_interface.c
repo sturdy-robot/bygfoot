@@ -24,11 +24,11 @@
   g_object_set_data (G_OBJECT (component), name, widget)
 
 GtkWidget*
-create_window_options (void)
+create_window_options (Bygfoot *bygfoot)
 {
   GtkWidget *window_options;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_options.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_options.glade", TRUE), bygfoot);
   window_options = GTK_WIDGET (gtk_builder_get_object (builder, "window_options"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -122,11 +122,11 @@ create_window_options (void)
 }
 
 GtkWidget*
-create_window_constants (void)
+create_window_constants (Bygfoot *bygfoot)
 {
   GtkWidget *window_constants;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_options.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_options.glade", TRUE), bygfoot);
   window_constants = GTK_WIDGET (gtk_builder_get_object (builder, "window_constants"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */

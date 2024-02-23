@@ -119,13 +119,13 @@ gboolean
 query_user_no_turn(void);
 
 void
-user_show_sponsors(void);
+user_show_sponsors(Bygfoot *bygfoot);
 
 UserSponsor
 user_get_sponsor(const User *user);
 
 void
-user_show_sponsor_continue(void);
+user_show_sponsor_continue(Bygfoot *bygfoot);
 
 void
 user_mm_set_filename(const gchar *filename, gchar *dest);

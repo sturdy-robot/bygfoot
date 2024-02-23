@@ -582,7 +582,7 @@ transfer_add_remove_user_player(Player *pl)
     else
 	transfer_remove_player_ptr(pl);
 
-    on_button_transfers_clicked(NULL, NULL);
+    on_button_transfers_clicked(NULL, pl->team->country->bygfoot);
 }
 
 /** Find out whether the current user has to do

@@ -90,7 +90,7 @@ language_set(Bygfoot *bygfoot, gint index)
 	if(window.main != NULL)
 	{
 	    window_destroy(&window.main);
-	    window_create(WINDOW_MAIN);
+	    window_create(WINDOW_MAIN, bygfoot);
 	    on_button_back_to_main_clicked(NULL, bygfoot);
 	}
     }

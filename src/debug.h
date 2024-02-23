@@ -38,7 +38,7 @@ enum DebugOutput
 };
 
 void
-debug_action(const gchar *text);
+debug_action(Bygfoot *bygfoot, const gchar *text);
 
 gboolean
 debug_reset_counter(gpointer data);

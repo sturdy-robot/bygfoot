@@ -69,29 +69,27 @@ void
 window_show_startup(Bygfoot *bygfoot);
 
 GtkWidget*
-window_create(gint window_type);
-
-GtkWidget*
-window_create_with_userdata(gint window_type, Bygfoot *bygfoot);
+window_create(gint window_type, Bygfoot *bygfoot);
 
 void
 window_destroy(GtkWidget **wind);
 
 void
 window_show_digits(const gchar *text_main, const gchar* text1,
-		   gint value1, const gchar* text2, gint value2, gboolean show_alr);
+		   gint value1, const gchar* text2, gint value2, gboolean show_alr,
+                   Bygfoot *bygfoot);
 
 void
 window_show_file_sel(Bygfoot *bygfoot);
 
 void
-window_show_stadium(void);
+window_show_stadium(Bygfoot *bygfoot);
 
 void
 window_show_yesno(const gchar *text);
 
 void
-window_show_options(void);
+window_show_options(Bygfoot *bygfoot);
 
 void
 window_show_menu_player(GdkEvent *event);
@@ -103,10 +101,10 @@ void
 window_live_set_up(void);
 
 void
-window_show_transfer_dialog(const gchar *text);
+window_show_transfer_dialog(const gchar *text, Bygfoot *bygfoot);
 
 void
-window_show_strategy(void);
+window_show_strategy(Bygfoot *bygfoot);
 
 void
 window_show_mmatches(Bygfoot *bygfoot);
@@ -118,7 +116,7 @@ void
 window_main_load_geometry(void);
 
 void
-window_show_bets(void);
+window_show_bets(Bygfoot *bygfoot);
 
 void
 window_show_progress(gint pictype);
@@ -133,12 +131,12 @@ void
 window_splash_show_hint(void);
 
 void
-window_show_training_camp(void);
+window_show_training_camp(Bygfoot *bygfoot);
 
 void
-window_show_alr(void);
+window_show_alr(Bygfoot *bygfoot);
 
 void
-window_show_constants(void);
+window_show_constants(Bygfoot *bygfoot);
 
 #endif

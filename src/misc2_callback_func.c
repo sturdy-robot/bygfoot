@@ -110,7 +110,7 @@ misc2_callback_transfer_user_player(void)
 
     treeview_show_user_player_list();
     game_gui_set_main_window_header();
-    on_button_transfers_clicked(NULL, NULL);    
+    on_button_transfers_clicked(NULL, new_team->country->bygfoot);    
 }
 
 /** Transfer a cpu player to a user team. */

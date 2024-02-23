@@ -67,13 +67,7 @@ lookup_widget                          (GtkWidget       *widget,
 /** This will load the ui file, connect the signals and return the builder
 */
 GtkBuilder*
-load_ui (const gchar *filename)
-{
-  return load_ui_with_userdata(filename, NULL);
-}
-
-GtkBuilder*
-load_ui_with_userdata (const gchar *filename, Bygfoot *bygfoot)
+load_ui (const gchar *filename, Bygfoot *bygfoot)
 {
   GtkBuilder *builder;
   GError *error = NULL;

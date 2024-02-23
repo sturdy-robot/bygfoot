@@ -299,7 +299,7 @@ on_window_training_camp_delete_event   (GtkWidget       *widget,
     printf("on_window_training_camp_delete_event\n");
 #endif
 
-    on_b_cancel_clicked(NULL, NULL);
+    on_b_cancel_clicked(NULL, user_data);
 
     return TRUE;
 }

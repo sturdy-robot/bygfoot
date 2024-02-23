@@ -64,7 +64,7 @@ on_button_quit_clicked                 (GtkWidget       *widget,
     printf("on_button_quit_clicked\n");
 #endif
 
-    on_menu_quit_activate(NULL, NULL);
+    on_menu_quit_activate(NULL, user_data);
 
     return TRUE;
 }
@@ -156,7 +156,7 @@ on_button_load_clicked                 (GtkButton       *button,
     printf("on_button_load_clicked\n");
 #endif
 
-    on_menu_open_activate(NULL, NULL);
+    on_menu_open_activate(NULL, user_data);
 }
 
 
@@ -194,7 +194,7 @@ on_button_back_to_main_clicked         (GtkButton       *button,
          counters[COUNT_NEW_NEWS] == 1)) &&
        counters[COUNT_NEWS_SHOWN] == 0 &&
        counters[COUNT_NEW_NEWS] != 0)
-        on_menu_news_activate(NULL, NULL);
+        on_menu_news_activate(NULL, user_data);
 }
 
 
@@ -409,11 +409,11 @@ on_treeview_right_button_press_event   (GtkWidget       *widget,
     if(gui_get_status(bygfoot->gui) == STATUS_SHOW_FINANCES)
     {
 	if(event->button == 1)
-	    callback_get_loan();
+	    callback_get_loan(bygfoot);
 	else if(event->button == 3)
-	    callback_pay_loan();
+	    callback_pay_loan(bygfoot);
 	else if(event->button == 2)
-	    on_menu_show_stadium_activate(NULL, NULL);
+	    on_menu_show_stadium_activate(NULL, user_data);
     }
 
     if(gtk_tree_selection_get_mode(
@@ -433,7 +433,7 @@ on_treeview_right_button_press_event   (GtkWidget       *widget,
 	       (trans(idx - 1).offers->len > 0 && 
 		transoff(idx - 1, 0).status == TRANSFER_OFFER_ACCEPTED) ||
 	       event->button == 1)
-		callback_transfer_list_clicked(event->button, idx - 1);
+		callback_transfer_list_clicked(bygfoot, event->button, idx - 1);
 	    else if(event->button == 3)
 	    {
 		if(transfer_remove_offer(idx - 1, current_user.tm))
@@ -520,12 +520,12 @@ on_player_list1_button_press_event     (GtkWidget       *widget,
 
     if(event->button == 2)
     {
-	on_menu_rearrange_team_activate(NULL, NULL);
+	on_menu_rearrange_team_activate(NULL, user_data);
 	return TRUE;
     }
     else if(gui_get_status(bygfoot->gui) == STATUS_LIVE_GAME_PAUSE && event->button == 3)
     {
-	on_menu_reset_players_activate(NULL, NULL);
+	on_menu_reset_players_activate(NULL, user_data);
 	return TRUE;
     }
 
@@ -713,7 +713,8 @@ on_menu_preferences_activate           (GtkMenuItem     *menuitem,
     printf("on_menu_preferences_activate\n");
 #endif
 
-    window_show_options();
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    window_show_options(bygfoot);
 }
 
 /***********************************************************************************************************
@@ -860,6 +861,7 @@ on_menu_set_investment_activate        (GtkMenuItem     *menuitem,
     printf("on_menu_set_investment_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(sett_int("int_opt_disable_ya"))
     {
 	game_gui_print_message(
@@ -870,7 +872,7 @@ on_menu_set_investment_activate        (GtkMenuItem     *menuitem,
     stat1 = STATUS_SET_YA_PERCENTAGE;
     window_show_digits(
 	_("Set the percentage of your income you want to devote to your youth academy."),
-	NULL, -1, "%", current_user.youth_academy.percentage, FALSE);
+	NULL, -1, "%", current_user.youth_academy.percentage, FALSE, bygfoot);
 }
 
 G_MODULE_EXPORT void
@@ -940,6 +942,7 @@ on_training_camp_activate              (GtkMenuItem     *menuitem,
     printf("on_training_camp_activate\n");
 #endif
 
+   Bygfoot *bygfoot = (Bygfoot*)user_data;
    if(sett_int("int_opt_disable_training_camp"))
     {
 	game_gui_print_message(
@@ -961,7 +964,7 @@ on_training_camp_activate              (GtkMenuItem     *menuitem,
        return;
    }
 
-   window_show_training_camp();
+   window_show_training_camp(bygfoot);
 }
 
 G_MODULE_EXPORT void
@@ -999,9 +1002,10 @@ on_menu_custom_structure_activate      (GtkMenuItem     *menuitem,
     printf("on_menu_custom_structure_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     stat1 = STATUS_CUSTOM_STRUCTURE;
     window_show_digits(_("Enter a structure. The digits must sum up to 10."),
-		       NULL, -1, _("Structure"), current_user.tm->structure, FALSE);
+		       NULL, -1, _("Structure"), current_user.tm->structure, FALSE, bygfoot);
 }
 
 G_MODULE_EXPORT void
@@ -1011,7 +1015,8 @@ on_menu_strategy_activate      (GtkMenuItem     *menuitem,
 #ifdef DEBUG
     printf("on_menu_custom_structure_activate\n");
 #endif
-    window_show_strategy();
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    window_show_strategy(bygfoot);
 }
 
 G_MODULE_EXPORT void
@@ -1276,7 +1281,7 @@ G_MODULE_EXPORT void
 on_player_menu_edit_name_activate      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    on_menu_edit_name_activate(NULL, NULL);
+    on_menu_edit_name_activate(NULL, user_data);
 }
 
 G_MODULE_EXPORT void
@@ -1298,7 +1303,7 @@ on_player_menu_put_on_transfer_list_activate
     printf("on_player_menu_put_on_transfer_list_activate\n");
 #endif
 
-    on_menu_put_on_transfer_list_activate(NULL, NULL);
+    on_menu_put_on_transfer_list_activate(NULL, user_data);
 }
 
 
@@ -1311,7 +1316,7 @@ on_player_menu_remove_from_transfer_list_activate
     printf("on_player_menu_remove_from_transfer_list_activate\n");
 #endif
 
-    on_menu_remove_from_transfer_list_activate(NULL, NULL);
+    on_menu_remove_from_transfer_list_activate(NULL, user_data);
 }
 
 
@@ -1324,7 +1329,7 @@ on_player_menu_offer_new_contract_activate
     printf("on_player_menu_offer_new_contract_activate\n");
 #endif
 
-    on_menu_offer_new_contract_activate(NULL, NULL);
+    on_menu_offer_new_contract_activate(NULL, user_data);
 }
 
 
@@ -1336,7 +1341,7 @@ on_player_menu_fire_activate           (GtkMenuItem     *menuitem,
     printf("on_player_menu_fire_activate\n");
 #endif
 
-    on_menu_fire_activate(NULL, NULL);
+    on_menu_fire_activate(NULL, user_data);
 }
 
 
@@ -1349,7 +1354,7 @@ on_player_menu_shoots_penalties_activate
     printf("on_player_menu_shoots_penalties_activate\n");
 #endif
 
-    on_menu_shoots_penalties_activate(NULL, NULL);
+    on_menu_shoots_penalties_activate(NULL, user_data);
 }
 
 G_MODULE_EXPORT void
@@ -1480,7 +1485,7 @@ on_menu_manage_users_activate          (GtkMenuItem     *menuitem,
     Bygfoot *bygfoot = (Bygfoot*)user_data;
     gui_set_status(bygfoot->gui, STATUS_USER_MANAGEMENT);
     stat1 = STATUS_USER_MANAGEMENT;
-    window_create(WINDOW_USER_MANAGEMENT);
+    window_create(WINDOW_USER_MANAGEMENT, bygfoot);
     treeview_show_users(GTK_TREE_VIEW(lookup_widget(window.user_management, "treeview_user_management_users")), bygfoot->gui);
     treeview_show_team_list(GTK_TREE_VIEW(lookup_widget(window.user_management, "treeview_user_management_teams")),
 			    FALSE, FALSE, bygfoot);
@@ -1561,7 +1566,7 @@ on_menu_betting_activate               (GtkMenuItem     *menuitem,
 
     Bygfoot *bygfoot = (Bygfoot*)user_data;
     on_button_back_to_main_clicked(NULL, bygfoot);
-    window_show_bets();
+    window_show_bets(bygfoot);
 }
 
 G_MODULE_EXPORT void
@@ -1572,6 +1577,7 @@ on_automatic_loan_repayment_activate   (GtkMenuItem     *menuitem,
     printf("on_automatic_loan_repayment_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(sett_int("int_opt_disable_finances"))
     {
 	game_gui_print_message(_("Finances are disabled in this country definition."));
@@ -1589,7 +1595,7 @@ on_automatic_loan_repayment_activate   (GtkMenuItem     *menuitem,
         return;            
     }
     
-    window_show_alr();
+    window_show_alr(bygfoot);
 }
 
 G_MODULE_EXPORT void
@@ -1624,6 +1630,7 @@ on_menu_show_stadium_activate          (GtkMenuItem     *menuitem,
     printf("on_menu_show_stadium_activate\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     if(sett_int("int_opt_disable_stadium"))
     {
 	game_gui_print_message(
@@ -1631,7 +1638,7 @@ on_menu_show_stadium_activate          (GtkMenuItem     *menuitem,
 	return;
     }
 
-    window_show_stadium();
+    window_show_stadium(bygfoot);
 }
 
 /***********************************************************************************************************
@@ -1701,7 +1708,8 @@ G_MODULE_EXPORT void
 on_menu_news_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    window_create(WINDOW_NEWS);
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    window_create(WINDOW_NEWS, bygfoot);
     treeview2_show_news();
     counters[COUNT_NEWS_SHOWN] = 1;
 }
@@ -1805,6 +1813,7 @@ on_button_quit_button_press_event      (GtkWidget       *widget,
     printf("on_button_quit_button_press_event\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot *)user_data;
     if(event->button == 3 && counters[COUNT_SHOW_DEBUG] == 0)
     {
 	counters[COUNT_SHOW_DEBUG] = 1;
@@ -1812,7 +1821,7 @@ on_button_quit_button_press_event      (GtkWidget       *widget,
     }
     else if(event->button == 2 && counters[COUNT_SHOW_DEBUG] == 1)
     {
-	window_create(WINDOW_DEBUG);
+	window_create(WINDOW_DEBUG, bygfoot);
 	counters[COUNT_SHOW_DEBUG] = 0;
     }
 
@@ -1827,7 +1836,7 @@ on_button_reset_players_clicked        (GtkButton       *button,
     printf("on_button_reset_players_clicked\n");
 #endif
 
-    on_menu_reset_players_activate(NULL, NULL);
+    on_menu_reset_players_activate(NULL, user_data);
 }
 
 

@@ -65,7 +65,7 @@ window_show_splash(Bygfoot *bygfoot)
     printf("window_show_splash\n");
 #endif
 
-    window_create_with_userdata(WINDOW_SPLASH, bygfoot);
+    window_create(WINDOW_SPLASH, bygfoot);
 
     treeview_show_contributors(
 	GTK_TREE_VIEW(lookup_widget(window.splash, "treeview_splash_contributors")));
@@ -130,7 +130,7 @@ window_show_progress(gint pictype)
     if(sett_int("int_opt_goto_mode"))
         return;
 
-    window_create(WINDOW_PROGRESS);
+    window_create(WINDOW_PROGRESS, NULL);
 
     if(pictype == PIC_TYPE_NONE ||
        !opt_int("int_opt_progressbar_pics"))
@@ -177,13 +177,13 @@ window_show_progress(gint pictype)
 
 /** Show the betting window. */
 void
-window_show_bets(void)
+window_show_bets(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("window_show_bets\n");
 #endif
 
-    window_create(WINDOW_BETS);
+    window_create(WINDOW_BETS, bygfoot);
 
     gtk_toggle_button_set_active(
 	GTK_TOGGLE_BUTTON(lookup_widget(window.bets, "checkbutton_bet_all_leagues")),
@@ -209,7 +209,7 @@ window_show_help(gint page)
 
     gchar buf[SMALL];
 
-    window_create(WINDOW_HELP);
+    window_create(WINDOW_HELP, NULL);
 
     sprintf(buf, "<span %s>Bygfoot Football Manager %s</span>\n(c) %s Győző Both (gyboth@bygfoot.com)\nhttp://bygfoot.sourceforge.net", const_app("string_help_window_program_name_attribute"), VERS, YEAR);
     gtk_label_set_markup(GTK_LABEL(lookup_widget(window.help, "label_about")), buf);
@@ -248,7 +248,7 @@ window_show_startup(Bygfoot *bygfoot)
 #endif
 
     GtkWidget *window_startup =
-	window_create_with_userdata(WINDOW_STARTUP, bygfoot);
+	window_create(WINDOW_STARTUP, bygfoot);
     GtkWidget *combo_country =
 	lookup_widget(window_startup, "combo_country");
     GPtrArray *country_files = NULL;
@@ -310,7 +310,7 @@ window_show_file_sel(Bygfoot *bygfoot)
     GtkFileFilter *filter;
     gboolean mm_file_exists = FALSE;
 
-    window_create(WINDOW_FILE_CHOOSER);
+    window_create(WINDOW_FILE_CHOOSER, bygfoot);
 
     if(stat5 != STATUS_LOAD_GAME &&
        stat5 != STATUS_LOAD_GAME_SPLASH)
@@ -431,7 +431,7 @@ window_show_mmatches(Bygfoot *bygfoot)
 #endif
 
     if(window.mmatches == NULL)
-	window_create_with_userdata(WINDOW_MMATCHES, bygfoot);
+	window_create(WINDOW_MMATCHES, bygfoot);
     treeview2_show_mmatches();
 
     gtk_entry_set_text(GTK_ENTRY(lookup_widget(window.mmatches, "entry_mm_file")),
@@ -440,13 +440,13 @@ window_show_mmatches(Bygfoot *bygfoot)
 
 /**  Show the options window. */
 void
-window_show_options(void)
+window_show_options(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("window_show_options\n");
 #endif
 
-    window_create(WINDOW_OPTIONS);
+    window_create(WINDOW_OPTIONS, bygfoot);
 
     option_gui_set_up_window();
 }
@@ -483,7 +483,8 @@ window_show_menu_youth(GdkEvent *event)
     according to the arguments. */
 void
 window_show_digits(const gchar *text_main, const gchar* text1, gint value1, 
-		   const gchar* text2, gint value2, gboolean show_alr)
+		   const gchar* text2, gint value2, gboolean show_alr,
+                   Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("window_show_digits\n");
@@ -492,7 +493,7 @@ window_show_digits(const gchar *text_main, const gchar* text1, gint value1,
     GtkLabel *label_main, *label_1, *label_2;
     GtkSpinButton *spinbutton1, *spinbutton2;
 
-    window_create(WINDOW_DIGITS);
+    window_create(WINDOW_DIGITS, bygfoot);
 
     label_main = GTK_LABEL(lookup_widget(window.digits, "label_main"));
     label_1 = GTK_LABEL(lookup_widget(window.digits, "label_1"));
@@ -529,7 +530,7 @@ window_show_digits(const gchar *text_main, const gchar* text1, gint value1,
 
 /** Show the stadium window for the current user. */
 void
-window_show_stadium(void)
+window_show_stadium(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("window_show_stadium\n");
@@ -545,7 +546,7 @@ window_show_stadium(void)
     gfloat average_attendance_perc = 0;
     GtkSpinButton *spin_ticket_price;
 
-    window_create(WINDOW_STADIUM);
+    window_create(WINDOW_STADIUM, bygfoot);
 
     label_capacity = GTK_LABEL(lookup_widget(window.stadium, "label_capacity"));
     label_stadium_status = GTK_LABEL(lookup_widget(window.stadium, "label_stadium_status"));
@@ -622,27 +623,27 @@ window_show_yesno(const gchar *text)
     printf("window_show_yesno\n");
 #endif
 
-    window_create(WINDOW_YESNO);
+    window_create(WINDOW_YESNO, NULL);
     gtk_label_set_text(GTK_LABEL(lookup_widget(window.yesno, "label_yesno")), text);
 }
 
 /** Show the transfer dialog (yes/no/later).
     @param text The text to put into the label. */
 void
-window_show_transfer_dialog(const gchar *text)
+window_show_transfer_dialog(const gchar *text, Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("window_show_transfer_dialog\n");
 #endif
 
-    window_create(WINDOW_TRANSFER_DIALOG);
+    window_create(WINDOW_TRANSFER_DIALOG, bygfoot);
     gtk_label_set_text(GTK_LABEL(lookup_widget(window.transfer_dialog, "label_transfer_dialog")), text);
 }
 
 void
-window_show_strategy(void)
+window_show_strategy(Bygfoot *bygfoot)
 {
-    GtkWidget *window_strategy = window_create(WINDOW_STRATEGY);
+    GtkWidget *window_strategy = window_create(WINDOW_STRATEGY, bygfoot);
     GtkComboBox *combo_strategy =
 	GTK_COMBO_BOX(lookup_widget(window_strategy, "combo_strategy"));
     GtkListStore *ls = gtk_list_store_new(1, G_TYPE_STRING);
@@ -783,13 +784,7 @@ window_main_load_geometry(void)
     @return The pointer to the new window.
     @see #Windows */
 GtkWidget*
-window_create(gint window_type)
-{
-    return window_create_with_userdata(window_type, NULL);
-}
-
-GtkWidget*
-window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
+window_create(gint window_type, Bygfoot *bygfoot)
 {
     gchar buf[SMALL];
     GtkWidget *wind = NULL;
@@ -840,7 +835,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
 	    if(window.warning != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.warning = create_window_warning();
+		window.warning = create_window_warning(bygfoot);
 	    wind = window.warning;
 	    strcpy(buf, _("Erm..."));
 	    break;
@@ -848,7 +843,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
 	    if(window.progress != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.progress = create_window_progress();
+		window.progress = create_window_progress(bygfoot);
 	    wind = window.progress;
 	    strcpy(buf, "");
 	    break;
@@ -856,7 +851,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
 	    if(window.digits != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.digits = create_window_digits();
+		window.digits = create_window_digits(bygfoot);
 
 	    wind = window.digits;
 	    strcpy(buf, _("Numbers..."));
@@ -865,7 +860,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
 	    if(window.stadium != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.stadium = create_window_stadium();
+		window.stadium = create_window_stadium(bygfoot);
 	    wind = window.stadium;
 	    strcpy(buf, _("Your stadium"));
 	    break;
@@ -889,7 +884,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
 	    if(window.options != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.options = create_window_options();
+		window.options = create_window_options(bygfoot);
 	    wind = window.options;
 	    strcpy(buf, _("Options"));
 	    break;
@@ -897,7 +892,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
 	    if(window.font_sel != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.font_sel = create_window_font_sel();
+		window.font_sel = create_window_font_sel(bygfoot);
 	    wind = window.font_sel;
 	    strcpy(buf, _("Select font"));
 	    break;
@@ -905,14 +900,14 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
 	    if(window.file_chooser != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.file_chooser = create_window_file_chooser();
+		window.file_chooser = create_window_file_chooser(bygfoot);
 	    wind = window.file_chooser;
 	    break;
 	case WINDOW_CONTRACT:
 	    if(window.contract != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.contract = create_window_contract();
+		window.contract = create_window_contract(bygfoot);
 	    wind = window.contract;
 	    strcpy(buf, _("Contract offer"));
 	    break;
@@ -920,7 +915,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
 	    if(window.user_management != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.user_management = create_window_user_management();
+		window.user_management = create_window_user_management(bygfoot);
 	    wind = window.user_management;
 	    strcpy(buf, _("User management"));
 	    break;
@@ -928,7 +923,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
 	    if(window.wdebug != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.wdebug = create_window_debug();
+		window.wdebug = create_window_debug(bygfoot);
 	    wind = window.wdebug;
 	    strcpy(buf, "Bygfoot debug window");
 	    break;
@@ -936,14 +931,14 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
 	    if(window.help != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.help = create_window_help();
+		window.help = create_window_help(bygfoot);
 	    wind = window.help;
 	    break;
 	case WINDOW_TRANSFER_DIALOG:
 	    if(window.transfer_dialog != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.transfer_dialog = create_window_transfer_dialog();
+		window.transfer_dialog = create_window_transfer_dialog(bygfoot);
 	    wind = window.transfer_dialog;
 	    strcpy(buf, _("Transfer offer"));
 	    break;
@@ -951,7 +946,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
 	    if(window.sponsors != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.sponsors = create_window_sponsors();
+		window.sponsors = create_window_sponsors(bygfoot);
 	    wind = window.sponsors;
 	    strcpy(buf, _("Sponsorship offers"));
 	    break;
@@ -959,7 +954,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
 	    if(window.mmatches != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.mmatches = create_window_mmatches();
+		window.mmatches = create_window_mmatches(bygfoot);
 	    wind = window.mmatches;
 	    strcpy(buf, _("Memorable matches"));
 	    break;
@@ -967,7 +962,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
 	    if(window.bets != NULL)
 		debug_print_message("window_create: called on already existing window\n");
 	    else
-		window.bets = create_window_bets();
+		window.bets = create_window_bets(bygfoot);
 	    wind = window.bets;
 	    strcpy(buf, _("Betting"));
 	    break;
@@ -982,7 +977,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
         if(window.training_camp != NULL)
             debug_print_message("window_create: called on already existing window\n");
         else
-            window.training_camp = create_window_training_camp();
+            window.training_camp = create_window_training_camp(bygfoot);
         wind = window.training_camp;
         strcpy(buf, _("Training camp"));
         break;
@@ -990,7 +985,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
         if(window.alr != NULL)
             debug_print_message("window_create: called on already existing window\n");
         else
-            window.alr = create_window_alr();
+            window.alr = create_window_alr(bygfoot);
         wind = window.alr;
         strcpy(buf, _("Automatic loan repayment"));
         break;
@@ -998,7 +993,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
         if(window.news != NULL)
             debug_print_message("window_create: called on already existing window\n");
         else
-            window.news = create_window_news();
+            window.news = create_window_news(bygfoot);
         wind = window.news;
         strcpy(buf, _("Bygfoot News"));
         break;
@@ -1006,7 +1001,7 @@ window_create_with_userdata(gint window_type, Bygfoot *bygfoot)
         if(window.constants != NULL)
             debug_print_message("window_create: called on already existing window\n");
         else
-            window.constants = create_window_constants();
+            window.constants = create_window_constants(bygfoot);
         wind = window.constants;
         strcpy(buf, _("Bygfoot constants"));
         break;
@@ -1058,7 +1053,7 @@ window_destroy(GtkWidget **wind)
 
 /* Show the training camp window for the current user. */
 void
-window_show_training_camp(void)
+window_show_training_camp(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("window_show_training_camp\n");
@@ -1077,7 +1072,7 @@ window_show_training_camp(void)
     GtkHScale *hs_camp_points;
 	gchar buf[SMALL];
 	
-    window_create(WINDOW_TRAINING_CAMP);
+    window_create(WINDOW_TRAINING_CAMP, bygfoot);
         
     // Initialize entry costs
     misc_print_grouped_int(
@@ -1142,7 +1137,7 @@ window_show_training_camp(void)
 
 /** Create and set up the debt repayment window. */
 void
-window_show_alr(void)
+window_show_alr(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("window_show_alr\n");
@@ -1151,7 +1146,7 @@ window_show_alr(void)
     gchar weekly_installment[SMALL],
         debt[SMALL];
 
-    window_create(WINDOW_ALR);
+    window_create(WINDOW_ALR, bygfoot);
 
     misc_print_grouped_int(current_user.alr_weekly_installment, weekly_installment);
     misc_print_grouped_int(-current_user.debt, debt);
@@ -1170,8 +1165,8 @@ window_show_alr(void)
 /** Show the window where the user can edit constants determining
     gameplay behaviour. */
 void
-window_show_constants(void)
+window_show_constants(Bygfoot *bygfoot)
 {
-    window_create(WINDOW_CONSTANTS);
+    window_create(WINDOW_CONSTANTS, bygfoot);
     treeview2_show_constants();
 }

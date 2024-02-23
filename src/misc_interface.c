@@ -47,7 +47,7 @@ create_window_startup (Bygfoot *bygfoot)
 {
   GtkWidget *window_startup;
   GtkBuilder *builder;
-  builder = load_ui_with_userdata(file_find_support_file("bygfoot_misc.glade", TRUE), bygfoot);
+  builder = load_ui(file_find_support_file("bygfoot_misc.glade", TRUE), bygfoot);
   window_startup = GTK_WIDGET (gtk_builder_get_object (builder, "window_startup"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -69,11 +69,11 @@ create_window_startup (Bygfoot *bygfoot)
 }
 
 GtkWidget*
-create_window_font_sel (void)
+create_window_font_sel (Bygfoot *bygfoot)
 {
   GtkWidget *window_font_sel;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc.glade", TRUE), bygfoot);
   window_font_sel = GTK_WIDGET (gtk_builder_get_object (builder, "window_font_sel"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -89,7 +89,7 @@ create_window_live (Bygfoot *bygfoot)
 {
   GtkWidget *window_live;
   GtkBuilder *builder;
-  builder = load_ui_with_userdata(file_find_support_file("bygfoot_misc.glade", TRUE), bygfoot);
+  builder = load_ui(file_find_support_file("bygfoot_misc.glade", TRUE), bygfoot);
   window_live = GTK_WIDGET (gtk_builder_get_object (builder, "window_live"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -123,11 +123,11 @@ create_window_live (Bygfoot *bygfoot)
 }
 
 GtkWidget*
-create_window_stadium (void)
+create_window_stadium (Bygfoot *bygfoot)
 {
   GtkWidget *window_stadium;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc.glade", TRUE), bygfoot);
   window_stadium = GTK_WIDGET (gtk_builder_get_object (builder, "window_stadium"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -156,11 +156,11 @@ create_window_stadium (void)
 }
 
 GtkWidget*
-create_window_file_chooser (void)
+create_window_file_chooser (Bygfoot *bygfoot)
 {
   GtkWidget *window_file_chooser;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc.glade", TRUE), bygfoot);
   window_file_chooser = GTK_WIDGET (gtk_builder_get_object (builder, "window_file_chooser"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -172,11 +172,11 @@ create_window_file_chooser (void)
 }
 
 GtkWidget*
-create_window_sponsors (void)
+create_window_sponsors (Bygfoot *bygfoot)
 {
   GtkWidget *window_sponsors;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc.glade", TRUE), bygfoot);
   window_sponsors = GTK_WIDGET (gtk_builder_get_object (builder, "window_sponsors"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */

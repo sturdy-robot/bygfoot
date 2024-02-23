@@ -1069,7 +1069,7 @@ user_get_sponsor(const User *user)
 
 /** Show a list of sponsors for the user to choose from. */
 void
-user_show_sponsors(void)
+user_show_sponsors(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("user_show_sponsors\n");
@@ -1102,7 +1102,7 @@ user_show_sponsors(void)
 	g_array_append_val(sponsors, sponsor);
     }
     
-    window_create(WINDOW_SPONSORS);
+    window_create(WINDOW_SPONSORS, bygfoot);
 
     treeview_show_sponsors(sponsors);
 
@@ -1113,7 +1113,7 @@ user_show_sponsors(void)
 
 /** The current sponsor offers to continue. */
 void
-user_show_sponsor_continue(void)
+user_show_sponsor_continue(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("user_show_sponsor_continue\n");
@@ -1129,7 +1129,7 @@ user_show_sponsor_continue(void)
     
     g_array_append_val(sponsors, sponsor);
 
-    window_create(WINDOW_SPONSORS);
+    window_create(WINDOW_SPONSORS, bygfoot);
 
     sprintf(buf, _("Your current sponsor is satisfied with your results and would like to renew the contract. Currently they're paying you %d a week."), current_user.sponsor.benefit);
     gtk_label_set_text(GTK_LABEL(lookup_widget(window.sponsors, "label_sponsors")), buf);

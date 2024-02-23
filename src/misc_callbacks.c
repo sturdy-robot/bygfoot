@@ -317,7 +317,7 @@ on_button_stadium_ok_clicked           (GtkButton       *button,
     misc_callback_improve_stadium();
 
     if(gui_get_status(bygfoot->gui) == STATUS_SHOW_FINANCES)
-	on_menu_show_finances_activate(NULL, NULL);
+	on_menu_show_finances_activate(NULL, user_data);
 }
 
 
@@ -360,7 +360,7 @@ on_window_stadium_delete_event         (GtkWidget       *widget,
     printf("on_window_stadium_delete_event\n");
 #endif
 
-    on_button_stadium_cancel_clicked(NULL, NULL);
+    on_button_stadium_cancel_clicked(NULL, user_data);
 
     return TRUE;
 }
@@ -449,7 +449,7 @@ on_treeview_sponsors_row_activated     (GtkTreeView     *treeview,
     printf("on_treeview_sponsors_row_activated\n");
 #endif
 
-    on_button_sponsors_clicked(NULL, NULL);
+    on_button_sponsors_clicked(NULL, user_data);
 }
 
 
@@ -503,7 +503,7 @@ on_eventbox_lg_style_button_press_event (GtkWidget       *widget,
 
     if(gui_get_status(bygfoot->gui) == STATUS_LIVE_GAME_PAUSE)
     {
-	on_eventbox_style_button_press_event(NULL, event, NULL);
+	on_eventbox_style_button_press_event(NULL, event, user_data);
 	return FALSE;
     }
 
@@ -549,7 +549,7 @@ on_eventbox_lg_boost_button_press_event (GtkWidget       *widget,
 
     if(gui_get_status(bygfoot->gui) == STATUS_LIVE_GAME_PAUSE)
     {
-	on_eventbox_boost_button_press_event(NULL, event, NULL);
+	on_eventbox_boost_button_press_event(NULL, event, user_data);
 	return FALSE;
     }
 

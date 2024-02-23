@@ -29,7 +29,7 @@ create_window_job_offer (Bygfoot *bygfoot)
 {
   GtkWidget *window_job_offer;
   GtkBuilder *builder;
-  builder = load_ui_with_userdata(file_find_support_file("bygfoot_misc2.glade", TRUE), bygfoot);
+  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE), bygfoot);
   window_job_offer = GTK_WIDGET (gtk_builder_get_object (builder, "window_job_offer"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -51,11 +51,11 @@ create_window_job_offer (Bygfoot *bygfoot)
 }
 
 GtkWidget*
-create_window_progress (void)
+create_window_progress (Bygfoot *bygfoot)
 {
   GtkWidget *window_progress;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE), bygfoot);
   window_progress = GTK_WIDGET (gtk_builder_get_object (builder, "window_progress"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -69,11 +69,11 @@ create_window_progress (void)
 }
 
 GtkWidget*
-create_window_warning (void)
+create_window_warning (Bygfoot *bygfoot)
 {
   GtkWidget *window_warning;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE), bygfoot);
   window_warning = GTK_WIDGET (gtk_builder_get_object (builder, "window_warning"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -86,11 +86,11 @@ create_window_warning (void)
 }
 
 GtkWidget*
-create_window_digits (void)
+create_window_digits (Bygfoot *bygfoot)
 {
   GtkWidget *window_digits;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE), bygfoot);
   window_digits = GTK_WIDGET (gtk_builder_get_object (builder, "window_digits"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -112,7 +112,7 @@ create_window_yesno (Bygfoot *bygfoot)
 {
   GtkWidget *window_yesno;
   GtkBuilder *builder;
-  builder = load_ui_with_userdata(file_find_support_file("bygfoot_misc2.glade", TRUE), bygfoot);
+  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE), bygfoot);
   window_yesno = GTK_WIDGET (gtk_builder_get_object (builder, "window_yesno"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -125,11 +125,11 @@ create_window_yesno (Bygfoot *bygfoot)
 }
 
 GtkWidget*
-create_window_contract (void)
+create_window_contract (Bygfoot *bygfoot)
 {
   GtkWidget *window_contract;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE), bygfoot);
   window_contract = GTK_WIDGET (gtk_builder_get_object (builder, "window_contract"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -151,11 +151,11 @@ create_window_contract (void)
 }
 
 GtkWidget*
-create_window_user_management (void)
+create_window_user_management (Bygfoot *bygfoot)
 {
   GtkWidget *window_user_management;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE), bygfoot);
   window_user_management = GTK_WIDGET (gtk_builder_get_object (builder, "window_user_management"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -170,11 +170,11 @@ create_window_user_management (void)
 }
 
 GtkWidget*
-create_window_debug (void)
+create_window_debug (Bygfoot *bygfoot)
 {
   GtkWidget *window_debug;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE), bygfoot);
   window_debug = GTK_WIDGET (gtk_builder_get_object (builder, "window_debug"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -187,11 +187,11 @@ create_window_debug (void)
 }
 
 GtkWidget*
-create_window_help (void)
+create_window_help (Bygfoot *bygfoot)
 {
   GtkWidget *window_help;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE), bygfoot);
   window_help = GTK_WIDGET (gtk_builder_get_object (builder, "window_help"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -208,11 +208,11 @@ create_window_help (void)
 }
 
 GtkWidget*
-create_window_transfer_dialog (void)
+create_window_transfer_dialog (Bygfoot *bygfoot)
 {
   GtkWidget *window_transfer_dialog;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE), bygfoot);
   window_transfer_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "window_transfer_dialog"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -225,11 +225,11 @@ create_window_transfer_dialog (void)
 }
 
 GtkWidget*
-create_window_mmatches (void)
+create_window_mmatches (Bygfoot *bygfoot)
 {
   GtkWidget *window_mmatches;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc2.glade", TRUE), bygfoot);
   window_mmatches = GTK_WIDGET (gtk_builder_get_object (builder, "window_mmatches"));
 
   /* Store pointers to all widgets, for use by lookup_widget(). */

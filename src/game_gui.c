@@ -539,7 +539,7 @@ game_gui_show_main(Bygfoot *bygfoot)
          counters[COUNT_NEW_NEWS] == 1)) &&
        counters[COUNT_NEWS_SHOWN] == 0 &&
        counters[COUNT_NEW_NEWS] != 0)
-        on_menu_news_activate(NULL, NULL);
+        on_menu_news_activate(NULL, bygfoot);
     if(current_user.counters[COUNT_USER_SHOW_RES] && gui_get_status(bygfoot->gui) != STATUS_LIVE_GAME_PAUSE)
     {
 	on_menu_user_show_last_stats_activate(NULL, bygfoot);
@@ -553,9 +553,9 @@ game_gui_show_main(Bygfoot *bygfoot)
 	treeview_show_next_opponent();
 
     if(current_user.counters[COUNT_USER_NEW_SPONSOR] == 1)
-	user_show_sponsors();
+	user_show_sponsors(bygfoot);
     else if(current_user.counters[COUNT_USER_NEW_SPONSOR] == -1)
-	user_show_sponsor_continue();
+	user_show_sponsor_continue(bygfoot);
 }
 
 /** Print a message in the message area. */
@@ -759,7 +759,7 @@ game_gui_show_warning(const gchar *format, ...)
 	game_gui_print_message(text, NULL);
     else
     {
-	window_create(WINDOW_WARNING);
+	window_create(WINDOW_WARNING, NULL);
 	gtk_label_set_text(GTK_LABEL(lookup_widget(window.warning, "label_warning")), text);
     }
 }
@@ -795,7 +795,7 @@ game_gui_show_job_offer(Team *team, Job *job, gint type)
 			 current_user.tm->name, team->name, 
 			 league_cup_get_name_string(team->clid), NULL);
 
-    window_create(WINDOW_JOB_OFFER);
+    window_create(WINDOW_JOB_OFFER, team->country->bygfoot);
 
     label_text = GTK_LABEL(lookup_widget(window.job_offer, "label_text"));
     label_text2 = GTK_LABEL(lookup_widget(window.job_offer, "label_text2"));

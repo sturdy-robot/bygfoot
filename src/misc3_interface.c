@@ -17,11 +17,11 @@
 #include "file.h"
 
 GtkWidget*
-create_window_bets (void)
+create_window_bets (Bygfoot *bygfoot)
 {
   GtkWidget *window_bets;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc3.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc3.glade", TRUE), bygfoot);
   window_bets = GTK_WIDGET (gtk_builder_get_object (builder, "window_bets"));
   gtk_widget_show (window_bets);
 
@@ -42,7 +42,7 @@ create_window_splash (Bygfoot *bygfoot)
 {
   GtkWidget *window_splash;
   GtkBuilder *builder;
-  builder = load_ui_with_userdata(file_find_support_file("bygfoot_misc3.glade", TRUE), bygfoot);
+  builder = load_ui(file_find_support_file("bygfoot_misc3.glade", TRUE), bygfoot);
   window_splash = GTK_WIDGET (gtk_builder_get_object (builder, "window_splash"));
   gtk_widget_show (window_splash);
 
@@ -63,11 +63,11 @@ create_window_splash (Bygfoot *bygfoot)
 }
 
 GtkWidget*
-create_window_alr (void)
+create_window_alr (Bygfoot *bygfoot)
 {
   GtkWidget *window_alr;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc3.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc3.glade", TRUE), bygfoot);
   window_alr = GTK_WIDGET (gtk_builder_get_object (builder, "window_alr"));
   gtk_widget_show (window_alr);
 
@@ -85,11 +85,11 @@ create_window_alr (void)
 }
 
 GtkWidget*
-create_window_news (void)
+create_window_news (Bygfoot *bygfoot)
 {
   GtkWidget *window_news;
   GtkBuilder *builder;
-  builder = load_ui(file_find_support_file("bygfoot_misc3.glade", TRUE));
+  builder = load_ui(file_find_support_file("bygfoot_misc3.glade", TRUE), bygfoot);
   window_news = GTK_WIDGET (gtk_builder_get_object (builder, "window_news"));
   gtk_widget_show (window_news);
 
@@ -107,7 +107,7 @@ create_window_strategy (Bygfoot *bygfoot)
 {
   GtkWidget *window_strategy;
   GtkBuilder *builder;
-  builder = load_ui_with_userdata(file_find_support_file("bygfoot_misc3.glade", TRUE),
+  builder = load_ui(file_find_support_file("bygfoot_misc3.glade", TRUE),
 		                  bygfoot);
   window_strategy = GTK_WIDGET (gtk_builder_get_object (builder, "window_strategy"));
   GTK_HOOKUP_OBJECT (window_strategy, builder, "combo_strategy");

@@ -242,7 +242,7 @@ callback_show_last_match(gboolean start, LiveGame *lg, Bygfoot *bygfoot)
         stat2 = cur_user;
         statp = lg;
 
-        window_create_with_userdata(WINDOW_LIVE, bygfoot);
+        window_create(WINDOW_LIVE, bygfoot);
 
         gui_set_sensitive_lg_meters(FALSE);
 
@@ -400,7 +400,7 @@ callback_show_tables(GUI *gui, gint type)
 
 /** Open the digits window to get a loan. */
 void
-callback_get_loan(void)
+callback_get_loan(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("callback_get_loan\n");
@@ -420,12 +420,12 @@ callback_get_loan(void)
     misc_print_grouped_int(max_loan, buf2);
     sprintf(buf, _("You can take out at most %s."), buf2);
 
-    window_show_digits(buf, _("Loan"), max_loan, NULL, 0, TRUE);
+    window_show_digits(buf, _("Loan"), max_loan, NULL, 0, TRUE, bygfoot);
 }
 
 /** Open the digits window to pay back a loan. */
 void
-callback_pay_loan(void)
+callback_pay_loan(Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("callback_pay_loan\n");
@@ -450,7 +450,7 @@ callback_pay_loan(void)
     misc_print_grouped_int(max_payback, buf2);
     sprintf(buf, _("You can pay back at most %s"), buf2);
 
-    window_show_digits(buf, _("Payback"), max_payback, NULL, 0, FALSE);
+    window_show_digits(buf, _("Payback"), max_payback, NULL, 0, FALSE, bygfoot);
 }
 
 /** Manage a click on a player of the current team on the
@@ -458,7 +458,7 @@ callback_pay_loan(void)
     @param button The mouse button number.
     @param idx The index of the selected player in the transfer list. */
 void
-callback_transfer_list_user(gint button, gint idx)
+callback_transfer_list_user(Bygfoot *bygfoot, gint button, gint idx)
 {
 #ifdef DEBUG
     printf("callback_transfer_list_user\n");
@@ -471,7 +471,7 @@ callback_transfer_list_user(gint button, gint idx)
             (button == 1 && trans(idx).offers->len == 0))
     {
         transfer_remove_player(idx);
-        on_button_transfers_clicked(NULL, NULL);
+        on_button_transfers_clicked(NULL, bygfoot);
         setsav0;
     }
     else if(button == 1)
@@ -496,7 +496,7 @@ callback_transfer_list_user(gint button, gint idx)
                     buf2, buf3);
             stat1 = STATUS_TRANSFER_OFFER_USER;
             stat2 = idx;
-            window_show_transfer_dialog(buf);
+            window_show_transfer_dialog(buf, bygfoot);
         }
     }
 }
@@ -504,7 +504,7 @@ callback_transfer_list_user(gint button, gint idx)
 /** Handle a click on a cpu player for which the offer
     got accepted. */
 void
-callback_transfer_list_cpu(gint button, gint idx)
+callback_transfer_list_cpu(Bygfoot *bygfoot, gint button, gint idx)
 {
 #ifdef DEBUG
     printf("callback_transfer_list_cpu\n");
@@ -522,7 +522,7 @@ callback_transfer_list_cpu(gint button, gint idx)
             transfer_offers_notify(&trans(idx), FALSE);
 
         game_gui_print_message(_("Your offer has been removed."));
-        on_button_transfers_clicked(NULL, NULL);
+        on_button_transfers_clicked(NULL, bygfoot);
         return;
     }
 
@@ -539,14 +539,14 @@ callback_transfer_list_cpu(gint button, gint idx)
             buf2, buf3, player_of_id_team(trans(idx).tm, trans(idx).id)->name);
     stat1 = STATUS_TRANSFER_OFFER_CPU;
     stat2 = idx;
-    window_show_transfer_dialog(buf);
+    window_show_transfer_dialog(buf, bygfoot);
 }
 
 /** Handle a click on the transfer list.
     @param button The mouse button number.
     @param idx The index of the selected player in the transfer list. */
 void
-callback_transfer_list_clicked(gint button, gint idx)
+callback_transfer_list_clicked(Bygfoot *bygfoot, gint button, gint idx)
 {
 #ifdef DEBUG
     printf("callback_transfer_list_clicked\n");
@@ -558,7 +558,7 @@ callback_transfer_list_clicked(gint button, gint idx)
 
     if(tr->tm == current_user.tm)
     {
-        callback_transfer_list_user(button, idx);
+        callback_transfer_list_user(bygfoot, button, idx);
         return;
     }
     else if(tr->offers->len > 0 &&
@@ -572,7 +572,7 @@ callback_transfer_list_clicked(gint button, gint idx)
                                        user_from_team(tr->tm)->name);
             }
             else
-                callback_transfer_list_cpu(button, idx);
+                callback_transfer_list_cpu(bygfoot, button, idx);
         }
         else
             game_gui_print_message(_("The player is locked (the team owners are considering an offer currently)."));
@@ -598,14 +598,14 @@ callback_transfer_list_clicked(gint button, gint idx)
                 player_of_id_team(tr->tm, tr->id)->name);
 
         window_show_digits(buf, _("Fee"), tr->fee[current_user.scout % 10],
-                           _("Wage"), tr->wage[current_user.scout % 10], FALSE);
+                           _("Wage"), tr->wage[current_user.scout % 10], FALSE, bygfoot);
     }
     else
     {
         sprintf(buf, _("You are making an offer for %s again. Your previous values for fee and wage are preset."),
                 player_of_id_team(tr->tm, tr->id)->name);
 
-        window_show_digits(buf, _("Fee"), old_fee, _("Wage"), old_wage, FALSE);
+        window_show_digits(buf, _("Fee"), old_fee, _("Wage"), old_wage, FALSE, bygfoot);
     }
 }
 
@@ -650,7 +650,7 @@ callback_offer_new_contract(gint idx)
     else
         stat1 = MIN(stat1, pl->wage);
 
-    window_create(WINDOW_CONTRACT);
+    window_create(WINDOW_CONTRACT, pl->team->country->bygfoot);
 
     sprintf(buf, _("You are negotiating with %s about a new contract. Pay attention to what you're doing; if you don't come to terms with him within %d offers, he's going to leave your team after his current contract expires (unless you sell him). You may only abort BEFORE making the first offer.\nYour scout's recommendations are preset:"),
             pl->name,

@@ -3,13 +3,13 @@
  */
 
 GtkWidget* create_window_job_offer (Bygfoot *bygfoot);
-GtkWidget* create_window_progress (void);
-GtkWidget* create_window_warning (void);
-GtkWidget* create_window_digits (void);
+GtkWidget* create_window_progress (Bygfoot *bygfoot);
+GtkWidget* create_window_warning (Bygfoot *bygfoot);
+GtkWidget* create_window_digits (Bygfoot *bygfoot);
 GtkWidget* create_window_yesno (Bygfoot *bygfoot);
-GtkWidget* create_window_contract (void);
-GtkWidget* create_window_user_management (void);
-GtkWidget* create_window_debug (void);
-GtkWidget* create_window_help (void);
-GtkWidget* create_window_transfer_dialog (void);
-GtkWidget* create_window_mmatches (void);
+GtkWidget* create_window_contract (Bygfoot *bygfoot);
+GtkWidget* create_window_user_management (Bygfoot *bygfoot);
+GtkWidget* create_window_debug (Bygfoot *bygfoot);
+GtkWidget* create_window_help (Bygfoot *bygfoot);
+GtkWidget* create_window_transfer_dialog (Bygfoot *bygfoot);
+GtkWidget* create_window_mmatches (Bygfoot *bygfoot);

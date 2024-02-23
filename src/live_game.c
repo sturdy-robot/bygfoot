@@ -131,7 +131,7 @@ live_game_initialize(Fixture *fix, LiveGame *live_game, Bygfoot *bygfoot)
 	on_button_back_to_main_clicked(NULL, bygfoot);
 
 	if(window.live == NULL)
-	    window.live = window_create_with_userdata(WINDOW_LIVE, bygfoot);
+	    window.live = window_create(WINDOW_LIVE, bygfoot);
 	else
 	    gtk_window_set_title(
 		GTK_WINDOW(window.live),

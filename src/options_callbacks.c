@@ -95,7 +95,8 @@ on_button_font_name_clicked            (GtkButton       *button,
     printf("on_button_font_name_clicked\n");
 #endif
 
-    window_create(WINDOW_FONT_SEL);
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    window_create(WINDOW_FONT_SEL, bygfoot);
 }
 
 
@@ -170,7 +171,7 @@ on_window_options_delete_event         (GtkWidget       *widget,
     printf("on_window_options_delete_event\n");
 #endif
 
-    on_button_options_cancel_clicked(NULL, NULL);
+    on_button_options_cancel_clicked(NULL, user_data);
 
     return TRUE;
 }
@@ -195,7 +196,8 @@ G_MODULE_EXPORT void
 on_button_edit_constants_clicked       (GtkButton       *button,
                                         gpointer         user_data)
 {
-    window_show_constants();    
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
+    window_show_constants(bygfoot);    
 }
 
 
@@ -204,7 +206,7 @@ on_window_constants_destroy_event      (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-    on_button_constants_close_clicked(NULL, NULL);
+    on_button_constants_close_clicked(NULL, user_data);
     return FALSE;
 }
 
@@ -214,7 +216,7 @@ on_window_constants_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-    on_button_constants_close_clicked(NULL, NULL);
+    on_button_constants_close_clicked(NULL, user_data);
     return FALSE;
 }
 

@@ -107,13 +107,13 @@ misc_callback_start_game(Bygfoot *bygfoot)
     {
         bygfoot_start_game(bygfoot);
 
-	window_create_with_userdata(WINDOW_MAIN, bygfoot);
+	window_create(WINDOW_MAIN, bygfoot);
 	
 	game_gui_show_main(bygfoot);
 
 	if(statp != NULL)
 	{
-	    debug_action((gchar*)statp);
+	    debug_action(bygfoot, (gchar*)statp);
 	    g_free(statp);
 	    statp = NULL;
 	}

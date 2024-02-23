@@ -224,7 +224,7 @@ main_parse_cl_arguments(gint *argc, gchar ***argv, Bygfoot *bygfoot)
 
 /** Parse the command line arguments given by the user. */
     void
-main_parse_debug_cl_arguments(gint *argc, gchar ***argv)
+main_parse_debug_cl_arguments(gint *argc, gchar ***argv, Bygfoot *bygfoot)
 {
 #ifdef DEBUG
     printf("main_parse_debug_cl_arguments\n");
@@ -264,7 +264,7 @@ main_parse_debug_cl_arguments(gint *argc, gchar ***argv)
     if(deb_level != -1)
     {
         debug_level = deb_level;
-        window_create(WINDOW_DEBUG);
+        window_create(WINDOW_DEBUG, bygfoot);
     }
 
     if(deb_output != -1)
@@ -398,7 +398,7 @@ main_init(gint *argc, gchar ***argv, Bygfoot *bygfoot)
 
     support_directories = NULL;
     rand_generator = g_rand_new();
-    main_parse_debug_cl_arguments(argc, argv);
+    main_parse_debug_cl_arguments(argc, argv, bygfoot);
 
 #if defined(G_OS_UNIX) && !defined(MAC_BUILD)
     file_add_support_directory_recursive(bygfoot, PACKAGE_DATA_DIR "/" PACKAGE "/support_files");

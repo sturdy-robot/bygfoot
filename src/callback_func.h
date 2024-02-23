@@ -48,13 +48,13 @@ void
 callback_show_tables(GUI *gui, gint type);
 
 void
-callback_pay_loan(void);
+callback_pay_loan(Bygfoot *bygfoot);
 
 void
-callback_get_loan(void);
+callback_get_loan(Bygfoot *bygfoot);
 
 void
-callback_transfer_list_clicked(gint button, gint idx);
+callback_transfer_list_clicked(Bygfoot *bygfoot, gint button, gint idx);
 
 void
 callback_offer_new_contract(gint idx);

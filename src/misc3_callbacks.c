@@ -50,7 +50,7 @@ on_window_bets_delete_event            (GtkWidget       *widget,
     printf("on_window_bets_delete_event\n");
 #endif
 
-    on_button_bet_close_clicked(NULL, NULL);
+    on_button_bet_close_clicked(NULL, user_data);
     
     return TRUE;
 }
@@ -121,6 +121,7 @@ on_treeview_bets_button_press_event    (GtkWidget       *widget,
     const BetMatch *bet = NULL;
     gint col_num = -1;
     gchar buf[SMALL];
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     
     if(!gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(widget),
 				      event->x, event->y,
@@ -159,7 +160,7 @@ on_treeview_bets_button_press_event    (GtkWidget       *widget,
     stat3 = col_num - 1;
 
     /* 'Wager' is the amount of money the user placed on a bet. */
-    window_show_digits(buf, _("Wager"), 0, NULL, -1, FALSE);
+    window_show_digits(buf, _("Wager"), 0, NULL, -1, FALSE, bygfoot);
     spin_wager = GTK_SPIN_BUTTON(lookup_widget(window.digits, "spinbutton1"));
     gtk_spin_button_set_range(spin_wager, 0,
 			      (gdouble)const_int("int_bet_wager_max"));
@@ -343,7 +344,7 @@ on_button_alr_confirm_clicked          (GtkButton       *button,
 
     setsav0;
 
-    on_menu_show_finances_activate(NULL, NULL);
+    on_menu_show_finances_activate(NULL, user_data);
 }
 
 
@@ -367,7 +368,7 @@ on_window_alr_delete_event            (GtkWidget       *widget,
     printf("on_window_alr_delete_event\n");
 #endif
 
-    on_button_alr_cancel_clicked(NULL, NULL);
+    on_button_alr_cancel_clicked(NULL, user_data);
     
     return TRUE;
 }
@@ -435,7 +436,7 @@ on_window_strategy_delete_event            (GtkWidget       *widget,
     printf("on_window_alr_delete_event\n");
 #endif
 
-    on_button_strategy_cancel_clicked(NULL, NULL);
+    on_button_strategy_cancel_clicked(NULL, user_data);
     
     return TRUE;
 }

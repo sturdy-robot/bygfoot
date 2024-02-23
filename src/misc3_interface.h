@@ -4,8 +4,8 @@
 
 #include "bygfoot.h"
 
-GtkWidget* create_window_bets (void);
+GtkWidget* create_window_bets (Bygfoot *bygfoot);
 GtkWidget* create_window_splash (Bygfoot *bygfoot);
-GtkWidget* create_window_alr (void);
-GtkWidget* create_window_news (void);
+GtkWidget* create_window_alr (Bygfoot *bygfoot);
+GtkWidget* create_window_news (Bygfoot *bygfoot);
 GtkWidget* create_window_strategy (Bygfoot *bygfoot);

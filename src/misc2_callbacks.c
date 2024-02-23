@@ -157,11 +157,11 @@ on_button_digits_ok_clicked            (GtkButton       *button,
     {
     case STATUS_GET_LOAN:
         finance_get_loan(values[0]);
-        on_menu_show_finances_activate(NULL, NULL);
+        on_menu_show_finances_activate(NULL, user_data);
         break;
     case STATUS_PAY_LOAN:
         finance_pay_loan(&current_user, values[0]);
-        on_menu_show_finances_activate(NULL, NULL);
+        on_menu_show_finances_activate(NULL, user_data);
         if(current_user.debt != 0 && current_user.alr_start_week != 0)
             window_show_yesno(_("Adjust repayment schedule?"));
         break;
@@ -203,7 +203,7 @@ on_button_digits_alr_clicked           (GtkButton       *button,
 #endif
 
     on_button_digits_ok_clicked(NULL, user_data);
-    on_automatic_loan_repayment_activate(NULL, NULL);
+    on_automatic_loan_repayment_activate(NULL, user_data);
 }
 
 G_MODULE_EXPORT void
@@ -226,7 +226,7 @@ on_window_yesno_delete_event           (GtkWidget       *widget,
     printf("on_window_yesno_delete_event\n");
 #endif
 
-    on_button_yesno_no_clicked(NULL, NULL);
+    on_button_yesno_no_clicked(NULL, user_data);
 
     if(stat4 == STATUS_SHOW_EVENT)
 	user_event_show_next();
@@ -253,7 +253,7 @@ on_button_yesno_yes_clicked            (GtkButton       *button,
         debug_print_message("on_button_yesno_yes_clicked: unknown status %d\n", stat1);
         break;
     case STATUS_PAY_LOAN:
-        on_automatic_loan_repayment_activate(NULL, NULL);
+        on_automatic_loan_repayment_activate(NULL, user_data);
         break;
     case STATUS_FIRE_PLAYER:
         player_remove_from_team(current_user.tm, stat2);
@@ -359,7 +359,7 @@ on_entry_user_management_activate      (GtkEntry        *entry,
     printf("on_entry_user_management_activate\n");
 #endif
 
-    on_button_user_management_add_clicked(NULL, NULL);
+    on_button_user_management_add_clicked(NULL, user_data);
 }
 
 
@@ -432,7 +432,7 @@ on_treeview_user_management_teams_row_activated
     printf("on_treeview_user_management_teams_row_activated\n");
 #endif
 
-    on_button_user_management_add_clicked(NULL, NULL);
+    on_button_user_management_add_clicked(NULL, user_data);
 }
 
 G_MODULE_EXPORT gboolean
@@ -444,7 +444,7 @@ on_window_debug_delete_event           (GtkWidget       *widget,
     printf("on_window_debug_delete_event\n");
 #endif
 
-    on_button_debug_close_activate(NULL, NULL);
+    on_button_debug_close_activate(NULL, user_data);
 
     return FALSE;
 }
@@ -458,11 +458,12 @@ on_button_debug_apply_clicked          (GtkButton       *button,
     printf("on_button_debug_apply_clicked\n");
 #endif
 
+    Bygfoot *bygfoot = (Bygfoot*)user_data;
     GtkEntry *entry_debug =
 	GTK_ENTRY(lookup_widget(window.wdebug, "entry_debug"));
     const gchar *entry_text = gtk_entry_get_text(entry_debug);
     
-    debug_action(entry_text);
+    debug_action(bygfoot, entry_text);
 
     gtk_entry_set_text(entry_debug, "");
 }
@@ -488,7 +489,7 @@ on_entry_debug_activate                (GtkEntry        *entry,
     printf("on_entry_debug_activate\n");
 #endif
 
-    on_button_debug_apply_clicked(NULL, NULL);
+    on_button_debug_apply_clicked(NULL, user_data);
 }
 
 
@@ -515,7 +516,7 @@ on_window_digits_delete_event          (GtkWidget       *widget,
     printf("on_window_digits_delete_event\n");
 #endif
 
-    on_button_digits_cancel_clicked(NULL, NULL);
+    on_button_digits_cancel_clicked(NULL, user_data);
 
     return FALSE;
 }
@@ -530,7 +531,7 @@ on_window_user_management_delete_event (GtkWidget       *widget,
     printf("on_window_user_management_delete_event\n");
 #endif
 
-    on_button_user_management_close_clicked(NULL, NULL);
+    on_button_user_management_close_clicked(NULL, user_data);
     return FALSE;
 }
 
@@ -544,7 +545,7 @@ on_window_help_delete_event            (GtkWidget       *widget,
     printf("on_window_help_delete_event\n");
 #endif
 
-    on_button_help_close_clicked(NULL, NULL);
+    on_button_help_close_clicked(NULL, user_data);
 
     return FALSE;
 }
@@ -596,7 +597,7 @@ on_window_transfer_dialog_delete_event (GtkWidget       *widget,
     printf("on_window_transfer_dialog_delete_event\n");
 #endif
 
-    on_button_transfer_later_clicked(NULL, NULL);
+    on_button_transfer_later_clicked(NULL, user_data);
     return FALSE;
 }
 
@@ -641,7 +642,7 @@ on_button_transfer_no_clicked          (GtkButton       *button,
 
     treeview_show_user_player_list();
     game_gui_set_main_window_header();
-    on_button_transfers_clicked(NULL, NULL);
+    on_button_transfers_clicked(NULL, user_data);
 
     window_destroy(&window.transfer_dialog);
 }
@@ -667,7 +668,7 @@ on_window_mmatches_delete_event        (GtkWidget       *widget,
     printf("on_window_mmatches_delete_event\n");
 #endif
 
-    on_button_mm_reload_close_clicked(NULL, NULL);
+    on_button_mm_reload_close_clicked(NULL, user_data);
 
     return TRUE;
 }
@@ -787,8 +788,8 @@ on_button_mm_reload_close_clicked      (GtkButton       *button,
     printf("on_button_mm_reload_close_clicked\n");
 #endif
 
-    on_button_mm_reload_clicked(NULL, NULL);
-    on_button_mm_save_close_clicked(NULL, NULL);
+    on_button_mm_reload_clicked(NULL, user_data);
+    on_button_mm_save_close_clicked(NULL, user_data);
 }
 
 G_MODULE_EXPORT void
