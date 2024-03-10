@@ -40,7 +40,7 @@ gating-test:
     ASAN_OPTIONS: detect_leaks=0
   before_script:
     - |
-      dnf install -y cmake ninja-build gtk2-devel gettext gcc rpm-build json-c-devel libasan libubsan
+      dnf install -y cmake ninja-build gtk2-devel gettext gcc rpm-build json-c-devel libasan libubsan jq
   script:
     - |
       cmake -B build -G Ninja -S . -DCMAKE_C_FLAGS="-fsanitize=address,undefined"
@@ -259,6 +259,7 @@ test-fedora-39:
     - merge_requests
   script:
     - |
+      dnf install -y jq
       bash ./test/benchmark.sh --verify /usr/bin/bygfoot
       mv verify.log.gz $COMPARISON_NAME.log.gz
   artifacts:

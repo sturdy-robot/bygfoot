@@ -50,7 +50,7 @@ export HOME=$tmphome
 set -x
 
 if [ -n "$verify" ]; then
-    ./bygfoot --random-seed=1 --json=$input_dir/verify$input_suffix.json > $output_dir/verify.log
+    ./bygfoot --random-seed=1 --json=$input_dir/verify$input_suffix.json | jq . > $output_dir/verify.log
     gzip -n $output_dir/verify.log
 fi
 
