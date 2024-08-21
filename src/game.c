@@ -1066,17 +1066,17 @@ game_update_stats_player(LiveGame *lg, const LiveGameUnit *unit)
 	strcpy(buf, "");
 	if(unit->event.type == LIVE_GAME_EVENT_INJURY)
 	{
-	    sprintf(buf, "%s", player_of_id_team(tm[team], player)->name);
+	    sprintf(buf, "%s %d", player_of_id_team(tm[team], player)->name, minute);
 	    players = stats->players[team][LIVE_GAME_STAT_ARRAY_INJURED];
 	}
 	else if(unit->event.type == LIVE_GAME_EVENT_FOUL_YELLOW)
 	{
-	    sprintf(buf, "%s", player_of_id_team(tm[team], player2)->name);
+	    sprintf(buf, "%s %d", player_of_id_team(tm[team], player2)->name, minute);
 	    players = stats->players[team][LIVE_GAME_STAT_ARRAY_YELLOWS];
 	}
 	else if(unit->event.type == LIVE_GAME_EVENT_SEND_OFF)
 	{
-	    sprintf(buf, "%s", player_of_id_team(tm[team], player)->name);
+	    sprintf(buf, "%s %d", player_of_id_team(tm[team], player)->name, minute);
 	    players = stats->players[team][LIVE_GAME_STAT_ARRAY_REDS];
 	}
 
