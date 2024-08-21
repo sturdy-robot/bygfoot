@@ -46,8 +46,7 @@ void
 player_init(Player *player)
 {
     memset(player, 0, sizeof(Player));
-    player->cards = g_array_new(FALSE, FALSE, sizeof(PlayerCard));
-    player->games_goals = g_array_new(FALSE, FALSE, sizeof(PlayerGamesGoals));
+    player->stats = g_array_new(FALSE, FALSE, sizeof(PlayerCompetitionStats));
 }
 
 /** Create and return a new player.
@@ -104,8 +103,7 @@ player_new(Team *tm, gfloat average_talent, gboolean new_id)
 			    const_float_fast(float_player_contract_upper));
     new.lsu = math_rnd(const_float_fast(float_player_lsu_lower),
 		       const_float_fast(float_player_lsu_upper));
-    new.cards = g_array_new(FALSE, FALSE, sizeof(PlayerCard));
-    new.games_goals = g_array_new(FALSE, FALSE, sizeof(PlayerGamesGoals));
+    new.stats = g_array_new(FALSE, FALSE, sizeof(PlayerCompetitionStats));
     new.card_status = PLAYER_CARD_STATUS_NONE;
 
     for(i=0;i<PLAYER_VALUE_END;i++)
@@ -177,8 +175,7 @@ player_complete_def(Player *pl, gfloat average_talent)
 			    const_float("float_player_contract_upper"));
     pl->lsu = math_rnd(const_float("float_player_lsu_lower"),
 		       const_float("float_player_lsu_upper"));
-    pl->cards = g_array_new(FALSE, FALSE, sizeof(PlayerCard));
-    pl->games_goals = g_array_new(FALSE, FALSE, sizeof(PlayerGamesGoals));
+    pl->stats = g_array_new(FALSE, FALSE, sizeof(PlayerCompetitionStats));
 
     for(i=0;i<PLAYER_VALUE_END;i++)
 	pl->career[i] = 0;
@@ -438,13 +435,13 @@ player_all_games_goals(const Player *pl, gint type)
 
     gint i, sum = 0;
 
-    for(i=0;i<pl->games_goals->len;i++)
+    for(i=0;i<pl->stats->len;i++)
 	if(type == PLAYER_VALUE_GOALS)
-	    sum += g_array_index(pl->games_goals, PlayerGamesGoals, i).goals;
+	    sum += g_array_index(pl->stats, PlayerCompetitionStats, i).goals;
 	else if(type == PLAYER_VALUE_GAMES)
-	    sum += g_array_index(pl->games_goals, PlayerGamesGoals, i).games;
+	    sum += g_array_index(pl->stats, PlayerCompetitionStats, i).games;
 	else if(type == PLAYER_VALUE_SHOTS)
-	    sum += g_array_index(pl->games_goals, PlayerGamesGoals, i).shots;
+	    sum += g_array_index(pl->stats, PlayerCompetitionStats, i).shots;
 
     return sum;
 }
@@ -462,8 +459,8 @@ player_all_cards(const Player *pl)
 
     gint i, sum = 0;
 
-    for(i=0;i<pl->cards->len;i++)
-	sum += g_array_index(pl->cards, PlayerCard, i).yellow;
+    for(i=0;i<pl->stats->len;i++)
+	sum += g_array_index(pl->stats, PlayerCompetitionStats, i).yellow;
 
     return sum;
 }
@@ -767,15 +764,15 @@ player_is_banned(const Player *pl)
     /* Calling team_get_fixture() is expensive, so first check if a player is
      * banned from any leagues.  If not, then we don't need to call
      * team_get_fixture() */
-    for (i = 0; i < pl->cards->len; i++) {
-        PlayerCard *card = &g_array_index(pl->cards, PlayerCard, i);
+    for (i = 0; i < pl->stats->len; i++) {
+        PlayerCompetitionStats *stats = &g_array_index(pl->stats, PlayerCompetitionStats, i);
 
-        if (card->red) {
-            g_ptr_array_add(cards, card);
+        if (stats->red) {
+            g_ptr_array_add(cards, stats);
             continue;
         }
-        if(card->yellow == card->competition->yellow_red - 1)
-            g_ptr_array_add(cards, card);
+        if(stats->yellow == stats->competition->yellow_red - 1)
+            g_ptr_array_add(cards, stats);
     }
 
     /* Player is not banned from any leagues. */
@@ -790,11 +787,11 @@ player_is_banned(const Player *pl)
     /* Check if one of the leagues we are banned from is the next fixture
      * for this player. */
     for (i = 0; i < cards->len; i++) {
-        PlayerCard *card = g_ptr_array_index(cards, i);
-        if (card->competition->id != fix->competition->id)
+        PlayerCompetitionStats *stats = g_ptr_array_index(cards, i);
+        if (stats->competition->id != fix->competition->id)
             continue;
-        if (card->red > 0) {
-            result = card->red;
+        if (stats->red > 0) {
+            result = stats->red;
             goto done;
         }
         /* If it's not a red card then it must be one away from a red. */
@@ -926,13 +923,13 @@ player_card_get(const Player *pl, gint clid, gint card_type)
     gint i;
     gint return_value = 0;
     
-    for(i=0;i<pl->cards->len;i++)
-	if(g_array_index(pl->cards, PlayerCard, i).competition->id == clid)
+    for(i=0;i<pl->stats->len;i++)
+	if(g_array_index(pl->stats, PlayerCompetitionStats, i).competition->id == clid)
 	{
 	    if(card_type == PLAYER_VALUE_CARD_YELLOW)
-		return_value = g_array_index(pl->cards, PlayerCard, i).yellow;
+		return_value = g_array_index(pl->stats, PlayerCompetitionStats, i).yellow;
 	    else
-		return_value = g_array_index(pl->cards, PlayerCard, i).red;
+		return_value = g_array_index(pl->stats, PlayerCompetitionStats, i).red;
 
 	    break;
 	}
@@ -956,15 +953,15 @@ player_card_set(Player *pl, Competition *competition, gint card_type,
 #endif
 
     gint i, *card_value = NULL;
-    PlayerCard new;
+    PlayerCompetitionStats new;
 
-    for(i=0;i<pl->cards->len;i++)
-	if(g_array_index(pl->cards, PlayerCard, i).competition->id == competition->id)
+    for(i=0;i<pl->stats->len;i++)
+	if(g_array_index(pl->stats, PlayerCompetitionStats, i).competition->id == competition->id)
 	{
 	    if(card_type == PLAYER_VALUE_CARD_YELLOW)
-		card_value = &g_array_index(pl->cards, PlayerCard, i).yellow;
+		card_value = &g_array_index(pl->stats, PlayerCompetitionStats, i).yellow;
 	    else if(card_type == PLAYER_VALUE_CARD_RED)
-		card_value = &g_array_index(pl->cards, PlayerCard, i).red;
+		card_value = &g_array_index(pl->stats, PlayerCompetitionStats, i).red;
 
 	    if(diff)
 		*card_value += value;
@@ -980,10 +977,10 @@ player_card_set(Player *pl, Competition *competition, gint card_type,
 	    return;
 	}
 
+    memset(&new, 0, sizeof(new));
     new.competition = competition;
-    new.yellow = new.red = 0;
 
-    g_array_append_val(pl->cards, new);
+    g_array_append_val(pl->stats, new);
 
     player_card_set(pl, competition, card_type, value, diff);
 }
@@ -1001,15 +998,15 @@ player_games_goals_get(const Player *pl, gint clid, gint type)
 
     gint i, return_value = 0;
 
-    for(i=0;i<pl->games_goals->len;i++)
-	if(g_array_index(pl->games_goals, PlayerGamesGoals, i).clid == clid)
+    for(i=0;i<pl->stats->len;i++)
+	if(g_array_index(pl->stats, PlayerCompetitionStats, i).competition->id == clid)
 	{
 	    if(type == PLAYER_VALUE_GAMES)
-		return_value = g_array_index(pl->games_goals, PlayerGamesGoals, i).games;
+		return_value = g_array_index(pl->stats, PlayerCompetitionStats, i).games;
 	    else if(type == PLAYER_VALUE_GOALS)
-		return_value = g_array_index(pl->games_goals, PlayerGamesGoals, i).goals;
+		return_value = g_array_index(pl->stats, PlayerCompetitionStats, i).goals;
 	    else if(type == PLAYER_VALUE_SHOTS)
-		return_value = g_array_index(pl->games_goals, PlayerGamesGoals, i).shots;
+		return_value = g_array_index(pl->stats, PlayerCompetitionStats, i).shots;
 	    else
 		main_exit_program(EXIT_INT_NOT_FOUND, 
 				  "player_games_goals_get: unknown type %d.\n", type);
@@ -1034,17 +1031,17 @@ player_games_goals_set(Player *pl, Competition *competition, gint type,
 #endif
 
     gint i, *games_goals_value = NULL;
-    PlayerGamesGoals new;
+    PlayerCompetitionStats new;
 
-    for(i=0;i<pl->games_goals->len;i++)
-	if(g_array_index(pl->games_goals, PlayerGamesGoals, i).clid == competition->id)
+    for(i=0;i<pl->stats->len;i++)
+	if(g_array_index(pl->stats, PlayerCompetitionStats, i).competition->id == competition->id)
 	{
 	    if(type == PLAYER_VALUE_GAMES)
-		games_goals_value = &g_array_index(pl->games_goals, PlayerGamesGoals, i).games;
+		games_goals_value = &g_array_index(pl->stats, PlayerCompetitionStats, i).games;
 	    else if(type == PLAYER_VALUE_GOALS)
-		games_goals_value = &g_array_index(pl->games_goals, PlayerGamesGoals, i).goals;
+		games_goals_value = &g_array_index(pl->stats, PlayerCompetitionStats, i).goals;
 	    else if(type == PLAYER_VALUE_SHOTS)
-		games_goals_value = &g_array_index(pl->games_goals, PlayerGamesGoals, i).shots;
+		games_goals_value = &g_array_index(pl->stats, PlayerCompetitionStats, i).shots;
 
 	    *games_goals_value += value;
 
@@ -1057,10 +1054,10 @@ player_games_goals_set(Player *pl, Competition *competition, gint type,
 	    return;
 	}
 
-    new.clid = competition->id;
-    new.games = new.goals = new.shots = 0;
+    memset(&new, 0, sizeof(new));
+    new.competition = competition;
 
-    g_array_append_val(pl->games_goals, new);
+    g_array_append_val(pl->stats, new);
 
     player_games_goals_set(pl, competition, type, value);
 }
@@ -1495,16 +1492,10 @@ player_season_start(Player *pl, gfloat skill_change)
 
     gint i;
 
-    if(pl->games_goals->len > 0)
+    if(pl->stats->len > 0)
     {
-	g_array_free(pl->games_goals, TRUE);
-	pl->games_goals = g_array_new(FALSE, FALSE, sizeof(PlayerGamesGoals));
-    }
-
-    if(pl->cards->len > 0)
-    {
-	g_array_free(pl->cards, TRUE);
-	pl->cards = g_array_new(FALSE, FALSE, sizeof(PlayerCard));
+	g_array_free(pl->stats, TRUE);
+	pl->stats = g_array_new(FALSE, FALSE, sizeof(PlayerCompetitionStats));
     }    
 
     if(skill_change != 0)

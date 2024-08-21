@@ -209,10 +209,10 @@ country_adjust_competition_pointers(Country *country)
             for (k = 0; k < team->players->len; k++) {
                 gint x;
                 Player *player = &g_array_index(team->players, Player, k);
-                for (x = 0; x < player->cards->len; x++) {
-                    PlayerCard *card = &g_array_index(player->cards, PlayerCard, x);
-                    gint clid = GPOINTER_TO_INT(card->competition);
-                    card->competition = bygfoot_get_competition_id(country->bygfoot, clid);
+                for (x = 0; x < player->stats->len; x++) {
+                    PlayerCompetitionStats *stats = &g_array_index(player->stats, PlayerCompetitionStats, x);
+                    gint clid = GPOINTER_TO_INT(stats->competition);
+                    stats->competition = bygfoot_get_competition_id(country->bygfoot, clid);
                 }
             }
         }

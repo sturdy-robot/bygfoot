@@ -258,25 +258,13 @@ bygfoot_json_serialize_player_ptr(const Player *player,
                                gpointer userdata);
 
 void
-bygfoot_json_serialize_cards(const GArray *cards,
+bygfoot_json_serialize_player_competition_stats_array(const GArray *stats_array,
                                const json_object *fields,
                                void (*write_func)(const char*, gpointer),
                                gpointer userdata);
 
 void
-bygfoot_json_serialize_player_card(const PlayerCard *card,
-                               const json_object *fields,
-                               void (*write_func)(const char*, gpointer),
-                               gpointer userdata);
-
-void
-bygfoot_json_serialize_games_goals_array(const GArray *games_goals,
-                               const json_object *fields,
-                               void (*write_func)(const char*, gpointer),
-                               gpointer userdata);
-
-void
-bygfoot_json_serialize_games_goals(const PlayerGamesGoals *games_goals,
+bygfoot_json_serialize_player_competition_stats(const PlayerCompetitionStats *games_goals,
                                const json_object *fields,
                                void (*write_func)(const char*, gpointer),
                                gpointer userdata);

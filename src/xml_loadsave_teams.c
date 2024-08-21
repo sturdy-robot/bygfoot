@@ -60,8 +60,6 @@ gint state, etalidx, careeridx;
 GPtrArray *teams_array;
 Team *new_team;
 Player new_player;
-PlayerGamesGoals new_games_goals;
-PlayerCard new_card;
 
 void
 xml_loadsave_teams_start_element (GMarkupParseContext *context,

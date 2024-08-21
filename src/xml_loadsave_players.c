@@ -66,13 +66,23 @@ enum
     TAG_PLAYER_STREAK,
     TAG_PLAYER_STREAK_COUNT,
     TAG_PLAYER_STREAK_PROB,
+    TAG_PLAYER_STATS,
+    TAG_PLAYER_STATS_CLID,
+    TAG_PLAYER_STATS_GAMES,
+    TAG_PLAYER_STATS_GOALS,
+    TAG_PLAYER_STATS_SHOTS,
+    TAG_PLAYER_STATS_YELLOW,
+    TAG_PLAYER_STATS_RED,
     TAG_END
 };
 
 gint state, etalidx, careeridx;
 Player *new_player;
-PlayerGamesGoals new_games_goals;
-PlayerCard new_card;
+/* For legacy saved games. */
+PlayerCompetitionStats new_games_goals;
+/* For legacy saved games. */
+PlayerCompetitionStats new_card;
+PlayerCompetitionStats new_stats;
 
 void
 xml_loadsave_players_start_element(gint tag, Team *tm, GArray *players)
@@ -135,6 +145,7 @@ xml_loadsave_players_end_element(gint tag)
 	    tag == TAG_PLAYER_CONTRACT ||
 	    tag == TAG_PLAYER_PARTICIPATION ||
 	    tag == TAG_PLAYER_GAMES_GOAL ||
+	    tag == TAG_PLAYER_STATS ||
 	    tag == TAG_PLAYER_CAREER ||
 	    tag == TAG_PLAYER_CARD ||
 	    tag == TAG_PLAYER_STREAK ||
@@ -146,10 +157,37 @@ xml_loadsave_players_end_element(gint tag)
 	    etalidx++;
 	else if(tag == TAG_PLAYER_CAREER)
 	    careeridx++;
-	else if(tag == TAG_PLAYER_CARD)
-	    g_array_append_val(new_player->cards, new_card);
-	else if(tag == TAG_PLAYER_GAMES_GOAL)
-	    g_array_append_val(new_player->games_goals, new_games_goals);
+	else if(tag == TAG_PLAYER_CARD) {
+            gint i;
+            gboolean found = FALSE;
+            for (i = 0; i < new_player->stats->len; i++) {
+                PlayerCompetitionStats *stats = &g_array_index(new_player->stats, PlayerCompetitionStats, i);
+                if (stats->competition != new_card.competition)
+                    continue;
+                stats->yellow = new_card.yellow;
+                stats->red = new_card.red;
+                found = TRUE;
+                break;
+            }
+            if (!found)
+      	        g_array_append_val(new_player->stats, new_card);
+        } else if(tag == TAG_PLAYER_GAMES_GOAL) {
+            gint i;
+            gboolean found = FALSE;
+            for (i = 0; i < new_player->stats->len; i++) {
+                PlayerCompetitionStats *stats = &g_array_index(new_player->stats, PlayerCompetitionStats, i);
+                if (stats->competition != new_games_goals.competition)
+                    continue;
+                stats->games = new_games_goals.games;
+                stats->goals = new_games_goals.goals;
+                stats->shots = new_games_goals.shots;
+                found = TRUE;
+                break;
+            }
+            if (!found)
+ 	        g_array_append_val(new_player->stats, new_games_goals);
+        } else if(tag == TAG_PLAYER_STATS)
+            g_array_append_val(new_player->stats, new_stats);
     }
     else if(tag == TAG_PLAYER_GAMES_GOAL_CLID ||
 	    tag == TAG_PLAYER_GAMES_GOAL_GAMES ||
@@ -160,6 +198,13 @@ xml_loadsave_players_end_element(gint tag)
 	    tag == TAG_PLAYER_CARD_YELLOW ||
 	    tag == TAG_PLAYER_CARD_RED)
 	state = TAG_PLAYER_CARD;
+    else if (tag == TAG_PLAYER_STATS_CLID ||
+             tag == TAG_PLAYER_STATS_GAMES ||
+             tag == TAG_PLAYER_STATS_GOALS ||
+             tag == TAG_PLAYER_STATS_SHOTS ||
+             tag == TAG_PLAYER_STATS_YELLOW ||
+             tag == TAG_PLAYER_STATS_RED)
+        state = TAG_PLAYER_STATS;
     else if(tag != TAG_PLAYERS)
 	debug_print_message("xml_loadsave_players_end_element: unknown tag. I'm in state %d\n",
 		  state);
@@ -212,7 +257,7 @@ xml_loadsave_players_text(gchar *text)
     else if(state == TAG_PLAYER_ETAL)
 	new_player->etal[etalidx] = xml_read_float(text);
     else if(state == TAG_PLAYER_GAMES_GOAL_CLID)
-	new_games_goals.clid = xml_read_int(text);
+	new_games_goals.competition = GINT_TO_POINTER(xml_read_int(text));
     else if(state == TAG_PLAYER_GAMES_GOAL_GAMES)
 	new_games_goals.games = xml_read_int(text);
     else if(state == TAG_PLAYER_GAMES_GOAL_GOALS)
@@ -225,6 +270,18 @@ xml_loadsave_players_text(gchar *text)
 	new_card.yellow = xml_read_int(text);
     else if(state == TAG_PLAYER_CARD_RED)
 	new_card.red = xml_read_int(text);
+    else if(state == TAG_PLAYER_STATS_CLID)
+	new_stats.competition = GINT_TO_POINTER(xml_read_int(text));
+    else if(state == TAG_PLAYER_STATS_GAMES)
+	new_stats.games = xml_read_int(text);
+    else if(state == TAG_PLAYER_STATS_GOALS)
+	new_stats.goals = xml_read_int(text);
+    else if(state == TAG_PLAYER_STATS_SHOTS)
+	new_stats.shots = xml_read_int(text);
+    else if(state == TAG_PLAYER_STATS_YELLOW)
+	new_stats.yellow = xml_read_int(text);
+    else if(state == TAG_PLAYER_STATS_RED)
+	new_stats.red = xml_read_int(text);
     else if(state == TAG_PLAYER_CAREER)
 	new_player->career[careeridx] = xml_read_int(text);
     else if(state == TAG_PLAYER_STREAK)
@@ -297,35 +354,25 @@ xml_loadsave_players_write_player(FILE *fil, const Player *pl)
     xml_write_float(fil, pl->streak_count, TAG_PLAYER_STREAK_COUNT, I2);
     xml_write_float(fil, pl->streak_prob, TAG_PLAYER_STREAK_PROB, I2);
 
-    for(i=0;i<pl->games_goals->len;i++)
+    for(i=0;i<pl->stats->len;i++)
     {
-	fprintf(fil, "%s<_%d>\n", I2, TAG_PLAYER_GAMES_GOAL);
+	fprintf(fil, "%s<_%d>\n", I2, TAG_PLAYER_STATS);
 
-	xml_write_int(fil, g_array_index(pl->games_goals, PlayerGamesGoals, i).clid,
-		      TAG_PLAYER_GAMES_GOAL_CLID, I3);
-	xml_write_int(fil, g_array_index(pl->games_goals, PlayerGamesGoals, i).games,
-		      TAG_PLAYER_GAMES_GOAL_GAMES, I3);
-	xml_write_int(fil, g_array_index(pl->games_goals, PlayerGamesGoals, i).goals,
-		      TAG_PLAYER_GAMES_GOAL_GOALS, I3);
-	xml_write_int(fil, g_array_index(pl->games_goals, PlayerGamesGoals, i).shots,
-		      TAG_PLAYER_GAMES_GOAL_SHOTS, I3);
+	xml_write_int(fil, g_array_index(pl->stats, PlayerCompetitionStats, i).competition->id,
+		      TAG_PLAYER_STATS_CLID, I3);
+	xml_write_int(fil, g_array_index(pl->stats, PlayerCompetitionStats, i).games,
+		      TAG_PLAYER_STATS_GAMES, I3);
+	xml_write_int(fil, g_array_index(pl->stats, PlayerCompetitionStats, i).goals,
+		      TAG_PLAYER_STATS_GOALS, I3);
+	xml_write_int(fil, g_array_index(pl->stats, PlayerCompetitionStats, i).shots,
+		      TAG_PLAYER_STATS_SHOTS, I3);
+	xml_write_int(fil, g_array_index(pl->stats, PlayerCompetitionStats, i).yellow,
+		      TAG_PLAYER_STATS_YELLOW, I3);
+	xml_write_int(fil, g_array_index(pl->stats, PlayerCompetitionStats, i).red,
+		      TAG_PLAYER_STATS_RED, I3);
 
-	fprintf(fil, "%s</_%d>\n", I2, TAG_PLAYER_GAMES_GOAL);
+	fprintf(fil, "%s</_%d>\n", I2, TAG_PLAYER_STATS);
     }
-
-    for(i=0;i<pl->cards->len;i++)
-    {
-	fprintf(fil, "%s<_%d>\n", I2, TAG_PLAYER_CARD);
-
-	xml_write_int(fil, g_array_index(pl->cards, PlayerCard, i).competition->id,
-		      TAG_PLAYER_CARD_CLID, I3);
-	xml_write_int(fil, g_array_index(pl->cards, PlayerCard, i).yellow,
-		      TAG_PLAYER_CARD_YELLOW, I3);
-	xml_write_int(fil, g_array_index(pl->cards, PlayerCard, i).red,
-		      TAG_PLAYER_CARD_RED, I3);
-	
-	fprintf(fil, "%s</_%d>\n", I2, TAG_PLAYER_CARD);
-    }    
 
     fprintf(fil, "%s</_%d>\n", I1, TAG_PLAYER);
 }

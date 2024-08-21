@@ -205,8 +205,8 @@ strategy_repair_player(Player *pl)
 
     gint i;
 
-    for(i=0;i<pl->cards->len;i++)
-	g_array_index(pl->cards, PlayerCard, i).red = 0;
+    for(i=0;i<pl->stats->len;i++)
+	g_array_index(pl->stats, PlayerCompetitionStats, i).red = 0;
 	
     pl->health =
 	pl->recovery = 0;

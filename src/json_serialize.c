@@ -1069,8 +1069,7 @@ bygfoot_json_serialize_player(const Player *player,
     SERIALIZE(streak_prob, serialize_double);
     SERIALIZE(streak_count, serialize_double);
     SERIALIZE(participation, serialize_boolean);
-    SERIALIZE(games_goals, bygfoot_json_serialize_games_goals_array);
-    SERIALIZE(cards, bygfoot_json_serialize_cards);
+    SERIALIZE(stats, bygfoot_json_serialize_player_competition_stats_array);
         SERIALIZE_WITH_CUSTOM_USERDATA(userdata, PLAYER_VALUE_END,
     SERIALIZE(career, serialize_int_array));
     SERIALIZE_OBJ_LAST_FIELD;
@@ -1097,74 +1096,39 @@ bygfoot_json_serialize_player_ptr(const Player *player,
 }
 
 void
-bygfoot_json_serialize_cards(const GArray *cards,
-                             const json_object *fields,
-                             void (*write_func)(const char*, gpointer),
-                             gpointer userdata)
-{
-    gint i;
-
-    SERIALIZE_BEGIN_ARRAY(write_func, userdata);
-    for (i = 0; i < cards->len; i++) {
-        const PlayerCard *card = &g_array_index(cards, PlayerCard, i);
-        if (i) {
-            write_func(",", userdata);
-        }
-        bygfoot_json_serialize_player_card(card, fields, write_func, userdata);
-    }
-    SERIALIZE_END_ARRAY(write_func, userdata);
-}
-
-void
-bygfoot_json_serialize_player_card(const PlayerCard *card,
-                                   const json_object *fields,
-                                   void (*write_func)(const char*, gpointer),
-                                   gpointer userdata)
-{
-    #define SERIALIZE(field, serialize_func) \
-            STREAM_OBJ_FIELD(card, field, serialize_func, fields, write_func, userdata);
-
-    SERIALIZE_BEGIN_OBJECT(write_func, userdata);
-    STREAM_OBJ_FIELD_CUSTOM("clid", serialize_int(card->competition->id, fields, write_func, userdata), fields);
-    SERIALIZE(yellow, serialize_int);
-    SERIALIZE_OBJ_LAST_FIELD;
-    SERIALIZE(red, serialize_int);
-    SERIALIZE_END_OBJECT(write_func, userdata);
-    #undef SERIALIZE
-}
-
-void
-bygfoot_json_serialize_games_goals_array(const GArray *games_goals,
+bygfoot_json_serialize_player_competition_stats_array(const GArray *stats_array,
                                          const json_object *fields,
                                          void (*write_func)(const char*, gpointer),
                                          gpointer userdata)
 {
     gint i;
     SERIALIZE_BEGIN_ARRAY(write_func, userdata);
-    for (i = 0; i < games_goals->len; i++) {
-        const PlayerGamesGoals *stats = &g_array_index(games_goals,PlayerGamesGoals, i);
+    for (i = 0; i < stats_array->len; i++) {
+        const PlayerCompetitionStats *stats = &g_array_index(stats_array,PlayerCompetitionStats, i);
         if (i) {
             write_func(",", userdata);
         }
-        bygfoot_json_serialize_games_goals(stats, fields, write_func, userdata);
+        bygfoot_json_serialize_player_competition_stats(stats, fields, write_func, userdata);
     }
     SERIALIZE_END_ARRAY(write_func, userdata);
 }
 
 void
-bygfoot_json_serialize_games_goals(const PlayerGamesGoals *games_goals,
+bygfoot_json_serialize_player_competition_stats(const PlayerCompetitionStats *stats,
                                    const json_object *fields,
                                    void (*write_func)(const char*, gpointer),
                                    gpointer userdata)
 {
     #define SERIALIZE(field, serialize_func) \
-            STREAM_OBJ_FIELD(games_goals, field, serialize_func, fields, write_func, userdata);
+            STREAM_OBJ_FIELD(stats, field, serialize_func, fields, write_func, userdata);
     SERIALIZE_BEGIN_OBJECT(write_func, userdata);
-    SERIALIZE(clid, serialize_int);
+    STREAM_OBJ_FIELD_CUSTOM("clid", serialize_int(stats->competition->id, fields, write_func, userdata), fields);
     SERIALIZE(games, serialize_int);
     SERIALIZE(goals, serialize_int);
-    SERIALIZE_OBJ_LAST_FIELD;
     SERIALIZE(shots, serialize_int);
+    SERIALIZE(yellow, serialize_int);
+    SERIALIZE_OBJ_LAST_FIELD;
+    SERIALIZE(red, serialize_int);
     SERIALIZE_END_OBJECT(write_func, userdata);
     #undef SERIALIZE
 }

@@ -594,8 +594,7 @@ free_player(Player *pl)
 
     free_gchar_ptr(pl->name);
 
-    free_g_array(&pl->cards);
-    free_g_array(&pl->games_goals);
+    free_g_array(&pl->stats);
 }
 
 /**

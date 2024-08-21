@@ -159,8 +159,7 @@ youth_academy_add_new_player(YouthAcademy *youth_academy)
 			    const_float("float_player_contract_upper"));
     new.lsu = math_rnd(const_float("float_player_lsu_lower"),
 		       const_float("float_player_lsu_upper"));
-    new.cards = g_array_new(FALSE, FALSE, sizeof(PlayerCard));
-    new.games_goals = g_array_new(FALSE, FALSE, sizeof(PlayerGamesGoals));
+    new.stats = g_array_new(FALSE, FALSE, sizeof(PlayerCompetitionStats));
 
     for(i=0;i<PLAYER_VALUE_END;i++)
 	new.career[i] = 0;

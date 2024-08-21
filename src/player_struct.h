@@ -52,33 +52,23 @@ enum PlayerStreak
 };
 
 /**
-   Cards in different cups are counted separately for players;
-   for each league or cup the cards are stored in such a struct.
+   Player stats in different cups are counted separately for players;
+   for each league or cup the stats are stored in such a struct.
 */
-typedef struct
-{
+typedef struct {
     /** Pointer to the league or cup. */
     Competition *competition;
-    /** Number of yellow cards. */
-    gint yellow;
-    /** Number of weeks the player is banned. */
-    gint red;
-} PlayerCard;
-
-/**
-   Goals and games in different leagues and cups are counted separately for players.
-*/
-typedef struct
-{
-    /** Numerical id of the league or cup. */
-    gint clid;
     /** Number of games the player played. */
     gint games;
     /** Number of goals (scored for field players or conceded for goalies). */
     gint goals;
     /** Number of shots (taken or faced). */
     gint shots;
-} PlayerGamesGoals;
+    /** Number of yellow cards. */
+    gint yellow;
+    /** Number of weeks the player is banned. */
+    gint red;
+} PlayerCompetitionStats;
 
 enum PlayerInjury
 {
@@ -161,13 +151,9 @@ typedef struct
     /** Whether the player participated in the team's last match. */
     gboolean participation;
 
-    /** Array of games and goals; one item per league and cup.
+    /** Array of stats (games, goals, cards); one item per league and cup.
 	@see PlayerGamesGoals */
-    GArray *games_goals;
-
-    /** Array of cards; one item per league and cup.
-	@see PlayerCard*/
-    GArray *cards;
+    GArray *stats;
 
     /** Career goals, games etc. */
     gint career[PLAYER_VALUE_END];

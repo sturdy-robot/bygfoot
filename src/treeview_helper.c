@@ -902,13 +902,13 @@ treeview_helper_player_ext_info_to_cell(GtkTreeViewColumn *col,
         treeview_helper_player_info_health_to_cell(renderer, pl);
         break;
     case PLAYER_INFO_ATTRIBUTE_GAMES_GOALS:
-        treeview_helper_player_info_games_goals_to_cell(renderer, pl->games_goals);
+        treeview_helper_player_info_games_goals_to_cell(renderer, pl->stats);
         break;
     case PLAYER_INFO_ATTRIBUTE_YELLOW_CARDS:
-        treeview_helper_player_info_yellow_to_cell(renderer, pl->cards);
+        treeview_helper_player_info_yellow_to_cell(renderer, pl->stats);
         break;
     case PLAYER_INFO_ATTRIBUTE_BANNED:
-        treeview_helper_player_info_banned_to_cell(renderer, pl->cards);
+        treeview_helper_player_info_banned_to_cell(renderer, pl->stats);
         break;
     case PLAYER_INFO_ATTRIBUTE_STREAK:
         treeview_helper_player_info_streak_to_cell(renderer, pl->streak);
@@ -976,7 +976,7 @@ treeview_helper_player_info_career_to_cell(GtkCellRenderer *renderer, const Play
 }
 
 void
-treeview_helper_player_info_banned_to_cell(GtkCellRenderer *renderer, const GArray *cards)
+treeview_helper_player_info_banned_to_cell(GtkCellRenderer *renderer, const GArray *stats)
 {
 #ifdef DEBUG
     printf("treeview_helper_player_info_banned_to_cell\n");
@@ -987,14 +987,14 @@ treeview_helper_player_info_banned_to_cell(GtkCellRenderer *renderer, const GArr
 
     strcpy(buf, "");
 
-    for(i=0;i<cards->len;i++)
-	if(g_array_index(cards, PlayerCard, i).red > 0)
+    for(i=0;i<stats->len;i++)
+	if(g_array_index(stats, PlayerCompetitionStats, i).red > 0)
 	{
 	    /* Ban info of a player in the format:
 	       'Cup/league name: Number of weeks banned' */
 	    sprintf(buf2, _("%s: %d weeks\n"),
-		    league_cup_get_name_string(g_array_index(cards, PlayerCard, i).competition->id),
-		    g_array_index(cards, PlayerCard, i).red);
+		    league_cup_get_name_string(g_array_index(stats, PlayerCompetitionStats, i).competition->id),
+		    g_array_index(stats, PlayerCompetitionStats, i).red);
 	    strcat(buf, buf2);
 	}	
 
@@ -1006,7 +1006,7 @@ treeview_helper_player_info_banned_to_cell(GtkCellRenderer *renderer, const GArr
 }
 
 void
-treeview_helper_player_info_yellow_to_cell(GtkCellRenderer *renderer, const GArray *cards)
+treeview_helper_player_info_yellow_to_cell(GtkCellRenderer *renderer, const GArray *stats)
 {
 #ifdef DEBUG
     printf("treeview_helper_player_info_yellow_to_cell\n");
@@ -1018,24 +1018,24 @@ treeview_helper_player_info_yellow_to_cell(GtkCellRenderer *renderer, const GArr
 
     strcpy(buf, "");
 
-    for(i=0;i<cards->len;i++)
+    for(i=0;i<stats->len;i++)
     {
-	yellow_red = g_array_index(cards, PlayerCard, i).competition->yellow_red;
+	yellow_red = g_array_index(stats, PlayerCompetitionStats, i).competition->yellow_red;
 
-	if(g_array_index(cards, PlayerCard, i).yellow > 0)
+	if(g_array_index(stats, PlayerCompetitionStats, i).yellow > 0)
 	{
 	    if(yellow_red < 1000)
 	    {
 		sprintf(buf2, "%s: %d (%d)\n",
-			league_cup_get_name_string(g_array_index(cards, PlayerCard, i).competition->id),
-			g_array_index(cards, PlayerCard, i).yellow, yellow_red);
+			league_cup_get_name_string(g_array_index(stats, PlayerCompetitionStats, i).competition->id),
+			g_array_index(stats, PlayerCompetitionStats, i).yellow, yellow_red);
 	    }
 	    else
 		/* Yellow cards of a player in a cup/league. No limit means there isn't a limit
 		   after which the player gets banned for a match automatically. */
 		sprintf(buf2, _("%s: %d (no limit)\n"),
-			league_cup_get_name_string(g_array_index(cards, PlayerCard, i).competition->id),
-			g_array_index(cards, PlayerCard, i).yellow);
+			league_cup_get_name_string(g_array_index(stats, PlayerCompetitionStats, i).competition->id),
+			g_array_index(stats, PlayerCompetitionStats, i).yellow);
 	    
 	    strcat(buf, buf2);
 	}
@@ -1045,7 +1045,7 @@ treeview_helper_player_info_yellow_to_cell(GtkCellRenderer *renderer, const GArr
 }
 
 void
-treeview_helper_player_info_games_goals_to_cell(GtkCellRenderer *renderer, const GArray *games_goals)
+treeview_helper_player_info_games_goals_to_cell(GtkCellRenderer *renderer, const GArray *stats)
 {
 #ifdef DEBUG
     printf("treeview_helper_player_info_games_goals_to_cell\n");
@@ -1056,12 +1056,12 @@ treeview_helper_player_info_games_goals_to_cell(GtkCellRenderer *renderer, const
 
     strcpy(buf, "");
 
-    for(i=0;i<games_goals->len;i++)
+    for(i=0;i<stats->len;i++)
     {
 	sprintf(buf2, "%s: %d/%d\n", 
-		league_cup_get_name_string(g_array_index(games_goals, PlayerGamesGoals, i).clid),
-		g_array_index(games_goals, PlayerGamesGoals, i).games,
-		g_array_index(games_goals, PlayerGamesGoals, i).goals);		
+		league_cup_get_name_string(g_array_index(stats, PlayerCompetitionStats, i).competition->id),
+		g_array_index(stats, PlayerCompetitionStats, i).games,
+		g_array_index(stats, PlayerCompetitionStats, i).goals);		
 	strcat(buf, buf2);
     }
 
@@ -1295,15 +1295,15 @@ treeview_helper_player_cards_to_cell(gchar *buf, const Player *pl)
 
     if(fix == NULL)
     {
-	if(pl->cards->len == 0)
+	if(pl->stats->len == 0)
 	    strcpy(buf, "0");
 	else
 	{
 	    if(opt_user_int("int_opt_user_show_overall"))
-		sprintf(buf, "%d(%d)", g_array_index(pl->cards, PlayerCard, 0).yellow,
+		sprintf(buf, "%d(%d)", g_array_index(pl->stats, PlayerCompetitionStats, 0).yellow,
 			player_all_cards(pl));
 	    else
-		sprintf(buf, "%d", g_array_index(pl->cards, PlayerCard, 0).yellow);
+		sprintf(buf, "%d", g_array_index(pl->stats, PlayerCompetitionStats, 0).yellow);
 	}
 
 	return;
@@ -1432,8 +1432,8 @@ treeview_helper_player_get_games_goals(const Player *pl, gint type)
 
     if(fix != NULL)
 	clid = fix->competition->id;
-    else if (pl->games_goals->len == 1)
-        clid = g_array_index(pl->games_goals, PlayerGamesGoals, 0).clid;
+    else if (pl->stats->len == 1)
+        clid = g_array_index(pl->stats, PlayerCompetitionStats, 0).competition->id;
 
     return player_games_goals_get(pl, clid, type);
 }
@@ -1452,7 +1452,7 @@ treeview_helper_player_games_goals_to_cell(gchar *buf, const Player *pl, gint ty
     const Fixture *fix = team_get_fixture(pl->team, FALSE);
     gint val = treeview_helper_player_get_games_goals(pl, type);
 
-    if(pl->games_goals->len == 0)
+    if(pl->stats->len == 0)
     {
 	strcpy(buf, "0");
 	return;
