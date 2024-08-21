@@ -1026,7 +1026,8 @@ player_games_goals_get(const Player *pl, gint clid, gint type)
     @param diff Whether we add the value to the old one or
     replace the old value by the new one. */
 void
-player_games_goals_set(Player *pl, gint clid, gint type, gint value)
+player_games_goals_set(Player *pl, Competition *competition, gint type,
+				       gint value)
 {
 #ifdef DEBUG
     printf("player_games_goals_set\n");
@@ -1036,7 +1037,7 @@ player_games_goals_set(Player *pl, gint clid, gint type, gint value)
     PlayerGamesGoals new;
 
     for(i=0;i<pl->games_goals->len;i++)
-	if(g_array_index(pl->games_goals, PlayerGamesGoals, i).clid == clid)
+	if(g_array_index(pl->games_goals, PlayerGamesGoals, i).clid == competition->id)
 	{
 	    if(type == PLAYER_VALUE_GAMES)
 		games_goals_value = &g_array_index(pl->games_goals, PlayerGamesGoals, i).games;
@@ -1056,12 +1057,12 @@ player_games_goals_set(Player *pl, gint clid, gint type, gint value)
 	    return;
 	}
 
-    new.clid = clid;
+    new.clid = competition->id;
     new.games = new.goals = new.shots = 0;
 
     g_array_append_val(pl->games_goals, new);
 
-    player_games_goals_set(pl, clid, type, value);
+    player_games_goals_set(pl, competition, type, value);
 }
 
 /** Update skill and lsu of a user player.

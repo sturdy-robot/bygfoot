@@ -1072,7 +1072,7 @@ live_game_event_substitution(gint team_number, gint sub_in, gint sub_out)
 	    const_float("float_player_streak_add_sub_in"));	
 
 	player_games_goals_set(player_of_id_team(tms[team_number], sub_in),
-			       match->fix->competition->id, PLAYER_VALUE_GAMES, 1);
+			       match->fix->competition, PLAYER_VALUE_GAMES, 1);
 	player_of_id_team(tms[team_number], sub_in)->career[PLAYER_VALUE_GAMES]++;
 	player_of_id_team(tms[team_number], sub_in)->participation = TRUE;
 
@@ -1170,7 +1170,7 @@ live_game_event_duel(GUI *gui)
 
     if(new.time != LIVE_GAME_UNIT_TIME_PENALTIES)
     {
-	player_games_goals_set(attacker, match->fix->competition->id, PLAYER_VALUE_SHOTS, 1);
+	player_games_goals_set(attacker, match->fix->competition, PLAYER_VALUE_SHOTS, 1);
 	attacker->career[PLAYER_VALUE_SHOTS]++;
     }
 
@@ -1182,8 +1182,8 @@ live_game_event_duel(GUI *gui)
 
 	if(new.time != LIVE_GAME_UNIT_TIME_PENALTIES)
 	{
-	    player_games_goals_set(attacker, match->fix->competition->id, PLAYER_VALUE_GOALS, 1);
-	    player_games_goals_set(goalie, match->fix->competition->id, PLAYER_VALUE_GOALS, 1);
+	    player_games_goals_set(attacker, match->fix->competition, PLAYER_VALUE_GOALS, 1);
+	    player_games_goals_set(goalie, match->fix->competition, PLAYER_VALUE_GOALS, 1);
 	    attacker->career[PLAYER_VALUE_GOALS]++;
 	    goalie->career[PLAYER_VALUE_GOALS]++;
 
@@ -1213,7 +1213,7 @@ live_game_event_duel(GUI *gui)
         new.event.type == LIVE_GAME_EVENT_KEEPER_PUSHED_IN_CORNER ||
 	new.event.type == LIVE_GAME_EVENT_GOAL))
     {
-	player_games_goals_set(goalie, match->fix->competition->id, PLAYER_VALUE_SHOTS, 1);
+	player_games_goals_set(goalie, match->fix->competition, PLAYER_VALUE_SHOTS, 1);
 	goalie->career[PLAYER_VALUE_SHOTS]++;
 
 	if(new.event.type == LIVE_GAME_EVENT_SAVE || new.event.type == LIVE_GAME_EVENT_KEEPER_PUSHED_IN_CORNER )

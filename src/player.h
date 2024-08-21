@@ -120,7 +120,7 @@ player_card_set(Player *pl, Competition *competition, gint card_type,
                 gint value, gboolean diff);
 
 void
-player_games_goals_set(Player *pl, gint clid, gint type, gint value);
+player_games_goals_set(Player *pl, Competition *competition, gint type, gint value);
 
 gint
 player_games_goals_get(const Player *pl, gint clid, gint type);

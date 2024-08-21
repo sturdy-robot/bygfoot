@@ -313,7 +313,7 @@ game_initialize(Fixture *fix)
 		if(g_array_index(fix->teams[i]->players, Player, j).cskill > 0)
 		{
 		    player_games_goals_set(&g_array_index(fix->teams[i]->players,
-							  Player, j), fix->competition->id,
+							  Player, j), fix->competition,
 					   PLAYER_VALUE_GAMES, 1);
 		    g_array_index(fix->teams[i]->players, Player, j).
 			career[PLAYER_VALUE_GAMES]++;
