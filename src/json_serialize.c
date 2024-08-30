@@ -700,7 +700,7 @@ bygfoot_json_serialize_league(const League *league,
             STREAM_OBJ_FIELD(league, field, serialize_func, fields, write_func, userdata)
 
     SERIALIZE_BEGIN_OBJECT(write_func, userdata);
-    SERIALIZE(name, serialize_string);
+    STREAM_OBJ_FIELD_CUSTOM("name", serialize_string(league->c.name, fields, write_func, userdata), fields);
     SERIALIZE(short_name, serialize_string);
     SERIALIZE(sid, serialize_string);
     SERIALIZE(symbol, serialize_string);
@@ -1212,7 +1212,7 @@ bygfoot_json_serialize_cup(const Cup *cup,
             STREAM_OBJ_FIELD(cup, field, serialize_func, fields, write_func, userdata);
 
     SERIALIZE_BEGIN_OBJECT(write_func, userdata);
-    SERIALIZE(name, serialize_string);
+    STREAM_OBJ_FIELD_CUSTOM("name", serialize_string(cup->c.name, fields, write_func, userdata), fields);
     SERIALIZE(short_name, serialize_string);
     SERIALIZE(symbol, serialize_string);
     SERIALIZE(sid, serialize_string);

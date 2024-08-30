@@ -226,7 +226,7 @@ xml_loadsave_league_text         (GMarkupParseContext *context,
     buf[text_len] = '\0';
 
     if(state == TAG_NAME)
-	misc_string_assign(&new_league->name, buf);
+	misc_string_assign(&new_league->c.name, buf);
     else if(state == TAG_PROPERTY)
 	g_ptr_array_add(new_league->properties, g_strdup(buf));
     else if(state == TAG_SHORT_NAME)
@@ -392,7 +392,7 @@ xml_loadsave_league_write(const gchar *prefix, const League *league)
 
     fprintf(fil, "%s<_%d>\n", I0, TAG_LEAGUE);
 
-    xml_write_string(fil, league->name, TAG_NAME, I0);
+    xml_write_string(fil, league->c.name, TAG_NAME, I0);
     xml_write_string(fil, league->short_name, TAG_SHORT_NAME, I0);
     xml_write_string(fil, league->names_file, TAG_NAMES_FILE, I0);
     xml_write_string(fil, league->sid, TAG_SID, I0);

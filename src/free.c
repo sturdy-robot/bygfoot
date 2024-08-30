@@ -378,7 +378,7 @@ free_league(League *league)
     printf("free_league\n");
 #endif
 
-    free_gchar_ptr(league->name);
+    free_gchar_ptr(league->c.name);
     free_gchar_ptr(league->short_name);
     free_gchar_ptr(league->symbol);
     free_gchar_ptr(league->sid);
@@ -639,7 +639,7 @@ free_cup(Cup *cup)
 
     gint i;
 
-    free_gchar_ptr(cup->name);
+    free_gchar_ptr(cup->c.name);
     free_gchar_ptr(cup->short_name);
     free_gchar_ptr(cup->symbol);
     free_gchar_ptr(cup->sid);

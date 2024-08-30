@@ -260,7 +260,7 @@ misc2_callback_add_user(void)
     new_user.tm = tm;
 
     user_history_add(&new_user, USER_HISTORY_START_GAME,
-		     tm->name, league_cup_get_name_string(tm->league->c.id),
+		     tm->name, tm->league->c.name,
 		     NULL, NULL);
 
     g_array_append_val(users, new_user);

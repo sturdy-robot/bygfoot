@@ -601,7 +601,7 @@ lg_commentary_initialize(const Fixture *fix)
 
     misc_token_add(token_rep,
 		   option_int("string_token_league_cup_name", &tokens), 
-		   g_strdup(league_cup_get_name_string(fix->competition->id)));
+		   g_strdup(fix->competition->name));
 
     if(fix->competition->id >= ID_CUP_START)
     {

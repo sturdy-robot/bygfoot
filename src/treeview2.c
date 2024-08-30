@@ -183,7 +183,7 @@ treeview2_create_season_results(GtkListStore *ls)
 	    ls, &iter,
 	    0, ((Fixture*)g_ptr_array_index(results, i))->week_number,
 	    1, ((Fixture*)g_ptr_array_index(results, i))->week_round_number,
-	    2, league_cup_get_name_string(((Fixture*)g_ptr_array_index(results, i))->competition->id),
+	    2, ((Fixture*)g_ptr_array_index(results, i))->competition->name,
 	    3, g_ptr_array_index(results, i),
 	    4, g_ptr_array_index(results, i),
 	    5, g_ptr_array_index(results, i),
@@ -333,7 +333,7 @@ treeview2_create_bets(GtkListStore *ls)
 	    
 			gtk_list_store_append(ls, &iter);
 			gtk_list_store_set(ls, &iter, 
-					   0, league_cup_get_name_string(fix->competition->id),
+					   0, fix->competition->name,
 					   1, NULL, 2, NULL, 3, NULL, 4, "", 5, "", -1);
 		    }
 	

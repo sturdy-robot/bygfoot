@@ -993,7 +993,7 @@ treeview_helper_player_info_banned_to_cell(GtkCellRenderer *renderer, const GArr
 	    /* Ban info of a player in the format:
 	       'Cup/league name: Number of weeks banned' */
 	    sprintf(buf2, _("%s: %d weeks\n"),
-		    league_cup_get_name_string(g_array_index(stats, PlayerCompetitionStats, i).competition->id),
+		    g_array_index(stats, PlayerCompetitionStats, i).competition->name,
 		    g_array_index(stats, PlayerCompetitionStats, i).red);
 	    strcat(buf, buf2);
 	}	
@@ -1027,14 +1027,14 @@ treeview_helper_player_info_yellow_to_cell(GtkCellRenderer *renderer, const GArr
 	    if(yellow_red < 1000)
 	    {
 		sprintf(buf2, "%s: %d (%d)\n",
-			league_cup_get_name_string(g_array_index(stats, PlayerCompetitionStats, i).competition->id),
+			g_array_index(stats, PlayerCompetitionStats, i).competition->name,
 			g_array_index(stats, PlayerCompetitionStats, i).yellow, yellow_red);
 	    }
 	    else
 		/* Yellow cards of a player in a cup/league. No limit means there isn't a limit
 		   after which the player gets banned for a match automatically. */
 		sprintf(buf2, _("%s: %d (no limit)\n"),
-			league_cup_get_name_string(g_array_index(stats, PlayerCompetitionStats, i).competition->id),
+			g_array_index(stats, PlayerCompetitionStats, i).competition->name,
 			g_array_index(stats, PlayerCompetitionStats, i).yellow);
 	    
 	    strcat(buf, buf2);
@@ -1059,7 +1059,7 @@ treeview_helper_player_info_games_goals_to_cell(GtkCellRenderer *renderer, const
     for(i=0;i<stats->len;i++)
     {
 	sprintf(buf2, "%s: %d/%d\n", 
-		league_cup_get_name_string(g_array_index(stats, PlayerCompetitionStats, i).competition->id),
+		g_array_index(stats, PlayerCompetitionStats, i).competition->name,
 		g_array_index(stats, PlayerCompetitionStats, i).games,
 		g_array_index(stats, PlayerCompetitionStats, i).goals);		
 	strcat(buf, buf2);
@@ -1197,7 +1197,7 @@ treeview_helper_player_to_cell(GtkTreeViewColumn *col,
         break;
     case PLAYER_LIST_ATTRIBUTE_LEAGUE_CUP:
         idx = job_team_is_on_list(pl->team->id);
-        strcpy(buf, pl->team->league->name);
+        strcpy(buf, pl->team->league->c.name);
         break;
     }
 
@@ -1898,10 +1898,10 @@ treeview_helper_news_additional(GtkTreeViewColumn *col,
     if(article->competition->id >= ID_CUP_START)
     {
         cup_get_round_name((Cup*)article->competition, article->cup_round, round_name);
-        sprintf(buf2, "%s\n%s", league_cup_get_name_string(article->competition->id), round_name);
+        sprintf(buf2, "%s\n%s", article->competition->name, round_name);
     }
     else
-        sprintf(buf2, "%s", league_cup_get_name_string(article->competition->id));
+        sprintf(buf2, "%s", article->competition->name);
 
     sprintf(buf, "<span %s>%s</span>", 
             const_app("string_news_window_league_cup_attribute"),

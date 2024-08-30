@@ -143,7 +143,7 @@ typedef struct league
     /** Parent Object */
     Competition c;
     /** Default value "" */
-    gchar *name, *short_name, *sid, *symbol;
+    gchar *short_name, *sid, *symbol;
     /** The sid of the player names file the 
 	teams in the league take their names from.
 	Default: 'general', meaning the 'player_names_general.xml' file. */

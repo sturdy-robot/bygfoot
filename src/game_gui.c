@@ -307,12 +307,12 @@ game_gui_set_main_window_header(void)
     if(fix == NULL)
     {
         rank = team_get_league_rank(current_user.tm, NULL);
-        gtk_label_set_text(label_league, league_cup_get_name_string(current_user.tm->league->c.id));
+        gtk_label_set_text(label_league, current_user.tm->league->c.name);
     }
     else
     {
         rank = team_get_league_rank(current_user.tm, fix->competition);
-        gtk_label_set_text(label_league, league_cup_get_name_string(fix->competition->id));        
+        gtk_label_set_text(label_league, fix->competition->name);
     }
 
     if(rank != 0)
@@ -792,7 +792,7 @@ game_gui_show_job_offer(Team *team, Job *job, gint type)
        type == STATUS_JOB_OFFER_FIRE_FAILURE)
 	user_history_add(&current_user, (type == STATUS_JOB_OFFER_FIRE_FINANCE) ?
 			 USER_HISTORY_FIRE_FINANCE : USER_HISTORY_FIRE_FAILURE,
-			 current_user.tm->name, team->name, team->league->name, NULL);
+			 current_user.tm->name, team->name, team->league->c.name, NULL);
 
     window_create(WINDOW_JOB_OFFER, team->country->bygfoot);
 
@@ -831,7 +831,7 @@ game_gui_show_job_offer(Team *team, Job *job, gint type)
     gtk_label_set_text(label_name, tm->name);
     gtk_label_set_text(label_league, 
 		       (type != STATUS_JOB_EXCHANGE_SHOW_TEAM) ?
-		       tm->league->name : job->league_name);
+		       tm->league->c.name : job->league_name);
 
     if(job == NULL ||
        job->type == JOB_TYPE_NATIONAL)

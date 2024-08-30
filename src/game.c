@@ -1133,7 +1133,7 @@ game_post_match(Fixture *fix)
 	    user_history_add(&usr(team_is_user((Team*)g_ptr_array_index(teams, 0))),
 			     USER_HISTORY_WIN_FINAL, 
 			     ((Team*)g_ptr_array_index(teams, 0))->name,
-			     league_cup_get_name_string(fix->competition->id),
+			     fix->competition->name,
 			     ((Team*)g_ptr_array_index(teams, 1))->name, NULL);
 	    user_add_cup_success(&usr(team_is_user((Team*)g_ptr_array_index(teams, 0))),
 				 cup, fix->round, USER_HISTORY_WIN_FINAL);
@@ -1143,7 +1143,7 @@ game_post_match(Fixture *fix)
 	    user_history_add(&usr(team_is_user((Team*)g_ptr_array_index(teams, 1))),
 			     USER_HISTORY_LOSE_FINAL, 
 			     ((Team*)g_ptr_array_index(teams, 1))->name,
-			     league_cup_get_name_string(fix->competition->id),
+			     fix->competition->name,
 			     ((Team*)g_ptr_array_index(teams, 0))->name, NULL);
 	    user_add_cup_success(&usr(team_is_user((Team*)g_ptr_array_index(teams, 1))),
 				 cup, fix->round, USER_HISTORY_LOSE_FINAL);
@@ -1159,7 +1159,7 @@ game_post_match(Fixture *fix)
 	user_history_add(&usr(usr_idx),
 			 USER_HISTORY_REACH_CUP_ROUND,
 			 usr(usr_idx).tm->name,
-			 league_cup_get_name_string(fix->competition->id),
+			 fix->competition->name,
 			 buf, buf2);
 	user_add_cup_success(&usr(usr_idx),
 			     cup, fix->round, USER_HISTORY_REACH_CUP_ROUND);

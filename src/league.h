@@ -32,7 +32,6 @@
 #include "fixture_struct.h"
 
 #define league_cup_get_fixtures(clid) (clid < ID_CUP_START) ? (league_from_clid(clid)->fixtures) : (cup_from_clid(clid)->fixtures)
-#define league_cup_get_name_string(clid) (clid < ID_CUP_START) ? league_from_clid(clid)->name : cup_from_clid(clid)->name
 
 #define league_table_cumul(league) (&g_array_index((league)->tables, Table, 0))
 #define league_table(league) (&g_array_index((league)->tables, Table, league->tables->len - 1))

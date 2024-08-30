@@ -256,7 +256,7 @@ xml_loadsave_cup_text         (GMarkupParseContext *context,
     buf[text_len] = '\0';
 
     if(state == TAG_NAME)
-	misc_string_assign(&new_cup->name, buf);
+	misc_string_assign(&new_cup->c.name, buf);
     else if(state == TAG_SHORT_NAME)
 	misc_string_assign(&new_cup->short_name, buf);
     else if(state == TAG_SYMBOL)
@@ -435,7 +435,7 @@ xml_loadsave_cup_write(const gchar *prefix, const Cup *cup)
 
     fprintf(fil, "<_%d>\n", TAG_CUP);
 
-    xml_write_string(fil, cup->name, TAG_NAME, I0);
+    xml_write_string(fil, cup->c.name, TAG_NAME, I0);
     xml_write_string(fil, cup->short_name, TAG_SHORT_NAME, I0);
     xml_write_string(fil, cup->sid, TAG_SID, I0);
     xml_write_string(fil, cup->symbol, TAG_SYMBOL, I0);

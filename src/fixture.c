@@ -24,6 +24,7 @@
 */
 
 #include "cup.h"
+#include "competition.h"
 #include "fixture.h"
 #include "free.h"
 #include "league.h"
@@ -161,7 +162,7 @@ fixture_update(Cup *cup)
     const CupRound *new_round = NULL;
 
     if(debug > 90)
-	g_print("fixture_update: cup %s (id %d)\n", cup->name, cup->c.id);
+	g_print("fixture_update: cup %s (id %d)\n", cup->c.name, cup->c.id);
 
     if(replay != 0 && 
        g_array_index(fixtures, Fixture, fixtures->len - 1).replay_number < replay && 
@@ -187,7 +188,7 @@ fixture_update(Cup *cup)
 	main_exit_program(
 	    EXIT_CUP_ROUND_ERROR, 
 	    "fixture_update: round index %d too high for round array (%d) in cup %s\n",
-	    round + 1, cup->rounds->len - 1, cup->name);
+	    round + 1, cup->rounds->len - 1, cup->c.name);
     }
 
     new_round = &g_array_index(cup->rounds, CupRound, round + 1);
@@ -414,12 +415,12 @@ fixture_write_cup_round_robin(Cup *cup, gint cup_round, GPtrArray *teams,
     TableElement new_table_element;
 
     if(debug > 100)
-        g_print("fixture_write_cup_round_robin: %s round %d teamlen %d\n", cup->name, cup_round, teams->len);
+        g_print("fixture_write_cup_round_robin: %s round %d teamlen %d\n", cup->c.name, cup_round, teams->len);
 
     if(teams->len < number_of_groups)
 	main_exit_program(EXIT_FIXTURE_WRITE_ERROR, 
 			  "fixture_write_cup_round_robin: cup %s round %d: number of teams (%d) less than number of groups (%d)\n", 
-			  cup->name, cup_round, teams->len, number_of_groups);
+			  cup->c.name, cup_round, teams->len, number_of_groups);
 
     if(cupround->randomise_teams || opt_int("int_opt_randomise_teams"))
 	g_ptr_array_sort_with_data(teams, (GCompareDataFunc)team_compare_func,
@@ -428,7 +429,7 @@ fixture_write_cup_round_robin(Cup *cup, gint cup_round, GPtrArray *teams,
     for(i=0;i<number_of_groups;i++)
     {
 	table_group[i].name = NULL;
-	misc_string_assign(&table_group[i].name, cup->name);
+	misc_string_assign(&table_group[i].name, cup->c.name);
 	table_group[i].competition = &cup->c;
 	table_group[i].round = cup_round;
 	table_group[i].elements = g_array_new(FALSE, FALSE, sizeof(TableElement));    
@@ -557,7 +558,7 @@ fixture_write_round_robin(gpointer league_cup, gint cup_round,
     if(first_week < 1)
 	main_exit_program(EXIT_FIXTURE_WRITE_ERROR, 
 			  "fixture_write_round_robin: first week of %s is not positive (%d).\nPlease lower the week gap or set a later last week.\n", 
-			  league_cup_get_name_string(clid), first_week);
+			  competition->name, first_week);
     
     if(len % 2 != 0)
     {
@@ -695,7 +696,7 @@ fixture_write_knockout_round(Cup *cup, gint cup_round, GPtrArray *teams,
 
     if(debug > 60)
 	g_print("fixture_write_knockout_round: %s %d byelen %d\n",
-	       cup->name, cup_round, bye_len);
+	       cup->c.name, cup_round, bye_len);
 
     if(bye_len != 0)
     {
@@ -1016,7 +1017,7 @@ fixture_get_first_leg(const Fixture *fix, gboolean silent)
 
     if(first_leg == NULL && !silent)
 	debug_print_message("fixture_get_first_leg: didn't find first leg match; cup %s round %d\n",
-		  cup->name, fix->round);
+		  cup->c.name, fix->round);
 
     return first_leg;
 }
@@ -1242,9 +1243,11 @@ fixture_get(gint type, gint clid, gint week_number,
 	    fix = fixture_get(SHOW_CURRENT, new_clid, week, week_round, NULL);
     }
 
-    if(fix == NULL)
+    if(fix == NULL) {
+	Competition *competition = competition_get_from_clid(clid);
 	debug_print_message("fixture_get: no fixture found for type %d clid %d (%s) week %d round %d\n",
-		  type, clid, league_cup_get_name_string(clid), week_number, week_round_number);
+		  type, clid, competition->name, week_number, week_round_number);
+    }
 
     return fix;
 }
@@ -1639,7 +1642,7 @@ fixture_get_goals_to_win(const Fixture *fix, const Team *tm)
     if(!query_fixture_team_involved(fix, tm->id))
     {
 	debug_print_message("fixture_get_goals_to_win: team %s doesn't participate in fixture given (%s)\n",
-		  tm->name, league_cup_get_name_string(fix->competition->id));
+		  tm->name, fix->competition->name);
 	return -100;
     }
 

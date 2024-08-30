@@ -119,7 +119,7 @@ job_add_new_international(gint num_of_new)
 				 const_int("int_job_update_interval") + 1);
 	new_job.country_name = g_strdup(job_country->name);
 	new_job.country_rating = job_country->rating;
-	new_job.league_name = g_strdup(league->name);
+	new_job.league_name = g_strdup(league->c.name);
 	new_job.league_layer = league->layer;
 
 	team_id = job_team_is_in_cup(tm->name);
@@ -187,7 +187,7 @@ job_add_new_national(void)
     new_job.country_file = NULL;
     new_job.country_name = country.name;
     new_job.country_rating = -1;
-    new_job.league_name = league->name;
+    new_job.league_name = league->c.name;
     new_job.league_layer = league->layer;
 
     new_job.talent_percent = 

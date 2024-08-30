@@ -580,7 +580,7 @@ news_set_league_cup_tokens(const Fixture *fix)
 
     misc_token_add(token_rep_news,
 		   option_int("string_token_league_cup_name", &tokens),
-		   g_strdup(league_cup_get_name_string(fix->competition->id)));
+		   g_strdup(fix->competition->name));
 
     misc_token_add_bool(token_rep_news,
                         option_int("string_token_bool_cup", &tokens),

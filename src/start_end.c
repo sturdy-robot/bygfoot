@@ -339,7 +339,7 @@ start_new_season(Bygfoot *bygfoot)
 	    sprintf(buf, "%d", team_get_league_rank(usr(i).tm, NULL));
 	    user_history_add(&usr(i), USER_HISTORY_END_SEASON,
 			     usr(i).tm->name, 
-			     usr(i).tm->league->name, 
+			     usr(i).tm->league->c.name, 
 			     buf, NULL);
 
 	    usr(i).counters[COUNT_USER_TRAININGS_LEFT_SEASON] =
@@ -734,7 +734,7 @@ end_week_round_update_fixtures(Bygfoot *bygfoot)
                             USER_HISTORY_CHAMPION, 
                             g_array_index(league_table((league))->elements, 
                                           TableElement, 0).team->name,
-                            league_cup_get_name_string(league->c.id),
+                            league->c.name,
                             NULL, NULL);
     }
     

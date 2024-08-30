@@ -161,10 +161,10 @@ typedef struct
 {
     /** Parent Object */
     Competition c;
-    /** Name and short name of the cup, a pixmap path,
+    /** Short name of the cup, a pixmap path,
 	and the string id (e.g. england_fa or so).
 	Default: "". */
-    gchar *name, *short_name, *symbol, *sid;
+    gchar *short_name, *symbol, *sid;
     /** An integer specifying which cups are mutually exclusive for
 	league teams, e.g. the same team can't participate in the UEFA Cup and
 	the Champions' League. */

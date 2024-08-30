@@ -35,6 +35,8 @@ typedef struct
     /** Numerical id. */
     gint id;
 
+    gchar *name;
+
     /** Teams participating in the competition. */
     GPtrArray *teams;
 

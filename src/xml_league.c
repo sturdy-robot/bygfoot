@@ -226,7 +226,7 @@ xml_league_read_start_element (GMarkupParseContext *context,
         if(attribute_names[0] != NULL && strcmp(attribute_names[0], ATT_NAME_NEW_TABLE_NAME) == 0)
             new_table.name = g_strdup(attribute_values[0]);
         else
-            new_table.name = g_strdup(new_league.name);
+            new_table.name = g_strdup(new_league.c.name);
 
         g_array_append_val(new_league.new_tables, new_table);        
     }
@@ -406,7 +406,7 @@ xml_league_read_text         (GMarkupParseContext *context,
     float_value = (gfloat)g_ascii_strtod(buf, NULL);
 
     if(state == STATE_NAME)
-	misc_string_assign(&new_league.name, buf);
+	misc_string_assign(&new_league.c.name, buf);
     else if(state == STATE_SHORT_NAME)
 	misc_string_assign(&new_league.short_name, buf);
     else if(state == STATE_SID)

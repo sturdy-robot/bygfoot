@@ -91,7 +91,7 @@ xml_load_league(Country *country, GPtrArray *league_list, const gchar *dirname, 
     sprintf(team_file, "%s%s%s_teams.xml", dirname, G_DIR_SEPARATOR_S, prefix);
     xml_loadsave_league_read(buf, team_file, league);
 
-    sprintf(buf, _("Loading league: %s"), league->name);
+    sprintf(buf, _("Loading league: %s"), league->c.name);
 
     bygfoot_show_progress(country->bygfoot, bygfoot_get_progress_bar_fraction(country->bygfoot), buf,
                       PIC_TYPE_LOAD);
@@ -122,7 +122,7 @@ xml_load_cup(Bygfoot *bygfoot, Cup *cup, const gchar *dirname, const gchar *base
     xml_loadsave_cup_read(buf, cup);
 
     sprintf(buf, _("Loading cup: %s"),
-	    cup->name);
+	    cup->c.name);
     bygfoot_show_progress(bygfoot, bygfoot_get_progress_bar_fraction(bygfoot), buf,
                       PIC_TYPE_LOAD);
 

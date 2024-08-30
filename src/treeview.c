@@ -90,7 +90,7 @@ treeview_create_team_selection_list(const Country *country,
                 gtk_list_store_set(ls, &iter,
                                    0, cnt++,
                                    2, (gpointer)team,
-                                   3, league->name,
+                                   3, league->c.name,
                                    4, (gpointer)team, /* FIXME: Why are we adding the team pointer twice? */
 				   5, (gpointer)league,
                                    -1);
@@ -111,7 +111,7 @@ treeview_create_team_selection_list(const Country *country,
 	    gtk_list_store_set(ls, &iter,
 	   		       0, cnt++,
 			       2, team,
-			       3, cup->name,
+			       3, cup->c.name,
 			       4, team,
 			       5, cup,
 			       -1);
@@ -758,15 +758,15 @@ treeview_create_users(const GUI *gui)
 	{
 	    if(usr(i).scout == -1)
 		gtk_list_store_set(ls, &iter, 3,
-				   league_cup_get_name_string(usr(i).tm->league->c.id), -1);
+				   usr(i).tm->league->c.name, -1);
 	    else {
                 League *league = g_ptr_array_index(country.leagues, usr(i).scout);
-		gtk_list_store_set(ls, &iter, 3, league->name, -1);
+		gtk_list_store_set(ls, &iter, 3, league->c.name, -1);
             }
 	}
 	else
 	    gtk_list_store_set(ls, &iter, 3,
-			       league_cup_get_name_string(usr(i).tm->league->c.id), -1);
+			       usr(i).tm->league->c.name, -1);
     }
 
     return GTK_TREE_MODEL(ls);
@@ -1032,7 +1032,7 @@ treeview_create_fixtures_header(const Fixture *fix, GtkListStore *ls, gboolean b
     if(fix->competition->id < ID_CUP_START)
     {
         sprintf(buf3, _("Week %d Round %d"), fix->week_number, fix->week_round_number);
-	name = league_cup_get_name_string(fix->competition->id);
+	name = fix->competition->name;
 	strcpy(round_name, "");
 	symbol = league_from_clid(fix->competition->id)->symbol;
     }
@@ -1041,7 +1041,7 @@ treeview_create_fixtures_header(const Fixture *fix, GtkListStore *ls, gboolean b
 	Cup *cup = (Cup*)fix->competition;
         sprintf(buf3, _("Week %d Round %d\nCup round %d"), 
                 fix->week_number, fix->week_round_number, fix->round + 1);
-	name = cup->name;
+	name = cup->c.name;
 	sprintf(round_name, "\n%s", g_array_index(cup->rounds, CupRound, fix->round).name);
 	symbol = cup->symbol;
     }
@@ -1259,9 +1259,9 @@ treeview_table_write_header(GtkListStore *ls, const Table *table, gint table_ind
 	if(g_array_index(cup->rounds, CupRound,
 			 table->round).tables->len > 1)			 
 	    /*  A group of a round robin stage of a cup. */
-	    sprintf(buf, _("%s Group %d"), cup->name, table_index + 1);
+	    sprintf(buf, _("%s Group %d"), cup->c.name, table_index + 1);
 	else
-	    sprintf(buf, "%s", cup->name);
+	    sprintf(buf, "%s", cup->c.name);
     }
 
     gtk_list_store_append(ls, &iter);
@@ -1899,10 +1899,10 @@ treeview_create_next_opponent(void)
     ls = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
 
     if(fix->competition->id < ID_CUP_START)
-	strcpy(buf, league_cup_get_name_string(fix->competition->id));
+	strcpy(buf, fix->competition->name);
     else {
 	Cup *cup = (Cup*)fix->competition;
-	sprintf(buf, "%s (%s)", league_cup_get_name_string(fix->competition->id),
+	sprintf(buf, "%s (%s)", fix->competition->name,
                 g_array_index(cup->rounds, CupRound, fix->round).name);
     }
 
@@ -1941,7 +1941,7 @@ treeview_create_next_opponent(void)
     if(rank != 0)
     {
 	sprintf(buf, "%d (%s)", rank,
-                league_cup_get_name_string(fix->competition->id));
+                fix->competition->name);
 	gtk_list_store_append(ls, &iter);
 	gtk_list_store_set(ls, &iter, 0, _("Rank"), 1, buf, -1);
     }
@@ -2902,7 +2902,7 @@ treeview_create_league_list(void)
     {
         League *league = g_ptr_array_index(country.leagues, i);
 	gtk_list_store_append(ls, &iter);
-	gtk_list_store_set(ls, &iter, 0, league->name, -1);
+	gtk_list_store_set(ls, &iter, 0, league->c.name, -1);
     }
 
     return GTK_TREE_MODEL(ls);

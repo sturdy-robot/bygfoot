@@ -164,7 +164,7 @@ query_team_is_in_cups(const Team *tm, gint group)
             if (team == tm) {
                 if(debug > 90)
                         g_print("team %s group %d found in %s (%s) \n", tm->name,
-				group, cup->name, cup->sid);
+				group, cup->c.name, cup->sid);
 		return TRUE;
 	    }
         }
@@ -539,7 +539,7 @@ team_get_league_rank(const Team *tm, Competition *comp)
     
     main_exit_program(EXIT_INT_NOT_FOUND, 
 		      "team_get_league_rank: no rank found for team %s in league %s. \n",
-		      tm->name, league_cup_get_name_string(tm->league->c.id));
+		      tm->name, tm->league->c.name);
 
     return -1;
 }

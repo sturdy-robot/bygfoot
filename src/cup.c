@@ -50,7 +50,7 @@ cup_new(gboolean new_id, Bygfoot *bygfoot)
 
     Cup new;
 
-    new.name = NULL;
+    new.c.name = NULL;
     new.short_name = NULL;
     new.symbol = NULL;
     new.sid = NULL;
@@ -319,9 +319,9 @@ cup_get_choose_team_league_cup(const CupChooseTeam *ct,
     if(debug > 100)
     {
         if(*league == NULL)
-            printf("cup_get_choose_team_league_cup: sid %s cup %s\n", ct->sid, (*cup)->name);
+            printf("cup_get_choose_team_league_cup: sid %s cup %s\n", ct->sid, (*cup)->c.name);
         else
-            printf("cup_get_choose_team_league_cup: sid %s league %s\n", ct->sid, (*league)->name);   
+            printf("cup_get_choose_team_league_cup: sid %s league %s\n", ct->sid, (*league)->c.name);   
     }
 }
 
@@ -340,7 +340,7 @@ cup_get_team_pointers(Cup *cup, gint round, gboolean preload)
     GPtrArray *teams = cup_round->team_ptrs;
 
     if(debug > 60)
-	g_print("cup_get_team_pointers %s round %d\n", cup->name, round);
+	g_print("cup_get_team_pointers %s round %d\n", cup->c.name, round);
 
     existing_teams = cup_round->team_ptrs->len;
     
@@ -365,7 +365,7 @@ cup_get_team_pointers(Cup *cup, gint round, gboolean preload)
     if(debug > 70)
 	for(i=0;i<teams->len;i++)
 	    g_print("cup_get_team_pointers: %s (%s) round %d team %d %s (clid %d)\n", 
-                    cup->name, cup->sid, round, i,
+                    cup->c.name, cup->sid, round, i,
                     ((Team*)g_ptr_array_index(teams, i))->name,
                     ((Team*)g_ptr_array_index(teams, i))->clid);
 }
@@ -385,7 +385,7 @@ cup_load_choose_team(Cup *cup, GPtrArray *teams, const CupChooseTeam *ct)
     const Cup *cup_temp = NULL;
 
     if(debug > 60)
-	g_print("cup_load_choose_team: %s, %s, teams %d to %d, random: %d \n", cup->name,
+	g_print("cup_load_choose_team: %s, %s, teams %d to %d, random: %d \n", cup->c.name,
                 ct->sid, ct->start_idx, ct->end_idx, ct->randomly);
 
     if(cup_choose_team_should_generate(ct)) {
@@ -456,7 +456,7 @@ cup_load_choose_team_from_cup(Cup *cup, const Cup *cup_temp, GPtrArray *teams, c
 	        return;
             main_exit_program(EXIT_CHOOSE_TEAM_ERROR, 
                               "cup_load_choose_team_from_cup (3): not enough teams (that don't participate in international cups yet) found in chooseteam %s for cup %s (%d specified, %d found) cup group %d.\n ",
-                              ct->sid, cup->name,
+                              ct->sid, cup->c.name,
                               ct->number_of_teams, number_of_teams, cup->group);
 	}
     }
@@ -542,7 +542,7 @@ cup_load_choose_team_from_league(Cup *cup, const League *league,
 	    return;
         main_exit_program(EXIT_CHOOSE_TEAM_ERROR, 
                           "cup_load_choose_team_from_league (1): not enough teams (that don't participate in international cups yet) found in chooseteam %s for cup %s (%d specified, %d found) cup group %d.\n ",
-                          ct->sid, cup->name, ct->number_of_teams, 
+                          ct->sid, cup->c.name, ct->number_of_teams, 
                           number_of_teams, cup->group);    
     }
 }
@@ -598,7 +598,7 @@ cup_load_choose_team_generate(Cup *cup, GPtrArray *teams, const CupChooseTeam *c
     GPtrArray *sids = NULL;
 
     if(debug > 60)
-	g_print("cup_load_choose_team_generate: %s, (%s) %s \n", cup->name, cup->sid,
+	g_print("cup_load_choose_team_generate: %s, (%s) %s \n", cup->c.name, cup->sid,
 	       ct->sid);
 
     teams_local = g_ptr_array_new();
@@ -676,7 +676,7 @@ cup_load_choose_team_generate(Cup *cup, GPtrArray *teams, const CupChooseTeam *c
 	main_exit_program(EXIT_CHOOSE_TEAM_ERROR, 
 			  "cup_load_choose_team_generate: not enough teams (%d) in chooseteam %s in cup %s (%d are specified) \n",
 			  teams_local->len, ct->sid, 
-			  cup->name, end_idx);
+			  cup->c.name, end_idx);
     }
 
     for(j = 0; j < end_idx; j++)
@@ -710,7 +710,7 @@ cup_load_choose_team_generate(Cup *cup, GPtrArray *teams, const CupChooseTeam *c
 	    return;
 	main_exit_program(EXIT_CHOOSE_TEAM_ERROR,
 			  "cup_load_choose_team_generate: not enough teams (that don't participate in international cups yet) found in chooseteam %s for cup %s (%d specified, %d found).\n ", 
-			  ct->sid, cup->name, 
+			  ct->sid, cup->c.name, 
 			  ct->number_of_teams, number_of_teams);
     }
     g_ptr_array_free(teams_local, teams_local->len > 0);
@@ -898,7 +898,7 @@ cup_get_first_week_of_cup_round(Cup *cup, gint cup_round, gboolean with_delay)
     if(week_number <= 0)
     {
 	debug_print_message("cup_get_first_week_of_cup_round: First week of cup %s, cup round %d is not positive (%d). Please correct the cup definition file!!!\n",
-		  cup->name, cup_round, week_number);
+		  cup->c.name, cup_round, week_number);
 	
 	if(cup->week_gap > 1)
 	{
@@ -1313,7 +1313,7 @@ cup_check_fixtures(const Cup *cup)
            g_array_index(cup->fixtures, Fixture, i).teams[1])
         {
             if(!query_league_cup_has_property(cup->c.id, "silent_on_fixture_error"))
-                debug_print_message("cup_check_fixture: bad fixture found in cup %s; cup will be disabled\n", cup->name);
+                debug_print_message("cup_check_fixture: bad fixture found in cup %s; cup will be disabled\n", cup->c.name);
 
             return FALSE;
         }

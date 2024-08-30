@@ -107,7 +107,7 @@ user_set_up_team_new_game(User *user)
 	user_set_up_team(user, TRUE);
 	user_history_add(user, USER_HISTORY_START_GAME, 
 			 user->tm->name, 
-			 league_cup_get_name_string(user->tm->league->c.id), NULL, NULL);
+			 user->tm->league->c.name, NULL, NULL);
     }
     else
     {
@@ -127,7 +127,7 @@ user_set_up_team_new_game(User *user)
 
 	user_history_add(user, USER_HISTORY_START_GAME, 
 			 user->tm->name, 
-			 league_cup_get_name_string(user->tm->league->c.id), NULL, NULL);
+			 user->tm->league->c.name, NULL, NULL);
 
 	user_set_up_team(user, TRUE);
     }
@@ -1209,13 +1209,13 @@ user_mm_add_last_match(gboolean load_file, gboolean save_file)
     gchar buf[SMALL];
 
     if(fix->competition->id < ID_CUP_START)
-	new.competition_name = g_string_new(league_cup_get_name_string(fix->competition->id));
+	new.competition_name = g_string_new(fix->competition->name);
     else
     {
 	fixture_get_cup_round_name(fix, buf);
 	new.competition_name = g_string_new("");
 	g_string_printf(new.competition_name, "%s %s", 
-			league_cup_get_name_string(fix->competition->id), buf);
+			fix->competition->name, buf);
     }
 
     new.country_name = g_strdup(country.name);

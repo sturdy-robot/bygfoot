@@ -827,7 +827,7 @@ window_create(gint window_type, Bygfoot *bygfoot)
 	    else
 		window.live = create_window_live(bygfoot);
 	    if(((LiveGame*)statp)->fix != NULL)
-		strcpy(buf, league_cup_get_name_string(((LiveGame*)statp)->fix->competition->id));
+		strcpy(buf, ((LiveGame*)statp)->fix->competition->name);
 	    wind = window.live;
 	    window_live_set_up();
 	    break;

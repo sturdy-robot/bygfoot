@@ -73,7 +73,7 @@ on_button_offer_ok_clicked             (GtkButton       *button,
 	    user_history_add(&current_user, USER_HISTORY_JOB_OFFER_ACCEPTED, 
 			     team_name,
 			     current_user.tm->name,
-			     league_cup_get_name_string(current_user.tm->league->c.id),
+			     current_user.tm->league->c.name,
 			     NULL);
 
 	gui_set_status(bygfoot->gui, STATUS_MAIN);

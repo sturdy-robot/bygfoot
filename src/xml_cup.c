@@ -240,7 +240,7 @@ xml_cup_read_start_element (GMarkupParseContext *context,
         else
         {
             new_wait.cup_round = -1;
-            debug_print_message("xml_cup_read_start_element: No round number specified for cup round wait in cup %s\n", new_cup->name);            
+            debug_print_message("xml_cup_read_start_element: No round number specified for cup round wait in cup %s\n", new_cup->c.name);            
         }
     }
     else if(strcmp(element_name, TAG_CUP_ROUND_TWO_MATCH_WEEK_START) == 0)
@@ -415,7 +415,7 @@ xml_cup_read_text         (GMarkupParseContext *context,
     float_value = (gfloat)g_ascii_strtod(buf, NULL);
 
     if(state == STATE_NAME)
-	misc_string_assign(&new_cup->name, buf);
+	misc_string_assign(&new_cup->c.name, buf);
     else if(state == STATE_SHORT_NAME)
 	misc_string_assign(&new_cup->short_name, buf);
     else if(state == STATE_SYMBOL)

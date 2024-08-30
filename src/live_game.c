@@ -135,7 +135,7 @@ live_game_initialize(Fixture *fix, LiveGame *live_game, Bygfoot *bygfoot)
 	else
 	    gtk_window_set_title(
 		GTK_WINDOW(window.live),
-		league_cup_get_name_string(match->fix->competition->id));
+		match->fix->competition->name);
 	window_live_set_up();
 	game_gui_live_game_show_opponent();
     }

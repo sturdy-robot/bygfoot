@@ -68,7 +68,7 @@ stat_update_leagues(void)
 	       league->fixtures, Fixture, league->fixtures->len - 1).week_number >= week)
 	{
 	    free_league_stats(&league->stats);
-	    league->stats.league_name = g_strdup(league->name);
+	    league->stats.league_name = g_strdup(league->c.name);
 	    league->stats.league_symbol = g_strdup(league->symbol);
 	    league->stats.teams_off = 
 		stat_update_league_teams(league->c.teams, TEAM_COMPARE_OFFENSIVE);
@@ -222,7 +222,7 @@ stat_create_season_stat(void)
             }
 
             g_array_append_val(new.league_stats, league->stats);
-            league->stats = stat_league_new(league->name, league->symbol);     
+            league->stats = stat_league_new(league->c.name, league->symbol);     
         }
     }
 
@@ -231,7 +231,7 @@ stat_create_season_stat(void)
         Cup *cup = g_ptr_array_index(country.allcups, i);
         if(!query_league_cup_has_property(cup->c.id, "omit_from_history"))
         {
-            new_champ.cl_name = g_strdup(cup->name);
+            new_champ.cl_name = g_strdup(cup->c.name);
             new_champ.team_name = 
                 g_strdup(cup_get_winner(cup)->name);
             g_array_append_val(new.cup_champs, new_champ);
@@ -283,7 +283,7 @@ stat_show_av_goals(GArray *fixtures)
 
     g_print("------------------------------------ \n");
     g_print("%s\nGoals/G HomeG/G AwayG/G Away %% GD/G \n",
-	   league_cup_get_name_string(g_array_index(fixtures, Fixture, 0).competition->id));
+	   g_array_index(fixtures, Fixture, 0).competition->name);
     g_print("%.2f \t %.2f \t %.2f \t %.2f \t %.2f \n", allgoals/games, homegoals/games, awaygoals/games,
 	   awaygoals / allgoals, goaldiff/games);
     g_print("Home win %%: %.2f Loss %%: %.2f Draw %%: %.2f \n",

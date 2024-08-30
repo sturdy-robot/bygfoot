@@ -51,7 +51,7 @@ league_new(gboolean new_id, Country *country)
 
     League new;
 
-    new.name = NULL;
+    new.c.name = NULL;
     new.names_file = g_strdup(opt_str("string_opt_player_names_file"));
     new.sid = NULL;
     new.short_name = NULL;
@@ -524,7 +524,7 @@ league_remove_team_with_id(League *league, gint id)
     }
 
     debug_print_message("league_remove_team_with_id: team with id %d in league %s not found\n",
-          id, league->name);
+          id, league->c.name);
 }
 
 
@@ -888,7 +888,7 @@ country_filter_promotions(const Country *country, GArray *team_movements,
             const League *dest_league = g_ptr_array_index(country->leagues, dest_idx);
 
             printf("Looking at promotion of %s from %s to %s.\n", move->tm->name,
-                   league->name, dest_league->name);
+                   league->c.name, dest_league->c.name);
         }
         if (summary->max_promotions && summary->num_promotions_from == summary->max_promotions)
             goto remove_promotion;
@@ -951,7 +951,7 @@ country_filter_relegations(const Country *country, GArray *team_movements,
                                                           dest_idx);
 
             printf("Looking at relegation of %s from %s to %s.\n", move->tm->name,
-                   league->name, dest_league->name);
+                   league->c.name, dest_league->c.name);
         }
         if (summary->num_relegations_from == summary->num_promotions_to) {
             if(debug > 70)
@@ -1292,7 +1292,7 @@ league_team_movements_print(const GArray *team_movements,
     if(tmove->dest_assigned)
         g_print("%-25s (%d) %s \t\t", tmove->tm->name,
            tmove->tm->league->layer,
-           ((League*)g_ptr_array_index(country.leagues, g_array_index(tmove->dest_idcs, gint, 0)))->name);
+           ((League*)g_ptr_array_index(country.leagues, g_array_index(tmove->dest_idcs, gint, 0)))->c.name);
     else
         g_print("%-25s (%d) UNASSIGNED \t\t", tmove->tm->name,
            tmove->tm->league->layer);
@@ -1304,7 +1304,7 @@ league_team_movements_print(const GArray *team_movements,
     g_print("%-20s Size Cursize\n", "League");
     for(i=0;i<country.leagues->len;i++) {
         League *league = g_ptr_array_index(country.leagues, i);
-        g_print("%-20s %d %d\n", league->name, league_size[i],
+        g_print("%-20s %d %d\n", league->c.name, league_size[i],
            league_cur_size[i]);
     }
 }
@@ -1363,7 +1363,7 @@ league_team_movements_assign_dest(GArray *team_movements, gint idx,
     if(league_cur_size[dest_idx] > league_size[dest_idx])
     main_exit_program(EXIT_PROM_REL, 
               "league_team_movements_assign_dest: no room in league %s for team %s.",
-              ((League*)g_ptr_array_index(country.leagues, dest_idx))->name, tmove->tm->name);
+              ((League*)g_ptr_array_index(country.leagues, dest_idx))->c.name, tmove->tm->name);
 
     tmove->dest_assigned = TRUE;
 
@@ -1395,12 +1395,12 @@ league_team_movements_assign_dest(GArray *team_movements, gint idx,
     if(tmove->prom_rel_type == PROM_REL_PROMOTION)
         user_history_add(&usr(team_is_user(tmove->tm)),
                  USER_HISTORY_PROMOTED, tmove->tm->name,
-                 ((League*)g_ptr_array_index(country.leagues, g_array_index(tmove->dest_idcs, gint, 0)))->name,
+                 ((League*)g_ptr_array_index(country.leagues, g_array_index(tmove->dest_idcs, gint, 0)))->c.name,
                  NULL, NULL);
     else
         user_history_add(&usr(team_is_user(tmove->tm)),
                  USER_HISTORY_RELEGATED, tmove->tm->name,
-                 ((League*)g_ptr_array_index(country.leagues, g_array_index(tmove->dest_idcs, gint, 0)))->name,
+                 ((League*)g_ptr_array_index(country.leagues, g_array_index(tmove->dest_idcs, gint, 0)))->c.name,
                  NULL, NULL);
     }
 }
@@ -1554,7 +1554,7 @@ league_add_table(League *league)
  
     new_table = table_new();
     new_table.competition = &league->c;
-    new_table.name = g_strdup(league->name);
+    new_table.name = g_strdup(league->c.name);
 
     for(i = 0; i < league->c.teams->len; i++)
     {

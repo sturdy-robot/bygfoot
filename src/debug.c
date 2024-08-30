@@ -204,7 +204,7 @@ debug_action(Bygfoot *bygfoot, const gchar *text)
             Cup *cup = g_ptr_array_index(country.cups, i);
             if(cup->add_week != 1000)
             {
-                g_print("Cup: %s\n", cup->name);
+                g_print("Cup: %s\n", cup->c.name);
                 for(j = 0; j < cup->rounds->len; j++)
                     g_print("  Round %2d: Week %2d (w/o delay: %2d)\n",
                             j, cup_get_first_week_of_cup_round(cup, j, TRUE),
