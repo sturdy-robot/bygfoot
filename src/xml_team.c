@@ -227,7 +227,7 @@ xml_team_read_text         (GMarkupParseContext *context,
     else if(state == STATE_NAMES_FILE)
 	misc_string_assign(&team->names_file, buf);
     else if(state == STATE_FIRST_TEAM)
-	misc_string_assign(&team->first_team_sid, buf);
+	misc_string_assign(&team->first_team.sid, buf);
     else if(state == STATE_RESERVE_LEVEL)
 	team->reserve_level = int_value;
     else if(state == STATE_PLAYER_NAME)

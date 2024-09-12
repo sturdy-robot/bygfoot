@@ -942,8 +942,8 @@ bygfoot_json_serialize_team(const Team *team,
     SERIALIZE(luck, serialize_double);
     SERIALIZE(stadium, bygfoot_json_serialize_stadium);
     SERIALIZE(players, bygfoot_json_serialize_players);
-    SERIALIZE(first_team_sid, serialize_string);
-    SERIALIZE(first_team_id, serialize_int);
+    STREAM_OBJ_FIELD_CUSTOM("first_team", bygfoot_json_serialize_team_ptr(team->first_team.team, fields, write_func, userdata), fields);
+
     SERIALIZE_OBJ_LAST_FIELD;
     SERIALIZE(reserve_level, serialize_int);
     SERIALIZE_END_OBJECT(write_func, userdata);

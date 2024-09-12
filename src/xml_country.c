@@ -296,4 +296,6 @@ xml_country_read(const gchar *country_name, Country *cntry_arg,
     for(i=0;i<cntry->leagues->len;i++)
 	if(((League*)g_ptr_array_index(cntry->leagues, i))->layer == -1)
 	   ((League*)g_ptr_array_index(cntry->leagues, i))->layer = i + 1;
+
+    country_lookup_first_team_ptrs(cntry);
 }

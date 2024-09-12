@@ -360,8 +360,6 @@ cup_get_team_pointers(Cup *cup, gint round, gboolean preload)
 	g_ptr_array_add(cup->c.teams, team);
     }
 
-    country_lookup_first_team_ids(&country);
-
     if(debug > 70)
 	for(i=0;i<teams->len;i++)
 	    g_print("cup_get_team_pointers: %s (%s) round %d team %d %s (clid %d)\n", 

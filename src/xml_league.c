@@ -509,7 +509,7 @@ xml_league_read_text         (GMarkupParseContext *context,
     else if(state == STATE_TEAM_DEF_FILE)
 	misc_string_assign(&league_user_data->new_team->def_file, buf);
     else if(state == STATE_TEAM_FIRST_TEAM)
-	misc_string_assign(&league_user_data->new_team->first_team_sid, buf);
+	misc_string_assign(&league_user_data->new_team->first_team.sid, buf);
     else if(state == STATE_TEAM_RESERVE_LEVEL)
 	league_user_data->new_team->reserve_level = int_value;
 }

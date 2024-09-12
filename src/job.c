@@ -416,7 +416,6 @@ job_change_country(Job *job, Bygfoot *bygfoot)
 	    }
 	}
     }
-    country_lookup_first_team_ids(&country);
     stat5 = -1;
 
     /* Set season to 1 so that some special things

@@ -209,9 +209,9 @@ xml_loadsave_teams_text         (GMarkupParseContext *context,
     else if(state == TAG_TEAM_LUCK)
 	new_team->luck = xml_read_float(buf);
     else if(state == TAG_TEAM_FIRST_TEAM_SID)
-	misc_string_assign(&new_team->first_team_sid, buf);
+	misc_string_assign(&new_team->first_team.sid, buf);
     else if(state == TAG_TEAM_FIRST_TEAM_ID)
-    new_team->first_team_id = xml_read_int(buf);
+    new_team->first_team.id = xml_read_int(buf);
     else if(state == TAG_TEAM_RESERVE_LEVEL)
 	new_team->reserve_level = xml_read_int(buf);
     else if(state >= TAG_START_PLAYERS && state <= TAG_END_PLAYERS)
@@ -298,14 +298,13 @@ xml_loadsave_teams_write_team(FILE *fil, const Team* team)
     xml_write_string(fil, team->symbol, TAG_SYMBOL, I1);
     xml_write_string(fil, team->names_file, TAG_TEAM_NAMES_FILE, I1);
     xml_write_string(fil, team->strategy_sid, TAG_TEAM_STRATEGY_SID, I1);
-    xml_write_string(fil, team->first_team_sid, TAG_TEAM_FIRST_TEAM_SID, I1);
        
     xml_write_int(fil, team->clid, TAG_TEAM_CLID, I1);
     xml_write_int(fil, team->id, TAG_TEAM_ID, I1);
     xml_write_int(fil, team->structure, TAG_TEAM_STRUCTURE, I1);
     xml_write_int(fil, team->style, TAG_TEAM_STYLE, I1);
     xml_write_int(fil, team->boost, TAG_TEAM_BOOST, I1);
-    xml_write_int(fil, team->first_team_id, TAG_TEAM_FIRST_TEAM_ID, I1);
+    xml_write_int(fil, team->first_team.team->id, TAG_TEAM_FIRST_TEAM_ID, I1);
     xml_write_int(fil, team->reserve_level, TAG_TEAM_RESERVE_LEVEL, I1);
 
     fprintf(fil, "%s<_%d>\n", I1, TAG_TEAM_STADIUM);

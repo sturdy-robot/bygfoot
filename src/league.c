@@ -758,7 +758,7 @@ handle_required_reserve_relegation(const TeamMove *move, GArray *team_movements)
             gint k;
             TeamMove new_move;
             Team *reserve_team = g_ptr_array_index(dest_league->c.teams, j);
-            if (move->tm->first_team_id != reserve_team->first_team_id)
+            if (move->tm->first_team.team->id != reserve_team->first_team.team->id)
                 continue; /* Teams do not share the same first team. */
 
             /* We have found a reserve team (Green B in the example above)
@@ -842,7 +842,7 @@ league_team_is_top_reserve_team(const League *league, const Team *team)
     for (i = 0; i < league->c.teams->len; i++) {
         gint other_level;
         const Team *other_team = g_ptr_array_index(league->c.teams, i);
-        if (team->first_team_id != other_team->first_team_id)
+        if (team->first_team.team->id != other_team->first_team.team->id)
             continue;
 
         if (team->reserve_level > other_team->reserve_level)
@@ -1668,30 +1668,29 @@ league_cup_get_week_with_break(gint clid, gint week_number)
     return week_number;
 }
 
-/** Lookup the first_team_id from the first_team_sid for each team in the
- * country.  This will allow faster lookups of the first team.  This needs to
- * be called after both xml_country_read() and team_generate_players_stadium()
- * have been called, since those functions are what complete loads all the teams
- * in a country. */
+/**
+ * This function looks up the first team pointer for each
+ * team in the \p country based on its sid.  If a team is
+ * not have a reserve team, its own pointer will be the first
+ * team.  This function should be called after a country is
+ * loaded from xml or from a save and it also frees the first_team.sid
+ * value after it finds the first team pointer.
+ */
 void
-country_lookup_first_team_ids(const Country *country)
+country_lookup_first_team_ptrs(const Country *country)
 {
     gint i,j;
     for (i = 0; i < country->leagues->len; i++) {
         const League *league = g_ptr_array_index(country->leagues, i);
         for (j = 0; j < league->c.teams->len; j++) {
             Team *team = g_ptr_array_index(league->c.teams, j);
-            if (!team_is_reserve_team(team)) {
-                team->first_team_id = team->id;
-                continue;
+            char *sid = team->first_team.sid;
+            if (!sid) {
+                team->first_team.team = team;
+            } else {
+                team->first_team.team = team_of_sid(sid, country);
             }
-
-            /* Check if we have already computed the first_team ID */
-            if (team->first_team_id != 0)
-                continue;
-
-            const Team *first_team = team_of_sid(team->first_team_sid, country);
-            team->first_team_id = first_team->id;
+            free(sid);
         }
     }
 }
@@ -1716,7 +1715,7 @@ league_can_accept_promoted_team(const League *league, const Team *tm,
     for (i = 0; i < league->c.teams->len; i++) {
         gboolean upper_team_promoted = FALSE;
         const Team *upper_team = g_ptr_array_index(league->c.teams, i);
-        if (tm->first_team_id != upper_team->first_team_id)
+        if (tm->first_team.team->id != upper_team->first_team.team->id)
             continue;
 
         /* If the upper team is going to be promoted, then it is ok to
@@ -1745,7 +1744,7 @@ league_can_accept_promoted_team(const League *league, const Team *tm,
         if (move->prom_rel_type != PROM_REL_RELEGATION)
             continue;
 
-        if (tm->first_team_id != move->tm->first_team_id)
+        if (tm->first_team.team->id != move->tm->first_team.team->id)
             continue;
 
         for (j = 0; j < move->dest_idcs->len; j++) {

@@ -198,7 +198,7 @@ gint
 league_cup_get_week_with_break(gint clid, gint week_number);
 
 void
-country_lookup_first_team_ids(const Country *country);
+country_lookup_first_team_ptrs(const Country *country);
 
 gboolean
 league_can_accept_promoted_team(const League *league, const Team *tm,

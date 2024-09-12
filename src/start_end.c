@@ -460,7 +460,6 @@ start_generate_league_teams(void)
 	    team_generate_players_stadium(g_ptr_array_index(league->c.teams, j), 0);
     }
 
-    country_lookup_first_team_ids(&country);
     stat5 = -1;
 }
 

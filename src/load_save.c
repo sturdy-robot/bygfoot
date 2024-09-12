@@ -36,6 +36,7 @@
 #include "misc.h"
 #include "option.h"
 #include "support.h"
+#include "team.h"
 #include "user.h"
 #include "variables.h"
 #include "window.h"
@@ -231,6 +232,36 @@ bygfoot_adjust_competition_pointers(Bygfoot *bygfoot)
     }
 }
 
+static void
+country_adjust_first_team_ptrs(Country *country)
+{
+    gint i;
+    for (i = 0; i < country->leagues->len; i++) {
+        League *league = g_ptr_array_index(country->leagues, i);
+        gint j;
+        for (j = 0; j < league->c.teams->len; j++) {
+            Team *team = g_ptr_array_index(league->c.teams, j);
+            if (!team_is_reserve_team(team)) {
+                team->first_team.team = team;
+            } else {
+                team->first_team.team = team_of_id(team->first_team.id);
+            }
+        }
+    }
+}
+
+static void
+bygfoot_adjust_first_team_pointers(Bygfoot *bygfoot)
+{
+    gint i;
+    country_adjust_first_team_ptrs(&country);
+
+    for (i = 0; i < country_list->len; i++) {
+        Country *c = g_ptr_array_index(country_list, i);
+        country_adjust_first_team_ptrs(c);
+    }
+}
+
 /** Load the game from the specified file.
     @param create_main_window Whether to create and show the main window. */
 gboolean
@@ -323,6 +354,7 @@ load_save_load_game(Bygfoot *bygfoot, const gchar* filename, gboolean create_mai
     xml_loadsave_leagues_cups_adjust_team_ptrs_cups(bygfoot->international_cups);
     update_all_cups();
     bygfoot_adjust_competition_pointers(bygfoot);
+    bygfoot_adjust_first_team_pointers(bygfoot);
 
     if(debug > 60)
         g_print("load_save_load users \n");

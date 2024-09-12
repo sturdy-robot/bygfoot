@@ -71,8 +71,7 @@ team_new(gboolean new_id, Country *country)
     new.luck = 1;
 
     new.players = g_array_new(FALSE, FALSE, sizeof(Player));
-    new.first_team_sid = NULL;
-    new.first_team_id = 0;
+    new.first_team.team = NULL;
     new.reserve_level = 0;
     new.country = country;
 
@@ -1480,7 +1479,7 @@ team_write_overall_results(const Team *tm, gint clid, gchar *results)
 gboolean
 team_is_reserve_team(const Team *tm)
 {
-    return tm->first_team_sid != NULL;
+    return tm->first_team.team != tm;
 }
 
 gint
