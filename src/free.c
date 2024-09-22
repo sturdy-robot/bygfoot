@@ -716,7 +716,7 @@ free_variables(void)
     free_option_list(&settings, FALSE);
     free_option_list(&constants, FALSE);
     free_option_list(&constants_app, FALSE);
-    free_option_list(&tokens, FALSE);
+    free_option_list(&replacement_tokens, FALSE);
 
     free_gchar_ptr(save_file);
 

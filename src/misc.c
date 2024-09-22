@@ -775,7 +775,7 @@ misc_token_add(GPtrArray **token_rep, gint token_idx,
 	       gchar *replacement)
 {
     g_ptr_array_add(token_rep[0], 
-		    (gpointer)g_strdup(g_array_index(tokens.list, Option, token_idx).string_value));
+		    (gpointer)g_strdup(g_array_index(replacement_tokens.list, Option, token_idx).string_value));
     g_ptr_array_add(token_rep[1], (gpointer)replacement);
 }
 
@@ -785,7 +785,7 @@ misc_token_add_bool(GPtrArray **token_rep, gint token_idx,
                     gboolean value)
 {
     g_ptr_array_add(token_rep[0], 
-		    (gpointer)g_strdup(g_array_index(tokens.list, Option, token_idx).string_value));
+		    (gpointer)g_strdup(g_array_index(replacement_tokens.list, Option, token_idx).string_value));
     g_ptr_array_add(token_rep[1], misc_int_to_char(value));
 }
 
@@ -797,7 +797,7 @@ misc_token_remove(GPtrArray **token_rep, gint idx)
 
     for(i=token_rep[0]->len - 1; i >= 0; i--)
 	if(strcmp((gchar*)g_ptr_array_index(token_rep[0], i),
-		  g_array_index(tokens.list, Option, idx).string_value) == 0)
+		  g_array_index(replacement_tokens.list, Option, idx).string_value) == 0)
 	{
 	    g_free(g_ptr_array_index(token_rep[0], i));
 	    g_free(g_ptr_array_index(token_rep[1], i));

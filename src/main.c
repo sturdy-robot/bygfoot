@@ -324,11 +324,11 @@ main_init_variables(Bygfoot *bygfoot)
     save_file = NULL;
 
     constants_app.list = settings.list =
-        constants.list = options.list = tokens.list =
+        constants.list = options.list = replacement_tokens.list =
         hints.list = NULL;
     constants_app.datalist = settings.datalist =
         constants.datalist = options.datalist =
-        tokens.datalist = hints.datalist = NULL;
+        replacement_tokens.datalist = hints.datalist = NULL;
 
     selected_row = -1;
 

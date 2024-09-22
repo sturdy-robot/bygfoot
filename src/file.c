@@ -795,11 +795,11 @@ file_load_conf_files(void)
 
   file_load_opt_file(opt_str("string_opt_constants_file"), &constants, TRUE);
   file_load_opt_file(opt_str("string_opt_appearance_file"), &constants_app, TRUE);
-  file_load_opt_file("bygfoot_tokens", &tokens, FALSE);
+  file_load_opt_file("bygfoot_tokens", &replacement_tokens, FALSE);
   file_load_hints_file();
 
-  for(i=0;i<tokens.list->len;i++)
-    g_array_index(tokens.list, Option, i).value = i;
+  for(i=0;i<replacement_tokens.list->len;i++)
+    g_array_index(replacement_tokens.list, Option, i).value = i;
 }
 
 /** Load a user-specific conf file.

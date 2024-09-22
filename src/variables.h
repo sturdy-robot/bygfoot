@@ -60,7 +60,7 @@ OptionList constants_app;
 /** Array with internal settings. */
 OptionList settings;
 /* Array holding string replacement tokens. */
-OptionList tokens;
+OptionList replacement_tokens;
 
 /** The array containing the live game commentary strings. */
 GArray *lg_commentary[LIVE_GAME_EVENT_END];
