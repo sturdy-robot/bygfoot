@@ -33,7 +33,7 @@
 #include "strategy.h"
 #include "team.h"
 
-GPtrArray *token_strat[2];
+GArray *token_strat;
 
 /** Return the sid of a random strategy from the 
     strategies array (also dependent on the priorities
@@ -348,6 +348,14 @@ strategy_from_sid(const gchar *sid)
     return NULL;
 }
 
+static
+void strategy_token_add(GArray *token_strat, enum ReplacementToken token, int value)
+{
+    StratTokenValue *token_value = &g_array_index(token_strat, StratTokenValue, token);
+    token_value->initialized = TRUE;
+    token_value->value = value;
+}
+
 /** Add tokens that will be evaluated when checking
     strategy conditions. */
 void
@@ -361,40 +369,33 @@ strategy_set_tokens(const Team *tm, const Fixture *fixture)
 	team_get_fixture(tm, FALSE) : fixture;
     const Team *opp = (fix == NULL) ? NULL :
 	fix->teams[fix->teams[0] == tm];
+    gint i;
 
-    token_strat[0] = g_ptr_array_new();
-    token_strat[1] = g_ptr_array_new();
+    token_strat = g_array_sized_new(FALSE, TRUE, sizeof(StratTokenValue), REP_TOKEN_LAST);
+    g_array_set_size(token_strat, REP_TOKEN_LAST);
 
     if(opp == NULL)
 	return;
 
-    misc_token_add(token_strat,
-		   option_int("string_token_homeadv", &replacement_tokens),
-		   misc_int_to_char(((fix->teams[0] == tm) ? 1 : -1) *
-				    fix->home_advantage));
+    strategy_token_add(token_strat, REP_TOKEN_HOMEADV,
+                       ((fix->teams[0] == tm) ? 1 : -1) * fix->home_advantage);
 
-    misc_token_add(token_strat,
-		   option_int("string_token_cup", &replacement_tokens),
-		   misc_int_to_char(fix->competition->id >= ID_CUP_START));
+    strategy_token_add(token_strat, REP_TOKEN_CUP,
+                       fix->competition->id >= ID_CUP_START);
 
-    misc_token_add(token_strat,
-		   option_int("string_token_avskilldiff", &replacement_tokens),
-		   misc_int_to_char((gint)rint(team_get_average_skill(tm, FALSE) -
-					       team_get_average_skill(opp, FALSE))));
+    strategy_token_add(token_strat, REP_TOKEN_AVSKILLDIFF, 
+		       rint(team_get_average_skill(tm, FALSE) -
+			    team_get_average_skill(opp, FALSE)));
 
-    misc_token_add(token_strat,
-		   option_int("string_token_opponent_skill", &replacement_tokens),
-		   misc_int_to_char((gint)rint(team_get_average_skill(opp, FALSE))));
+    strategy_token_add(token_strat, REP_TOKEN_OPPONENT_SKILL,
+		       rint(team_get_average_skill(opp, FALSE)));
 
     if(tm->country == opp->country)
-	misc_token_add(token_strat,
-		       option_int("string_token_team_layerdiff", &replacement_tokens),
-		       misc_int_to_char(tm->league->layer -
-					opp->league->layer));
+	strategy_token_add(token_strat, REP_TOKEN_TEAM_LAYERDIFF,
+		           tm->league->layer - opp->league->layer);
 
-    misc_token_add(token_strat,
-		   option_int("string_token_goals_to_win", &replacement_tokens),
-		   misc_int_to_char(fixture_get_goals_to_win(fix, tm)));
+    strategy_token_add(token_strat, REP_TOKEN_GOALS_TO_WIN,
+		       fixture_get_goals_to_win(fix, tm));
 }
 
 /** Free the token arrays. */
@@ -407,14 +408,7 @@ strategy_free_tokens(void)
 
     gint i;
 
-    for(i=0;i<token_strat[0]->len;i++)
-    {
-	g_free(g_ptr_array_index(token_strat[0], i));
-	g_free(g_ptr_array_index(token_strat[1], i));
-    }
-
-    g_ptr_array_free(token_strat[0], TRUE);
-    g_ptr_array_free(token_strat[1], TRUE);
+    g_array_free(token_strat, TRUE);
 }
 
 /** Fill the necessary tokens during a live game. */
@@ -432,36 +426,26 @@ strategy_live_game_set_tokens(const LiveGame *match, gint team_idx)
 
     strategy_set_tokens(tm, match->fix);
 
-    misc_token_add(token_strat,
-		   option_int("string_token_subs_left", &replacement_tokens),
-		   misc_int_to_char(match->subs_left[team_idx]));
-    misc_token_add(token_strat,
-		   option_int("string_token_num_def", &replacement_tokens),
-		   misc_int_to_char(math_get_place(tm->structure, 3)));
-    misc_token_add(token_strat,
-		   option_int("string_token_num_mid", &replacement_tokens),
-		   misc_int_to_char(math_get_place(tm->structure, 2)));
-    misc_token_add(token_strat,
-		   option_int("string_token_num_att", &replacement_tokens),
-		   misc_int_to_char(math_get_place(tm->structure, 1)));
-    misc_token_add(token_strat,
-		   option_int("string_token_form", &replacement_tokens),
-		   misc_int_to_char(tm->structure));    
-    misc_token_add(token_strat,
-		   option_int("string_token_time", &replacement_tokens), 
-		   misc_int_to_char(
-		       g_array_index(match->units, LiveGameUnit, match->units->len - 1).time));
-    misc_token_add(token_strat,
-		   option_int("string_token_minute", &replacement_tokens), 
-		   misc_int_to_char(current_min));
+    strategy_token_add(token_strat, REP_TOKEN_SUBS_LEFT,
+                       match->subs_left[team_idx]);
+    strategy_token_add(token_strat, REP_TOKEN_NUM_DEF,
+                       math_get_place(tm->structure, 3));
+    strategy_token_add(token_strat, REP_TOKEN_NUM_MID,
+		       math_get_place(tm->structure, 2));
+    strategy_token_add(token_strat, REP_TOKEN_NUM_ATT,
+		       math_get_place(tm->structure, 1));
+    strategy_token_add(token_strat, REP_TOKEN_FORM,
+		       tm->structure);
+    strategy_token_add(token_strat, REP_TOKEN_TIME,
+		   g_array_index(match->units, LiveGameUnit, match->units->len - 1).time);
+    strategy_token_add(token_strat, REP_TOKEN_MINUTE,
+		       current_min);
 
     tmp_int = live_game_get_minutes_remaining(
 	&g_array_index(match->units, LiveGameUnit, match->units->len - 1));
     
     if(tmp_int > 0)
-	misc_token_add(token_strat, 
-		       option_int("string_token_minute_remaining", &replacement_tokens), 
-		       misc_int_to_char(tmp_int));
+	strategy_token_add(token_strat, REP_TOKEN_MINUTE_REMAINING, tmp_int);
 
     if(query_fixture_is_draw(match->fix))
 	tmp_int = 120 - current_min;
@@ -469,9 +453,7 @@ strategy_live_game_set_tokens(const LiveGame *match, gint team_idx)
 	tmp_int = 90 - current_min;
 
     if(tmp_int > 0)
-	misc_token_add(token_strat,
-		       option_int("string_token_minute_total", &replacement_tokens),
-		       misc_int_to_char(tmp_int));
+	strategy_token_add(token_strat, REP_TOKEN_MINUTE_TOTAL, tmp_int);
 }
 
 /** Compare function for sorting the players when

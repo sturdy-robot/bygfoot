@@ -154,6 +154,9 @@ GArray *
 misc_parse_condition_fast(const gchar *condition);
 
 gboolean
-misc_evaluate_condition(const GArray *condition, GPtrArray **token_rep);
+misc_evaluate_condition(const GArray *condition, GArray *token_rep);
+
+enum ReplacementToken
+misc_parse_replacement_token(const char *token, gint len);
 
 #endif

@@ -869,26 +869,23 @@ misc_alphabetic_compare(gconstpointer a, gconstpointer b)
 }
 
 static gboolean
-misc_condition_evaluate_var(const StratCondPart *var, GArray *operands, GPtrArray **token_rep)
+misc_condition_evaluate_var(const StratCondPart *var, GArray *operands, GArray *token_rep)
 {
-    gint i;
-    for (i = 0; i < token_rep[0]->len; i++) {
-        gint value;
-        const gchar *token_name = g_ptr_array_index(token_rep[0], i);
-        const gchar *token_value = g_ptr_array_index(token_rep[1], i);
-        if (strncmp(var->value, token_name, var->len))
-            continue;
-        value = g_ascii_strtoll(token_value, NULL, 0);
-        g_array_append_val(operands, value);
-        return TRUE;
-    }
-
+    const StratTokenValue *token_value;
+    gint token = GPOINTER_TO_INT(var->value);
     /* I think it would be good to warn here that the variable was not found,
      * however the the previous implementation considered the whole condition
      * to be FALSE when a variable was not found, so for now we need to
      * replicate the behavior.
      */
-    return FALSE;
+    if (token == REP_TOKEN_LAST) {
+        return FALSE;
+    }
+    token_value = &g_array_index(token_rep, StratTokenValue, token);
+    if (!token_value->initialized)
+        return FALSE;
+    g_array_append_val(operands, token_value->value);
+    return TRUE;
 }
 
 static gboolean
@@ -1169,6 +1166,7 @@ misc_parse_condition_fast(const gchar *condition)
                 goto lexer_done;
             part.token = STRAT_COND_VAR;
             part.len = end_pos;
+            part.value = GINT_TO_POINTER(misc_parse_replacement_token(part.value, part.len));
             break;
         }
         case '-':
@@ -1232,7 +1230,7 @@ lexer_done:
 
 
 gboolean
-misc_evaluate_condition(const GArray *condition, GPtrArray **token_rep)
+misc_evaluate_condition(const GArray *condition, GArray *token_rep)
 {
     GArray *operands = g_array_new(FALSE, FALSE, sizeof(gint));
     gboolean result = FALSE;
@@ -1261,8 +1259,149 @@ misc_evaluate_condition(const GArray *condition, GPtrArray **token_rep)
     }
 
     result = g_array_index(operands, gint, 0);
+done:
+    g_array_free(operands, TRUE);
+    return result;
+}
 
-    done:
-        g_array_free(operands, TRUE);
-        return result;
+struct replacement_token_value {
+    const char *token;
+    enum ReplacementToken value;
+};
+
+struct replacement_token_key {
+    const char *token;
+    gint len;
+};
+
+static int replacement_token_bsearch(const void *key, const void *member)
+{
+    const struct replacement_token_value *value = member;
+    const struct replacement_token_key *rkey = key;
+    return strncmp(rkey->token, value->token, rkey->len);
+}
+
+enum ReplacementToken
+misc_parse_replacement_token(const char *token, gint len)
+{
+    const static struct replacement_token_value table[] = {
+        {"_AT_", REP_TOKEN_ATTENDANCE},
+        {"_AVSKILLDIFF_", REP_TOKEN_AVSKILLDIFF},
+        {"_CUPAUX_", REP_TOKEN_BOOL_CUP_AUX},
+        {"_CUPET_", REP_TOKEN_BOOL_CUP_EXTRA},
+        {"_CUPFIRSTLEG_", REP_TOKEN_BOOL_CUP_FIRST_LEG},
+        {"_CUPHOMEAWAY_", REP_TOKEN_BOOL_CUP_HOME_AWAY},
+        {"_CUPINTERNATIONAL_", REP_TOKEN_BOOL_CUP_INTERNATIONAL},
+        {"_CUPKO_", REP_TOKEN_BOOL_CUP_KNOCKOUT},
+        {"_CUPMATCHLOSERN_", REP_TOKEN_CUP_MATCH_LOSERN},
+        {"_CUPMATCHLOSER_", REP_TOKEN_CUP_MATCH_LOSER},
+        {"_CUPMATCHWINNERN_", REP_TOKEN_CUP_MATCH_WINNERN},
+        {"_CUPMATCHWINNER_", REP_TOKEN_CUP_MATCH_WINNER},
+        {"_CUPNATIONAL_", REP_TOKEN_BOOL_CUP_NATIONAL},
+        {"_CUPNEUTRAL_", REP_TOKEN_BOOL_CUP_NEUTRAL},
+        {"_CUPPEN_", REP_TOKEN_BOOL_CUP_PENALTIES},
+        {"_CUPPROMREL_", REP_TOKEN_BOOL_CUP_PROMREL},
+        {"_CUPROUNDNAME_", REP_TOKEN_CUP_ROUND_NAME},
+        {"_CUPSECONDLEG_", REP_TOKEN_BOOL_CUP_SECOND_LEG},
+        {"_CUPSTAGE_", REP_TOKEN_CUP_STAGE},
+        {"_CUP_", REP_TOKEN_BOOL_CUP},
+        {"_CUP_", REP_TOKEN_CUP},
+        {"_EX_", REP_TOKEN_EXTRA},
+        {"_FORMATION_", REP_TOKEN_FORM},
+        {"_FOULS0_", REP_TOKEN_STAT_FOULS0},
+        {"_FOULS1_", REP_TOKEN_STAT_FOULS1},
+        {"_GDAGG_", REP_TOKEN_GOAL_DIFF_AGGREGATE},
+        {"_GD_", REP_TOKEN_GOAL_DIFF},
+        {"_GOALS0_", REP_TOKEN_GOALS0},
+        {"_GOALS1_", REP_TOKEN_GOALS1},
+        {"_GOALSTOWIN_", REP_TOKEN_GOALS_TO_WIN},
+        {"_HIGHGOALS0_", REP_TOKEN_HIGHSCORER_GOALS0},
+        {"_HIGHGOALS1_", REP_TOKEN_HIGHSCORER_GOALS1},
+        {"_HIGHSCORER0_", REP_TOKEN_HIGHSCORER0},
+        {"_HIGHSCORER1_", REP_TOKEN_HIGHSCORER1},
+        {"_HOMEADV_", REP_TOKEN_HOMEADV},
+        {"_INJS0_", REP_TOKEN_STAT_INJS0},
+        {"_INJS1_", REP_TOKEN_STAT_INJS1},
+        {"_LEAGUECUPNAME_", REP_TOKEN_LEAGUE_CUP_NAME},
+        {"_LEAGUELOST0_", REP_TOKEN_STREAK_LEAGUE_LOST0},
+        {"_LEAGUELOST1_", REP_TOKEN_STREAK_LEAGUE_LOST1},
+        {"_LEAGUEUNBEATEN0_", REP_TOKEN_STREAK_LEAGUE_UNBEATEN0},
+        {"_LEAGUEUNBEATEN1_", REP_TOKEN_STREAK_LEAGUE_UNBEATEN1},
+        {"_LEAGUEWON0_", REP_TOKEN_STREAK_LEAGUE_WON0},
+        {"_LEAGUEWON1_", REP_TOKEN_STREAK_LEAGUE_WON1},
+        {"_LOST0_", REP_TOKEN_STREAK_LOST0},
+        {"_LOST1_", REP_TOKEN_STREAK_LOST1},
+        {"_MI_", REP_TOKEN_MINUTE},
+        {"_MR_", REP_TOKEN_MINUTE_REMAINING},
+        {"_MT_", REP_TOKEN_MINUTE_TOTAL},
+        {"_MULTIPLESCORERS0_", REP_TOKEN_BOOL_MULTIPLE_SCORERS0},
+        {"_MULTIPLESCORERS1_", REP_TOKEN_BOOL_MULTIPLE_SCORERS1},
+        {"_NPOSS_", REP_TOKEN_NO_POSSESSION},
+        {"_NUMATT_", REP_TOKEN_NUM_ATT},
+        {"_NUMDEF_", REP_TOKEN_NUM_DEF},
+        {"_NUMMID_", REP_TOKEN_NUM_MID},
+        {"_OLDRANK0_", REP_TOKEN_OLDRANK0},
+        {"_OLDRANK1_", REP_TOKEN_OLDRANK1},
+        {"_OPPSKILL_", REP_TOKEN_OPPONENT_SKILL},
+        {"_P0_", REP_TOKEN_PLAYER0},
+        {"_P1_", REP_TOKEN_PLAYER1},
+        {"_PEN0_", REP_TOKEN_STAT_PEN0},
+        {"_PEN1_", REP_TOKEN_STAT_PEN1},
+        {"_PLGOALS0_", REP_TOKEN_PLAYER_GOALS0},
+        {"_PLGOALS1_", REP_TOKEN_PLAYER_GOALS1},
+        {"_PLGOALSALL0_", REP_TOKEN_PLAYER_GOALS_ALL0},
+        {"_PLGOALSALL1_", REP_TOKEN_PLAYER_GOALS_ALL1},
+        {"_PLYELLOWS_", REP_TOKEN_PLAYER_YELLOWS},
+        {"_POSS0_", REP_TOKEN_STAT_POSS0},
+        {"_POSS1_", REP_TOKEN_STAT_POSS1},
+        {"_POSS_", REP_TOKEN_POSSESSION},
+        {"_RANK0_", REP_TOKEN_RANK0},
+        {"_RANK1_", REP_TOKEN_RANK1},
+        {"_REDS0_", REP_TOKEN_STAT_REDS0},
+        {"_REDS1_", REP_TOKEN_STAT_REDS1},
+        {"_REL_", REP_TOKEN_RESULT_REL},
+        {"_REW_", REP_TOKEN_RESULT_REW},
+        {"_RE_", REP_TOKEN_RESULT},
+        {"_SCORERS0_", REP_TOKEN_SCORERS0},
+        {"_SCORERS1_", REP_TOKEN_SCORERS1},
+        {"_SHOTPER0_", REP_TOKEN_STAT_SHOT_PER0},
+        {"_SHOTPER1_", REP_TOKEN_STAT_SHOT_PER1},
+        {"_SHOTS0_", REP_TOKEN_STAT_SHOTS0},
+        {"_SHOTS1_", REP_TOKEN_STAT_SHOTS1},
+        {"_SUBSLEFT_", REP_TOKEN_SUBS_LEFT},
+        {"_T0_", REP_TOKEN_TEAM_HOME},
+        {"_T1_", REP_TOKEN_TEAM_AWAY},
+        {"_TAVSKILL0_", REP_TOKEN_TEAM_AVSKILL0},
+        {"_TAVSKILL1_", REP_TOKEN_TEAM_AVSKILL1},
+        {"_TAVSKILLDIFF_", REP_TOKEN_TEAM_AVSKILLDIFF},
+        {"_TIME_", REP_TOKEN_TIME},
+        {"_TLAYER0_", REP_TOKEN_TEAM_LAYER0},
+        {"_TLAYER1_", REP_TOKEN_TEAM_LAYER1},
+        {"_TLAYERDIFF_", REP_TOKEN_TEAM_LAYERDIFF},
+        {"_TLN_", REP_TOKEN_TEAM_LOSINGN},
+        {"_TL_", REP_TOKEN_TEAM_LOSING},
+        {"_TT_", REP_TOKEN_TEAM},
+        {"_TWN_", REP_TOKEN_TEAM_WINNINGN},
+        {"_TW_", REP_TOKEN_TEAM_WINNING},
+        {"_UNBEATEN0_", REP_TOKEN_STREAK_UNBEATEN0},
+        {"_UNBEATEN1_", REP_TOKEN_STREAK_UNBEATEN1},
+        {"_WON0_", REP_TOKEN_STREAK_WON0},
+        {"_WON1_", REP_TOKEN_STREAK_WON1},
+        {"_YELLOWLIMIT_", REP_TOKEN_YELLOW_LIMIT},
+        {"_YELLOWS0_", REP_TOKEN_STAT_YELLOWS0},
+        {"_YELLOWS1_", REP_TOKEN_STAT_YELLOWS1}
+    };
+
+    struct replacement_token_key string;
+    string.token = token;
+    string.len = len;
+    struct replacement_token_value *found = bsearch(&string,
+                                                    table,
+                                                    sizeof(table) / sizeof(struct replacement_token_value),
+                                                    sizeof(struct replacement_token_value),
+                                                    replacement_token_bsearch);
+    if (!found) {
+        return REP_TOKEN_LAST;
+    }
+    return found->value;
 }
