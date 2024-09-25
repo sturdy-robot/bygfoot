@@ -175,6 +175,7 @@ xml_strategy_read_start_element (GMarkupParseContext *context,
 
 	state = STATE_STRATEGY_MATCH_ACTION;
 	new_match_action.sub_condition = NULL;
+	new_match_action.parsed_sub_condition = NULL;
 	
 	new_match_action.condition = NULL;
         new_match_action.parsed_condition = NULL;
@@ -211,10 +212,11 @@ xml_strategy_read_start_element (GMarkupParseContext *context,
 	while(attribute_names[atidx] != NULL)
 	{
 	    if(strcmp(attribute_names[atidx], ATT_NAME_COND) == 0 &&
-	       curmatchaction.sub_condition == NULL)
+	       curmatchaction.sub_condition == NULL) {
 		curmatchaction.sub_condition = 
 		    g_strdup(attribute_values[atidx]);
-	    else
+                curmatchaction.parsed_sub_condition = misc_parse_condition_fast(curmatchaction.sub_condition);
+            } else
 		debug_print_message("xml_strategy_read_start_element: unknown attribute %s\n",
 			  attribute_names[atidx]);
 

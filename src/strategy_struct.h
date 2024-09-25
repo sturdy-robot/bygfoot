@@ -81,8 +81,8 @@ typedef struct
 {
     /** A condition describing when the action should be taken. */
     gchar *condition, *sub_condition;
-    /** A lexed version of condition for faster processing. */
-    GArray *parsed_condition;
+    /** A lexed version of the conditions for faster processing. */
+    GArray *parsed_condition, *parsed_sub_condition;
     /** New boost and style values. */
     gint boost, style;
     /** Substitution specifiers (position and property).

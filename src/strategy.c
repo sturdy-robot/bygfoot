@@ -644,7 +644,7 @@ strategy_live_game_apply_action(LiveGame *match, gint team_idx,
 
     if(action->sub_in_pos != -1 && match->subs_left[team_idx] > 0 &&
        (action->sub_condition == NULL || 
-	misc_parse_condition(action->sub_condition, token_strat)))
+	misc_evaluate_condition(action->parsed_sub_condition, token_strat)))
     {
 	sub_in_id = strategy_get_sub(tm, action->sub_in_pos, 
 				     action->sub_in_prop, TRUE);
