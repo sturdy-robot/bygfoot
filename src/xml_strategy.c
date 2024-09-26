@@ -127,6 +127,7 @@ xml_strategy_read_start_element (GMarkupParseContext *context,
 	state = STATE_STRATEGY_PREMATCH;
 	
 	new_prematch.condition = NULL;
+        new_prematch.parsed_condition = NULL;
 	new_prematch.lineup = new_prematch.boost = 
 	    new_prematch.style = -100;
 	new_prematch.min_fitness = 0;
@@ -135,10 +136,12 @@ xml_strategy_read_start_element (GMarkupParseContext *context,
 	while(attribute_names[atidx] != NULL)
 	{
 	    if(strcmp(attribute_names[atidx], ATT_NAME_COND) == 0 &&
-		new_prematch.condition == NULL)
+		new_prematch.condition == NULL) {
 		new_prematch.condition = 
 		    g_strdup(attribute_values[atidx]);
-	    else
+                new_prematch.parsed_condition =
+                    misc_parse_condition_fast(new_prematch.condition);
+             } else
 		debug_print_message("xml_strategy_read_start_element: unknown attribute %s\n",
 			  attribute_names[atidx]);
 

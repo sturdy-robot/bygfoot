@@ -68,6 +68,8 @@ typedef struct
 {
     /** A condition describing when the strategy should be applied. */
     gchar *condition;
+    /** A lexed version of the conditions for faster processing. */
+    GArray *parsed_condition;
     /** Array of possible formations, sorted by preference. */
     GArray *formations;
     /** Boost, style values and lineup type. */

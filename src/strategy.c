@@ -313,7 +313,7 @@ strategy_update_team_pre_match(Team *tm)
 
     for(i=prematches->len - 1; i >= 0; i--)
 	if(g_array_index(prematches, StrategyPrematch, i).condition == NULL ||
-	   misc_parse_condition(g_array_index(prematches, StrategyPrematch, i).condition,
+	   misc_evaluate_condition(g_array_index(prematches, StrategyPrematch, i).parsed_condition,
 				token_strat))
 	{
 	   strategy_apply_prematch(tm, &g_array_index(prematches, StrategyPrematch, i));
