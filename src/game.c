@@ -360,8 +360,7 @@ game_assign_attendance(Fixture *fix)
 		 const_float("float_game_stadium_attendance_percentage_upper")) *
 	powf(tm[0]->stadium.safety, 
 	     const_float("float_game_stadium_attendance_safety_exponent"));
-    Competition *comp = tm[0]->clid == fix->competition->id ? fix->competition : competition_get_from_clid(tm[0]->clid);
-    gint league_att = (gint)rint((gfloat)league_cup_average_capacity(comp) *
+    gint league_att = (gint)rint((gfloat)league_cup_average_capacity(&tm[0]->league->c) *
 				  const_float("float_game_stadium_attendance_average_exceed_factor") *
 				  math_rnd(0.9, 1.1));
     gint max_att = MIN(league_att, tm[0]->stadium.capacity);
