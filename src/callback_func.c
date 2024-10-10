@@ -684,14 +684,13 @@ callback_show_team(GUI *gui, gint type)
         GTK_TREE_VIEW(lookup_widget(window.main, "treeview_right"));
     const Team *tm;
     const GPtrArray *teams = NULL;
-    Competition *comp;
+    Competition *comp = gui_get_current_competition(gui);
 
     if(type == SHOW_CURRENT)
     {
         tm = (const Team*)treeview_helper_get_pointer(treeview_right, 2);
         comp = (Competition*)treeview_helper_get_pointer(treeview_right, 5);
         stat1 = team_get_index(tm, comp);
-        stat2 = comp->id;
     }
     else
     {
@@ -699,19 +698,17 @@ callback_show_team(GUI *gui, gint type)
         {
             /* Find the next league or international cup. */
             do {
-               comp = country_get_next_competition(&country, stat2, TRUE);
-               stat2 = comp->id;
+               comp = country_get_next_competition(&country, comp->id, TRUE);
             } while (competition_is_cup(comp) && !cup_is_international((Cup*)comp));
         }
         else if(type == SHOW_PREVIOUS_LEAGUE)
         {
             do {
-                comp = country_get_previous_competition(&country, stat2, TRUE);
-                stat2 = comp->id;
+                comp = country_get_previous_competition(&country, comp->id, TRUE);
             } while (competition_is_cup(comp) && !cup_is_international((Cup*)comp));
         }
 
-        teams = league_cup_get_teams(stat2);
+        teams = league_cup_get_teams(comp->id);
 
         if(type == SHOW_NEXT)
             stat1 = (stat1 == teams->len - 1) ? 0 : stat1 + 1;
@@ -722,6 +719,7 @@ callback_show_team(GUI *gui, gint type)
 
         tm = g_ptr_array_index(teams, stat1);
     }
+    gui_set_current_competition(gui, comp);
 
     gui_set_status(gui, STATUS_BROWSE_TEAMS);
 
@@ -908,7 +906,7 @@ callback_show_next_opponent(GUI *gui)
 
     gui_set_status(gui, STATUS_BROWSE_TEAMS);
     stat1 = team_get_index(opp, fix->competition);
-    stat2 = opp->clid;
+    gui_set_current_competition(gui, fix->competition);
 
     treeview_show_player_list_team(treeview_right, opp, current_user.scout % 10);
 }
@@ -929,7 +927,6 @@ callback_show_player_team(GUI *gui)
 
     gui_set_status(gui, STATUS_BROWSE_TEAMS);
     stat1 = team_get_index(pl->team, gui_get_current_competition(gui));
-    stat2 = pl->team->clid;
 
     treeview_show_player_list_team(treeview_right, pl->team, current_user.scout % 10);
 }
