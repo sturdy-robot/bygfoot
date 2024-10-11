@@ -1078,7 +1078,7 @@ player_update_skill(Player *pl)
 	if(pl->age > pl->peak_age)
 	    pl->lsu += (pl->health == 0) ? 1 : const_float("float_player_lsu_injured_old");
 	else if(pl->health == 0 &&
-		((gfloat)player_games_goals_get(pl, pl->team->clid, PLAYER_VALUE_GAMES) / (gfloat)week >=
+		((gfloat)player_games_goals_get(pl, pl->team->league->c.id, PLAYER_VALUE_GAMES) / (gfloat)week >=
 		 const_float("float_player_lsu_games_percentage") || 
 		 math_rnd(0, 1) <= const_float("float_player_lsu_increase_prob")))
 	    pl->lsu++;
