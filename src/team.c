@@ -62,7 +62,6 @@ team_new(gboolean new_id, Country *country)
 	new.symbol = new.def_file = 
 	new.stadium.name = new.strategy_sid = NULL;
     
-    new.clid = -1;
     new.id = (new_id) ? team_id_new : -1;
     new.structure = 442;
     new.style = 0;
@@ -1496,6 +1495,5 @@ team_get_weekly_wages(const Team *tm)
 void
 team_set_league(Team *tm, League *league)
 {
-    tm->clid = league->c.id;
     tm->league = league;
 }

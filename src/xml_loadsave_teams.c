@@ -180,8 +180,6 @@ xml_loadsave_teams_text         (GMarkupParseContext *context,
 	misc_string_assign(&new_team->symbol, buf);
     else if(state == TAG_TEAM_NAMES_FILE)
 	misc_string_assign(&new_team->names_file, buf);
-    else if(state == TAG_TEAM_CLID)
-	new_team->clid = xml_read_int(buf);
     else if(state == TAG_TEAM_STRATEGY_SID)
 	misc_string_assign(&new_team->strategy_sid, buf);
     else if(state == TAG_TEAM_ID)
@@ -299,7 +297,6 @@ xml_loadsave_teams_write_team(FILE *fil, const Team* team)
     xml_write_string(fil, team->names_file, TAG_TEAM_NAMES_FILE, I1);
     xml_write_string(fil, team->strategy_sid, TAG_TEAM_STRATEGY_SID, I1);
        
-    xml_write_int(fil, team->clid, TAG_TEAM_CLID, I1);
     xml_write_int(fil, team->id, TAG_TEAM_ID, I1);
     xml_write_int(fil, team->structure, TAG_TEAM_STRUCTURE, I1);
     xml_write_int(fil, team->style, TAG_TEAM_STYLE, I1);

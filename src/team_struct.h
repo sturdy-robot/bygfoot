@@ -83,12 +83,7 @@ typedef struct team
     /** The sid of the strategy if it's a CPU team. */
     gchar *strategy_sid;
 
-    /** Numerical id of the league or cup the team belongs to. For teams in
-     * the user's country this will refer to the clid of their league.  For
-     * other teams, this will refer to the clid of the cup they are in.
-     * This field is deprecated and will be replaced by the league field. */
-    gint clid,
-	id, /**< Id of the team. */
+	gint id, /**< Id of the team. */
 	structure, /**< Playing structure. @see team_assign_playing_structure() */
 	style, /**< Playing style. @see team_assign_playing_style() */
 	boost; /**< Whether player boost or anti-boost is switched on. */

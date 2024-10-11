@@ -365,7 +365,7 @@ cup_get_team_pointers(Cup *cup, gint round, gboolean preload)
 	    g_print("cup_get_team_pointers: %s (%s) round %d team %d %s (clid %d)\n", 
                     cup->c.name, cup->sid, round, i,
                     ((Team*)g_ptr_array_index(teams, i))->name,
-                    ((Team*)g_ptr_array_index(teams, i))->clid);
+                    ((Team*)g_ptr_array_index(teams, i))->league->c.id);
 }
 
 /** Get the pointers to the teams (already generated, in one of the leagues or cups)
@@ -687,7 +687,6 @@ cup_load_choose_team_generate(Cup *cup, GPtrArray *teams, const CupChooseTeam *c
 	{
 	    //g_array_append_val(cup_round->teams, g_array_index(teams_local, Team, permutation[j]));
 	    //g_array_index(cup_round->teams, Team, cup_round->teams->len - 1).clid = cup->c.id;
-	    team->clid = cup->c.id;
 	    g_ptr_array_add(teams, team);
 
 	    number_of_teams++;

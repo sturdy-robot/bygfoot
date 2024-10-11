@@ -160,10 +160,8 @@ generate_cup_history_leagues(Cup *cup)
             CupChooseTeam *ct = &g_array_index(round->choose_teams, CupChooseTeam, k);
             League *league = bygfoot_get_league_sid(ct->sid);
             Cup *ct_cup;
-            gboolean update_clid;
             if (!league)
                 continue;
-            update_clid = cup_choose_team_should_generate(ct);
             for (t = 0; t < league->c.teams->len; t++) {
                 g_ptr_array_add(teams, g_ptr_array_index(league->c.teams, t));
             }
@@ -176,8 +174,6 @@ generate_cup_history_leagues(Cup *cup)
                 if(!ct->skip_group_check && query_team_is_in_cups(team, cup->group))
                     continue;
                 g_ptr_array_add(cup->c.teams, team);
-                if (update_clid)
-                    team->clid = cup->c.id;
                 t++;
             }
             g_ptr_array_free(teams, TRUE);

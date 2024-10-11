@@ -933,7 +933,6 @@ bygfoot_json_serialize_team(const Team *team,
     SERIALIZE(names_file, serialize_string);
     SERIALIZE(def_file, serialize_string);
     SERIALIZE(strategy_sid, serialize_string);
-    SERIALIZE(clid, serialize_int);
     SERIALIZE(id, serialize_int);
     SERIALIZE(structure, serialize_int);
     SERIALIZE(style, serialize_int);
