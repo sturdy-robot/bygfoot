@@ -164,3 +164,28 @@ xml_write_string(FILE *fil, const gchar *string, gint tag, const gchar* indent)
 
     fprintf(fil, "%s<_%d>%s</_%d>\n", indent, tag, string, tag);
 }
+
+void
+xml_write_float(FILE *fil, float value, gint tag, const gchar* indent)
+{
+    gint ivalue = 0;
+
+    memcpy(&ivalue, &value, sizeof(gint));
+    /* TODO: Drop 0x prefix once old save format is no longer supported. */
+    fprintf(fil, "%s<_%d>0x%x</_%d>\n", indent, tag, ivalue, tag);
+}
+
+gfloat
+xml_read_float(const char *str)
+{
+    gfloat fvalue = 0.0f;
+    gint ivalue = 0;
+    if (str[0] != '0') {
+        /* Old save format. */
+        return (((gfloat)(g_ascii_strtoll(str, NULL, 10)) / 10000));
+    }
+
+    ivalue = g_ascii_strtoll(str, NULL, 16);
+    memcpy(&fvalue, &ivalue, sizeof(gfloat));
+    return fvalue;
+}

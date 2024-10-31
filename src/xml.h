@@ -93,16 +93,18 @@ enum XmlTags
 
 #define xml_write_int(fil, value, tag, indent) fprintf(fil, "%s<_%d>%d</_%d>\n", indent, tag, value, tag)
 
-#define xml_write_float(fil, value, tag, indent) fprintf(fil, "%s<_%d>%d</_%d>\n", indent, tag, (gint)rint(value * 10000), tag)
-
 #define xml_read_int(str) ((gint)g_ascii_strtoll(str, NULL, 10))
-
-#define xml_read_float(str) (((gfloat)(g_ascii_strtoll(str, NULL, 10)) / 10000))
 
 #define xml_get_tag_from_name(name) (gint)g_ascii_strtod(name + 1, NULL)
 
 void
 xml_write_string(FILE *fil, const gchar *string, gint tag, const gchar* indent);
+
+void
+xml_write_float(FILE *fil, float value, gint tag, const gchar* indent);
+
+gfloat
+xml_read_float(const char *str);
 
 void
 xml_load_users(const gchar *dirname, const gchar *basename);
