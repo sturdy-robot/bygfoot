@@ -126,7 +126,7 @@ start_load_other_countries(Bygfoot *bygfoot)
             gint k;
             for (k = 0; k < league->c.teams->len; k++) {
                 Team *team = g_ptr_array_index(league->c.teams, k);
-	            team_generate_players_stadium(team, league->average_talent);
+	            team_generate_players_stadium(team);
             }
         }
         g_ptr_array_add(country_list, new_country);
@@ -457,7 +457,7 @@ start_generate_league_teams(void)
     for(i=0;i<country.leagues->len;i++) {
         League *league = g_ptr_array_index(country.leagues, i);
 	for(j=0;j<league->c.teams->len;j++)
-	    team_generate_players_stadium(g_ptr_array_index(league->c.teams, j), 0);
+	    team_generate_players_stadium(g_ptr_array_index(league->c.teams, j));
     }
 
     stat5 = -1;

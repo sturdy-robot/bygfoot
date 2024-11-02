@@ -401,7 +401,7 @@ job_change_country(Job *job, Bygfoot *bygfoot)
 	for(j=0;j<league->c.teams->len;j++) {
 	    Team *new_team = g_ptr_array_index(league->c.teams, j);
 	    if(strcmp(new_team->name, tm.name) != 0)
-		team_generate_players_stadium(new_team, 0);
+		team_generate_players_stadium(new_team);
 	    else
 	    {
 		tm.id = new_team->id;

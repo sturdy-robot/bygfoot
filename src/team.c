@@ -81,7 +81,7 @@ team_new(gboolean new_id, Country *country)
 /* Fill the players array of the team and the stadium.
    @param tm The team that gets filled. */
 void
-team_generate_players_stadium(Team *tm, gfloat av_talent)
+team_generate_players_stadium(Team *tm)
 {
 #ifdef DEBUG
     printf("team_generate_players_stadium\n");
@@ -103,8 +103,7 @@ team_generate_players_stadium(Team *tm, gfloat av_talent)
 		 const_float("float_team_stadium_safety_upper"));
     tm->stadium.ticket_price = const_int("int_team_stadium_ticket_price");
 
-    league_av_talent = (av_talent > 0) ?
-        av_talent : tm->league->average_talent;
+    league_av_talent = tm->league->average_talent;
     average_talent = (tm->average_talent == 0) ?
         skill_factor * league_av_talent :
         tm->average_talent;

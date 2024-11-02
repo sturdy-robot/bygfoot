@@ -248,7 +248,7 @@ user_remove(gint idx, gboolean regenerate_team)
 
 	usr(idx).tm->luck = 1;
 
-	team_generate_players_stadium(usr(idx).tm, 0);
+	team_generate_players_stadium(usr(idx).tm);
 	for(i=0;i<usr(idx).tm->players->len;i++)
 	    g_array_index(usr(idx).tm->players, Player, i).team = usr(idx).tm;
     }

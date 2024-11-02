@@ -50,7 +50,7 @@ gboolean
 query_is_my_team(const Team *tm);
 
 void
-team_generate_players_stadium(Team *tm, gfloat av_talent);
+team_generate_players_stadium(Team *tm);
 
 gboolean
 query_team_is_in_cups(const Team *tm, gint group);
