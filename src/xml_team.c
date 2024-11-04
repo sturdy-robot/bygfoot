@@ -74,10 +74,12 @@ enum XmlTeamStates
     STATE_END
 };
 
-gint state, birth_year;
-Player new_player;
-Team *team;
-const gchar *d_file;
+typedef struct {
+    gint state, birth_year;
+    Player new_player;
+    Team *team;
+    const gchar *d_file;
+} TeamUserData;
 
 void
 xml_team_read_start_element (GMarkupParseContext *context,
@@ -90,46 +92,47 @@ xml_team_read_start_element (GMarkupParseContext *context,
 #ifdef DEBUG
     printf("xml_team_read_start_element\n");
 #endif
+    TeamUserData *team_user_data = (TeamUserData*)user_data;
 
     if(strcmp(element_name, TAG_TEAM) == 0)
-	state = STATE_TEAM;
+	team_user_data->state = STATE_TEAM;
     else if(strcmp(element_name, TAG_TEAM_NAME) == 0)
-	state = STATE_TEAM_NAME;
+	team_user_data->state = STATE_TEAM_NAME;
     else if(strcmp(element_name, TAG_STADIUM_NAME) == 0)
-	state = STATE_STADIUM_NAME;
+	team_user_data->state = STATE_STADIUM_NAME;
     else if(strcmp(element_name, TAG_SYMBOL) == 0)
-	state = STATE_SYMBOL;
+	team_user_data->state = STATE_SYMBOL;
     else if(strcmp(element_name, TAG_AVERAGE_TALENT) == 0)
-	state = STATE_AVERAGE_TALENT;
+	team_user_data->state = STATE_AVERAGE_TALENT;
     else if(strcmp(element_name, TAG_FORMATION) == 0)
-	state = STATE_FORMATION;
+	team_user_data->state = STATE_FORMATION;
     else if(strcmp(element_name, TAG_NAMES_FILE) == 0)
-	state = STATE_NAMES_FILE;
+	team_user_data->state = STATE_NAMES_FILE;
     else if(strcmp(element_name, TAG_FIRST_TEAM) == 0)
-	state = STATE_FIRST_TEAM;
+	team_user_data->state = STATE_FIRST_TEAM;
     else if(strcmp(element_name, TAG_RESERVE_LEVEL) == 0)
-	state = STATE_RESERVE_LEVEL;
+	team_user_data->state = STATE_RESERVE_LEVEL;
     else if(strcmp(element_name, TAG_PLAYER) == 0)
     {
-	state = STATE_PLAYER;
-	new_player = player_new(team, ((gfloat)team->average_talent / 10000) * 
+	team_user_data->state = STATE_PLAYER;
+	team_user_data->new_player = player_new(team_user_data->team, ((gfloat)team_user_data->team->average_talent / 10000) * 
 				const_float_fast(float_player_max_skill), TRUE);
     }
     else if(strcmp(element_name, TAG_PLAYER_NAME) == 0)
-	state = STATE_PLAYER_NAME;
+	team_user_data->state = STATE_PLAYER_NAME;
     else if(strcmp(element_name, TAG_PLAYER_BIRTH_YEAR) == 0)
-	state = STATE_PLAYER_BIRTH_YEAR;
+	team_user_data->state = STATE_PLAYER_BIRTH_YEAR;
     else if(strcmp(element_name, TAG_PLAYER_BIRTH_MONTH) == 0)
-	state = STATE_PLAYER_BIRTH_MONTH;
+	team_user_data->state = STATE_PLAYER_BIRTH_MONTH;
     else if(strcmp(element_name, TAG_PLAYER_SKILL) == 0)
-	state = STATE_PLAYER_SKILL;
+	team_user_data->state = STATE_PLAYER_SKILL;
     else if(strcmp(element_name, TAG_PLAYER_TALENT) == 0)
-	state = STATE_PLAYER_TALENT;
+	team_user_data->state = STATE_PLAYER_TALENT;
     else if(strcmp(element_name, TAG_PLAYER_POSITION) == 0)
-	state = STATE_PLAYER_POSITION;
+	team_user_data->state = STATE_PLAYER_POSITION;
     else
 	debug_print_message("xml_team_read_start_element: unknown tag: %s; I'm in state %d\n",
-		  element_name, state);
+		  element_name, team_user_data->state);
 }
 
 /**
@@ -146,6 +149,7 @@ xml_team_read_end_element    (GMarkupParseContext *context,
 #ifdef DEBUG
     printf("xml_team_read_end_element\n");
 #endif
+    TeamUserData *team_user_data = (TeamUserData*)user_data;
 
     if(strcmp(element_name, TAG_TEAM_NAME) == 0 ||
        strcmp(element_name, TAG_STADIUM_NAME) == 0 ||
@@ -157,18 +161,18 @@ xml_team_read_end_element    (GMarkupParseContext *context,
        strcmp(element_name, TAG_RESERVE_LEVEL) == 0 ||
        strcmp(element_name, TAG_PLAYER) == 0)
     {
-	state = STATE_TEAM;
+	team_user_data->state = STATE_TEAM;
 	if(strcmp(element_name, TAG_PLAYER) == 0)
 	{
-	    if(team->players->len == const_int("int_team_cpu_players"))
+	    if(team_user_data->team->players->len == const_int("int_team_cpu_players"))
 	    {
-		free_player(&new_player);
+		free_player(&team_user_data->new_player);
 		main_exit_program(EXIT_LOAD_TEAM_DEF, 
 				  "xml_team_read_end_element: too many players in team definition '%s' (only %d allowed).",
-				  d_file, const_int("int_team_cpu_players"));
+				  team_user_data->d_file, const_int("int_team_cpu_players"));
 	    }
 	    else
-		g_array_append_val(team->players, new_player);
+		g_array_append_val(team_user_data->team->players, team_user_data->new_player);
 	}
     }
     else if(strcmp(element_name, TAG_PLAYER_NAME) == 0 ||
@@ -177,10 +181,10 @@ xml_team_read_end_element    (GMarkupParseContext *context,
 	    strcmp(element_name, TAG_PLAYER_SKILL) == 0 ||
 	    strcmp(element_name, TAG_PLAYER_TALENT) == 0 ||
 	    strcmp(element_name, TAG_PLAYER_POSITION) == 0)
-	state = STATE_PLAYER;
+	team_user_data->state = STATE_PLAYER;
     else if(strcmp(element_name, TAG_TEAM) != 0)
 	debug_print_message("xml_team_read_end_element: unknown tag: %s; I'm in state %d\n",
-		  element_name, state);
+		  element_name, team_user_data->state);
 }
 
 /**
@@ -203,6 +207,7 @@ xml_team_read_text         (GMarkupParseContext *context,
     gchar buf[text_len + 1];
     gint int_value;
     gfloat float_value;
+    TeamUserData *team_user_data = (TeamUserData*)user_data;
 
     strncpy(buf, text, text_len);
     buf[text_len] = '\0';
@@ -210,40 +215,40 @@ xml_team_read_text         (GMarkupParseContext *context,
     int_value = (gint)g_ascii_strtod(buf, NULL);
     float_value = (gfloat)g_ascii_strtod(buf, NULL);
 
-    if(state == STATE_TEAM_NAME)
-	misc_string_assign(&team->name, buf);
-    else if(state == STATE_STADIUM_NAME)
+    if(team_user_data->state == STATE_TEAM_NAME)
+	misc_string_assign(&team_user_data->team->name, buf);
+    else if(team_user_data->state == STATE_STADIUM_NAME)
     {
-	g_free(team->stadium.name);
-	misc_string_assign(&team->stadium.name, buf);
+	g_free(team_user_data->team->stadium.name);
+	misc_string_assign(&team_user_data->team->stadium.name, buf);
     }
-    else if(state == STATE_SYMBOL)
-	misc_string_assign(&team->symbol, buf);
-    else if(state == STATE_AVERAGE_TALENT && opt_int("int_opt_load_defs") == 1)
-	team->average_talent = 
+    else if(team_user_data->state == STATE_SYMBOL)
+	misc_string_assign(&team_user_data->team->symbol, buf);
+    else if(team_user_data->state == STATE_AVERAGE_TALENT && opt_int("int_opt_load_defs") == 1)
+	team_user_data->team->average_talent = 
 	    (float_value / 10000) * const_float_fast(float_player_max_skill);
-    else if(state == STATE_FORMATION)
-	team->structure = int_value;
-    else if(state == STATE_NAMES_FILE)
-	misc_string_assign(&team->names_file, buf);
-    else if(state == STATE_FIRST_TEAM)
-	misc_string_assign(&team->first_team.sid, buf);
-    else if(state == STATE_RESERVE_LEVEL)
-	team->reserve_level = int_value;
-    else if(state == STATE_PLAYER_NAME)
-	misc_string_assign(&new_player.name, buf);
-    else if(state == STATE_PLAYER_BIRTH_YEAR && opt_int("int_opt_load_defs") == 1)
-	birth_year = int_value;
-    else if(state == STATE_PLAYER_BIRTH_MONTH && opt_int("int_opt_load_defs") == 1)
-	new_player.age = misc_get_age_from_birth(birth_year, int_value);
-    else if(state == STATE_PLAYER_SKILL && opt_int("int_opt_load_defs") == 1)
-	new_player.skill = ((gfloat)int_value / 10000) * 
+    else if(team_user_data->state == STATE_FORMATION)
+	team_user_data->team->structure = int_value;
+    else if(team_user_data->state == STATE_NAMES_FILE)
+	misc_string_assign(&team_user_data->team->names_file, buf);
+    else if(team_user_data->state == STATE_FIRST_TEAM)
+	misc_string_assign(&team_user_data->team->first_team.sid, buf);
+    else if(team_user_data->state == STATE_RESERVE_LEVEL)
+	team_user_data->team->reserve_level = int_value;
+    else if(team_user_data->state == STATE_PLAYER_NAME)
+	misc_string_assign(&team_user_data->new_player.name, buf);
+    else if(team_user_data->state == STATE_PLAYER_BIRTH_YEAR && opt_int("int_opt_load_defs") == 1)
+	team_user_data->birth_year = int_value;
+    else if(team_user_data->state == STATE_PLAYER_BIRTH_MONTH && opt_int("int_opt_load_defs") == 1)
+	team_user_data->new_player.age = misc_get_age_from_birth(team_user_data->birth_year, int_value);
+    else if(team_user_data->state == STATE_PLAYER_SKILL && opt_int("int_opt_load_defs") == 1)
+	team_user_data->new_player.skill = ((gfloat)int_value / 10000) * 
 	    const_float_fast(float_player_max_skill);
-    else if(state == STATE_PLAYER_TALENT && opt_int("int_opt_load_defs") == 1)
-	new_player.talent = ((gfloat)int_value / 10000) * 
+    else if(team_user_data->state == STATE_PLAYER_TALENT && opt_int("int_opt_load_defs") == 1)
+	team_user_data->new_player.talent = ((gfloat)int_value / 10000) * 
 	    const_float_fast(float_player_max_skill);
-    else if(state == STATE_PLAYER_POSITION)
-	new_player.pos = int_value;
+    else if(team_user_data->state == STATE_PLAYER_POSITION)
+	team_user_data->new_player.pos = int_value;
 }
 
 /** Parse a team definition file and write the team accordingly. */
@@ -261,12 +266,15 @@ xml_team_read(Team *tm, const gchar *def_file)
     gchar *file_contents;
     gsize length;
     GError *error = NULL;
+    TeamUserData user_data;
 
-    team = tm;
-    d_file = def_file;
+    memset(&user_data, 0, sizeof(user_data));
+
+    user_data.team = tm;
+    user_data.d_file = def_file;
 
     context = 
-	g_markup_parse_context_new(&parser, 0, NULL, NULL);
+	g_markup_parse_context_new(&parser, 0, &user_data, NULL);
 
     if(!g_file_get_contents(def_file, &file_contents, &length, &error))
     {
@@ -287,5 +295,5 @@ xml_team_read(Team *tm, const gchar *def_file)
 	misc_print_error(&error, TRUE);
     }
 
-    team_complete_def(team);
+    team_complete_def(user_data.team);
 }
