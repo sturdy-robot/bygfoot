@@ -24,10 +24,31 @@
 */
 
 #include "main.h"
+#include "free.h"
 #include "name.h"
 #include "option.h"
 #include "variables.h"
 #include "xml_name.h"
+
+static void
+load_name_list(const gchar *names_file)
+{
+    NameList new;
+    /** Create new name list. */
+    new.sid = NULL;
+    new.first_names = new.last_names = NULL;
+
+    xml_name_read(names_file, &new);
+
+    if(new.sid == NULL)
+    {
+	debug_print_message("name_get_new: names file with sid '%s' not found, taking general names file.\n",
+		  names_file);
+	load_name_list(opt_str("string_opt_player_names_file"));
+    }
+
+    g_array_append_val(name_lists, new);
+}
 
 /** Get a random player name from the given
     names list. If the names list is not found, create
@@ -45,33 +66,26 @@ name_get(const gchar *names_file)
 #endif
 
     gint i;
-    NameList new;
 
-    if(name_lists->len > 1 && 
-       math_rnd(0, 1) < const_float("float_name_random_list_prob"))
-	return name_get_from_random_list();
+    if(math_rnd(0, 1) < const_float("float_name_random_list_prob")) {
+        Country *c;
+        if (!country_list) {
+            c = &country;
+        } else {
+            gint country_idx = math_rndi(0, country_list->len);
+            if (country_idx == country_list->len)
+                c = &country;
+            else
+                c = g_ptr_array_index(country_list, country_idx);
+        }
+        names_file = ((League*)g_ptr_array_index(c->leagues, 0))->names_file;
+    }
 
     for(i=0;i<name_lists->len;i++)
 	if(strcmp(names_file, nli(i).sid) == 0)
 	    return name_get_from_list(&nli(i));
 
-    /** Create new name list. */
-    new.sid = NULL;
-    new.first_names = new.last_names = NULL;
-
-    xml_name_read(names_file, &new);
-
-    if(new.sid == NULL)
-    {
-	debug_print_message("name_get_new: names file with sid '%s' not found, taking general names file.\n",
-		  names_file);
-	return name_get(opt_str("string_opt_player_names_file"));
-    }
-
-    if(stat5 != STATUS_GENERATE_TEAMS)
-	name_shorten_list(&new);
-
-    g_array_append_val(name_lists, new);
+    load_name_list(names_file);
 
     return name_get_from_list(&nli(name_lists->len - 1));
 }
@@ -97,37 +111,6 @@ name_get_from_list(const NameList *namelist)
     return g_strdup(buf);
 }
 
-/** Shorten a name list so that it doesn't occupy
-    too much memory. */
-void
-name_shorten_list(NameList *namelist)
-{
-#ifdef DEBUG
-    printf("name_shorten_list\n");
-#endif
-
-    gint idx;
-
-    while(namelist->first_names->len * namelist->last_names->len >
-	  const_int("int_name_max_product"))
-    {
-	if((gfloat)(namelist->first_names->len) /
-	   (gfloat)(namelist->last_names->len) >
-	   const_float("float_name_first_last_ratio"))
-	{
-	    idx = math_rndi(0, namelist->first_names->len - 1);
-	    g_free(g_ptr_array_index(namelist->first_names, idx));
-	    g_ptr_array_remove_index_fast(namelist->first_names, idx);
-	}
-	else
-	{
-	    idx = math_rndi(0, namelist->last_names->len - 1);
-	    g_free(g_ptr_array_index(namelist->last_names, idx));
-	    g_ptr_array_remove_index_fast(namelist->last_names, idx);
-	}
-    }
-}
-
 /** Find the namelist with the given sid. */
 NameList*
 name_get_list_from_sid(const gchar *sid)
@@ -149,10 +132,44 @@ name_get_list_from_sid(const gchar *sid)
 			  "name_get_list_from_sid: namelist with sid %s not found", sid);
     else
     {
-	name_shorten_list(&new);
 	g_array_append_val(name_lists, new);
 	return &nli(name_lists->len - 1);
     }
 
     return NULL;
+}
+
+gchar *
+name_get_from_random_list(void)
+{
+    gint i;
+
+    gint country_idx;
+    Country *country_names;
+    const gchar *names_file;
+    gchar *name;
+    NameList new;
+
+    if (!country_list) {
+        country_names = &country;
+    } else {
+        country_idx = math_rndi(0, country_list->len);
+        if (country_idx == country_list->len)
+            country_names = &country;
+        else
+            country_names = g_ptr_array_index(country_list, country_idx);
+    }
+    names_file = ((League*)g_ptr_array_index(country_names->leagues, 0))->names_file;
+
+    /** Create new name list. */
+    new.sid = NULL;
+    new.first_names = new.last_names = NULL;
+
+    xml_name_read(names_file, &new);
+
+    name = name_get_from_list(&new);
+
+    free_name_list(&new, FALSE);
+
+    return name;
 }

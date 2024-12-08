@@ -409,9 +409,6 @@ start_new_season(Bygfoot *bygfoot)
 
     stat5 = -1;
 
-    for(i=0;i<name_lists->len;i++)
-	name_shorten_list(&nli(i));
-
     if(season == 1)
 	bet_update();
 }
