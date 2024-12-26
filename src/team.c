@@ -170,11 +170,8 @@ query_team_is_in_cups(const Team *tm, gint group)
         const Cup *cup = g_ptr_array_index(country.bygfoot->international_cups, i);
         if (cup->group != group)
             continue;
-        for (j = 0; j < cup->c.teams->len; j++) {
-            const Team *team = g_ptr_array_index(cup->c.teams, j);
-            if (team == tm)
-                return TRUE;
-        }
+        if (query_team_is_in_cup(tm, cup))
+            return TRUE;
     }
     return FALSE;
 }
