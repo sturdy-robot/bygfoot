@@ -122,7 +122,7 @@ job_add_new_international(gint num_of_new)
 	new_job.league_name = g_strdup(league->c.name);
 	new_job.league_layer = league->layer;
 
-	team_id = job_team_is_in_cup(tm->name);
+	team_id = job_team_is_in_cup(tm);
 
 	if(team_id == -1)
 	{
@@ -259,7 +259,7 @@ job_team_is_on_list(gint team_id)
     in an international cup (and thus doesn't have to be generated).
     @return The id of the team if found or -1. */
 gint
-job_team_is_in_cup(const gchar *team_name)
+job_team_is_in_cup(const Team *team)
 {
 #ifdef DEBUG
     printf("job_team_is_in_cup\n");
@@ -269,10 +269,8 @@ job_team_is_in_cup(const gchar *team_name)
 
     for(i=0;i<country.allcups->len;i++) {
         Cup *cup = g_ptr_array_index(country.allcups, i);
-	for(j=0;j<cup->c.teams->len;j++)
-	    if(strcmp(team_name, 
-		      ((Team*)g_ptr_array_index(cup->c.teams, j))->name) == 0)
-		return ((Team*)g_ptr_array_index(cup->c.teams, j))->id;
+        if (query_team_is_in_cup(team, cup))
+            return team->id;
     }
     return -1;
 }

@@ -62,7 +62,7 @@ void
 job_pick_team_from_country(const Country *cntry, Team **tm, League **league);
 
 gint
-job_team_is_in_cup(const gchar *team_name);
+job_team_is_in_cup(const Team *team);
 
 void
 job_change_country(Job *job, Bygfoot *bygfoot);
